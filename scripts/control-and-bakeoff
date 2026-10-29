@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+scripts/check
+.venv/bin/python -m bench.run --candidate unmasked --clip sf-market --seconds 1 --run-id control-unmasked-calibrated
+cp out/control-unmasked-calibrated/scorecard.json bench/baseline.json
+scripts/bakeoff

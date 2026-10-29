@@ -10,3 +10,6 @@ DerivedData/
 out/
 fixtures/cache/
 .tmp/
+.venv/
+__pycache__/
+models/cache/

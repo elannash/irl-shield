@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Reuse the isolated, pinned environment documented in bench/PORTABILITY.md.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+root=$PWD
+probe_python="$root/.tmp/linux-probe/.venv/bin/python"
+mode=${1:-}
+case "$mode" in
+  perf) module=bench.clocked_pipeline ;;
+  measure) module=bench.clocked_bench ;;
+  cpu) module=bench.cpu_cost ;;
+  verify) module=bench.cross_host ;;
+  *) printf '%s\n' 'Usage: scripts/linux-bench {perf|measure|cpu|verify} [module arguments]' >&2; exit 2 ;;
+esac
+shift
+if [[ "$mode" == verify ]]; then
+  set -- verify "$@"
+fi
+[[ -x "$probe_python" ]] || { printf '%s\n' 'Missing existing .tmp/linux-probe/.venv' >&2; exit 1; }
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+export CUDA_CACHE_PATH="$root/.tmp/linux-probe/cuda-cache"
+export TMPDIR="$root/.tmp/linux-probe"
+mkdir -p "$CUDA_CACHE_PATH"
+cuda_libraries=()
+for directory in "$root/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia"/*/lib; do
+  [[ -d "$directory" ]] && cuda_libraries+=("$directory")
+done
+[[ ${#cuda_libraries[@]} -gt 0 ]] || { printf '%s\n' 'Missing existing private NVIDIA runtime wheels' >&2; exit 1; }
+export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${cuda_libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+free -g
+uptime
+exec systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
+  "$probe_python" -u -m "$module" "$@"

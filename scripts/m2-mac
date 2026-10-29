@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Explicit window required. Sync only M2's private snapshot and run it bounded.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+[[ ${1:-} == --window && -n ${2:-} ]] || {
+  echo 'HOLD: parent must grant a Mac window; use m2-mac --window TOKEN [--seconds N] command...' >&2
+  exit 2
+}
+window=$2
+shift 2
+seconds=120
+if [[ ${1:-} == --seconds ]]; then seconds=$2; shift 2; fi
+[[ $# -gt 0 ]] || { echo 'A command is required' >&2; exit 2; }
+snapshot=.tmp/m2/runtime
+mkdir -p "$snapshot/scripts" "$snapshot/fixtures" "$snapshot/tests/m2"
+cp -R relay "$snapshot/"
+mkdir -p "$snapshot/shield"
+cp shield/*.py "$snapshot/shield/"
+cp requirements-relay.txt "$snapshot/"
+cp scripts/bounded.py scripts/m2-* "$snapshot/scripts/"
+cp tests/m2/*.py "$snapshot/tests/m2/"
+cp fixtures/cache/sf-market.mp4 "$snapshot/fixtures/"
+ssh mac 'bash -lc "mkdir -p ~/code/irl-shield/.tmp/m2/runtime"'
+rsync -az --exclude=__pycache__ "$snapshot/" mac:code/irl-shield/.tmp/m2/runtime/
+printf -v command '%q ' "$@"
+printf -v remote 'cd ~/code/irl-shield/.tmp/m2/runtime && M2_MAC_WINDOW=%q OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 perl -e %q %q /Users/elannash/code/irl-shield/.venv/bin/python scripts/bounded.py %q %s' "$window" 'alarm shift; exec @ARGV' "$((seconds+10))" "$seconds" "$command"
+ssh mac "bash -lc $(printf '%q' "$remote")"

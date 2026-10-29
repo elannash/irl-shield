@@ -1,0 +1,99 @@
+{
+  "pageid": 81895119,
+  "ns": 6,
+  "title": "File:Road traffic on Stritarjeva street.webm",
+  "index": 29,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 57415814,
+      "width": 1920,
+      "height": 1080,
+      "duration": 79.95400000000001,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Road_traffic_on_Stritarjeva_street.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Road_traffic_on_Stritarjeva_street.webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=81895119",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2019-09-05 08:45:51",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Road traffic on Stritarjeva street",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "Media from YouTube|Stritar Street|Uploaded with video2commons|Videos of 2019 from Slovenia|License reviewed by YouTubeReviewBot|Videos of road transport in Ljubljana",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Traffic on Stritarjeva street in the city centre of Ljubljana. The area is closed for traffic, except from 7am to 10am when is opend for delivery vans and cars.  Beside delivery vans there ia also sound of street cleaner passing by, shop keeper sweeping the pavement infront of the shop with a broom, people walking and cycling by. The soundscape was recorded on 18th of July 2019 at around 9am.",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2019-07-18",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=X3Kyb292Vj4\"><bdi lang=\"\">Road traffic</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=X3Kyb292Vj4\">archive.org</a></bdi>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCjB-IQrc61I77sMDL_5g4Xw\">Sounds of Changes</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "Sounds of Changes",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "ab2454025725bc59364b19398d25dd7ff16fd54e"
+    }
+  ]
+}

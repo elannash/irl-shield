@@ -1,0 +1,269 @@
+{
+  "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. Latin-script text and Arabic digits observed in input at confidence>=0.9 on at least2 frames per interval; judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven.",
+  "schema_version": 1,
+  "run_id": "final-control-unmasked-calibrated",
+  "candidate": "unmasked",
+  "split": "tune",
+  "options": {
+    "lookahead": 0,
+    "padding": 0.3,
+    "persistence": 1,
+    "stride": 1,
+    "detect_width": 1280,
+    "provider": "cpu",
+    "limit_side_len": 960
+  },
+  "seconds_per_clip": 1.0,
+  "pilot": true,
+  "manifest_sha256": "311979a75de193566e0da3135b7c65ad7995d5ce5ed644626dae54aefd3086cc",
+  "environment": {
+    "system": "macOS-27.0.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.11.15",
+    "opencv": "4.11.0",
+    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "hardware": [
+      "Apple M1 Pro",
+      "8",
+      "17179869184"
+    ]
+  },
+  "judges": [
+    "tesseract-5-psm11",
+    "vision-accurate",
+    "ppocr-independent"
+  ],
+  "judge_models": {
+    "name": "ppocr-v5-english",
+    "detector": {
+      "name": "ppocr-v5-mobile",
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/ch_PP-OCRv5_det_mobile.onnx",
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/blob/0d63e78e2b680928f6b1747d76a08db6e645efb7/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "coreml_cpu_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0",
+      "parameters": {
+        "limit_side_len": 960,
+        "limit_type": "max",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "max_candidates": 1000,
+        "unclip_ratio": 1.6,
+        "use_dilation": true,
+        "score_mode": "fast"
+      }
+    },
+    "recognizer": {
+      "name": "ppocr-v5-english-rec",
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/en_PP-OCRv5_rec_mobile.onnx",
+      "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/blob/267c36e24c331595590fe7bd72bde2436fd286f2/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/rec/en_PP-OCRv5_rec_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "coreml_cpu_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0"
+    },
+    "text_score": 0.5,
+    "language": "English and Latin characters in the model's embedded dictionary",
+    "independence": "Non-Apple engine; shares PP-OCR family with PP-OCR detector candidates"
+  },
+  "clips": [
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 30,
+        "seconds": 0.4861452500335872,
+        "fps": 61.7099519082565,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.11004733300069347,
+          "p95": 0.2105006402300205
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 0.0,
+          "p95": 0.18818287564790798
+        },
+        "service_seconds": {
+          "p50": 0.003422083507757634,
+          "p95": 0.01789685839903537
+        },
+        "cpu_percent_one_core_100": 102.44777694984067,
+        "peak_tree_rss_mb": 270.0625,
+        "detector": {
+          "engine": "unmasked"
+        }
+      },
+      "excluded_unstable_natural_intervals": 8,
+      "natural": {
+        "total": 31,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "outside_mae_p95": 3.1255441261574073
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 30,
+        "seconds": 0.6057552499696612,
+        "fps": 49.52495253074988,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.10695808345917612,
+          "p95": 0.2605604706273879
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 0.0,
+          "p95": 0.2740748498006723
+        },
+        "service_seconds": {
+          "p50": 0.004384207946714014,
+          "p95": 0.04196088486351071
+        },
+        "cpu_percent_one_core_100": 92.65722654392717,
+        "peak_tree_rss_mb": 403.6875,
+        "detector": {
+          "engine": "unmasked"
+        }
+      },
+      "excluded_unstable_natural_intervals": 11,
+      "natural": {
+        "total": 30,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 4,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic_input_control": {
+        "total": 4,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "outside_mae_p95": 3.1921566297743054
+    }
+  ],
+  "natural": {
+    "hidden": 0,
+    "total": 61,
+    "hidden_fraction": 0.0
+  },
+  "synthetic": {
+    "hidden": 0,
+    "total": 4,
+    "hidden_fraction": 0.0
+  },
+  "masked_area_fraction": {
+    "p50": 0.0,
+    "p95": 0.0
+  },
+  "minimum_clip_fps": 49.52495253074988,
+  "latency_seconds": {
+    "p50": 0.11004733300069347,
+    "p95": 0.2605604706273879
+  },
+  "real_video_pass": true,
+  "sustained": null,
+  "cpu_percent_one_core_100": {
+    "p50": 97.55250174688392,
+    "p95": 101.95824942954499
+  },
+  "peak_tree_rss_mb": 403.6875,
+  "synthetic_input_control": {
+    "total": 4,
+    "unreadable": 0,
+    "unverified_intervals": 0
+  },
+  "gate_1": {
+    "judge_discrimination": true,
+    "natural": false,
+    "synthetic": false,
+    "masked_area": true,
+    "throughput": false,
+    "latency": false,
+    "real_video": true,
+    "eligible": false,
+    "pass": false
+  },
+  "code_sha256": "610ef76c5c80c327ed41e4c9be52489bdc08a486bf02c97ff9e2040dd7ccce2f",
+  "rescore_of": "control-unmasked-calibrated",
+  "evidence_base": "/home/elan/code/irl-shield/out/control-unmasked-calibrated",
+  "measurement_code_sha256": "95495fc74886d1e752ff51205196b3d380197156928a0393c0a53ba4a5459092",
+  "baseline_deltas_pp": {
+    "natural": 0.0,
+    "synthetic": 0.0
+  },
+  "baseline_reference": {
+    "path": "bench/baseline.json",
+    "run_id": "regraded-v4-control-unmasked-calibrated",
+    "sha256": "562af8c08238d973e37c7b239af6d289886db6c207ad48b3e0672cd71f1335af",
+    "natural": {
+      "hidden": 0,
+      "total": 61,
+      "hidden_fraction": 0.0
+    },
+    "synthetic": {
+      "hidden": 0,
+      "total": 4,
+      "hidden_fraction": 0.0
+    }
+  },
+  "rescore_scope": "Unrotated legacy/offline evidence only; no accepted real-time performance claim",
+  "regrade_code_sha256": "6141c74e7569d1dc1f430069bfa269709100074fe7cf372f8260ac4bd55d7756"
+}

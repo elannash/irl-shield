@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+[[ $(uname) == Darwin ]] || { echo 'Use scripts/mac scripts/bench [options]' >&2; exit 1; }
+if [[ ! -x .venv/bin/python ]]; then scripts/setup; fi
+.venv/bin/python fixtures/prepare.py
+.venv/bin/python models/prepare.py
+mkdir -p .build
+swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge
+exec .venv/bin/python -m bench.clocked_bench "$@"

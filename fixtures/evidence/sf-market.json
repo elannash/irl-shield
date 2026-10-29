@@ -1,0 +1,112 @@
+{
+  "pageid": 24404256,
+  "ns": 6,
+  "title": "File:Street traffic.webm",
+  "index": 43,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 26490572,
+      "width": 1920,
+      "height": 1080,
+      "duration": 35.004,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Street_traffic.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Street_traffic.webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=24404256",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2013-02-02 12:30:36",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Street traffic",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "WebM videos|Market Street (San Francisco)|Files from external sources with reviewed licenses|Videos from YouTube|Uploaded with youtube2mediawiki|Videos from San Francisco|Video display resolution 1920 x 1080|Videos of 2011 from the United States|Files with coordinates missing SDC location of creation|Videos of road transport in the United States|Videos of buses",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "GPSLatitude": {
+          "value": "37.794560",
+          "source": "commons-desc-page"
+        },
+        "GPSLongitude": {
+          "value": "-122.394670",
+          "source": "commons-desc-page"
+        },
+        "GPSMapDatum": {
+          "value": "WGS-84",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Street traffic in San Francisco",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2011-05-28",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=_7sCYyxw4Ic\"><bdi lang=\"\">https://www.youtube.com/watch?v=_7sCYyxw4Ic</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=_7sCYyxw4Ic\">archive.org</a></bdi>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.youtube.com/user/Editor\">https://www.youtube.com/user/Editor</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.youtube.com/user/Editor\">https://www.youtube.com/user/Editor</a>",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "7f916030f14d84a65aa92077339f472897915fef"
+    }
+  ]
+}

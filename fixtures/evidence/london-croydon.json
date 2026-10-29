@@ -1,0 +1,112 @@
+{
+  "pageid": 57010654,
+  "ns": 6,
+  "title": "File:Arriva London LJ08CXR in Addiscombe Road, Croydon (February 2016).webm",
+  "index": 23,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 8450015,
+      "width": 1280,
+      "height": 720,
+      "duration": 15.206,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Arriva_London_LJ08CXR_in_Addiscombe_Road%2C_Croydon_%28February_2016%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Arriva_London_LJ08CXR_in_Addiscombe_Road,_Croydon_(February_2016).webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=57010654",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2017-03-11 18:53:01",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Arriva London LJ08CXR in Addiscombe Road, Croydon (February 2016)",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "Media from YouTube|Arriva London|Addiscombe Road, Croydon|Uploaded with videoconvert|T class London buses|License reviewed by YouTubeReviewBot|Files with coordinates missing SDC location of creation (51\u00b0 N, 1\u00b0 W)|London buses on route 466|Videos of buses|Videos of Tramlink",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "GPSLatitude": {
+          "value": "51.375144",
+          "source": "commons-desc-page"
+        },
+        "GPSLongitude": {
+          "value": "-0.084875",
+          "source": "commons-desc-page"
+        },
+        "GPSMapDatum": {
+          "value": "WGS-84",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Arriva London LJ08CXR in Addiscombe Road, Croydon",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2016-02-19",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<a href=\"https://en.wikipedia.org/wiki/Youtube\" class=\"extiw\" title=\"en:Youtube\">Youtube</a> - <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=t9cB_h5Aq5o\">Trams &amp; Buses @ Lebanon Road stop, Croydon, London, U.K.</a>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCtD5g4PorrltoQ-4bRmwacA\">Jontsa73</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCtD5g4PorrltoQ-4bRmwacA\">Jontsa73</a>",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "d5d3365894f51ee2d79251784bc4ba025c7f6e28"
+    }
+  ]
+}

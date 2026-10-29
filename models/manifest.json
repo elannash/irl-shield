@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-29",
+  "registry": {
+    "url": "https://raw.githubusercontent.com/RapidAI/RapidOCR/v3.10.0/python/rapidocr/default_models.yaml",
+    "sha256": "90e0159dead16c21adbf000014a46043c981ae097f041d92d8b19a52c2f2ed9a"
+  },
+  "artifacts": {
+    "ppocr-v5-mobile": {
+      "filename": "ch_PP-OCRv5_det_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_mobile.onnx",
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "conversion": "RapidOCR v3.10.0 ONNX conversion; upstream PaddlePaddle weights",
+      "upstream_model": "PP-OCRv5_mobile_det",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/blob/0d63e78e2b680928f6b1747d76a08db6e645efb7/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/raw/0d63e78e2b680928f6b1747d76a08db6e645efb7/inference.yml",
+      "task": "det",
+      "preprocess": {
+        "channel_order": "BGR",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "scale": "1/255"
+      },
+      "upstream_postprocess": {
+        "name": "DBPostProcess",
+        "thresh": 0.3,
+        "box_thresh": 0.6,
+        "max_candidates": 1000,
+        "unclip_ratio": 1.5
+      },
+      "bytes": 4819576
+    },
+    "ppocr-v5-server": {
+      "filename": "ch_PP-OCRv5_det_server.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_server.onnx",
+      "sha256": "0f8846b1d4bba223a2a2f9d9b44022fbc22cc019051a602b41a7fda9667e4cad",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "conversion": "RapidOCR v3.10.0 ONNX conversion; upstream PaddlePaddle weights",
+      "upstream_model": "PP-OCRv5_server_det",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_server_det/blob/ca867c897ecbca8873081573a802ad70d499cb94/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_server_det/raw/ca867c897ecbca8873081573a802ad70d499cb94/inference.yml",
+      "task": "det",
+      "preprocess": {
+        "channel_order": "BGR",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "scale": "1/255"
+      },
+      "upstream_postprocess": {
+        "name": "DBPostProcess",
+        "thresh": 0.3,
+        "box_thresh": 0.6,
+        "max_candidates": 1000,
+        "unclip_ratio": 1.5
+      },
+      "bytes": 88118768
+    },
+    "ppocr-v5-english-rec": {
+      "filename": "en_PP-OCRv5_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/rec/en_PP-OCRv5_rec_mobile.onnx",
+      "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "conversion": "RapidOCR v3.10.0 ONNX conversion; upstream PaddlePaddle weights",
+      "upstream_model": "en_PP-OCRv5_mobile_rec",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/blob/267c36e24c331595590fe7bd72bde2436fd286f2/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/raw/267c36e24c331595590fe7bd72bde2436fd286f2/inference.yml",
+      "task": "rec",
+      "bytes": 7872351
+    },
+    "ppocr-v6-small": {
+      "filename": "PP-OCRv6_small_det_onnx.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_det_onnx/resolve/28fe5895c24fd108c19eb3e8479f4ab385fbfc62/inference.onnx",
+      "sha256": "d73e0058b7a8086bbd57f3d10b8bcd4ff95363f67e06e2762b5e814fe9c9410e",
+      "bytes": 9880512,
+      "source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_det_onnx/tree/28fe5895c24fd108c19eb3e8479f4ab385fbfc62",
+      "conversion": "Official PaddlePaddle ONNX export",
+      "upstream_model": "PP-OCRv6_small_det",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_det_onnx/blob/28fe5895c24fd108c19eb3e8479f4ab385fbfc62/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_det_onnx/raw/28fe5895c24fd108c19eb3e8479f4ab385fbfc62/inference.yml",
+      "task": "det",
+      "preprocess": {
+        "channel_order": "BGR",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "scale": "1/255"
+      },
+      "upstream_postprocess": {
+        "box_thresh": 0.45,
+        "max_candidates": 3000,
+        "name": "DBPostProcess",
+        "thresh": 0.2,
+        "unclip_ratio": 1.4
+      }
+    },
+    "ppocr-v6-medium": {
+      "filename": "PP-OCRv6_medium_det_onnx.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_det_onnx/resolve/61323801669c338b7891481ec7bac61ce31b576a/inference.onnx",
+      "sha256": "eb13b44b25bb36f89528b68720af8a61d9cf381176107f465db1757b65d086e1",
+      "bytes": 62032837,
+      "source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_det_onnx/tree/61323801669c338b7891481ec7bac61ce31b576a",
+      "conversion": "Official PaddlePaddle ONNX export",
+      "upstream_model": "PP-OCRv6_medium_det",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_det_onnx/blob/61323801669c338b7891481ec7bac61ce31b576a/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_medium_det_onnx/raw/61323801669c338b7891481ec7bac61ce31b576a/inference.yml",
+      "task": "det",
+      "preprocess": {
+        "channel_order": "BGR",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "scale": "1/255"
+      },
+      "upstream_postprocess": {
+        "box_thresh": 0.45,
+        "max_candidates": 3000,
+        "name": "DBPostProcess",
+        "thresh": 0.2,
+        "unclip_ratio": 1.4
+      }
+    },
+    "ppocr-v6-tiny": {
+      "filename": "PP-OCRv6_tiny_det_onnx.onnx",
+      "url": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_onnx/resolve/2ba1506c0380b8f0b03dd142459aac66d4421f6c/inference.onnx",
+      "sha256": "193bab7a04fca699a6c82e6abb5b81bdb28177f0abd4062552b04908dafb19f8",
+      "bytes": 1780590,
+      "source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_onnx/tree/2ba1506c0380b8f0b03dd142459aac66d4421f6c",
+      "conversion": "Official PaddlePaddle ONNX export",
+      "upstream_model": "PP-OCRv6_tiny_det",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_onnx/blob/2ba1506c0380b8f0b03dd142459aac66d4421f6c/README.md",
+      "configuration_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_tiny_det_onnx/raw/2ba1506c0380b8f0b03dd142459aac66d4421f6c/inference.yml",
+      "task": "det",
+      "preprocess": {
+        "channel_order": "BGR",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "scale": "1/255"
+      },
+      "upstream_postprocess": {
+        "box_thresh": 0.4,
+        "max_candidates": 3000,
+        "name": "DBPostProcess",
+        "thresh": 0.2,
+        "unclip_ratio": 1.4
+      }
+    }
+  }
+}

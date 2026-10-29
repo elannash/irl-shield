@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Run the optional CoreML experiment in a private Mac source and Python environment.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+seconds=${1:-720}
+[[ $seconds =~ ^[0-9]+$ ]] || { echo 'usage: scripts/static-probe [probe-seconds]' >&2; exit 2; }
+scratch=/tmp/agents/irl-shield/m1-static-probe
+mkdir -p "$scratch"
+cat > "$scratch/run-probe.sh" <<'REMOTE'
+#!/usr/bin/env bash
+set -euo pipefail
+cd ~/code/irl-shield/.tmp/static-probe
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2
+perl -e 'alarm shift; exec @ARGV' 60 python3.11 -m venv .venv
+perl -e 'alarm shift; exec @ARGV' 180 .venv/bin/python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements-models.txt > install.log 2>&1
+exec perl -e 'alarm shift; exec @ARGV' "$1" .venv/bin/python -u -m bench.static_probe --project-root "$HOME/code/irl-shield" --output-dir results
+REMOTE
+ssh mac 'bash -lc "mkdir -p ~/code/irl-shield/.tmp/static-probe"'
+rsync -azR bench/static_probe.py bench/static_model.py models/__init__.py models/prepare.py models/manifest.json requirements-models.txt mac:code/irl-shield/.tmp/static-probe/
+rsync -az "$scratch/run-probe.sh" mac:code/irl-shield/.tmp/static-probe/run-probe.sh
+printf -v remote 'cd ~/code/irl-shield/.tmp/static-probe && bash ./run-probe.sh %q' "$seconds"
+ssh mac "bash -lc $(printf '%q' "$remote")" 2>&1 | tee "$scratch/run.log"
+rsync -az mac:code/irl-shield/.tmp/static-probe/results/ "$scratch/results/"

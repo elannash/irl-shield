@@ -1,0 +1,99 @@
+{
+  "pageid": 24404148,
+  "ns": 6,
+  "title": "File:Lombard street (the crookedest street).webm",
+  "index": 42,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 30892240,
+      "width": 1920,
+      "height": 1080,
+      "duration": 41.509,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Lombard_street_%28the_crookedest_street%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Lombard_street_(the_crookedest_street).webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=24404148",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2013-02-02 12:23:55",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Lombard street (the crookedest street)",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "Media from YouTube|WebM videos|Files from external sources with reviewed licenses|Uploaded with youtube2mediawiki|Videos from San Francisco|Crooked section of Lombard Street (San Francisco)|Video display resolution 1920 x 1080|Videos of 2011 from the United States",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Shot of Lombard Street, the \"crookedest street\" in San Francisco",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2011-05-28",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=G5bdnYcSdRA\"><bdi lang=\"\">https://www.youtube.com/watch?v=G5bdnYcSdRA</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=G5bdnYcSdRA\">archive.org</a></bdi>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.youtube.com/user/Editor\">https://www.youtube.com/user/Editor</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.youtube.com/user/Editor\">https://www.youtube.com/user/Editor</a>",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "6ce589b726952ac58c700a9268d4dd2c5257bfa5"
+    }
+  ]
+}

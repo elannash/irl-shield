@@ -1,0 +1,5 @@
+# PyAV (BSD-3-Clause); binary wheels bundle FFmpeg (LGPL-2.1-or-later).
+# Existing engine dependencies stay pinned to the M1 versions.
+av==16.0.1
+numpy==2.2.6
+opencv-python-headless==4.11.0.86
