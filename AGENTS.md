@@ -15,6 +15,28 @@ This file adds to `~/.agents/AGENTS.md` and wins where they conflict.
   subagents. Its session ID is the one submitted, so the code is written in
   that thread or its Codex children.
 
+## Hackathon rules (official rules, saved Oct 23 2026)
+
+Every change keeps the entry eligible:
+
+- **Built with Codex, in this window.** Project code is written in this
+  Codex thread or the Codex subagents it spawns, between Oct 23 and Nov 2
+  2026. Libraries, frameworks and models are fine; code from earlier
+  projects or other agents' sessions stays out.
+- **Connects to Twitch and is interactive**: chat, EventSub, the Twitch API,
+  or an overlay.
+- **Runs as shown.** It installs and runs consistently on its stated
+  platform and behaves the way the video and README show.
+- **Free for judges.** The repo holds all source, assets and instructions to
+  run it. No paid service, waitlisted model or expiring backend; model files
+  are bundled or downloaded at setup under a license that allows it.
+- **Authorized third parties.** Every SDK, API, model and dataset is used
+  within its license or terms; record each license where it is introduced.
+- **Clean video assets.** Footage and stills meant for the demo video show no
+  readable third-party brand names or logos and carry no music. Use synthetic
+  labels, street names or house numbers when the "before" view must show text.
+- **English** for code, docs and all submission material.
+
 ## Machines
 
 - The repo lives on elan-linux. Apple Vision, Core Image and VideoToolbox
