@@ -444,7 +444,6 @@ def aggregate_card(card, directory, *, root=None):
     sustained_guards = clock_guards(sustained) if sustained else {'throughput': False, 'latency': False, 'protected': False}
     ceiling = validate_area_ceiling(card.get('area_ceiling'), card.get('area_ceiling_basis'))
     area_configured = ceiling is not None
-    area = card['masked_area_fraction']['p50']
     independence=annotate_card(card)
     card['gate_1'] = {
         'independent_judges': independence['sufficient_independent_engines'],
