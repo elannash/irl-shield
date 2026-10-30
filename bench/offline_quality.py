@@ -24,7 +24,7 @@ import numpy as np
 from shield.engine import MaskingEngine
 from shield.motion import MotionHistory
 from shield.types import Detection, Frame
-from bench.metrics import fidelity, quantiles
+from bench.metrics import fidelity, quantiles, validate_area_ceiling, masked_area_pass
 from bench.scoring import score_records
 from bench.independence import policy_metadata, annotate_card, resolve_fast_candidate
 
@@ -430,7 +430,9 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
     controls = [result['synthetic_input_control'] for result in results if result.get('synthetic_variant')]
     control = {'total': sum(row['total'] for row in controls), 'unreadable': sum(row['unreadable'] for row in controls)}
     card['synthetic_input_control'] = control
-    ceiling = options.get('area_ceiling')
+    ceiling = validate_area_ceiling(options.get('area_ceiling'), options.get('area_ceiling_basis'))
+    card['area_ceiling'] = ceiling
+    card['area_ceiling_basis'] = options.get('area_ceiling_basis') if ceiling is not None else None
     card['quality_checks'] = {
         'independent_judges': independence['sufficient_independent_engines'], 'judge_discrimination': control['total'] > 0 and control['unreadable'] == 0,
         'natural': card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction'] >= .9,
@@ -439,10 +441,10 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
         'protected_aggregate': protected < .02,
         'protected_each_clip': all(row['pass'] for row in clip_protected),
         'real_video': card['real_video_pass'],
-        'masked_area': card['masked_area_fraction']['p50'] <= ceiling if ceiling is not None else None}
+        'masked_area': masked_area_pass(card)}
     card['comparison_valid'] = (card['quality_checks']['independent_judges'] and card['quality_checks']['judge_discrimination']
                                 and card['quality_checks']['protected'] and card['real_video_pass']
-                                and card['quality_checks']['masked_area'] is not False)
+                                and card['quality_checks']['masked_area'] is True)
     card['comparison_notes'] = ('Protected frames must remain below2% both per clip and in aggregate; a protected/slate-heavy result cannot win. '
                                 'Area is reported over ALL raster masks; no tune-derived ceiling is invented.')
     baseline = baseline or {}
@@ -505,8 +507,11 @@ def main(argv=None, judge=None):
             or args.before < 0 or args.after < 0 or Path(args.run_id).name != args.run_id
             or args.run_id in ('.', '..')):
         parser.error('Invalid duration, source window, delay or run ID')
-    if args.area_ceiling is not None and (not math.isfinite(args.area_ceiling) or not 0 <= args.area_ceiling <= 1):
-        parser.error('Area ceiling must be finite and between zero and one')
+    try:
+        validate_area_ceiling(args.area_ceiling, args.area_ceiling_basis,
+                              required=args.area_ceiling is not None)
+    except ValueError as error:
+        parser.error(str(error))
     excluded = {'candidate', 'split', 'clip', 'seconds', 'run_id'}
     options = {key: value for key, value in vars(args).items() if key not in excluded and value is not None}
     _validate_models(args.candidate,options)

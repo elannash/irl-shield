@@ -1,0 +1,538 @@
+{
+  "schema_version": 1,
+  "base_head": "f2f57892b731949d17ce62ba4dcd84d74fb26ab0",
+  "branch": "elannash/q-quality",
+  "work_state": "uncommitted",
+  "findings": [
+    "bundle-area-ceiling-optional-unvalidated",
+    "regrade-still-rederives-fast-default",
+    "bundle-provenance-guards-untested"
+  ],
+  "sources": {
+    "bench/clocked_bench.py": "5494cac89147882283b5c48d72ebe533f02c5249eab9412cceba00ef9a371725",
+    "bench/independence.py": "54b81abba5d96dd1d285c8ff44d82ceb28ea731d5f6e84135be3210a28a804b5",
+    "bench/metrics.py": "ff03496b45217435312aeb38cbcb56e361be9a089e14e6791e28a92355da2d51",
+    "bench/offline_quality.py": "5092cbab2c13fc4742e0ae967e643de2cfb0b3e3e283bbbb80a06db05d60d68e",
+    "bench/quality_bundle.py": "d0351d3dc708222862c11f70a02e0ae002df0ded39ba5dbd50cbfd60faad6036",
+    "bench/regrade.py": "85f1d1d5cac5e463e3b85cf3788a2dac40269d31fb04e74964e0de1098dc7b11",
+    "bench/rescore_independent.py": "7b0c87c30e0010a6386b903cc2e1f469e7a129d2e091f41cd93b5adc0f5a64d8",
+    "tests/test_bounded.py": "b7298c09af2a2749f0baebb660510dfa073a166f718a9ce624495b8428fdaadd",
+    "tests/test_judge_gates.py": "659995510b1f805ee13afcade214689261ab70242567ab44a552f3120410ec6d",
+    "tests/test_quality_bundle.py": "40c4a6ee5a7d6b10246a968785bb71142514dd1b0178c4d69345ed060bbc932a",
+    "tests/test_area_ceiling.py": "196e77fa85b29e43e9c5fa17c3990f8cc67b520d0523ebc38fb8bcdd784b1c6a",
+    "tests/test_bundle_provenance.py": "2605fd8180b244f11cea698a031b7c453ea8b7d6f031cfa7a0208e63598888eb",
+    "tests/test_recorded_family_guards.py": "f8b982e420291209979d62ff63dbc7eef72be47259266ace00c2a1bd8abf7013",
+    "tests/test_retained_rescore_policy.py": "a85f318095e2169cb52732a5e5e9927b39148707f215c6b6d88e044c38de83a0",
+    "docs/Q4-RETAINED.md": "ef453202519dae8cea118bc705749f48f4d0666d5689a7b1264a9df1b092f60b",
+    "docs/Q4-PROVENANCE.md": "084fcf6a4e9dc856c2ba5ad9275282f5fa58ea041b0a854a58093fdf0ff7bd0e",
+    "docs/PR4-R1-FIXES.md": "c771b816b4b1fd47b0fc950ce5588b88fe647b5ffd1231e4f615dc2dc804f976"
+  },
+  "area": {
+    "validator": "bench.metrics.validate_area_ceiling",
+    "guard": "bench.metrics.masked_area_pass",
+    "basis_contract": "Nonblank receipt reference for human review; not a receipt-content verification service.",
+    "q_prepared_basis": "bench/gate-1-policy.json",
+    "q_prepared_basis_sha256": "f9cda20e6c60c29601ee6ddf25ea0d9bd01cbf0d1f9e5ece37b9c0d3039b27ed",
+    "original_bug_red": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-red.log",
+      "sha256": "c87d8658ec2c2b39ebfd5156e365608b9622f6de901bf1200c08389ec561cfc5"
+    },
+    "original_bug_cli_red": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-cli-red.log",
+      "sha256": "e6ce87c660bf0f9075324ce99450cab70783e632e0c23e859d435d4bd2c1b1af"
+    },
+    "original_red_limit": "The first combined CLI-red log has an unrelated offline fixture error. The separate CLI-red log proves both early-rejection cases. The .57/.15 direct builder already rejected over-ceiling; its physical mutation proves verdict sensitivity.",
+    "physical_mutations": [
+      {
+        "case": "required-ceiling",
+        "file": "bench/metrics.py",
+        "command": [
+          "/home/elan/code/irl-shield/models/.venv311/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "test_area_ceiling.AreaCeiling.test_bundle_rejects_missing_percent_negative_nan_and_unbacked_ceilings",
+          "-v"
+        ],
+        "red_exit": 1,
+        "expected_failure": "ValueError not raised",
+        "green_exit": 0,
+        "original_sha256": "ff03496b45217435312aeb38cbcb56e361be9a089e14e6791e28a92355da2d51",
+        "mutant_sha256": "c1ef95cbbdac6b8ea483de43aaf6c13bae4f5962f544cbc7433bc164068abd77",
+        "restored_byte_for_byte": true,
+        "diff": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/required-ceiling.diff",
+          "sha256": "3af7ef7f4d173261eb15fc96b0ad092f1128e536272edc55952ea57ad4bac79a"
+        },
+        "red_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/required-ceiling-red.log",
+          "sha256": "f3e77ec6f3ae93daf91d7e4b4b3e37c0071176c98922a5de4a9cc6e22a35d309"
+        },
+        "green_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/required-ceiling-green.log",
+          "sha256": "7f3d98dea0eeb0322d1646a0cec3ae936e69d5fe0b30b939cc4f53a2bd618de8"
+        }
+      },
+      {
+        "case": "finite-fraction",
+        "file": "bench/metrics.py",
+        "command": [
+          "/home/elan/code/irl-shield/models/.venv311/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "test_area_ceiling.AreaCeiling.test_bundle_rejects_missing_percent_negative_nan_and_unbacked_ceilings",
+          "-v"
+        ],
+        "red_exit": 1,
+        "expected_failure": "ValueError not raised",
+        "green_exit": 0,
+        "original_sha256": "ff03496b45217435312aeb38cbcb56e361be9a089e14e6791e28a92355da2d51",
+        "mutant_sha256": "840877aaca82b145e1bcd20eb5e4a3d144ce0289c52ef3bdeca8916734451259",
+        "restored_byte_for_byte": true,
+        "diff": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/finite-fraction.diff",
+          "sha256": "4d7d6e8e2c37a847f3f1dac6e6e4cb1d5e66df77bc7f18fa162f8d4345ee826a"
+        },
+        "red_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/finite-fraction-red.log",
+          "sha256": "0ce62d9066ad1330e4f609e3e807209bf7ed3581cf085ffdcc617ff0f94adf64"
+        },
+        "green_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/finite-fraction-green.log",
+          "sha256": "9a23dcabeb47a715ff676f2ed30acada313d531aebe9058f4c0607130816c60c"
+        }
+      },
+      {
+        "case": "basis-receipt",
+        "file": "bench/metrics.py",
+        "command": [
+          "/home/elan/code/irl-shield/models/.venv311/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "test_area_ceiling.AreaCeiling.test_bundle_rejects_missing_percent_negative_nan_and_unbacked_ceilings",
+          "-v"
+        ],
+        "red_exit": 1,
+        "expected_failure": "ValueError not raised",
+        "green_exit": 0,
+        "original_sha256": "ff03496b45217435312aeb38cbcb56e361be9a089e14e6791e28a92355da2d51",
+        "mutant_sha256": "9e9e0564ff82c41c8b31bba15fcc75e1f694483a0efb015ed594af13781ce303",
+        "restored_byte_for_byte": true,
+        "diff": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/basis-receipt.diff",
+          "sha256": "765435f3ed61c1d4e72ab9c04e33dc7fb22af911f33c73e43171e712fb39af4f"
+        },
+        "red_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/basis-receipt-red.log",
+          "sha256": "bbb567d112f810774b479a19061d688bf59fe6b1b3572754816dd4383287da67"
+        },
+        "green_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/basis-receipt-green.log",
+          "sha256": "63c3d7da6e6fd0ff83c20a59f1a57f33b9c9b2f6b95b2c7e2aa00d46c6f5d8ca"
+        }
+      },
+      {
+        "case": "verify-requires-area",
+        "file": "bench/quality_bundle.py",
+        "command": [
+          "/home/elan/code/irl-shield/models/.venv311/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "test_area_ceiling.AreaCeiling.test_verify_and_grade_reject_unconfigured_or_invalid_sealed_options",
+          "-v"
+        ],
+        "red_exit": 1,
+        "expected_failure": "ValueError not raised",
+        "green_exit": 0,
+        "original_sha256": "d0351d3dc708222862c11f70a02e0ae002df0ded39ba5dbd50cbfd60faad6036",
+        "mutant_sha256": "08389e150fb0819ff8891bc4ac22ce73f7714dd1e89a6463a06dd8d7c8b26ae4",
+        "restored_byte_for_byte": true,
+        "diff": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/verify-requires-area.diff",
+          "sha256": "1a3387c1bf284554bea93140beee1f7825ac938cc65af4c04189493d894d8b9d"
+        },
+        "red_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/verify-requires-area-red.log",
+          "sha256": "f7ffe8fa24a997bcf15a4bce84cd206a3a5c6cee08368a381f3e186d092d5f67"
+        },
+        "green_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/verify-requires-area-green.log",
+          "sha256": "d64ad0266526a492aac95af58b931a68a1dc66a97b0a0713a940f1e42225dfd4"
+        }
+      },
+      {
+        "case": "over-ceiling-verdict",
+        "file": "bench/offline_quality.py",
+        "command": [
+          "/home/elan/code/irl-shield/models/.venv311/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "test_area_ceiling.AreaCeiling.test_valid_ceiling_still_rejects_an_over_ceiling_median",
+          "-v"
+        ],
+        "red_exit": 1,
+        "expected_failure": "True is not False",
+        "green_exit": 0,
+        "original_sha256": "5092cbab2c13fc4742e0ae967e643de2cfb0b3e3e283bbbb80a06db05d60d68e",
+        "mutant_sha256": "862ac4ab112bbc766e2ded602f45c37809304c1cdb61d735f802c0e1ea668564",
+        "restored_byte_for_byte": true,
+        "diff": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/over-ceiling-verdict.diff",
+          "sha256": "7fcbf957f23862bd4374c14bdafd50f126fd8ce8fad126eea45268ef569d22cf"
+        },
+        "red_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/over-ceiling-verdict-red.log",
+          "sha256": "84debd43f60c276c6c312c42d5fe343c0daa16f2ec2904d9497d711bdf822e96"
+        },
+        "green_log": {
+          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-area-proof-final/over-ceiling-verdict-green.log",
+          "sha256": "e9b868eb3f395a78b43ab1319996b23c8c817981b54a668d00a9dff0ceecff45"
+        }
+      }
+    ]
+  },
+  "retained": {
+    "mutation": {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/out/proof/final-mutation-proof.json",
+      "sha256": "58ddd4e438ef315941200b6ce950e1198ae4f95b6b67bf790164eb2519654a4c"
+    },
+    "original_bug_red": {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/out/proof/15-final-original-bug-mutation-red.log",
+      "sha256": "015f6ac296fbebad76637af49f42f4a245e1f6579c829cc11e2c91edd4963c6f"
+    },
+    "restored_green": {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/out/proof/16-final-restored-green.log",
+      "sha256": "79da7e6c23cebca4d6137088befccb3a1edf4295895e61f777bacb49779767c9"
+    },
+    "historical_provenance_inventory": {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/out/retained-history.json",
+      "sha256": "c3463b76b88361f590a9f7afb3c09dde48d366e4371de9add0a1ef07846ad5fe"
+    },
+    "unsupported_source_cards": 12,
+    "inventoried_source_cards": 14,
+    "history_changed": false,
+    "integration": "Both regraders additionally revalidate the area ceiling, basis and median. Existing inherited area guard must remain true."
+  },
+  "provenance": {
+    "base": "f2f57892b731949d17ce62ba4dcd84d74fb26ab0",
+    "guards": [
+      {
+        "guard": "pre-ocr-source",
+        "test": "test_bundle_provenance.BundleProvenance.test_source_identity_mismatch_rejects_before_any_ocr",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "7c8556a9e31792a299fe339988667f36e5de115f6b21fc71ec26418a92e09189",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/pre-ocr-source.diff",
+          "sha256": "c2f0c4f4ee026a4e0c214dea075f5ab7159ad23397be994d73b055efe24dd1c4"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-01-pre-ocr-source-red.json",
+          "sha256": "e2e249502016309a5d7b253abde3c39c77f2558bf95eba2ae51b4d6e1a239265"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-01-pre-ocr-source-restored-green.json",
+          "sha256": "d0dd1551af959f205051b543fc9cf4853f61b9e7a70e63eeca4aa83277515e51"
+        }
+      },
+      {
+        "guard": "post-ocr-source",
+        "test": "test_bundle_provenance.BundleProvenance.test_source_identity_change_during_ocr_never_writes_a_grade",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "17ec2c5a68cdf93575787f14c5e04072e93e19d3869b323a9995760fcea0674d",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/post-ocr-source.diff",
+          "sha256": "f238752b867d5a1334ca19ac34e98267ebd5e3ad10da9959a146dc2c2be4d48d"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-02-post-ocr-source-red.json",
+          "sha256": "e49a122c87f8932cc2ac8eee5974f304ba4dbc22ab4b732ccf930ce6937e32f4"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-02-post-ocr-source-restored-green.json",
+          "sha256": "8a06f1377a1ab2d6d51584360e24d70e49338895f85ddf9e6139d7b5f0f72bd9"
+        }
+      },
+      {
+        "guard": "grade-sha",
+        "test": "test_bundle_provenance.BundleProvenance.test_aggregate_rejects_changed_grade_evidence_and_bundle_bindings",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "f4a54bdd35aa74394d4ed2dba1f826a8197ad86fe864be1273ad87b159ce318a",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/grade-sha.diff",
+          "sha256": "41368f4353c2babb87c2df9c44577275a4501e97980345b11b0e1ba1fee1d96b"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-03-grade-sha-red.json",
+          "sha256": "4f1c65593526eac6ea050acdface8734fe58afd5fa3fb9f9b53f8840e8d42111"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-03-grade-sha-restored-green.json",
+          "sha256": "7d2c7ed5946429f7c2297c49c9d1a96624f559e0bb1ce627a9220331ddc10981"
+        }
+      },
+      {
+        "guard": "evidence-sha",
+        "test": "test_bundle_provenance.BundleProvenance.test_aggregate_rejects_changed_grade_evidence_and_bundle_bindings",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "dd3bf02ac900c5139a969689af694bab3f6aa97b9ad5865c14b3107f9b851cc0",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/evidence-sha.diff",
+          "sha256": "37dab7ca154b100e04638357ad5e04142cb0429e964b43d83661740b5b84e189"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-04-evidence-sha-red.json",
+          "sha256": "9a104498a281a18de69dd562ecfb0ba4c3c94640c9e3ad2b3abee86c80692353"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-04-evidence-sha-restored-green.json",
+          "sha256": "37f6356be24de6479974ca7b288938fa0324b34e5fcea7032612c41892aade3b"
+        }
+      },
+      {
+        "guard": "bundle-binding-sha",
+        "test": "test_bundle_provenance.BundleProvenance.test_aggregate_rejects_changed_grade_evidence_and_bundle_bindings",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "a34e97a8cd6c6e4bcb4fb2f531b5353d7f1d1292601bde4d05950873af9784d8",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/bundle-binding-sha.diff",
+          "sha256": "173ab0e42f5a71fe627e8e9f7c0d79ab892b6b739d5b10c18c8ad445d3e0bce4"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-05-bundle-binding-sha-red.json",
+          "sha256": "4f33b029ae36c30f74e0956afaf51d768b74b3e6c8700efbf329135d7097ce78"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-05-bundle-binding-sha-restored-green.json",
+          "sha256": "b7879526cb4f9526fc37557d3392c2ba0cee489f51aa346f7f4efbfd3312e339"
+        }
+      },
+      {
+        "guard": "artifact-confinement",
+        "test": "test_bundle_provenance.BundleProvenance.test_verify_rejects_absolute_parent_and_symlink_artifact_escapes",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "a5b86de578d3359840ad41983a79f1b4b9656e6ae287498327345464fd4590a2",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/artifact-confinement.diff",
+          "sha256": "229e6a8eafce27c5178dfe8e78cb796ee8992358e989f96fdd2e6a7ba02d6fd2"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-06-artifact-confinement-red.json",
+          "sha256": "f1366b2fa5853631241a8233ba195e71e5234cf10f60202d21346e64102fe9ef"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-06-artifact-confinement-restored-green.json",
+          "sha256": "b491a6b1407bcd9be3483a33f12a58e1df22215e88585294d5ebac2796c0ee76"
+        }
+      },
+      {
+        "guard": "recorded-families",
+        "test": "test_recorded_family_guards.RecordedFamilyGuards.test_recorded_family_mismatch_is_rejected_in_each_lane",
+        "child_base_source_sha256": "111d5f189068d77e4e33ea9117f301a48f696bb08951439d90e83005bcddbac8",
+        "mutant_sha256": "fdc4bd5b15b1a6153f7c240e03205ec867ab9b2bd5ea4448d3e869a5e68bfee3",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/recorded-families.diff",
+          "sha256": "7ffd35204cea51bf4beeec276fee9a7ea0d5be1cd664f1431ed147f98ec5feda"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-07-recorded-families-red.json",
+          "sha256": "3ca4b52ac3bbf78914525136cac31f94416b457b84aad9ef741c5f7d0edbe974"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-07-recorded-families-restored-green.json",
+          "sha256": "1e5bf4384272e92ad820d880efd21f005b45f2394f29b734b7da9226e29fcf92"
+        }
+      },
+      {
+        "guard": "recorded-accurate",
+        "test": "test_recorded_family_guards.RecordedFamilyGuards.test_missing_recorded_accurate_lane_cannot_receive_policy_metadata",
+        "child_base_source_sha256": "111d5f189068d77e4e33ea9117f301a48f696bb08951439d90e83005bcddbac8",
+        "mutant_sha256": "f67c8584df6de5bad2a6fd67c609320f3d9559aa69f92f16e2e9dad12877c9e2",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/recorded-accurate.diff",
+          "sha256": "a1197504a52329b5c7c37a505eb56efde0592fddd0b7e3ef07bdc0d7f128f8de"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-08-recorded-accurate-red.json",
+          "sha256": "28a1d3e36af5843e0eeabff57cbc48af6e2a924a731aac1ec28e726df573bc5b"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-08-recorded-accurate-restored-green.json",
+          "sha256": "c6b38b8237c8d037d8000f649652333bd23970fc00aa647b70bfd842de7fdeb3"
+        }
+      },
+      {
+        "guard": "frozen-input-manifest",
+        "test": "test_bundle_provenance.BundleProvenance.test_verify_rejects_resealed_artifact_that_rebinds_frozen_manifest",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "8659c96cd46d6acb3ba94dca7e432e7e3a39efe19ad11e94df394a16256c7751",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/frozen-input-manifest.diff",
+          "sha256": "4d6aeec68a2a6fc5342f0ee8ae8680d7dc7ca3603fd6d971a3115ccf3147c510"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-09-frozen-input-manifest-red.json",
+          "sha256": "26b283d471684acc574e98d19f75cd90bc19f689b556dc67a96348afd404e8dc"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-09-frozen-input-manifest-restored-green.json",
+          "sha256": "4668263cc970d6390734cb4b019b2af0a316a9d0e69427165282ce26fb503dba"
+        }
+      },
+      {
+        "guard": "copied-input-binding",
+        "test": "test_bundle_provenance.BundleProvenance.test_verify_rejects_resealed_copied_source_and_truth_rebinding",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "438bcd02384ccc56e0ce7b80241c62c6ab9c1f4a10239c623a06c896645f9de9",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 0,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/copied-input-binding.diff",
+          "sha256": "90b8e61d67c9bfd3a877ffbabd2da74c8a84d8fbc07658c7b99d3dd0714461ef"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-10-copied-input-binding-red.json",
+          "sha256": "26490a394ead7996cb9803a6b2ea4d6161192d23818bc9d75ba0162291c3061e"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-10-copied-input-binding-restored-green.json",
+          "sha256": "503a412ff4d878c8f99f5e0f2f2ea4a8fa6bac81f64c4b884fb805417a8cacf1"
+        }
+      },
+      {
+        "guard": "grade-plan-policy",
+        "test": "test_bundle_provenance.BundleProvenance.test_uniformly_resealed_grade_policy_cannot_replace_rendered_policy",
+        "child_base_source_sha256": "9adb5d1eab18030723294113857908fd2058bceb2e8f7341468a6138170e72c2",
+        "mutant_sha256": "5802031520dc876fe083be992d2894cfe6f52c46318e7c51b799278105f8c271",
+        "red_exit": 1,
+        "restored_byte_for_byte": true,
+        "restored_receipt_exit": 1,
+        "named_test_green": true,
+        "diff": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/grade-plan-policy.diff",
+          "sha256": "b1945db1ffcdffe3105ed9aeace425ec5abbde90a269c0e26b786836b367690e"
+        },
+        "red_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/mut-11-grade-plan-policy-red.json",
+          "sha256": "07dc4ca84d6580e410c0c484b763830e9e775b42a7600df1b6ab5891ef129b8f"
+        },
+        "restored_receipt": {
+          "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/24-linux-functional-restored-green.json",
+          "sha256": "dc871528cae1a798c730bf88b98535ffa44e20de883b1bffc9a30558fd2b2bce"
+        }
+      }
+    ],
+    "focused_restored_green": 10,
+    "one_named_test_green_in_failed_child_suite": true,
+    "child_full_gate": {
+      "main": 147,
+      "relay": 3,
+      "skipped": 1,
+      "failures": 1,
+      "failure": "Existing controlled-child startup race in tests/test_bounded.py"
+    },
+    "integration_limit": "Mutations belong to the child base. Root changed area validation and fixtures afterward; integrated gates run the final source. Ignored proof files were not copied to root."
+  },
+  "bounded_fixture": {
+    "old_source_sha256": "fdf925aac099450da3c7ca27a2c1864becbdd14a0056751e0d85282808ac6d0b",
+    "fixed_source_sha256": "b7298c09af2a2749f0baebb660510dfa073a166f718a9ce624495b8428fdaadd",
+    "injected_startup_delay_seconds": 1.0,
+    "old_red": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/bounded-startup-proof/old.json",
+      "sha256": "72e9fdbf2740109e0038b27bb93911b034b4594263d0f8ade128fcd34d978716"
+    },
+    "new_green": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/bounded-startup-proof/new.json",
+      "sha256": "e59a81a8b5f6bae6695a823f5c42787f86199a7c9c66418176b9b85d6637fca8"
+    },
+    "old_red_log": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/bounded-startup-proof/old.log",
+      "sha256": "1d08a35b2f5da671895a27f61392bb2a405fa8b757324dfd9be28f9dbe995def"
+    },
+    "new_green_log": {
+      "path": "/home/elan/code/irl-shield/.tmp/q/bounded-startup-proof/new.log",
+      "sha256": "59d0ef8ff42149f6ca62540c05add42c3c3e18f83c6c95622fac57a20a7497ab"
+    },
+    "production_changed": false
+  },
+  "gates": {
+    "linux": {
+      "exit": 0,
+      "status": "passed",
+      "test_counts": [
+        159,
+        3
+      ],
+      "log": {
+        "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r1-linux-full-gate.log",
+        "sha256": "793e0613bd39827e62b4eee506a8105b8b5904c2e427fc8eac39cbf018ab38e2"
+      },
+      "compilation": true,
+      "command": "models/.venv311/bin/python -B -m unittest discover -s tests -v; then tests/m2; then compileall -q -x /\\.venv bench fixtures models shield relay (set -e, shared host lock, nice 10, agent slice, existing PyAV site-packages)"
+    },
+    "mac": {
+      "exit": 0,
+      "status": "passed",
+      "test_counts": [
+        159,
+        3
+      ],
+      "log": {
+        "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r1-mac-full-gate.log",
+        "sha256": "ba890efa777e3c132d8baa5a32951e2447926e3fb0c1c4b0e946f651a14ce9f7"
+      },
+      "compilation": true,
+      "swift_build": true,
+      "mirror": "~/code/irl-shield-q-quality",
+      "command": "bash .tmp/q/mac-quality scripts/check"
+    }
+  },
+  "mac_source_parity": {
+    "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r1-mac-source-parity.json",
+    "sha256": "d56946a7f108ed8df3b89b22e9a5dbf799a0a928dba108a262f5af67ddccb6ea"
+  },
+  "scope": "Synthetic functional and mutation proof only. No fresh Q corpus score, OCR, detector inference or performance qualification. Q remains held until PR4 merges.",
+  "installs": [],
+  "retained_processes": "Existing authorized perf runners only; no new long-running process from this fix set."
+}

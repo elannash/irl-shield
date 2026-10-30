@@ -61,6 +61,21 @@ def policy_metadata(candidate, options):
                                                        for family in lane['detector_families']})}
 
 
+def retained_policy_metadata(card):
+    """Validate retained provenance without inventing an unrecorded fast lane."""
+    candidate, options = card['candidate'], card.get('options', {})
+    if ('detector_metadata' not in card and candidate not in ('unmasked', 'slate')
+            and 'fast_candidate' not in options):
+        raise ValueError('Retained scorecard needs recorded detector_metadata or an explicit options.fast_candidate')
+    declared = policy_metadata(candidate, options)
+    if 'detector_metadata' in card:
+        recorded = card['detector_metadata']
+        if recorded != declared:
+            raise ValueError('Retained scorecard recorded detector_metadata differs from the declared registry policy')
+        return recorded
+    return declared
+
+
 def _validated_families(detector_families):
     families = set(detector_families)
     declared = {meta['family'] for meta in JUDGE_METADATA.values()}

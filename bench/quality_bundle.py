@@ -52,6 +52,7 @@ def checked_file(directory, name):
 
 
 def verify(directory):
+    from bench.metrics import validate_area_ceiling
     directory = Path(directory)
     path = directory / 'bundle.json'
     if digest(path) != (directory / 'bundle.sha256').read_text().strip():
@@ -59,6 +60,7 @@ def verify(directory):
     plan = json.loads(path.read_text())
     if plan['status'] != 'awaiting-judging' or plan['schema_version'] != 2:
         raise ValueError('Unsupported quality bundle')
+    validate_area_ceiling(plan['options'].get('area_ceiling'), plan['options'].get('area_ceiling_basis'), required=True)
     for name, identity in plan['artifacts'].items():
         artifact = checked_file(directory, name)
         if artifact.stat().st_size != identity['bytes'] or digest(artifact) != identity['sha256']:
@@ -102,6 +104,7 @@ def render(root, inputs, config, directory, clip, synthetic):
     row = next(r for r in data['clips'] if (r['clip'], r['synthetic_variant']) == (clip, synthetic))
     config = json.loads(Path(config).read_text())
     candidate, options = config['candidate'], dict(config['options'])
+    quality.validate_area_ceiling(options.get('area_ceiling'), options.get('area_ceiling_basis'), required=True)
     from bench.independence import policy_metadata
     policy_metadata(candidate, options)
     source_original, truth_original = Path(row['source']), Path(row['truth'])
@@ -308,6 +311,7 @@ def main():
         with clip_lease(args.lock_root, 'mac' if platform.system() == 'Darwin' else 'linux'):
             raise SystemExit(subprocess.run(command, cwd=args.root).returncode)
     else:
+        modules(args.root)
         result = verify(args.directory)
     print(json.dumps({'action': args.action, 'directory': str(args.directory),
                       'status': result.get('status', 'graded'),

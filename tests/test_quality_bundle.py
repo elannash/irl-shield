@@ -66,7 +66,8 @@ class QualityBundle(unittest.TestCase):
             'fast_candidate': 'ppocr-v6-tiny', 'encoder': 'libx264',
             'fast_rate_hz': 10., 'accurate_rate_hz': 10., 'fast_width': 0, 'accurate_width': 0,
             'delay_seconds': .2, 'before': 6, 'after': 2, 'padding': 0.,
-            'motion_mode': 'phase', 'area_ceiling': .01}})
+            'motion_mode': 'phase', 'area_ceiling': .01,
+            'area_ceiling_basis': 'unit:sealed-known-mask-pixels'}})
 
     def render(self, directory, clip=None, synthetic=False, *, inputs=None):
         with patch('bench.pipeline.detector_for', side_effect=lambda *args: Detector()):
