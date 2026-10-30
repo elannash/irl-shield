@@ -35,6 +35,13 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
     root, dataset, policy, directory = map(Path, (root, dataset, policy, directory))
     if bundle.digest(dataset) != dataset_sha256 or bundle.digest(policy) != policy_sha256:
         raise ValueError('Frozen dataset or policy SHA-256 differs')
+    # Tracked scorecards retain spent state when scratch markers are absent.
+    tracked = subprocess.check_output(
+        ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True)
+    for name in filter(None, tracked.split('\0')):
+        result = json.loads((CODE_ROOT / name).read_text())
+        if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
+            raise ValueError('Heldout dataset already spent by tracked result: ' + name)
     commit = subprocess.check_output(['git', '-C', str(CODE_ROOT), 'rev-parse', 'HEAD'], text=True).strip()
     if policy_commit != commit:
         raise ValueError('Final policy commit must equal the executing source checkout HEAD')

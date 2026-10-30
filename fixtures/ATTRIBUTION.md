@@ -31,6 +31,20 @@ No music is included in prepared clips.
 source resolution, excerpt position, output dimensions, frame rate and duration.
 Originals and prepared clips are generated cache files, excluded from Git.
 
+## Fresh heldout sources
+
+These three sources and all derived clips are **benchmark-only**, with audio
+removed and no music. None is demo-ready; they must not appear in the submission
+video. Full revisions, attribution requirements and modifications are recorded
+in [fresh-heldout attribution](fresh-heldout/ATTRIBUTION.md) and its frozen
+[manifest](fresh-heldout/manifest.json).
+
+| ID / split | Original and author | License |
+| --- | --- | --- |
+| `zurich-spiegelgasse` / fresh heldout | [Spiegelgasse.ogv](https://commons.wikimedia.org/wiki/File:Spiegelgasse.ogv), [Albinfo](https://commons.wikimedia.org/wiki/User:Albinfo), own work | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| `chicago-wells` / fresh heldout | [New Wells Street bridge.webm](https://commons.wikimedia.org/wiki/File:New_Wells_Street_bridge.webm), [Steven Vance](https://vimeo.com/stevevance), from [Vimeo 80050981](https://vimeo.com/80050981) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `manchester-portland` / fresh heldout | [Portland Street, Manchester, May 2017.webm](https://commons.wikimedia.org/wiki/File:Portland_Street,_Manchester,_May_2017.webm), [Anders Hansson](https://vimeo.com/nders), from [Vimeo 216535229](https://vimeo.com/216535229) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+
 ## Fonts
 
 The bundled, unmodified DejaVu Sans Bold, DejaVu Sans Mono Bold and DejaVu Serif

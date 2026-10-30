@@ -1,12 +1,20 @@
 # Fresh Q heldout preparation and one-shot evaluation
 
-This dataset is frozen and **ungraded**. It contains the three preferred new
-Commons sources, each with a natural and synthetic variant. It is separate
-from the existing seven tune clips and old three heldouts. No detector, OCR
-judge, masking evaluation or score selection was run on these new clips.
-The assets are benchmark-only and never demo-ready.
+This dataset is **spent**: it was rendered once on Linux and OCR-graded once
+on the Mac. The [one-shot result](Q-FRESH-HELDOUT-RESULT.md) and
+[tracked scorecard](../bench/results/q-fresh-heldout-once.json) record that
+Gate 1 did not pass. No policy was tuned from the result. The three Commons
+sources each have a natural and synthetic variant, separate from the existing
+seven tune clips and old three heldouts. The assets remain benchmark-only and
+are never demo-ready. No further heldout render or grade is permitted.
 
-Preparation fixes the 2.000–7.000s excerpt and seed before any image inspection.
+The manifest retains its original `frozen-ungraded` status to preserve its
+frozen bytes and identity; that field describes the preparation snapshot,
+not the dataset's current evaluation status. `start()` checks tracked
+`bench/results/*.json` for a matching `heldout_freeze.dataset_sha256` before
+creating any marker or output, so removing scratch does not reset spent state.
+
+Preparation fixed the 2.000–7.000 s excerpt and seed before any image inspection.
 Seeds are the big-endian integer of the first four SHA-256 bytes of
 `fresh-heldout-v1:` followed by the clip ID:
 
@@ -38,27 +46,29 @@ and label styles/positions, and the same optical-flow camera tracking recipe
 as `bench.run.variant`. This is fixture generation, without privacy detection.
 Its truth records every frame's exact strings, ink quads, visibility, stable IDs
 and boxes. The natural variant has 150 empty arrays of **synthetic** truth;
-natural text truth can only come from the later independent judges.
+natural text truth in the completed evaluation came from independent judges.
 
-Selection used documented source scenes and technical validity only. No frames
-were shown to a human, OCR engine or privacy detector. Actual text density,
-camera motion suitability and natural readability remain unverified. No backup
+Selection used documented source scenes and technical validity only. Before
+freeze, no frames were shown to a human, OCR engine or privacy detector. The
+completed evaluation now records OCR-observed text and readability; real-world
+privacy coverage and camera motion suitability remain unverified. No backup
 was substituted. The first download script assigned two IDs by API page order;
 the mapping was corrected by exact title, checked against the specified original
 hashes, and all final derivatives were made afterward. A backup original fetched
 by that mistake was removed and is outside the freeze.
 
-## Reproduce preparation or transfer the freeze
+## Historical preparation and frozen cache
 
 The cache under `fixtures/cache/fresh-heldout/` is gitignored and remains live.
 The conductor can read it directly with `--cache-root`; copying media into the
 root checkout is unnecessary. Transfer it intact only if another host needs it. Source, output, truth and preparation receipts
 are hash-bound. Re-encoding on another GPU/FFmpeg build may produce different
 bytes: never update the frozen manifest to accept them. Transfer the frozen
-cache for the final evaluation instead.
+cache for retained evidence instead. The one-shot evaluation is already spent.
 
-On Linux, with an empty destination cache and the existing public media downloads
-authorized, repeat **one clip per root quality lease**:
+During preparation on Linux, the worker used an empty destination cache and
+existing public media downloads, **one clip per root quality lease**. This is
+a historical command record, not an instruction to recreate the spent set:
 
 ```bash
 q_root=/home/elan/code/irl-shield
@@ -77,111 +87,83 @@ initial preparation only, the separate `freeze --plan PLAN --output NEW_FILE`
 action assembles already verified receipts, using exclusive creation. It runs
 no detectors or judges. No new packages or models were installed.
 
-## Conductor's final evaluation — not executed by this worker
+## Completed one-shot evaluation — historical record
 
-First finish **all a8 tune judging and aggregation**. Only then integrate this
-patch: changing `bench/quality_bundle.py` changes its recorded orchestrator SHA
-and would invalidate in-progress a8 grades. Its default dataset remains the
-same exact seven tune pairs / fourteen entries, with the same scoring code.
-The explicit `dataset=` path adds the new three-source/six-pair contract.
+Tune judging and aggregation finished before the evaluator was integrated.
+The default tune dataset remained the same seven pairs / fourteen entries;
+the explicit `dataset=` path selected the three-source/six-pair frozen set.
+No guard-valid tune winner was found, so the unchanged B6 diagnostic fallback
+was frozen in [q-final-policy.json](../bench/q-final-policy.json).
 
-Freeze the winning policy JSON `{ "candidate": ..., "options": ... }` and
-commit the final executing source. Record that commit and the policy file's
-SHA-256. Require a clean source checkout for the handoff; the command checks
-that the supplied policy commit equals checkout HEAD and binds the actual
-executed source/helper bytes separately. No family overrides are supported;
-finite area ceiling in [0,1] and its explicit basis are mandatory.
+The executed source was `26c8db18624731eaf92168e69aa97ddad31abd17`.
+The policy SHA-256 was
+`dcbc96c88b0a3c1545a5a04c668446eee1afeb730e901179ffc78063cb91ad5f`;
+the dataset SHA-256 was the unchanged `46a4461c…` value above. The command
+checked the supplied policy commit against checkout HEAD and bound actual
+source/helper bytes separately. No family override was used. The finite area
+ceiling and its explicit basis were part of the frozen policy.
 
-The command has two physical stages because the policy runs on Linux CUDA and
-Apple Vision judging runs on Mac. They are one evaluation with one frozen
-identity. `render` spends a dataset-local `EVALUATION.started.json` using
-`O_EXCL` **before** any detector work. A different output directory cannot reset
-it when the same retained state directory is used. With `--cache-root`, a
-separate `--state-directory` is required, so no marker is written to the read-only
-asset cache. Keep that state directory fixed for this dataset. `grade` spends the transferred corpus's `JUDGING.started.json` before OCR.
-Failure after either start is reported as `partial-failed`; do not delete the
-marker or repeat the physical attempt. Preflight failures do not spend it.
-An interrupt/power loss can leave a `rendering`/`judging` state and spent marker;
-that is incomplete evidence, never permission to rerun or claim a pass.
-These are accidental-repeat guards on the retained cache/corpus, not a global
-service preventing an operator from deliberately copying an unspent cache.
+The two physical stages formed one evaluation. Linux ran the
+`bench.heldout_bench render` entry point with a read-only cache override at
+`/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/cache/fresh-heldout`
+and writable state at `.tmp/q/fresh-heldout-once-state/`. It spent the
+`46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad.started.json`
+marker before rendering into `out/q-fresh-heldout-once/`. The root launch
+script is retained at `.tmp/q/render-heldout-once.sh`; terminal output is in
+`fresh-heldout-render.log`. The existing GPU environment, private CUDA
+libraries, two native threads, owned CUDA cache, nice 10 and agent slice were
+used. The runner took quality EX and canonical perf SH leases per clip.
 
-Use the existing root GPU environment, native thread caps of 2, private CUDA
-libraries, an owned writable CUDA cache, nice10 and the agent slice. The runner
-itself takes the root quality EX and canonical perf SH leases **per clip**.
-Do not put the whole command inside `q-run exec` or `host-lock`: that would nest
-the same exclusive quality lease. Queued timed jobs take precedence.
-For example, from the final Linux checkout with its root GPU environment set:
+The whole sealed corpus and executing sources were transferred to the Mac.
+The `bench.heldout_bench grade` entry point used the existing Tesseract,
+Vision and PP recognition installations and `.tmp/fresh-heldout/judge-cache`.
+It spent the corpus's `JUDGING.started.json` before OCR. The grade log is
+retained at `fresh-heldout-grade.log`; `evaluation.json` finished as `complete`.
+Both physical stages are spent. Neither marker may be deleted to retry a stage.
+A different output directory or cleaned scratch does not create another
+attempt: the tracked result now also makes `start()` refuse this dataset.
 
-```bash
-# Freeze these values from the reviewed policy and input snapshot beforehand.
-# DATASET_SHA256 is also recorded in out/fresh-heldout/handback.json.
-q_root=/home/elan/code/irl-shield
-q_python="$q_root/.tmp/linux-probe/.venv/bin/python"
-export OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2
-export VECLIB_MAXIMUM_THREADS=2 CUDA_CACHE_PATH="$PWD/.tmp/fresh-heldout/cuda-cache"
-mkdir -p "$CUDA_CACHE_PATH"
-q_libraries=()
-for directory in "$q_root/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia"/*/lib; do
-  [[ -d "$directory" ]] && q_libraries+=("$directory")
-done
-export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${q_libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
-  "$q_python" "$q_root/scripts/bounded.py" 1800 \
-  "$q_python" -m bench.heldout_bench --root "$PWD" --lock-root "$q_root" render \
-  --dataset fixtures/fresh-heldout/manifest.json --dataset-sha256 "$DATASET_SHA256" \
-  --cache-root /home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/cache/fresh-heldout \
-  --state-directory "$q_root/.tmp/q/fresh-heldout-once-state" \
-  --policy "$POLICY_FILE" --policy-sha256 "$POLICY_SHA256" \
-  --policy-commit "$POLICY_COMMIT" --directory out/q-fresh-heldout-once
-```
+`O_EXCL` markers protect in-progress attempts, including a kill before the
+first clip's state rewrite. Failure after a stage starts is incomplete evidence,
+not permission to repeat it. Preflight failures create no marker. The tracked
+scorecard preserves completed spent state across scratch cleanup and checkouts
+that contain that result; this is not a global service against deliberate
+removal of the tracked record.
 
-Transfer the **whole** `out/q-fresh-heldout-once` directory unchanged and the same
-executing sources to the Mac. The Mac needs the existing Tesseract, Vision and
-PP recognition installations. It does not need the original Linux cache for
-judging. From that Mac checkout, set `q_root` to its canonical serialization
-checkout and use its existing Python:
-
-```bash
-nice -n 10 "$q_root/.venv/bin/python" "$q_root/scripts/bounded.py" 1800 \
-  "$q_root/.venv/bin/python" -m bench.heldout_bench \
-  --root "$PWD" --lock-root "$q_root" grade \
-  --directory out/q-fresh-heldout-once --cache .tmp/fresh-heldout/judge-cache
-```
-
-No command here grants an additional heldout attempt. The owner already
-reserved the final one-shot evaluation for the conductor after policy freeze.
-No approval prompt or token is added.
-
-Each clip uses the existing `render_offline`, `_score_saved` and
-`build_scorecard` paths. Natural truth and synthetic input controls exclude all
-registry-declared detector families; **all output judges** count credible leaks.
-Source identity is checked before and after OCR. The aggregate requires all six
+Each clip used the existing `render_offline`, `_score_saved` and
+`build_scorecard` paths. Natural truth and synthetic input controls excluded
+registry-declared detector families; all output judges counted credible leaks.
+Source identity was checked before and after OCR. Aggregation required all six
 unique pairs, identical policy/options, frozen inputs, source/helper identity,
 unchanged local sealed media/truth/masks, and unchanged grade/evidence hashes.
-The same real-video, per-clip/aggregate protected-frame and masked-area guards
-apply. A subset or slate cannot pass. The output remains `offline_quality`,
-`real_time_verified=false`, `gate_1.pass=false`, even if content guards pass.
-No offline output can earn a performance pass.
+The existing real-video, per-clip/aggregate protected-frame and masked-area
+guards applied. The result remains `offline_quality`,
+`real_time_verified=false`, `gate_1.pass=false`. It establishes no performance
+pass. The [result record](Q-FRESH-HELDOUT-RESULT.md) contains the verdict and
+links to the complete scorecard and proof.
 
 ## Verification scope
 
 `tests/test_heldout_bench.py` uses tiny generated clips and the existing fake
 pixel detector/judges, never heldout pixels. It exercises frozen pair/hash/path
 validation, actual sealed relocation after removing original input files,
-missing third pair, mixed policy, preflight media changes, one-shot rendering
-after success/failure, all-six one-shot judging after relocation, and a read-only
-cache override with unchanged asset hashes and a separate writable marker.
+missing third pair, policy/dataset/source preflights before OCR, preflight media
+changes, tracked spent results without scratch state, one-shot rendering after
+success/failure, and all-six one-shot judging after relocation. A kill-state
+regression restores the exact pre-grade state bytes and requires the exclusive
+judging marker to reject a retry without another grade call. A read-only
+cache override test checks unchanged asset hashes and a separate writable marker.
 The existing suite owns independent truth/control versus all-output-judge
 semantics, copied source/truth races, source checks around OCR, real-video and
 area/protected guards; those tests are reused without duplicating TestCase
 discovery. Physical guard mutations and the Linux gate receipts are recorded
-in `out/fresh-heldout/handback.json`. Failed attempts and corrections, including
+in `out/pr6-r1/handback.json` for the review fixes; original preparation receipts
+remain in `out/fresh-heldout/handback.json`. Failed attempts and corrections, including
 the initial Python environment and stale-bytecode verification failures, remain
 in `out/fresh-heldout/ledger.json`; they are not passing verification receipts.
 
-This worker did not run Mac OCR, heldout model inference, native performance,
-Twitch, deployment or any external write. The Linux bench+M2 gate is not the
-project's full Mac/Twitch gate; the known separate M3 unified-discovery gap is
-owned by integration. The conductor still owns independent review, applying
-and committing the patch, final policy freeze and the actual one-shot run.
+The PR6 round-1 repair uses only generated synthetic media. It does not rerun
+Mac OCR, heldout inference, native performance, Twitch, deployment or external
+writes. Its Linux receipt is the **b7f48bb gate minus Swift build (NOT RUN BY
+DESIGN on Linux)**, not the unified merge gate or a Mac/Twitch qualification.
+The conductor owns the unified gate after merging this repair in scratch.

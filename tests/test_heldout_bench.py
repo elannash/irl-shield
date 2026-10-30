@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import shutil
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -18,7 +19,11 @@ class HeldoutDataset(unittest.TestCase):
         self.commit = 'a' * 40
         # An rsync mirror has no Git metadata. Replace only this external
         # metadata provider; encoded fixture I/O keeps real subprocesses.
-        provider = SimpleNamespace(check_output=lambda *args, **kwargs: self.commit + '\n')
+        def git_metadata(command, **kwargs):
+            if command[-2:] == ['rev-parse', 'HEAD']:
+                return self.commit + '\n'
+            return subprocess.check_output(command, **kwargs)
+        provider = SimpleNamespace(check_output=git_metadata)
         commit_lookup = patch.object(heldout_bench, 'subprocess', provider)
         commit_lookup.start()
         self.addCleanup(commit_lookup.stop)
@@ -53,29 +58,37 @@ class HeldoutDataset(unittest.TestCase):
         data, snapshot = bundle.entries(self.base, self.inputs, dataset=self.dataset)
         self.assertEqual(len(data['clips']), 6)
         self.assertEqual(snapshot, self.inputs.read_bytes())
-        for change in ('missing-third', 'duplicate', 'changed-media', 'absolute-path'):
+        for change, message in (
+                ('missing-third', 'Quality input manifest must contain exactly all six unique heldout pairs'),
+                ('changed-media', 'Quality heldout input differs from its frozen dataset')):
             with self.subTest(change=change):
                 bad = json.loads(json.dumps(self.data))
                 if change == 'missing-third':
                     bad['clips'] = bad['clips'][:4]
-                elif change == 'duplicate':
-                    bad['clips'][-1] = bad['clips'][0]
-                elif change == 'changed-media':
-                    bad['clips'][0]['source_sha256'] = '0' * 64
                 else:
-                    bad['clips'][0]['source'] = '/tmp/unsealed.mp4'
+                    bad['clips'][0]['source_sha256'] = '0' * 64
                 bundle.write_json(self.inputs, bad)
-                with self.assertRaisesRegex(ValueError, 'heldout|frozen|escapes'):
+                with self.assertRaises(ValueError) as error:
                     bundle.entries(self.base, self.inputs, dataset=self.dataset)
+                self.assertEqual(str(error.exception), message)
 
-    def corpus(self, *, mixed=False):
+    def test_escaping_paths_in_frozen_rows_are_rejected(self):
+        original = json.loads(self.dataset.read_text())
+        for key, escape in (('source', '/tmp/unsealed.mp4'), ('truth', '../unsealed.json')):
+            with self.subTest(key=key, escape=escape):
+                manifest = json.loads(json.dumps(original))
+                manifest['inputs'][0][key] = escape
+                bundle.write_json(self.dataset, manifest)
+                bundle.write_json(self.inputs, {'fixture_manifest_sha256': bundle.digest(self.dataset),
+                                                'clips': manifest['inputs']})
+                with self.assertRaises(ValueError) as error:
+                    bundle.entries(self.base, self.inputs, dataset=self.dataset)
+                self.assertEqual(str(error.exception), 'Quality artifact escapes its sealed directory')
+
+    def corpus(self):
         directory = self.base / 'corpus'
         for clip in self.ids:
             for variant in (False, True):
-                if mixed and clip == 'fresh-c':
-                    policy = json.loads(self.fixture.config.read_text())
-                    policy['options']['area_ceiling'] = .9
-                    bundle.write_json(self.fixture.config, policy)
                 path = directory / (clip + ('-synthetic' if variant else '-natural'))
                 with patch('bench.pipeline.detector_for', side_effect=lambda *args: tune.Detector()):
                     bundle.render(self.base, self.inputs, self.fixture.config, path, clip, variant,
@@ -106,11 +119,90 @@ class HeldoutDataset(unittest.TestCase):
             bundle.aggregate(ROOT, relocated, 'subset', dataset=self.dataset)
         self.assertFalse((relocated / 'scorecard.json').exists())
 
-    def test_mixed_heldout_policy_rejects_before_scorecard(self):
-        corpus = self.corpus(mixed=True)
-        with self.assertRaisesRegex(ValueError, 'different policies'):
-            bundle.aggregate(ROOT, corpus, 'mixed', dataset=self.dataset)
-        self.assertFalse((corpus / 'scorecard.json').exists())
+    def test_judging_preflight_rejects_policy_dataset_and_source_before_ocr(self):
+        directory = self.base / 'evaluation'
+        with patch('bench.pipeline.detector_for', side_effect=lambda *args: tune.Detector()):
+            heldout_bench.start(root=self.base, dataset=self.dataset,
+                dataset_sha256=bundle.digest(self.dataset), policy=self.fixture.config,
+                policy_sha256=bundle.digest(self.fixture.config), policy_commit=self.commit,
+                directory=directory, lock_root=self.base)
+        evaluation = directory / 'evaluation.json'
+        policy = directory / 'policy.json'
+        dataset = directory / 'dataset.json'
+        plan = next(directory.glob('*/bundle.json'))
+        seal = plan.with_suffix('.sha256')
+        saved = {path: path.read_bytes() for path in (evaluation, policy, dataset, plan, seal)}
+        for fault, message in (
+                ('policy', 'Heldout render differs from the final frozen policy'),
+                ('dataset', 'Heldout render differs from the final frozen dataset'),
+                ('source', 'Heldout render source differs from the frozen source')):
+            with self.subTest(fault=fault):
+                try:
+                    state = json.loads(saved[evaluation])
+                    if fault == 'policy':
+                        config = json.loads(saved[policy])
+                        config['options']['before'] += 1
+                        bundle.write_json(policy, config)
+                        state['policy_sha256'] = bundle.digest(policy)
+                    elif fault == 'dataset':
+                        dataset.write_bytes(saved[dataset] + b'\n')
+                        state['dataset_sha256'] = bundle.digest(dataset)
+                    else:
+                        changed = json.loads(saved[plan])
+                        changed['orchestrator_sha256'] = '0' * 64
+                        bundle.write_json(plan, changed)
+                        seal.write_text(bundle.digest(plan) + '\n')
+                    bundle.write_json(evaluation, state)
+                    # These remain valid sealed renders; the corpus freeze must reject them.
+                    for path in directory.glob('*/bundle.json'):
+                        bundle.verify(path.parent)
+                    with patch.object(bundle, 'grade', side_effect=AssertionError('OCR must not start during preflight')) as physical:
+                        with self.assertRaises(ValueError) as error:
+                            heldout_bench.grade(root=ROOT, directory=directory, lock_root=self.base)
+                        self.assertEqual(str(error.exception), message)
+                        physical.assert_not_called()
+                    self.assertFalse((directory / 'JUDGING.started.json').exists())
+                    self.assertFalse((directory / 'scorecard.json').exists())
+                    self.assertEqual(evaluation.read_bytes(), (json.dumps(state, indent=2) + '\n').encode())
+                finally:
+                    for path, content in saved.items():
+                        path.write_bytes(content)
+
+    def test_tracked_result_spends_dataset_without_any_retained_marker(self):
+        subprocess.run(['git', 'init', '-q', str(self.base)], check=True)
+        results = self.base / 'bench/results'
+        results.mkdir(parents=True)
+        tracked = results / 'spent.json'
+        bundle.write_json(tracked, {'heldout_freeze': {'dataset_sha256': '0' * 64}})
+        (self.base / '.gitignore').write_text('bench/results/ignored.json\n')
+        subprocess.run(['git', '-C', str(self.base), 'add', 'bench/results/spent.json', '.gitignore'], check=True)
+        bundle.write_json(results / 'ignored.json', {
+            'heldout_freeze': {'dataset_sha256': bundle.digest(self.dataset)}})
+        options = dict(root=self.base, dataset=self.dataset, dataset_sha256=bundle.digest(self.dataset),
+            policy=self.fixture.config, policy_sha256=bundle.digest(self.fixture.config),
+            policy_commit=self.commit, directory=self.base / 'evaluation', lock_root=self.base)
+        marker = self.base / 'EVALUATION.started.json'
+        with patch.object(heldout_bench, 'CODE_ROOT', self.base), patch.object(bundle, 'render') as physical:
+            # Neither an ignored matching result nor a tracked unrelated result spends this dataset.
+            heldout_bench.start(**options)
+            self.assertEqual(physical.call_count, 6)
+            marker.unlink()
+            shutil.rmtree(options['directory'])
+            bundle.write_json(tracked, {'heldout_freeze': {'dataset_sha256': bundle.digest(self.dataset)}})
+            subprocess.run(['git', '-C', str(self.base), 'add', 'bench/results/spent.json'], check=True)
+            physical.reset_mock()
+            for state in (self.base / 'nonexistent-state', None):
+                with self.subTest(state=state):
+                    self.assertFalse(marker.exists())
+                    if state is not None:
+                        self.assertFalse(state.exists())
+                    with self.assertRaisesRegex(ValueError, '^Heldout dataset already spent by tracked result: bench/results/spent.json$'):
+                        heldout_bench.start(**options, state_directory=state)
+                    self.assertFalse(options['directory'].exists())
+                    self.assertFalse(marker.exists())
+                    if state is not None:
+                        self.assertFalse(state.exists())
+                    self.assertEqual(physical.call_count, 0)
 
     def test_one_shot_render_repeats_have_no_physical_effect_even_after_failure(self):
         commit = self.commit
@@ -154,6 +246,8 @@ class HeldoutDataset(unittest.TestCase):
         directory.rename(relocated)
         self.fixture.source.unlink()
         self.fixture.truth.unlink()
+        killed = self.base / 'killed'
+        shutil.copytree(relocated, killed)
         real_grade = bundle.grade
         def fake_judges(root, path, **kwargs):
             return real_grade(root, path, judge=tune.Judge())
@@ -167,6 +261,20 @@ class HeldoutDataset(unittest.TestCase):
         self.assertFalse(card['gate_1']['pass'])
         self.assertEqual(json.loads((relocated / 'evaluation.json').read_text())['status'], 'complete')
         self.assertTrue((relocated / 'JUDGING.started.json').is_file())
+
+        evaluation = killed / 'evaluation.json'
+        before_grade = evaluation.read_bytes()
+        with patch.object(bundle, 'grade', side_effect=RuntimeError('synthetic interrupted first grade')) as physical:
+            with self.assertRaisesRegex(RuntimeError, '^synthetic interrupted first grade$'):
+                heldout_bench.grade(root=ROOT, directory=killed, lock_root=self.base)
+            self.assertEqual(physical.call_count, 1)
+            # A kill skips finally: restore exactly the awaiting-judging bytes it would leave.
+            evaluation.write_bytes(before_grade)
+            with self.assertRaises(FileExistsError):
+                heldout_bench.grade(root=ROOT, directory=killed, lock_root=self.base)
+            self.assertEqual(physical.call_count, 1)
+        self.assertEqual(evaluation.read_bytes(), before_grade)
+        self.assertTrue((killed / 'JUDGING.started.json').is_file())
 
     def test_changed_commit_or_input_media_rejects_before_one_shot_is_spent(self):
         for fault in ('commit', 'media'):
