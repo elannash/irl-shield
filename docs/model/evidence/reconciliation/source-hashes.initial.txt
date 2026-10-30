@@ -1,0 +1,6 @@
+806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py
+58d6acb649853b73c1290c1eb53490c07e7fb10a4ba1da293fdea111ebc46695  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py
+514356e5c0434f5066d1df42a4eb70f85944533d525331f8329cbea4269bccea  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py
+485fb7b019a10a7cd159d847e6af028f07495265b7f7f5d2910f4f868c535bc4  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/http.py
+2fdb4cca2274c77a92582f56880137d8ecc678512fdc60c36239f99686bbfd6a  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py
+1cbf974718a90d77eda81ed3c17019e4760acbc0e7ee4b686f2913ce987d5530  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py

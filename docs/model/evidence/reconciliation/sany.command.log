@@ -1,0 +1,17 @@
+Running as unit: m3-reconcile-model-sany.scope; invocation ID: a151557c08c743dd9722ed256e21759f
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC
+
+****** SANY2 Version 2.1 created 24 February 2014
+
+Parsing file /tmp/agents/irl-shield/m3-reconcile-model/TwitchControl.tla
+Parsing file /tmp/Integers.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Parsing file /tmp/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TwitchControl

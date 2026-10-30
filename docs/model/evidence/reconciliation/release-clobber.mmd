@@ -1,0 +1,12 @@
+---
+title: "Shortest deliberate reconciliation violation (direct TLC)"
+---
+stateDiagram-v2
+  state "Connecting: HOLD" as s0
+  state "Reconciling: HOLD, snapshot (0, 0)" as s1
+  state "Ready: PROTECT, required Shield hold erased" as s2
+  [*] --> s0
+  s0 --> s1: begin reconciliation
+  s1 --> s2: active status returns; mutant clears holds
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s2 breaks
