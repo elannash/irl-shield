@@ -1,0 +1,32 @@
+---
+title: "Twitch protection and replay checks"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: Breaks ReconnectNeverReplays
+    lg1: Path to the ReconnectNeverReplays bug
+  }
+  class lg0 breaks
+  class lg1 bugPath
+  s0: connecting: HOLD
+  s1: subscribing: HOLD
+  s2: ready: PROTECT
+  s3: ready: HOLD
+  s4: reconnecting: HOLD
+  s5: Repeated command executed
+  [*] --> s0
+  s0 --> s1: server welcomes connection
+  s1 --> s2: subscriptions ready
+  s2 --> s3: notification arrives
+  s3 --> s4: server requests reconnect
+  s4 --> s1: server welcomes connection
+  s1 --> s3: subscriptions ready
+  s3 --> s5: notification arrives
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 bugPath
+  class s1 bugPath
+  class s2 bugPath
+  class s3 bugPath
+  class s4 bugPath
+  class s5 breaks
+  class s5 bugPath

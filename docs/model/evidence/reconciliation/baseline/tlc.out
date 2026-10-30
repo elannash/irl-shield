@@ -1,0 +1,29 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 0 and seed -7516030080890129011 with 1 worker on 2 cores with 910MB heap and 64MB offheap memory [pid: 3137545] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-reconcile-model/TwitchControl.tla
+Parsing file /tmp/statechart-IZYgMM/statechart-ukxEC3/tmp-verdict-1/Integers.tla
+Parsing file /tmp/statechart-IZYgMM/statechart-ukxEC3/tmp-verdict-1/Sequences.tla
+Parsing file /tmp/statechart-IZYgMM/statechart-ukxEC3/tmp-verdict-1/FiniteSets.tla
+Parsing file /tmp/statechart-IZYgMM/statechart-ukxEC3/tmp-verdict-1/TLC.tla
+Parsing file /tmp/statechart-IZYgMM/statechart-ukxEC3/tmp-verdict-1/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 21:22:21)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 21:22:22.
+Progress(10) at 2026-10-29 21:22:25: 240,523 states generated (240,523 s/min), 18,795 distinct states found (18,795 ds/min), 8,735 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.0E-9
+  based on the actual fingerprints:  val = 2.1E-10
+1139021 states generated, 50920 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 10s at (2026-10-29 21:22:32)
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC
+

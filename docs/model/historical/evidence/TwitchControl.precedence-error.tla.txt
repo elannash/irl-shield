@@ -1,0 +1,103 @@
+--------------------------- MODULE TwitchControl ---------------------------
+EXTENDS Integers, Sequences, FiniteSets, TLC
+CONSTANTS Capacity, MaxAge, LastClock,
+          AllowModeratorResume, ForgetOnReconnect, BadCoverage
+VARIABLES coverage, chat, shield, local, connection, phase, revoked, now,
+          seen, floor, chatTime, shieldTime, mode, resumedBy, executed, replayed
+vars == <<coverage, chat, shield, local, connection, phase, revoked, now,
+          seen, floor, chatTime, shieldTime, mode, resumedBy, executed, replayed>>
+
+\* One immutable envelope per ID. Re-delivery preserves its payload/timestamp.
+Messages == {"hold", "ownerResume", "modResume", "shieldBegin", "shieldEnd", "viewerHold"}
+Stamp(m) == CASE m = "hold" -> 1
+             [] m \in {"ownerResume", "shieldBegin"} -> 2
+             [] OTHER -> 3
+Actor(m) == CASE m = "ownerResume" -> "owner"
+             [] m = "viewerHold" -> "viewer"
+             [] OTHER -> "moderator"
+IsChat(m) == m \notin {"shieldBegin", "shieldEnd"}
+Max(a,b) == IF a > b THEN a ELSE b
+Members(s) == {s[i]: i \in 1..Len(s)}
+Settle(c,h,s,l,n) == IF h \/ s \/ l \/ n THEN "HOLD"
+                     ELSE IF c \/ BadCoverage THEN "LIVE" ELSE "PROTECT"
+
+\* Control starts PROTECT; constructing ShieldEvents asserts connection hold.
+\* Time 0 represents started_at - epsilon; valid event times start at 1.
+Init == /\ coverage = FALSE /\ chat = FALSE /\ shield = FALSE /\ local = FALSE
+        /\ connection = TRUE /\ phase = "connecting" /\ revoked = FALSE /\ now = 1
+        /\ seen = <<>> /\ floor = 0 /\ chatTime = 0 /\ shieldTime = 0
+        /\ mode = "HOLD" /\ resumedBy = "none" /\ executed = {} /\ replayed = FALSE
+
+Coverage(c) == /\ coverage' = c /\ mode' = Settle(c,chat,shield,local,connection)
+               /\ UNCHANGED <<chat,shield,local,connection,phase,revoked,now,seen,floor,
+                              chatTime,shieldTime,resumedBy,executed,replayed>>
+LocalHold(h) == /\ local' = h /\ mode' = Settle(coverage,chat,shield,h,connection)
+                /\ UNCHANGED <<coverage,chat,shield,connection,phase,revoked,now,seen,
+                               floor,chatTime,shieldTime,resumedBy,executed,replayed>>
+Welcome == /\ ~revoked /\ phase' = "subscribing"
+           /\ UNCHANGED <<coverage,chat,shield,local,connection,revoked,now,seen,floor,
+                          chatTime,shieldTime,mode,resumedBy,executed,replayed>>
+Ready == /\ phase = "subscribing" /\ ~revoked
+         /\ phase' = "ready" /\ connection' = FALSE
+         /\ mode' = Settle(coverage,chat,shield,local,FALSE)
+         /\ UNCHANGED <<coverage,chat,shield,local,revoked,now,seen,floor,chatTime,
+                        shieldTime,resumedBy,executed,replayed>>
+Reconnect == /\ phase' = "reconnecting" /\ connection' = TRUE /\ mode' = "HOLD"
+             /\ seen' = IF ForgetOnReconnect THEN <<>> ELSE seen
+             /\ floor' = IF ForgetOnReconnect THEN 0 ELSE floor
+             /\ UNCHANGED <<coverage,chat,shield,local,revoked,now,chatTime,shieldTime,
+                            resumedBy,executed,replayed>>
+Fault(r) == /\ revoked' = revoked \/ r
+            /\ phase' = IF revoked' THEN "revoked" ELSE "disconnected"
+            /\ connection' = TRUE /\ mode' = "HOLD"
+            /\ UNCHANGED <<coverage,chat,shield,local,now,seen,floor,chatTime,shieldTime,
+                           resumedBy,executed,replayed>>
+Tick == /\ now < LastClock /\ now' = now + 1
+        /\ UNCHANGED <<coverage,chat,shield,local,connection,phase,revoked,seen,floor,
+                       chatTime,shieldTime,mode,resumedBy,executed,replayed>>
+
+\* Purge precedes envelope validation. Eviction precedes command authorization,
+\* so ignored/expired commands can consume IDs and advance the replay floor.
+Deliver(m, valid, sourceLocal) ==
+  LET agedFloor == Max(floor, now - MaxAge)
+      agedSeen == SelectSeq(seen, LAMBDA id: Stamp(id) > agedFloor)
+      admitted == valid /\ Stamp(m) > agedFloor /\ Stamp(m) <= now
+                  /\ m \notin Members(agedSeen)
+      evict == admitted /\ Len(agedSeen) >= Capacity
+      newFloor == IF evict THEN Max(agedFloor,Stamp(Head(agedSeen))) ELSE agedFloor
+      rest == IF evict THEN Tail(agedSeen) ELSE agedSeen
+      remembered == admitted /\ Stamp(m) > newFloor
+      chatOK == remembered /\ IsChat(m) /\ sourceLocal
+      hold == chatOK /\ m \in {"hold", "viewerHold"}
+              /\ Actor(m) \in {"owner", "moderator"}
+      resume == chatOK /\ m \in {"ownerResume", "modResume"}
+                /\ (Actor(m) = "owner" \/ AllowModeratorResume)
+                /\ Stamp(m) > chatTime
+      shieldOK == remembered /\ ~IsChat(m) /\ Stamp(m) >= shieldTime
+                  /\ (m = "shieldBegin" \/ Stamp(m) > shieldTime)
+      command == hold \/ resume \/ shieldOK
+      newChat == IF hold THEN TRUE ELSE IF resume THEN FALSE ELSE chat
+      newShield == IF shieldOK THEN m = "shieldBegin" ELSE shield
+  IN /\ phase = "ready" /\ m \in Messages
+     /\ floor' = newFloor /\ seen' = IF remembered THEN Append(rest,m) ELSE rest
+     /\ chat' = newChat /\ shield' = newShield
+     /\ chatTime' = IF hold THEN Max(chatTime,Stamp(m)) ELSE IF resume THEN Stamp(m) ELSE chatTime
+     /\ shieldTime' = IF shieldOK THEN Stamp(m) ELSE shieldTime
+     /\ resumedBy' = IF resume THEN Actor(m) ELSE resumedBy
+     /\ executed' = IF command THEN executed \cup {m} ELSE executed
+     /\ replayed' = replayed \/ (command /\ m \in executed)
+     /\ mode' = Settle(coverage,newChat,newShield,local,connection)
+     /\ UNCHANGED <<coverage,local,connection,phase,revoked,now>>
+
+\* Represents inactive/early malformed deliveries and other public no-ops;
+\* this is an open session, not a terminal workflow. No liveness is claimed.
+Idle == UNCHANGED vars
+Next == (\E c \in BOOLEAN: Coverage(c)) \/ (\E h \in BOOLEAN: LocalHold(h))
+        \/ Welcome \/ Ready \/ Reconnect \/ (\E r \in BOOLEAN: Fault(r)) \/ Tick
+        \/ (\E m \in Messages, v \in BOOLEAN, s \in BOOLEAN: Deliver(m,v,s)) \/ Idle
+NoLIVEWithoutCoverage == mode = "LIVE" => coverage /\ ~chat /\ ~shield /\ ~local /\ ~connection
+OnlyBroadcasterResumes == resumedBy \in {"none", "owner"}
+ReconnectNeverReplays == ~replayed
+BoundedMemory == Len(seen) <= Capacity
+Spec == Init /\ [][Next]_vars
+=============================================================================

@@ -1,0 +1,9 @@
+Running as unit: m3-reconcile-model-restored.scope; invocation ID: 10ea85225bb8462eaabf9a86286ef80b
+# TwitchControl
+
+TLC reached 50,920 states, more than the chart budget of 500, so the command wrote no chart.mmd.
+
+## Rules that hold
+NoLIVEWithoutCoverage, OnlyBroadcasterResumes, ReconnectNeverReplays, BoundedMemory, ReconcileReleaseIsolated, ReconcileWaitHolds, ReadyAndHandoverHaveNoConnectionHold, RevokedStaysHeld, NoDeadlock
+
+Wrote /tmp/agents/irl-shield/m3-reconcile-model/restored

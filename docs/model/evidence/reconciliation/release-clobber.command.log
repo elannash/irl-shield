@@ -1,0 +1,91 @@
+Running as unit: m3-reconcile-model-clobber.scope; invocation ID: 5e5cd43fe0254f7ea4f2040ed69ad1de
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 0 and seed 2710352928865603334 with 1 worker on 2 cores with 910MB heap and 64MB offheap memory [pid: 3138792] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-reconcile-model/TwitchControl.tla
+Parsing file /tmp/Integers.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Parsing file /tmp/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 21:22:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 21:22:40.
+Error: Invariant ReconcileReleaseIsolated is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = "connecting"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ generation = 0
+/\ revoked = FALSE
+/\ shieldRevision = 0
+/\ releaseClobbered = FALSE
+/\ snapshot = <<>>
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 2: <BeginReconcile line 59, col 3 to line 61, col 108 of module TwitchControl>
+/\ phase = "reconciling"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ generation = 0
+/\ revoked = FALSE
+/\ shieldRevision = 0
+/\ releaseClobbered = FALSE
+/\ snapshot = <<0, 0>>
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 3: <Reconciled line 73, col 6 to line 79, col 85 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "PROTECT"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ generation = 0
+/\ revoked = FALSE
+/\ shieldRevision = 0
+/\ releaseClobbered = TRUE
+/\ snapshot = <<0, 0>>
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+88 states generated, 31 distinct states found, 23 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 7 and the 95th percentile is 7).
+Finished in 00s at (2026-10-29 21:22:40)
