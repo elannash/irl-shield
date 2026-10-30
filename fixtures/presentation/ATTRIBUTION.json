@@ -1,0 +1,36 @@
+{
+  "workstream": "W7",
+  "code_origin": "Newly authored in submitted Codex child on exact parent 65891cb0b515bc0c34ec4ded89aa6a3228992cc2; no prototype renderer code copied",
+  "assets": [
+    {
+      "path": "shield/presentation/assets/AtkinsonHyperlegibleNext-wght.ttf",
+      "sha256": "5a455d1cfa099b601ab70751bb9673e8fe1854dc4500c80e1a220d0d75e31745",
+      "license": "SIL-OFL-1.1",
+      "copyright": "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors",
+      "upstream": "https://github.com/googlefonts/atkinson-hyperlegible-next",
+      "local_source": "/tmp/claude-1000/agents/twitchcon-hackathon/design/fonts/AtkinsonHyperlegibleNext-wght.ttf",
+      "modifications": "none",
+      "prompt": null,
+      "model": null
+    },
+    {
+      "path": "shield/presentation/assets/OFL.txt",
+      "sha256": "09636801ed3e868736cc359bb1c819c5ef76529cbb41473cb1f602ef166dad0a",
+      "license": "SIL-OFL-1.1",
+      "copyright": "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors",
+      "upstream": "https://github.com/googlefonts/atkinson-hyperlegible-next",
+      "local_source": "/tmp/claude-1000/agents/twitchcon-hackathon/design/fonts/OFL.txt",
+      "modifications": "trailing whitespace removed, wording unchanged",
+      "prompt": null,
+      "model": null
+    }
+  ],
+  "generated_scene_assets": [],
+  "imagegen": {
+    "used": false,
+    "prompt": null,
+    "actual_returned_model_id": null
+  },
+  "raster_evidence": "out/w7/render-assets.json records original renderer output over synthetic flat-color geometry, not an external or AI-generated scene",
+  "root_action": "Merge font/license attribution into fixtures/ATTRIBUTION.md in W7 PR"
+}
