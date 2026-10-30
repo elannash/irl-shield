@@ -1,0 +1,18 @@
+Fri Oct 30 06:11:51 UTC 2026
+Owned JVM PID check (no rows means exited):
+Owned scopes:
+Id=m3-r3-model-old-boundary.scope
+LoadState=not-found
+ActiveState=inactive
+
+Id=m3-r3-model-old-raw-fail.scope
+LoadState=not-found
+ActiveState=inactive
+
+Id=m3-r3-model-fixed-raw-pass.scope
+LoadState=not-found
+ActiveState=inactive
+
+Id=m3-r3-model-public-replay.scope
+LoadState=not-found
+ActiveState=inactive

@@ -1,0 +1,4 @@
+old-boundary direct TLC BeforeR3Control /home/elan/.t3/worktrees/irl-shield/t3-39e664cc/docs/model/evidence/r3/old-boundary.cfg
+old-raw-fail direct TLC BeforeR3Control /home/elan/.t3/worktrees/irl-shield/t3-39e664cc/docs/model/evidence/r3/old-boundary.cfg
+fixed-raw-pass direct TLC TwitchControl /home/elan/.t3/worktrees/irl-shield/t3-39e664cc/docs/model/TwitchControl.cfg
+public-replay Python old/fixed public API
