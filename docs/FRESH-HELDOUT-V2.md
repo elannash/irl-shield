@@ -67,6 +67,22 @@ visibility and bounding boxes. Natural truth is 150 empty arrays of synthetic
 truth; it is not natural-text OCR ground truth. No detector, OCR, judge cache,
 privacy mask or quality score is produced by this preparer.
 
+## Frozen locations and retention
+
+The full canonical cache, including the original WebM downloads, is retained at
+`/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/cache/fresh-heldout-v2/`.
+That worktree remains locked through the one-shot evaluation and submission;
+**do not unlock it or remove its cache**.
+
+A durable copy of the derived MP4s, truth and preparation receipts is also at
+`/home/elan/code/irl-shield/fixtures/cache/fresh-heldout-v2/`. This copy does not
+replace the canonical originals. The conductor rehashed the twelve
+manifest-pinned video/truth files after copying them and found no mismatches.
+
+Transfer the frozen bytes intact. **Never re-encode these assets**, substitute
+another excerpt, regenerate truth, or rebind the manifest to replacement hashes.
+An empty checkout must receive the canonical files rather than run a new encode.
+
 ## Preparation and transfer
 
 Use the existing pinned Python environment; no installs are needed. During initial preparation,
@@ -77,11 +93,9 @@ preparer verifies original byte counts and Commons SHA-1, computes SHA-256 and
 writes a new plan with exclusive creation. CPU work uses the canonical shared
 lock, nice 10, native thread limits of two and `app-t3code-agents.slice`.
 
-The commands below record first-time preparation. An applied frozen checkout
-already contains the plan and manifest: skip `plan` and `freeze`, retain their
-bytes, and use the existing plan for any empty-cache reproduction. Run `verify`
-against the frozen manifest afterward. A differing encoding fails verification;
-transfer the canonical sealed cache rather than changing its hashes.
+The commands below are a historical record of first-time preparation, not
+instructions to repeat it. The frozen plan and manifest already exist. Retain
+their bytes and transfer the canonical sealed cache into an empty checkout.
 
 ```bash
 nice -n 10 env OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 \
@@ -92,8 +106,9 @@ nice -n 10 env OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 \
   fixtures/prepare_heldout_v2.py plan
 ```
 
-After explicit `PHONE_TEST_DONE/GPU_RELEASED`, root submits one `prepare --clip`
-job per source to the canonical EX queue, ahead of quality arms. Exact Python
+After explicit `GPU_RELEASED`, root submitted one `prepare --clip` job per
+source to the canonical EX queue, ahead of quality arms. The functional phone
+test was still unfinished; it was not a GPU prerequisite. Exact Python
 and FFmpeg argv are in the worker's `out/v2-prep/timed-jobs.json`. The preparer
 validates the inherited canonical lock descriptor and queue attempt receipt,
 without acquiring another flock. Inherited nice 10, agent slice, two native
@@ -101,13 +116,34 @@ threads and one CV thread keep the machine usable. The source and recipe code,
 fonts, original/derived/truth bytes, metadata and queue receipt references are
 bound in preparation receipts. Existing derived assets cannot be overwritten.
 
-Once all three preparation jobs finish, CPU-only `freeze` assembles the manifest
-with exclusive creation. `verify` rehashes originals and all derived/truth files,
+Once all three preparation jobs finished, CPU-only `freeze` assembled the
+manifest with exclusive creation. `verify` rehashes originals and all derived/truth files,
 checks the sealed selection and code identity and decodes every derivative to
 verify 150 frame timestamps at `i/30`, zero origin, 1280×720 and no audio. The
 frozen cache is gitignored under `fixtures/cache/fresh-heldout-v2/`. Transfer it
 intact for later use; re-encoding on another GPU/FFmpeg build can change bytes.
 Never rebind the frozen manifest to a new encoding.
+
+Run `verify` from a dedicated checkout of **`d97ad2e`**, with a byte-for-byte
+copy of the full frozen cache available there. It compares the preparation
+receipts' code identity with the checkout's live shared source files; an arbitrary
+later checkout is not the verification reference. The durable derived-only copy
+is insufficient for this command because verification also hashes the originals.
+Do not change or unlock the canonical originals worktree to create this checkout.
+
+```bash
+# From the dedicated d97ad2e checkout with the complete frozen cache:
+nice -n 10 env OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 \
+  MKL_NUM_THREADS=2 scripts/host-lock shared python3 \
+  fixtures/prepare_heldout_v2.py verify
+```
+
+The manifest's `evaluation_marker` and `evaluation_reservation` are
+**declarations, not enforced execution guards**. Main's current evaluator
+hard-codes v1 and fails closed for v2. The v2 harness follow-up must add durable
+tracked started-state, the `not_before_utc` check and final-policy binding before
+any v2 evaluation. Until that follow-up lands, this reservation is an operational
+rule, not a claim that the existing harness enforces one-shot execution.
 
 Exactly **one** future evaluation is reserved for the final policy after the
 **Sunday, November 1, 2026, 06:00 PT / 14:00 UTC** policy freeze. This preparation
