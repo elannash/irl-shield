@@ -1,5 +1,6 @@
 """Encoded quality credit stays bound to frozen inputs and local sealed masks."""
 import hashlib
+from functools import partial
 import json
 from pathlib import Path
 import shutil
@@ -45,6 +46,9 @@ class QualityBundle(unittest.TestCase):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
         self.base = Path(directory.name)
+        isolated_lease = patch.object(bundle, 'clip_lease', partial(bundle.clip_lease, lock_root=self.base / 'locks'))
+        isolated_lease.start()
+        self.addCleanup(isolated_lease.stop)
         yy, xx = np.indices((48, 96))
         pixels = np.repeat((80 + ((xx // 4 + yy // 4) % 2) * 50).astype(np.uint8)[..., None], 3, axis=2)
         pixels[8:16, 8:24] = pixels[8:16, 60:76] = 245

@@ -5,6 +5,11 @@ use Fcntl qw(:flock F_SETFD);
 my $mode = shift @ARGV // '';
 die "usage: scripts/host-lock shared|exclusive command [args...]\n"
     unless ($mode eq 'shared' || $mode eq 'exclusive') && @ARGV;
+# Temporary Linux shim until aggregate slots from ~/.agents/bin/heavy replace it.
+if ($^O eq 'linux' && $mode eq 'shared') {
+    warn "host-lock: Linux shared request upgraded to exclusive\n";
+    $mode = 'exclusive';
+}
 my $directory = '/tmp/agents/irl-shield';
 mkdir '/tmp/agents' unless -d '/tmp/agents';
 mkdir $directory unless -d $directory;

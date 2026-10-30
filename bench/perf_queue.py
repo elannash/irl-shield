@@ -730,7 +730,9 @@ class Runner:
                 self.control.set()
 
     def run(self):
-        with file_lock(self.directory / 'runner.lock', nonblocking=True):
+        # Alternate queue directories must not create a second runner on this host.
+        host_runner = Path(self.perf_lock).with_name('perf-runner.lock')
+        with file_lock(host_runner, nonblocking=True), file_lock(self.directory / 'runner.lock', nonblocking=True):
             watcher = threading.Thread(target=self.watch_control, daemon=True)
             watcher.start()
             try:

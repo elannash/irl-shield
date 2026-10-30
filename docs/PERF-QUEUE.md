@@ -108,12 +108,28 @@ at least 4 GiB available. Load, swap bytes and PSI files are diagnostics. Missin
 or malformed required readings cannot produce a ready result.
 
 A job starts only at idle >=80% and memory OK, except at the forced deadline.
-The runner first takes its separate singleton lock, checks readiness, then
+The runner first takes `perf-runner.lock` beside the canonical performance
+lock, then its queue-local singleton lock. A second runner using another
+queue directory on the same host is rejected before readiness sampling.
+It checks readiness, then
 takes the exclusive canonical `/tmp/agents/irl-shield/perf.lock` and samples
 START again. Perl acquires BSD flock on a descriptor retained by the runner
 and foreground watchdog. This interoperates with `scripts/host-lock` across
 worktrees. Never unlink a lock file to clear a stale lock; kernel ownership
 ends when its descriptors close.
+
+On Linux, `scripts/host-lock shared` temporarily takes the exclusive lease
+and prints one warning to stderr. Existing argv therefore serializes with
+exclusive queue jobs and merge gates. Mac shared behavior is unchanged.
+Quality-bundle clip leases are exclusive on both hosts. This shim is removed
+when jobs move to the aggregate slots provided by `~/.agents/bin/heavy`.
+
+Tests inject a temporary `clip_lease(..., lock_root=...)`; they never acquire
+the canonical performance lease. The unified gate rejects attempts by tests
+to resolve, inspect, open or flock the global lock, or launch the production
+host-lock wrapper. This catches a nested lease before it can deadlock a gate
+that already owns the host lease. Queue tests also use private performance
+and runner lock files.
 
 During each job, ten-second CPU sampling windows continue without an extra
 ten-second delay. START, END and periodic raw health are retained. New attempts
