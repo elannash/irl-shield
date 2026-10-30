@@ -141,6 +141,24 @@ class QualityBundle(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'different experiment identities'):
             bundle.aggregate(ROOT, corpus, 'mixed')
 
+    def test_different_sealed_area_ceilings_cannot_form_one_policy(self):
+        directory = self.base / 'mixed-ceilings'
+        policy = json.loads(self.config.read_text())
+        first = min(self.clips)
+        ceilings = []
+        for clip in self.clips:
+            for synthetic in (False, True):
+                policy['options']['area_ceiling'] = 1. if clip == first and not synthetic else .01
+                bundle.write_json(self.config, policy)
+                path = directory / (clip + ('-synthetic' if synthetic else '-natural'))
+                plan = self.render(path, clip, synthetic)
+                ceilings.append(plan['options']['area_ceiling'])
+                bundle.grade(ROOT, path, judge=Judge())
+        self.assertEqual(sorted(ceilings), [.01] * 13 + [1.])
+        with self.assertRaisesRegex(ValueError, 'different policies'):
+            bundle.aggregate(ROOT, directory, 'mixed-ceilings')
+        self.assertFalse((directory / 'scorecard.json').exists())
+
     def test_changed_source_or_truth_during_copy_fails_before_models_start(self):
         copy = shutil.copyfile
         for target in (self.source, self.truth):

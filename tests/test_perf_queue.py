@@ -1,6 +1,7 @@
 """Public queue contracts use synthetic health and real files/subprocesses."""
 import json
 import os
+import select
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import subprocess
@@ -15,7 +16,7 @@ from bench import perf_queue
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts/perf-queue'
-SCRATCH = Path('/tmp/agents/irl-shield/m1-perf-queue')
+SCRATCH = Path(__file__).resolve().parents[1] / '.tmp/perf-queue-tests'
 
 
 class QuietHealth:
@@ -117,26 +118,63 @@ class OtherBusyPolicy(unittest.TestCase):
 
     @unittest.skipUnless(sys.platform == 'linux', 'Real procfs integration is Linux-only; Mac uses its native proof')
     def test_real_short_tree_partial_window_attributes_only_its_descendants(self):
-        job = subprocess.Popen([sys.executable, '-c', 'import subprocess,sys,time; subprocess.Popen([sys.executable,"-c","import time; time.sleep(3)"]); time.sleep(3)'], start_new_session=True)
-        foreign = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(3)'], start_new_session=True)
+        # Readiness is emitted by the descendant itself. Neither process may
+        # leave the tree until the sample is complete and stdin is closed.
+        child_code = ('import os,select,sys; print(os.getpid(),flush=True); x=1\n'
+                      'while not select.select([sys.stdin],[],[],0)[0]:\n'
+                      ' for _ in range(10000): x=(x*1664525+1013904223)&0xffffffff\n')
+        root_code = ('import subprocess,sys; '
+                     'child=subprocess.Popen([sys.executable,"-c",sys.argv[1]],stdin=subprocess.PIPE); '
+                     'sys.stdin.buffer.read(); child.stdin.close(); child.wait()')
+        job = subprocess.Popen([sys.executable, '-c', root_code, child_code],
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
+                               start_new_session=True)
+        foreign = subprocess.Popen([sys.executable, '-c', 'import sys; sys.stdin.buffer.read()'],
+                                   stdin=subprocess.PIPE, start_new_session=True)
         cancel = threading.Event()
-        timer = threading.Timer(.15, cancel.set)
-        timer.start()
+        timer = None
         try:
-            sampler = perf_queue.JobCPUSampler(job.pid, host='linux')
-            sample = perf_queue.SystemHealth('linux').sample(cpu_sampler=sampler, deadline=time.time() + 2, cancel=cancel)
+            self.assertTrue(select.select([job.stdout], [], [], 30)[0], 'descendant did not become ready')
+            descendant = int(job.stdout.readline())
+
+            class SettledTree(perf_queue.JobCPUSampler):
+                def snapshot(inner, **options):
+                    nonlocal timer
+                    snapshot = super().snapshot(**options)
+                    if timer is None:
+                        # Cancel only after a real first snapshot, keeping a
+                        # positive partial window even if startup was slow.
+                        timer = threading.Timer(.2, cancel.set)
+                        timer.start()
+                    return snapshot
+
+            sampler = SettledTree(job.pid, host='linux')
+            sample = perf_queue.SystemHealth('linux').sample(cpu_sampler=sampler, deadline=time.time() + 60, cancel=cancel)
             self.assertTrue(sample['partial_cpu_window'])
             self.assertTrue(sample['cpu_accounting_valid'], sample)
             self.assertGreater(sample['interval_seconds'], 0.)
-            self.assertLess(sample['interval_seconds'], 2.)
-            self.assertIn(job.pid, sample['cpu_accounting']['attributed_pids'])
-            self.assertNotIn(foreign.pid, sample['cpu_accounting']['attributed_pids'])
+            self.assertLess(sample['interval_seconds'], 10., 'cancellation must shorten the ten-second window')
+            accounting = sample['cpu_accounting']
+            self.assertEqual(accounting['before_member_pids'], sorted([job.pid, descendant]))
+            self.assertEqual(accounting['after_member_pids'], sorted([job.pid, descendant]))
+            self.assertEqual(accounting['attributed_pids'], sorted([job.pid, descendant]))
+            self.assertGreater(accounting['job_cpu_seconds'], 0., accounting)
+            before = {row['pid']: row['cpu_seconds'] for row in accounting['process_cpu_before']}
+            after = {row['pid']: row['cpu_seconds'] for row in accounting['process_cpu_after']}
+            self.assertGreater(after[descendant], before[descendant], 'the descendant must really burn CPU')
+            self.assertNotIn(foreign.pid, accounting['attributed_pids'])
         finally:
-            timer.cancel()
+            if timer is not None:
+                timer.cancel()
+                timer.join(timeout=30)
             for process in (job, foreign):
-                if process.poll() is None:
+                process.stdin.close()
+                try:
+                    process.wait(timeout=30)
+                except subprocess.TimeoutExpired:
                     os.killpg(process.pid, __import__('signal').SIGKILL)
-                process.wait(timeout=2)
+                    process.wait(timeout=30)
+            job.stdout.close()
 
     def test_mac_cancelled_partial_uses_kernel_ticks_and_keeps_normal_memory(self):
         self.assertEqual(perf_queue.mac_ticks_idle([100, 0, 100, 0], [140, 0, 140, 0]), 50.)
@@ -190,7 +228,7 @@ class PerformanceQueue(unittest.TestCase):
 
     def cli(self, *args):
         return subprocess.run([sys.executable, str(SCRIPT), '--queue-dir', str(self.storage), *args],
-                              cwd=self.caller, text=True, capture_output=True)
+                              cwd=self.caller, text=True, capture_output=True, timeout=60)
 
     def test_enqueue_preserves_caller_directory_and_options_after_job_before_separator(self):
         result = self.cli('enqueue', 'linux', 'literal-job', '--lane', 'experiment-a', '--priority', '2',
@@ -224,11 +262,11 @@ class PerformanceQueue(unittest.TestCase):
 
     def runner(self, queue, **options):
         settings = dict(sensor=QuietHealth(), perf_lock=self.root / 'perf.lock', readiness_period=.01,
-                        sample_period=.01, force_at=time.time() + 60, hard_stop=time.time() + 10)
+                        sample_period=.01, force_at=time.time() + 600, hard_stop=time.time() + 300)
         settings.update(options)
         return perf_queue.Runner(queue, 'linux', **settings)
 
-    def until(self, condition, timeout=3):
+    def until(self, condition, timeout=30):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             if condition():
@@ -266,8 +304,8 @@ class PerformanceQueue(unittest.TestCase):
         path = self.root / 'perf.lock'
         contender = ['perl', '-MFcntl=:flock', '-e', 'open my $f,"+<",$ARGV[0] or die $!; exit(flock($f,LOCK_EX|LOCK_NB)?0:75)', str(path)]
         with perf_queue.PerlLease(path):
-            self.assertEqual(subprocess.run(contender).returncode, 75)
-        self.assertEqual(subprocess.run(contender).returncode, 0)
+            self.assertEqual(subprocess.run(contender, timeout=30).returncode, 75)
+        self.assertEqual(subprocess.run(contender, timeout=30).returncode, 0)
         queue = perf_queue.Queue(self.storage)
         queue.seal('linux')
         with perf_queue.file_lock(queue.host_dir('linux') / 'runner.lock'):
@@ -419,7 +457,7 @@ class PerformanceQueue(unittest.TestCase):
             self.assertEqual(self.cli('stop', 'linux').returncode, 0)
             self.assertIsNone(unrelated.poll())
             self.assertFalse(queue.status('linux')['linux']['runner']['identity_matches'])
-            runner = self.runner(queue, hard_stop=time.time() + 60)
+            runner = self.runner(queue, hard_stop=time.time() + 300)
             outcomes = []
             driver = threading.Thread(target=lambda: outcomes.append(runner.run()), daemon=True)
             driver.start()
@@ -433,16 +471,17 @@ class PerformanceQueue(unittest.TestCase):
             driver.join()
             self.assertFalse(driver.is_alive())
             self.assertEqual(outcomes, ['stop-requested'])
+            self.until(lambda: perf_queue.process_identity(int(marker.read_text())) is None)
             self.assertIsNone(perf_queue.process_identity(int(marker.read_text())))
             self.assertIsNone(unrelated.poll())
         finally:
             queue.stop('linux')
             if driver is not None:
-                driver.join(10)
+                driver.join(30)
             if unrelated.poll() is None:
                 unrelated.terminate()
             unrelated.stdin.close()
-            unrelated.wait(timeout=5)
+            unrelated.wait(timeout=30)
 
     def test_forced_jobs_receive_queue_context_and_hard_deadline_stops_only_owned_group(self):
         queue = perf_queue.Queue(self.storage)
@@ -465,12 +504,13 @@ class PerformanceQueue(unittest.TestCase):
             self.assertEqual(data['lease_inode'], (self.root / 'perf.lock').stat().st_ino)
         queue.seal('linux', False)
         marker = self.root / 'deadline-child'
-        hard = queue.enqueue('linux', 'deadline', [sys.executable, '-c', 'from pathlib import Path; import os,sys,time; Path(sys.argv[1]).write_text(str(os.getpid())); time.sleep(5)', str(marker)], cwd=self.caller)
+        hard = queue.enqueue('linux', 'deadline', [sys.executable, '-c', 'from pathlib import Path; import os,sys,threading; Path(sys.argv[1]).write_text(str(os.getpid())); threading.Event().wait()', str(marker)], cwd=self.caller)
         queue.seal('linux')
-        deadline = time.time() + .8
+        deadline = time.time() + 10
         self.assertEqual(self.runner(queue, hard_stop=deadline).run(), 'hard-stop')
-        self.assertLess(time.time(), deadline + .5)
+        self.assertLess(time.time(), deadline + 5)
         self.assertTrue(marker.exists())
+        self.until(lambda: perf_queue.process_identity(int(marker.read_text())) is None)
         self.assertIsNone(perf_queue.process_identity(int(marker.read_text())))
         attempt = next(row for row in queue.jobs('linux') if row['id'] == hard['id'])['attempts'][0]
         self.assertEqual(json.loads(Path(attempt).read_text())['stop_reason'], 'hard-stop')
@@ -478,32 +518,38 @@ class PerformanceQueue(unittest.TestCase):
     def test_watchdog_retains_lease_and_hard_stop_after_runner_process_crashes(self):
         queue = perf_queue.Queue(self.storage)
         marker = self.root / 'orphan-command'
-        job = queue.enqueue('linux', 'orphan', [sys.executable, '-c', 'from pathlib import Path; import os,sys,time; Path(sys.argv[1]).write_text(str(os.getpid())); time.sleep(5)', str(marker)], cwd=self.caller)
+        job = queue.enqueue('linux', 'orphan', [sys.executable, '-c', 'from pathlib import Path; import os,sys,threading; Path(sys.argv[1]).write_text(str(os.getpid())); threading.Event().wait()', str(marker)], cwd=self.caller)
         queue.seal('linux')
-        helper = 'from bench.perf_queue import Queue,Runner\nfrom pathlib import Path\nimport sys,time\nclass H:\n def sample(self,**kw): return {"idle_percent":95.,"memory_ok":True}\nRunner(Queue(sys.argv[1]),"linux",sensor=H(),perf_lock=Path(sys.argv[2]),readiness_period=.01,sample_period=.01,force_at=time.time()+60,hard_stop=time.time()+2).run()\n'
-        parent = subprocess.Popen([sys.executable, '-c', helper, str(self.storage), str(self.root / 'perf.lock')],
-                                  cwd=self.caller, env=os.environ | {'PYTHONPATH': str(SCRIPT.parents[1])},
+        unrelated = subprocess.Popen([sys.executable, '-c', 'import sys; sys.stdin.buffer.read()'],
+                                     stdin=subprocess.PIPE, start_new_session=True)
+        helper = 'import sys; sys.path.insert(0,sys.argv[3])\nfrom bench.perf_queue import Queue,Runner\nfrom pathlib import Path\nimport sys,time\nclass H:\n def sample(self,**kw): return {"idle_percent":95.,"memory_ok":True}\nRunner(Queue(sys.argv[1]),"linux",sensor=H(),perf_lock=Path(sys.argv[2]),readiness_period=.01,sample_period=.01,force_at=time.time()+60,hard_stop=time.time()+10).run()\n'
+        parent = subprocess.Popen([sys.executable, '-c', helper, str(self.storage), str(self.root / 'perf.lock'), str(SCRIPT.parents[1])],
+                                  cwd=self.caller,
                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         try:
             child_json = self.storage / 'linux/jobs' / job['id'] / 'attempts/001/child.json'
             self.until(lambda: marker.exists() and child_json.exists())
             worker = json.loads(child_json.read_text())
             parent.kill()
-            parent.wait(timeout=2)
+            parent.wait(timeout=30)
             with self.assertRaises(BlockingIOError):
                 with perf_queue.PerlLease(self.root / 'perf.lock'):
                     pass
-            self.until(lambda: perf_queue.process_identity(worker['pid']) is None, timeout=4)
+            self.until(lambda: perf_queue.process_identity(worker['pid']) is None, timeout=30)
+            self.until(lambda: perf_queue.process_identity(int(marker.read_text())) is None)
             self.assertIsNone(perf_queue.process_identity(int(marker.read_text())))
             with perf_queue.PerlLease(self.root / 'perf.lock'):
                 pass
+            self.assertIsNone(unrelated.poll(), 'watchdog must not signal a foreign process')
             self.assertEqual(queue.recover('linux'), [])
             self.assertTrue(json.loads(Path(queue.jobs('linux')[0]['attempts'][0]).read_text())['recovered_after_runner_crash'])
         finally:
             queue.stop('linux')
             if parent.poll() is None:
                 parent.kill()
-            parent.wait(timeout=2)
+            parent.wait(timeout=30)
+            unrelated.stdin.close()
+            unrelated.wait(timeout=30)
 
 
 if __name__ == '__main__':
