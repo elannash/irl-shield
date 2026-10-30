@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ulimit -c 0
+cd "$(dirname "$0")/.."
+export OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+export CUDA_CACHE_PATH="$PWD/.tmp/m2/cuda-cache"
+M2_GPU_SITE=${M2_GPU_SITE:-$(.tmp/m2/py311/bin/python -c 'import importlib.util; print(next(iter(importlib.util.find_spec("nvidia").submodule_search_locations)))')}
+export LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$(find "$M2_GPU_SITE/nvidia" -mindepth 2 -maxdepth 2 -type d -name lib | paste -sd:)
+exec nice -n 10 .tmp/m2/py311/bin/python -m relay.runtime "$@"

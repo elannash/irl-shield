@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Execute relay.soak with the selected Python environment, no shell/network argv."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from relay.soak import main
+
+if __name__ == '__main__':
+    try:
+        raise SystemExit(main())
+    except Exception:
+        raise SystemExit('Soak failed; credentialed diagnostics suppressed') from None
