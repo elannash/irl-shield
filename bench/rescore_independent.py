@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from bench.independence import policy_metadata, annotate_card
+from bench.independence import retained_policy_metadata, annotate_card
 from bench.scoring import score_records
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -31,15 +31,21 @@ def main():
     parser.add_argument('--retained-root',type=Path,required=True)
     parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--independent-both',type=Path,required=True)
-    args=parser.parse_args();args.out.mkdir(parents=True,exist_ok=False)
+    args=parser.parse_args()
     comparison=json.loads((ROOT/'bench/results/m1-tune-comparison.json').read_text());rows=[]
     prior_bytes=args.independent_both.read_bytes()
     prior={r['run_id']:r for r in json.loads(prior_bytes)['rows']}
+    retained=[]
     for original in comparison['rows']:
         source=ROOT/original['source'];raw=source.read_bytes()
         if hashlib.sha256(raw).hexdigest()!=original['source_sha256']:
             raise ValueError('Original comparison card changed')
-        old=json.loads(raw);card=deepcopy(old);families=policy_metadata(card['candidate'],card['options'])['detector_families']
+        old=json.loads(raw)
+        metadata=retained_policy_metadata(old)
+        retained.append((original,source,old,metadata))
+    args.out.mkdir(parents=True,exist_ok=False)
+    for original,source,old,metadata in retained:
+        card=deepcopy(old);families=metadata['detector_families']
         dest=args.out/card['run_id'];dest.mkdir()
         artifacts=[]
         for record in card['clips']:
@@ -88,7 +94,7 @@ def main():
         card['gate_1'].update(checks);card['gate_1'].update({'eligible':False,'pass':False})
         if 'quality_checks' in card:
             card['quality_checks'].update(checks)
-            c=card['quality_checks'];card['comparison_valid']=all(c.get(k) is True for k in ('judge_discrimination','independent_judges','protected','real_video')) and c.get('masked_area') is not False
+            c=card['quality_checks'];card['comparison_valid']=all(c.get(k) is True for k in ('judge_discrimination','independent_judges','protected','real_video')) and c.get('masked_area') is True
         baseline=json.loads((ROOT/'bench/baseline.json').read_text())
         card['baseline_deltas_pp']={k:100*(card[k]['hidden_fraction']-baseline[k]['hidden_fraction']) if card[k]['hidden_fraction'] is not None and baseline[k]['hidden_fraction'] is not None else None for k in ('natural','synthetic')}
         card['rescore_provenance']={'source_card':str(source),'source_sha256':original['source_sha256'],

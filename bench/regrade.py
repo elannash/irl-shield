@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from bench.scoring import score_records
-from bench.independence import policy_metadata, annotate_card
+from bench.independence import retained_policy_metadata, annotate_card
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -21,7 +21,7 @@ def main():
     card=json.loads((source/'scorecard.json').read_text())
     if card.get('schema_version',0)>=2:
         raise ValueError('Clocked quality must be scored through bench.clocked_bench; regrade accepts unrotated legacy/offline evidence only')
-    families=policy_metadata(card['candidate'],card.get('options',{}))['detector_families']
+    families=retained_policy_metadata(card)['detector_families']
     retained=[]
     for record in card['clips']:
         label=record['clip']+('-synthetic' if record['synthetic_variant'] else '-natural')
@@ -65,7 +65,7 @@ def main():
     if 'quality_checks' in card:
         card['quality_checks']['independent_judges']=independence['sufficient_independent_engines']
         checks=card['quality_checks']
-        card['comparison_valid']=bool(checks['independent_judges'] and checks['judge_discrimination'] and checks['protected'] and card['real_video_pass'] and checks.get('masked_area') is not False)
+        card['comparison_valid']=bool(checks['independent_judges'] and checks['judge_discrimination'] and checks['protected'] and card['real_video_pass'] and checks.get('masked_area') is True)
     card['measurement_code_sha256']=hashlib.sha256((ROOT/'bench/scoring.py').read_bytes()+(ROOT/'bench/metrics.py').read_bytes()).hexdigest()
     baseline=json.loads((ROOT/'bench/baseline.json').read_text())
     card.pop('baseline_deltas',None)
