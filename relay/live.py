@@ -37,13 +37,15 @@ class RelayControl:
 
 
 class RelaySession:
-    def __init__(self, engine, sink, width=1280, height=720, fps=30, start=None, control=None):
+    def __init__(self, engine, sink, width=1280, height=720, fps=30, start=None, control=None,
+                 appearance=None):
         if fps != 30 or min(width, height) < 32 or width % 2 or height % 2:
             raise ValueError('Live transport requires even dimensions and 30fps')
         self.engine, self.sink = engine, sink
         self.width, self.height, self.fps = width, height, fps
         self.start = time.monotonic() if start is None else start
         self.control = control if control is not None else RelayControl(engine)
+        self.appearance = appearance
         self.generation = None
         self.source_origin = self.session_pts = None
         self.last_index = 0
@@ -103,6 +105,8 @@ class RelaySession:
             pcm = np.where(self.tags[slots] == indices, self.samples[slots], 0).astype(np.int16)
             self.tags[slots] = -1
             self.audio_cursor = first + 1600
+            if self.appearance is not None:
+                self.appearance.present(result, capture_highwater=self.last_index)
             # poll() releases the engine lock before transport writes. A hold
             # arriving in that interval must not forward the stale LIVE pixels.
             if self.engine.control.state == 'HOLD' and not result.slate:

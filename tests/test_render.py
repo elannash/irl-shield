@@ -88,3 +88,47 @@ class PrivacyRendering(unittest.TestCase):
                         {'padding': float('nan')}, {'slate_after': float('inf')}]:
             with self.subTest(options=options), self.assertRaises(ValueError):
                 Renderer(**options)
+
+    def test_skin_paint_preserves_every_original_polygon_pixel_and_default_geometry(self):
+        import cv2
+        from shield.skins import MaskRegion, SkinPainter
+        checker = (np.indices((120, 160)).sum(axis=0) % 2 * 255).astype(np.uint8)
+        frame = np.repeat(checker[:, :, None], 3, axis=2)
+        quads = [[[20, 12], [110, 32], [100, 58], [10, 38]],
+                 [[-18, 60], [45, 48], [50, 87], [-13, 99]]]
+        polygon = np.zeros(frame.shape[:2], np.uint8)
+        for quad in quads:
+            cv2.fillConvexPoly(polygon, np.asarray(quad, np.int32), 255)
+        painter = SkinPainter()
+        skin = ['frosted']
+        def paint(pixels, regions, state):
+            return painter.paint(pixels, [MaskRegion(*r) for r in regions], state=state, skin=skin[0])
+        renderer = Renderer(paint=paint)
+        baseline = Renderer().render(frame, quads, 'LIVE', 2)
+        frosted = renderer.render(frame, quads, 'LIVE', 2)
+        np.testing.assert_array_equal(frosted.mask, baseline.mask)
+        self.assertTrue((frosted.mask[polygon > 0] == 255).all())
+        self.assertTrue(((frosted.pixels[polygon > 0] > 0) & (frosted.pixels[polygon > 0] < 255)).all())
+        np.testing.assert_array_equal(frosted.pixels[frosted.mask == 0], frame[frosted.mask == 0])
+        skin[0] = 'bar'
+        bar = renderer.render(frame, quads, 'LIVE', 2)
+        np.testing.assert_array_equal(bar.mask, frosted.mask)
+        self.assertTrue((bar.pixels[polygon > 0] == 0).all())
+        for state in ('HOLD', 'PROTECT'):
+            a = renderer.render(frame, [], state, 0)
+            b = renderer.render(255-frame, [], state, 0)
+            self.assertTrue((a.mask == 255).all())
+            np.testing.assert_array_equal(a.pixels, b.pixels)
+
+    def test_skin_paint_cannot_shrink_coverage_or_supply_transparent_polygons(self):
+        from shield.skins import MaskRegion, SkinPainter
+        frame = np.full((120, 160, 3), 180, np.uint8)
+        quad = [[20, 20], [100, 20], [100, 50], [20, 50]]
+        painter = SkinPainter()
+        for invalid in ('mask', 'alpha'):
+            def damaged(pixels, regions, state):
+                result = painter.paint(pixels, [MaskRegion(*r) for r in regions], state=state)
+                getattr(result, invalid).fill(0)
+                return result
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'opaque polygon coverage'):
+                Renderer(paint=damaged).render(frame, [quad], 'LIVE', 1)

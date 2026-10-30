@@ -42,11 +42,13 @@ class ShieldEvents:
     advances a permanent timestamp floor so an expired release cannot replay.
     """
     def __init__(self, broadcaster_id, hold, *, started_at=None, clock=time.time,
-                 capacity=4096, max_age=600, mock=False, control_clock=time.monotonic):
+                 capacity=4096, max_age=600, mock=False, control_clock=time.monotonic,
+                 on_chat=None):
         if capacity < 1 or not math.isfinite(max_age) or max_age <= 0:
             raise ValueError('invalid replay bounds')
         self.broadcaster_id, self.hold, self.clock = broadcaster_id, hold, clock
         self.control_clock = control_clock
+        self.on_chat = on_chat
         self.started_at = clock() if started_at is None else started_at
         self.capacity, self.max_age, self.mock = capacity, max_age, mock
         self._lock = RLock()
@@ -243,6 +245,13 @@ class ShieldEvents:
                         return 'ignored'
                     owner = event['chatter_user_id'] == self.broadcaster_id
                     moderator = any(b['set_id'] == 'moderator' and b['id'] == '1' for b in event['badges'])
+                    if self.on_chat is not None and event['message']['text'].startswith('!skin '):
+                        if (generation != self._generation or not self._connection_live
+                                or self._revoked or self._phase != 'ready' or at is None):
+                            return 'inactive'
+                        roles = ({'broadcaster'} if owner else set()) | ({'moderator'} if moderator else set())
+                        self.on_chat(mid, event['chatter_user_id'], roles, event['message']['text'], at)
+                        return 'skin-chat'
                     command = event['message']['text'].strip().lower()
                     if command == '!shield hold' and (owner or moderator):
                         active, source, outcome = True, 'chat', 'chat-hold'
