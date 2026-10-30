@@ -12,6 +12,10 @@ class TwitchError(Exception):
     """Errors contain fixed local reasons, never remote response bodies."""
 
 
+class InvalidToken(TwitchError):
+    """The token validation endpoint definitively rejected the access token."""
+
+
 class Secret:
     __slots__ = ('_value',)
 
@@ -190,6 +194,8 @@ class UserSession:
         if self._validated_at is None or now - self._validated_at >= 3600:
             status, body = await self.auth.http.request('GET', '/oauth2/validate', headers={
                 'Authorization': 'OAuth ' + self.tokens.access.reveal()})
+            if status == 401:
+                raise InvalidToken('authorization validation failed')
             if (status != 200 or not isinstance(body, dict)
                     or body.get('client_id') != self.auth.client_id
                     or not isinstance(self.broadcaster_id, str) or not self.broadcaster_id
