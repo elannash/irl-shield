@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "models_added": [],
+  "production_changes": [],
+  "optimization_arms_adopted": [],
+  "performance_claim": null,
+  "gpu_transfer_measurements": null,
+  "collector": {
+    "readiness": "decoded source + completed fast/accurate inference + acknowledged encode + independent decode",
+    "warmup_seconds_after_readiness": 15,
+    "steady_seconds_required": 120,
+    "privacy_grade": null,
+    "native_validation": "not run; synthetic collection-boundary regressions only",
+    "root_launcher": "required and not supplied",
+    "gpu_profile_step_complete": false
+  },
+  "generated_load": {
+    "generator": "bench.efficiency.job.sender",
+    "license": "CC0-1.0",
+    "authorship": "Newly authored in W11 Codex implementation child, 2026-10-30",
+    "brands": false,
+    "real_people": false,
+    "music": false,
+    "imagegen_used": false,
+    "asset_hash": null,
+    "asset_hash_reason": "Procedural load; no image or encoded video artifact generated outside root queued run"
+  },
+  "profiling_tool": {
+    "name": "py-spy",
+    "version": "0.4.1",
+    "license": "MIT",
+    "license_source": "https://github.com/benfred/py-spy/blob/v0.4.1/LICENSE",
+    "wheel_sha256": "6a80ec05eb8a6883863a367c6a4d4f2d57de68466f7956b6367d4edd5c61bb29",
+    "binary_sha256": "e7c2de2dc54449ec88c086f1859555b4e34e63ccdcf3f8804496f9306cd44de6",
+    "binary_shipped": false,
+    "provenance_receipt": "out/w11/tools/provenance.json"
+  }
+}
