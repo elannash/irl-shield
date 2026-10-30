@@ -191,6 +191,7 @@ class InputMedia(unittest.TestCase):
                     for packet in stream.encode():
                         movie.mux(packet)
                 stopped, release_new = threading.Event(), threading.Event()
+                reconnected = threading.Event()
                 listener = socket.socket()
                 listener.bind(('127.0.0.1', 0))
                 listener.listen(2)
@@ -216,7 +217,11 @@ class InputMedia(unittest.TestCase):
                         if second is None:
                             return
                         with second:
-                            if not release_new.wait(5) or stopped.is_set():
+                            reconnected.set()
+                            while not release_new.wait(.05):
+                                if stopped.is_set():
+                                    return
+                            if stopped.is_set():
                                 return
                             with second.makefile('wb', buffering=0) as wire, av.open(
                                     wire, 'w', format='nut', options={'flush_packets': '1'}) as movie:
@@ -241,9 +246,9 @@ class InputMedia(unittest.TestCase):
                 written = []
                 session = RelaySession(model, lambda frame, pcm: written.append(frame), width=64, height=32)
                 try:
-                    deadline = time.monotonic() + 5
-                    while source.error_code != 'input-eof' and time.monotonic() < deadline:
-                        stopped.wait(.005)
+                    # error_code precedes DROP publication. A real second accept
+                    # proves the EOF reader finished that handoff before drain.
+                    self.assertTrue(reconnected.wait(5), errors)
                     self.assertEqual(source.error_code, 'input-eof', errors)
                     self.assertEqual(source.high_water, queued, 'exercise exactly the non-full queue size')
                     rows = source.drain()
@@ -305,11 +310,19 @@ class InputMedia(unittest.TestCase):
                         fixture.mux(packet)
                 for packet in video.encode():
                     fixture.mux(packet)
-            source = NetworkInput(path)
+            eof_published, release_eof = threading.Event(), threading.Event()
+
+            class SettledFileInput(NetworkInput):
+                def _send(self, item):
+                    super()._send(item)
+                    if item[0] == 'drop' and item[2] == 'input-eof':
+                        # Keep the real EOF boundary stable until it is inspected.
+                        eof_published.set()
+                        release_eof.wait()
+
+            source = SettledFileInput(path)
             try:
-                deadline = time.monotonic() + 2
-                while source.error_code != 'input-eof' and time.monotonic() < deadline:
-                    source.thread.join(timeout=.005)
+                self.assertTrue(eof_published.wait(2), 'reader did not publish EOF invalidation')
                 rows = source.drain()
                 self.assertGreater(source.dropped, 0, 'producer may not wait forever on a full event queue')
                 self.assertLessEqual(source.high_water, 8)
@@ -317,6 +330,7 @@ class InputMedia(unittest.TestCase):
                 self.assertEqual(rows[0][0], 'drop', 'no stale pixels may precede an invalidated generation')
                 self.assertEqual(rows[0][2], 'input-eof')
             finally:
+                release_eof.set()
                 source.close()
             source.close()
             self.assertEqual(source.drain(), [])
