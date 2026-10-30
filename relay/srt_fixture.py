@@ -43,4 +43,3 @@ def mpegts(origin=0, frames=90, width=64, height=64, timing=False):
             for packet in stream.encode():
                 movie.mux(packet)
     return payload.getvalue()
-
