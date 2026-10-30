@@ -3,10 +3,11 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from bench import quality_bundle as bundle
+from bench import heldout_bench, quality_bundle as bundle
 import test_quality_bundle as tune
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class HeldoutDataset(unittest.TestCase):
     def setUp(self):
+        self.commit = 'a' * 40
+        # An rsync mirror has no Git metadata. Replace only this external
+        # metadata provider; encoded fixture I/O keeps real subprocesses.
+        provider = SimpleNamespace(check_output=lambda *args, **kwargs: self.commit + '\n')
+        commit_lookup = patch.object(heldout_bench, 'subprocess', provider)
+        commit_lookup.start()
+        self.addCleanup(commit_lookup.stop)
         self.fixture = tune.QualityBundle(methodName='runTest')
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
@@ -105,9 +113,7 @@ class HeldoutDataset(unittest.TestCase):
         self.assertFalse((corpus / 'scorecard.json').exists())
 
     def test_one_shot_render_repeats_have_no_physical_effect_even_after_failure(self):
-        from bench import heldout_bench
-        import subprocess
-        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        commit = self.commit
         for fail in (False, True):
             with self.subTest(fail=fail):
                 directory = self.base / ('failed-run' if fail else 'complete-run')
@@ -137,9 +143,7 @@ class HeldoutDataset(unittest.TestCase):
                 self.assertFalse(status['real_time_verified'])
 
     def test_one_shot_judging_after_relocation_consumes_all_six_once(self):
-        from bench import heldout_bench
-        import subprocess
-        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        commit = self.commit
         directory = self.base / 'evaluation'
         with patch('bench.pipeline.detector_for', side_effect=lambda *args: tune.Detector()):
             heldout_bench.start(root=self.base, dataset=self.dataset,
@@ -164,24 +168,25 @@ class HeldoutDataset(unittest.TestCase):
         self.assertEqual(json.loads((relocated / 'evaluation.json').read_text())['status'], 'complete')
         self.assertTrue((relocated / 'JUDGING.started.json').is_file())
 
-    def test_changed_input_media_rejects_before_one_shot_is_spent(self):
-        from bench import heldout_bench
-        import subprocess
-        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
-        self.fixture.source.write_bytes(self.fixture.source.read_bytes() + b'changed')
-        with patch.object(bundle, 'render') as physical:
-            with self.assertRaisesRegex(ValueError, 'Frozen heldout media/truth changed'):
-                heldout_bench.start(root=self.base, dataset=self.dataset,
-                    dataset_sha256=bundle.digest(self.dataset), policy=self.fixture.config,
-                    policy_sha256=bundle.digest(self.fixture.config), policy_commit=commit,
-                    directory=self.base / 'run', lock_root=self.base)
-        self.assertEqual(physical.call_count, 0)
-        self.assertFalse((self.base / 'EVALUATION.started.json').exists())
+    def test_changed_commit_or_input_media_rejects_before_one_shot_is_spent(self):
+        for fault in ('commit', 'media'):
+            with self.subTest(fault=fault):
+                if fault == 'media':
+                    self.fixture.source.write_bytes(self.fixture.source.read_bytes() + b'changed')
+                expected = ('Final policy commit' if fault == 'commit'
+                            else 'Frozen heldout media/truth changed')
+                with patch.object(bundle, 'render') as physical:
+                    with self.assertRaisesRegex(ValueError, expected):
+                        heldout_bench.start(root=self.base, dataset=self.dataset,
+                            dataset_sha256=bundle.digest(self.dataset), policy=self.fixture.config,
+                            policy_sha256=bundle.digest(self.fixture.config),
+                            policy_commit='b' * 40 if fault == 'commit' else self.commit,
+                            directory=self.base / 'run', lock_root=self.base)
+                self.assertEqual(physical.call_count, 0)
+                self.assertFalse((self.base / 'EVALUATION.started.json').exists())
 
     def test_read_only_cache_override_seals_hashes_without_writing_asset_root(self):
-        from bench import heldout_bench
-        import subprocess
-        commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        commit = self.commit
         checkout = self.base / 'empty-checkout'
         checkout.mkdir()
         state = self.base / 'writable-state'
