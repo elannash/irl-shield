@@ -2,6 +2,8 @@
 import copy
 
 from .protocol import MODELS, number, require
+from .pack import receipt
+from .protocol import load
 from .pack import SPENT_V1_SHA256
 
 POOLS = {'pilot': (56, 28), 'extension': (16, 0), 'revision': (0, 28),
@@ -21,7 +23,7 @@ def initial():
             'revision_started': False, 'locked_started': False, 'locked_result': None,
             'checkpoint_ids': [], 'final_started': False, 'final_freeze_sha256': None,
             'codex_quota': None, 'phase_deadline': None, 'final_reserve_seconds': 7200,
-            'findings_retained': True}
+            'findings_retained': True, 'historical_elapsed_seconds': None}
 
 
 def counts(state):
@@ -50,11 +52,15 @@ def stop_reason(state, now, quota_ok, controls_interpretable, projected_finish, 
     if controls_interpretable is not True:
         return 'uninterpretable_controls'
     values = elapsed(state, now)
-    if sum(values.values()) >= 19800:
+    historical = state['historical_elapsed_seconds']
+    if historical is None:
+        return 'historical_time_unreconciled'
+    number(historical, 0, 19800)
+    if sum(values.values()) + historical >= 19800:
         return 'total_5_5h_cap'
     if state['phase'] and values[state['phase']] >= PHASE_SECONDS[state['phase']]:
         return state['phase'] + '_time_cap'
-    if state['phase'] != 'final' and sum(values.values()) >= 12600:
+    if state['phase'] != 'final' and sum(values.values()) + historical >= 12600:
         return 'final_2h_reserved'
     if projected_finish is None or freeze_at is None:
         return 'projection_or_freeze_unavailable'
@@ -65,7 +71,7 @@ def stop_reason(state, now, quota_ok, controls_interpretable, projected_finish, 
 
 def project(state, providers_and_remaining, now):
     """Only observed successful attachment completions; no invented latency."""
-    estimates = []
+    estimates = {}
     for provider, remaining in providers_and_remaining.items():
         require(provider in MODELS and type(remaining) is int and remaining >= 0, 'projection request')
         if not remaining:
@@ -76,8 +82,8 @@ def project(state, providers_and_remaining, now):
             return None
         # Conservative serial projection; unlocking concurrency never creates a
         # latency assumption or separate Codex quota for Sol and Luna.
-        estimates.append(remaining * sum(observations) / len(observations) * 2)
-    return now + max(estimates, default=0)
+        estimates[provider] = remaining * sum(observations) / len(observations) * 2
+    return now + max(estimates.get('opus', 0), estimates.get('sol', 0) + estimates.get('luna', 0))
 
 
 def start_phase(state, phase, now, freeze_at, final_freeze_sha256=None):
@@ -93,6 +99,8 @@ def start_phase(state, phase, now, freeze_at, final_freeze_sha256=None):
         require(not s['final_started'] and isinstance(final_freeze_sha256, str) and len(final_freeze_sha256) == 64, 'final frozen one-shot binding required')
         s['final_started'] = True; s['final_freeze_sha256'] = final_freeze_sha256
         s['stopped'] = None
+    require(s['historical_elapsed_seconds'] is not None, 'historical elapsed time must be reconciled by root')
+    number(s['historical_elapsed_seconds'], 0, 19800)
     require(s['elapsed'][phase] < PHASE_SECONDS[phase], 'phase time exhausted')
     s['phase'] = phase; s['phase_started'] = now; s['phase_deadline'] = freeze_at
     return s
@@ -107,11 +115,12 @@ def end_phase(state, now):
 
 def reserve_attempt(state, provider, pool, attempt_id, items, now, *, model, effort,
                     quota_ok, controls_interpretable, projected_finish, attachment_control=False,
-                    checkpoint_id=None):
+                    checkpoint_id=None, item_ids=None):
     """Charge every requested logical item, including failed/retried bundles."""
     s = copy.deepcopy(state)
     require(provider in MODELS and (model, effort) == MODELS[provider], 'no model/effort substitution')
     require(pool in POOLS and type(items) is int and 1 <= items <= 44, 'logical item charge')
+    require(isinstance(item_ids, list) and len(item_ids) == items and len(set(item_ids)) == items and all(isinstance(i, str) and i for i in item_ids), 'logical item IDs required')
     require(attempt_id not in {a['attempt_id'] for a in s['attempts']}, 'attempt replay')
     require(s['phase'] is not None and provider not in s['disabled'], 'phase missing or grader disabled')
     bootstrap = attachment_control and s['capability'][provider] is None and s['clean'][provider] == 0
@@ -128,6 +137,8 @@ def reserve_attempt(state, provider, pool, attempt_id, items, now, *, model, eff
         require(s['value_gate'] == 'extend_four', 'only exactly one useful pilot result permits extension')
     if pool in ('revision', 'locked', 'checkpoints'):
         require(s['value_gate'] == 'conditional', 'conditional work not earned')
+    require(pool != 'revision' or s['revision_started'], 'one prompt revision must be frozen before revision calls')
+    require(pool != 'locked' or s['locked_started'] and s['locked_result'] is None, 'locked check must be frozen and not completed')
     require(pool != 'checkpoints' or s['locked_result'] == 'PASS', 'failed/skipped locked check ends tuning')
     if pool == 'checkpoints':
         require(checkpoint_id is not None, 'checkpoint identity')
@@ -150,7 +161,7 @@ def reserve_attempt(state, provider, pool, attempt_id, items, now, *, model, eff
     row = {'attempt_id': attempt_id, 'provider': provider, 'pool': pool, 'units': items, 'status': 'started',
            'model': model, 'effort': effort, 'valid_reference': provider != 'luna', 'actual_attachment_receipt': None,
            'latency_seconds': None, 'usage': None, 'started_at': now, 'finished_at': None,
-           'checkpoint_id': checkpoint_id, 'attachment_control': attachment_control, 'projected_finish': projected_finish}
+           'checkpoint_id': checkpoint_id, 'attachment_control': attachment_control, 'projected_finish': projected_finish, 'item_ids': item_ids}
     s['attempts'].append(row); s['active'][attempt_id] = row
     return s
 
@@ -198,7 +209,7 @@ def pilot_value(changes, comparisons, extension=False, *, all_comparisons_interp
 def begin_locked(state, labels, prompt_sha256):
     s = copy.deepcopy(state)
     require(s['value_gate'] == 'conditional' and not s['locked_started'], 'locked run not earned or already attempted')
-    require(s['revision_started'] and isinstance(prompt_sha256, str) and len(prompt_sha256) == 64, 'one frozen prompt revision required')
+    require(s['revision_started'] and prompt_sha256 == s['prompt_sha256'], 'one frozen prompt revision required')
     events = [r['event'] for r in labels]
     if len(labels) != 40 or len(set(events)) != 40 or sum(r['label'] == 'present' for r in labels) != 20 or sum(r['label'] == 'absent_in_sample' for r in labels) != 20:
         s['locked_result'] = 'SKIP_MISSING_DATA'; s['locked_started'] = True
@@ -230,4 +241,26 @@ def locked_result(state, answers, controls_pass):
     s['locked_metrics'] = {'false_clears': misses, 'positive_events': 20, 'negative_escalations': escalated,
                            'negative_events': 20, 'controls_pass': controls_pass,
                            'deployment_reliability': None, 'independence_claim': False}
+    return s
+
+
+def close_checkpoints(state, decision_changes, random_clear_confirmations):
+    s = copy.deepcopy(state)
+    require(len(s['checkpoint_ids']) == 2 and not s['active'], 'two completed checkpoints required')
+    require(len(random_clear_confirmations) == 4 and len({r['event'] for r in random_clear_confirmations}) == 4, 'four random-clear strong audits required')
+    used_attempts = set()
+    for r in random_clear_confirmations:
+        audit = load(receipt(r['receipt']))
+        require(audit['event'] == r['event'] and audit['strong_confirmed'] is True and len(audit['attempt_ids']) == 2, 'unverified random-clear audit')
+        providers = set()
+        for identity in audit['attempt_ids']:
+            a = next((a for a in s['attempts'] if a['attempt_id'] == identity), None)
+            require(a is not None and identity not in used_attempts and a['pool'] == 'special' and a['status'] == 'completed' and a['units'] == 1 and a['actual_attachment_receipt'] is not None and r['event'] in a.get('item_ids', []), 'random-clear audit must consume shared special pool')
+            used_attempts.add(identity); providers.add(a['provider'])
+        require(providers == {'opus', 'sol'}, 'dual strong audit required')
+    require(all(c['verified'] is True and c['strong_confirmed'] is True for c in decision_changes), 'consequential Luna leads need strong confirmation')
+    s['checkpoint_summary'] = {'confirmed_decision_changes': len(decision_changes),
+                               'random_clear_confirmations': random_clear_confirmations}
+    if not decision_changes:
+        s['stopped'] = 'STOP_CHECKPOINTS_NO_NEW_VALUE_KEEP_FINAL'
     return s

@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import math
 
-from .pack import CONTROLS, receipt, validate_plan
-from .protocol import (CATEGORIES, MODELS, VERSION, code_hash, digest, keys, load,
+from .pack import receipt, validate_plan
+from .protocol import (MODELS, VERSION, code_hash, digest, keys, load,
                        require, token, validate_comparison, validate_response,
                        verify_card, write_once)
 
@@ -138,7 +138,6 @@ def reveal(public, private, round_dir, expected_map_sha256):
                'round_sha256': digest(d / 'round.json'),
                'finish_sha256s': {r['start']['entry_id']: digest(d / ('finish-' + r['start']['entry_id'] + '.json')) for r in results}})
     checks, work = {}, []
-    by_key = {v['item']['key']: k for k, v in sealed['items'].items()}
     for r in results:
         row, answer = r['start'], r['answer']; m = sealed['items'][row['item_id']]; item = m['item']
         provider = row['provider']
@@ -176,6 +175,32 @@ def comparison_consistency(original, reversed_answer, original_items, reversed_i
     return winner(original, original_items) == winner(reversed_answer, reversed_items) and original['utility'] != 'uncertain'
 
 
+def record_utility_controls(path, provider, answers, starts, attempt_refs):
+    """A/A plus original/reversed A/B: three charged special judgments."""
+    require(provider in ('opus', 'sol') and len(answers) == len(starts) == len(attempt_refs) == 3, 'strong utility control population')
+    require(len({s['grader_identity'] for s in starts}) == 3, 'fresh utility control contexts required')
+    used = set()
+    for answer, start, ref in zip(answers, starts, attempt_refs):
+        require(start['provider'] == provider and (start['model'], start['effort']) == MODELS[provider], 'utility model substitution')
+        validate_comparison(answer, start, start['items'])
+        attempt = load(receipt(ref))
+        require(attempt['attempt_id'] not in used and attempt['provider'] == provider and
+                (attempt['model'], attempt['effort']) == MODELS[provider] and attempt['pool'] == 'special' and
+                attempt['units'] == 1 and attempt['status'] == 'completed' and attempt['valid_reference'] is True and
+                isinstance(attempt['actual_attachment_receipt'], dict) and attempt['actual_attachment_receipt'].get('received') is True,
+                'utility controls must consume actual shared-special-pool attempts')
+        used.add(attempt['attempt_id'])
+    aa, ab, ba = answers
+    require(aa['items'][0] == aa['items'][1] and len(set(ab['items'])) == 2, 'A/A and A/B source semantics')
+    consistent = comparison_consistency(ab, ba, ab['items'], ba['items'])
+    passed = aa['utility'] == 'tie' and consistent
+    report = {'version': VERSION, 'provider': provider, 'passed': passed, 'automatic_use_stopped': not passed,
+              'special_attempt_receipts': attempt_refs, 'answers': answers, 'starts': starts,
+              'aa_tie': aa['utility'] == 'tie', 'reversed_consistent': consistent}
+    write_once(path, report)
+    return report
+
+
 def record_after(round_dir, contributions, local_verification_ref, owner_utility_ref=None):
     d = Path(round_dir); findings = load(d / 'findings.json')
     require(digest(d / 'UNBLINDED.json') == findings['unblind_barrier_sha256'], 'reveal barrier drift')
@@ -185,18 +210,36 @@ def record_after(round_dir, contributions, local_verification_ref, owner_utility
     before = load(receipt(findings['before']))
     by_event = {r['event']: r for r in before['decisions']}
     qualified = []
+    require(len({c['event'] for c in contributions}) == len(contributions), 'one decision contribution per source event')
     for c in contributions:
         keys(c, ('event', 'clip', 'kind', 'before', 'after', 'evidence_id', 'verified', 'strong_confirmed', 'new_evidence'))
         require(c['event'] in by_event and c['before'] == by_event[c['event']]['decision'] and c['clip'] == by_event[c['event']]['clip'], 'before/after event mismatch')
+        require(c['after'] in ('promote', 'veto', 'keep', 'utility_tie'), 'after decision')
         require(c['kind'] in ('promotion_change', 'veto_change', 'actual_utility_tie', 'known_failure_description'), 'contribution type')
         local = next((r for r in verification['checks'] if r['evidence_id'] == c['evidence_id']), None)
         require(local is not None and local['verified'] == c['verified'] and local['event'] == c['event'], 'unverified contribution')
+        require(local.get('grounded') is True and local.get('processed_evidence') is not None, 'grounded processed positive check required')
+        receipt(local['processed_evidence'])
         strong_ok = all(not findings['controls'][p]['automatic_use_stopped'] for p in ('opus', 'sol')) and local['confirmed_by'] == ['opus', 'sol']
+        if strong_ok:
+            require(set(local.get('strong_receipts', {})) == {'opus', 'sol'}, 'actual strong confirmation receipts required')
+            for provider, ref in local['strong_receipts'].items():
+                confirmed = load(receipt(ref))
+                require(confirmed['provider'] == provider and (confirmed['model'], confirmed['effort']) == MODELS[provider] and
+                        confirmed['event'] == c['event'] and confirmed['evidence_id'] == c['evidence_id'] and
+                        confirmed['grounded_confirmed'] is True and confirmed['status'] == 'completed' and
+                        isinstance(confirmed['actual_attachment_receipt'], dict) and confirmed['actual_attachment_receipt'].get('received') is True and
+                        local['processed_evidence']['sha256'] in confirmed['actual_attachment_receipt'].get('image_sha256s', []),
+                        'strong confirmation receipt differs or lacks actual attachment')
         require(c['strong_confirmed'] is strong_ok, 'Luna cannot confirm/veto/clear a consequence')
         is_new = c['evidence_id'] not in by_event[c['event']]['known_issue_ids']
         require(c['new_evidence'] is is_new, 'known OCR/GeoCLIP failure is not new contribution')
         if c['kind'] == 'actual_utility_tie':
-            require(c['before'] == 'utility_tie' and owner_utility_ref is not None and local.get('pairwise_controls_pass') is True, 'actual utility tie/owner eye/control receipt required')
+            require(c['before'] == 'utility_tie' and owner_utility_ref is not None and set(local.get('pairwise_controls', {})) == {'opus', 'sol'}, 'actual utility tie/owner eye/control receipt required')
+            for provider, ref in local['pairwise_controls'].items():
+                pair_control = load(receipt(ref))
+                require(pair_control['provider'] == provider and pair_control['passed'] is True and pair_control['automatic_use_stopped'] is False,
+                        'utility control contradiction stops automatic grader use')
             owner = load(receipt(owner_utility_ref))
             require(owner['accepted'] is True and c['event'] in owner['events'], 'owner utility verdict missing')
         contributes = c['verified'] is True and strong_ok and is_new and c['kind'] != 'known_failure_description' and c['before'] != c['after']

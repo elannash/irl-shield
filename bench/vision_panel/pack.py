@@ -5,8 +5,8 @@ import random
 import shutil
 
 from .media import normalize_check
-from .protocol import (VERSION, canonical, code_hash, digest, document_digest, keys,
-                       load, number, require, sha, text, token, verify_card, write_once)
+from .protocol import (VERSION, code_hash, digest, document_digest, keys,
+                       load, number, require, text, token, verify_card, write_once)
 
 SPENT_V1_SHA256 = '46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad'
 LICENSES = ('CC0', 'CC BY 3.0', 'CC BY 4.0', 'Public domain')
@@ -91,7 +91,7 @@ def qualify(item):
             output['crops'] == [{k: f[k] for k in ('timestamp', 'bbox', 'sha256')} for f in item['crops']], 'extraction receipt differs')
 
 
-def validate_plan(plan, inspect_receipts=True):
+def validate_plan(plan):
     keys(plan, ('version', 'phase', 'status', 'items', 'events', 'controls', 'one_shot', 'local_before', 'selection_rules'))
     require(plan['version'] == VERSION and plan['phase'] in ('pilot', 'extension', 'locked', 'checkpoints', 'final'), 'plan version/phase')
     access_policy(plan)
@@ -154,24 +154,23 @@ def validate_plan(plan, inspect_receipts=True):
         require(all(i['source']['dataset_kind'] == 'spent-v1' for i in items.values() if i['control'] is None), 'locked sources must be reserved spent-v1')
     else:
         require(len(items) <= 24 and all(i['source']['dataset_kind'] == 'fresh-v2' for i in items.values() if i['control'] is None), 'final licensed event cap')
-    if inspect_receipts:
-        if plan['one_shot'] is not None:
-            auth = load(receipt(plan['one_shot']['receipt']))
-            require(all(auth[k] == plan['one_shot'][k] for k in ('status', 'root_authorized', 'policy_sha256', 'dataset_sha256')), 'ONE_SHOT receipt differs')
-        for item in items.values():
-            qualify(item)
-        refs = {c['type']: load(receipt(c['reference'])) for c in controls}
-        require(refs['readable_leak']['known_readable'] is True and refs['removed_target']['genuinely_removed'] is True and
-                refs['readable_leak']['target_id'] == refs['removed_target']['target_id'], 'readable/removed same-target local validation required')
-        require(refs['utility_failure']['known_utility_failure'] is True and
-                refs['generic_context']['no_grounded_specific_location'] is True, 'uninterpretable controls')
-        before = load(receipt(plan['local_before']))
-        require(before['status'] == 'LOCAL_DECISION_BEFORE_REVEAL' and before['event_ids'] == [e['event'] for e in plan['events']], 'before-decision population differs')
-        # This is the first image-byte access; all source fences and metadata
-        # checks above apply to the entire plan before any image is touched.
-        for i in items.values():
-            for f in i['frames'] + i['crops']:
-                receipt({'path': f['path'], 'sha256': f['sha256']})
+    if plan['one_shot'] is not None:
+        auth = load(receipt(plan['one_shot']['receipt']))
+        require(all(auth[k] == plan['one_shot'][k] for k in ('status', 'root_authorized', 'policy_sha256', 'dataset_sha256')), 'ONE_SHOT receipt differs')
+    for item in items.values():
+        qualify(item)
+    refs = {c['type']: load(receipt(c['reference'])) for c in controls}
+    require(refs['readable_leak']['known_readable'] is True and refs['removed_target']['genuinely_removed'] is True and
+            refs['readable_leak']['target_id'] == refs['removed_target']['target_id'], 'readable/removed same-target local validation required')
+    require(refs['utility_failure']['known_utility_failure'] is True and
+            refs['generic_context']['no_grounded_specific_location'] is True, 'uninterpretable controls')
+    before = load(receipt(plan['local_before']))
+    require(before['status'] == 'LOCAL_DECISION_BEFORE_REVEAL' and before['event_ids'] == [e['event'] for e in plan['events']], 'before-decision population differs')
+    # This is the first image-byte access; all source fences and metadata
+    # checks above apply to the entire plan before any image is touched.
+    for i in items.values():
+        for f in i['frames'] + i['crops']:
+            receipt({'path': f['path'], 'sha256': f['sha256']})
     return {'status': 'READY', 'items': len(items)}
 
 

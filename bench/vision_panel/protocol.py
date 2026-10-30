@@ -132,6 +132,7 @@ def evidence(value, card, face=False):
     keys(value, ('frame_id', 'timestamp', 'bbox', 'exact_string', 'cue'))
     frames = {f['id']: f for f in card['frames'] + card['crops']}
     require(isinstance(value['frame_id'], str) and value['frame_id'] in frames, 'unknown evidence frame')
+    number(value['timestamp'], 0, 2)
     require(value['timestamp'] == frames[value['frame_id']]['timestamp'], 'evidence timestamp differs')
     box(value['bbox'])
     text(value['exact_string'], 150); text(value['cue'], 200)
