@@ -1,0 +1,9 @@
+Running as unit: run-p3080712-i7280099.scope; invocation ID: 6e902e36af74483781f5f3e092f78453
+# TwitchControl
+
+TLC reached 5,312 states, more than the chart budget of 500, so the command wrote no chart.mmd.
+
+## Rules that hold
+NoLIVEWithoutCoverage, OnlyBroadcasterResumes, ReconnectNeverReplays, BoundedMemory, NoDeadlock
+
+Wrote /tmp/agents/irl-shield/m3-model/restored
