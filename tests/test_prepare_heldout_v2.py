@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import unittest
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('prepare_v2', ROOT / 'fixtures/prepare_heldout_v2.py')
 prep = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(prep)
