@@ -1,0 +1,11 @@
+{
+  "status": "HELD_ADAPTER_ONLY",
+  "base_policy": "bench/q2_precision/baseline.json",
+  "adapter": "shield.mask_precision.PaddingBudgetRenderer",
+  "kwargs": {
+    "max_mask_fraction": 0.15
+  },
+  "changed_lever": "padding union budget",
+  "harness_injection": "NOT WIRED: quality_bundle.render omits render_offline(renderer=...)",
+  "guard_failure": "Bare raster union over cap is retained; satisfied=False. No quad is dropped."
+}

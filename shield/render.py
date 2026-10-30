@@ -22,19 +22,24 @@ class Rendered:
 class Renderer:
     """Rasterize convex four-point quads with equal padding normal to each edge.
 
-    Padding is a fraction of the shorter opposite-edge mean, with a 3px floor.
+    Padding is a fraction of the shorter opposite-edge mean, with a 3px floor
+    unless an explicit precision experiment selects a different floor.
     Offset edges meet at miters; points may be supplied in any order.
     """
 
-    def __init__(self, style='opaque', padding=.3, badge=False, slate_after=1.0):
+    def __init__(self, style='opaque', padding=.3, badge=False, slate_after=1.0,
+                 *, padding_floor=3):
         if style != 'opaque':
             raise ValueError('Unsupported render style; expected opaque')
         if not math.isfinite(padding) or padding < 0:
             raise ValueError('Padding must be finite and nonnegative')
+        if not math.isfinite(padding_floor) or padding_floor < 0:
+            raise ValueError('Padding floor must be finite and nonnegative')
         if not math.isfinite(slate_after) or slate_after < 0:
             raise ValueError('Slate threshold must be finite and nonnegative')
         self.style = style
         self.padding = padding
+        self.padding_floor = padding_floor
         self.badge = badge
         self.slate_after = slate_after
 
@@ -82,7 +87,7 @@ class Renderer:
                 points = np.asarray(hulls, np.float64).reshape(-1, 4, 2)
                 edges = np.roll(points, -1, axis=1) - points
                 lengths = np.linalg.norm(edges, axis=2)
-                distance = np.maximum(3, self.padding * np.minimum((lengths[:, 0] + lengths[:, 2]) / 2,
+                distance = np.maximum(self.padding_floor, self.padding * np.minimum((lengths[:, 0] + lengths[:, 2]) / 2,
                                                                    (lengths[:, 1] + lengths[:, 3]) / 2))
                 normals = np.stack((edges[:, :, 1], -edges[:, :, 0]), axis=2) / lengths[:, :, None]
                 previous = np.roll(normals, 1, axis=1)

@@ -6,6 +6,32 @@ from shield.render import Renderer
 
 
 class PrivacyRendering(unittest.TestCase):
+    def test_padding_floor_can_be_removed_without_trimming_bare_quad(self):
+        frame = np.full((100, 140, 3), 180, np.uint8)
+        quad = [[30, 40], [90, 40], [90, 50], [30, 50]]
+        default = Renderer(padding=0).render(frame, [quad], 'LIVE', 1)
+        bare = Renderer(padding=0, padding_floor=0).render(frame, [quad], 'LIVE', 1)
+        self.assertEqual(int(default.mask[37, 30]), 255)
+        self.assertEqual(int(bare.mask[37, 30]), 0)
+        self.assertTrue((bare.mask[40:51, 30:91] == 255).all())
+        self.assertEqual(np.count_nonzero(bare.mask), 61 * 11)
+        self.assertTrue((bare.pixels[40:51, 30:91] == 0).all())
+        for floor in (-1, float('nan'), float('inf')):
+            with self.subTest(floor=floor), self.assertRaises(ValueError):
+                Renderer(padding_floor=floor)
+
+    def test_precision_padding_tracks_height_instead_of_long_word_width(self):
+        frame = np.full((100, 160, 3), 180, np.uint8)
+        renderer = Renderer(padding=.1, padding_floor=0)
+        short = [[20, 40], [120, 40], [120, 50], [20, 50]]
+        tall = [[20, 40], [120, 40], [120, 70], [20, 70]]
+        a = renderer.render(frame, [short], 'LIVE', 1)
+        b = renderer.render(frame, [tall], 'LIVE', 1)
+        self.assertEqual(int(a.mask[39, 70]), 255)
+        self.assertEqual(int(a.mask[38, 70]), 0)
+        self.assertEqual(int(b.mask[37, 70]), 255)
+        self.assertEqual(int(b.mask[36, 70]), 0)
+
     def test_rotated_quad_padding_covers_edges_without_masking_bounding_box_corners(self):
         frame = np.random.default_rng(5).integers(1, 256, (120, 140, 3), dtype=np.uint8)
         original = frame.copy()
