@@ -1,0 +1,6 @@
+docs/model/BootstrapEnvironment.tla: OK
+docs/model/TwitchControl.tla: OK
+docs/model/TwitchControl.cfg: OK
+docs/model/evidence/r3/public_replay.py: OK
+shield/twitch/events.py: OK
+shield/twitch/transport.py: OK

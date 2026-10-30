@@ -38,6 +38,7 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
         self.connect_entered = asyncio.Event()
         self.validation_status = 200
         self.planned_reconnect = False
+        self.welcome_stamp = START + 1
         self.subscription_reply = None
         self.validations = 0
         self.valid = True
@@ -63,7 +64,8 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
                 for topic in ('channel.chat.message', 'channel.shield_mode.begin', 'channel.shield_mode.end'):
                     self.subscription_ids[(sid, topic)] = self.subscription_ids[(old, topic)]
                 self.planned_reconnect = False
-            await connection.send_json({'metadata': {'message_type': 'session_welcome'}, 'payload': {
+            await connection.send_json({'metadata': {'message_type': 'session_welcome',
+                'message_timestamp': datetime.fromtimestamp(self.welcome_stamp, timezone.utc).isoformat()}, 'payload': {
                 'session': {'id': sid, 'status': 'connected', 'connected_at': '2026-10-29T00:00:00Z',
                             'keepalive_timeout_seconds': 10, 'reconnect_url': None}}})
             async for _ in connection:
@@ -172,6 +174,41 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
             await until(lambda: self.events.phase == 'revoked')
             await until(lambda: all(ws.closed for ws in self.sockets))
         self.assertEqual(self.control.state, 'HOLD')
+
+    async def test_lifecycle_timestamps_seed_missing_hold_release_barrier(self):
+        for kind in ('session_welcome', 'session_keepalive', 'session_reconnect', 'handover_welcome'):
+            with self.subTest(kind=kind):
+                self.welcome_stamp = START + 29 if kind == 'session_welcome' else START + 1
+                control, events = adapter(mock=True)
+                client = EventSubClient(self.user, events, mock_origin=self.origin)
+                self.addAsyncCleanup(client.stop)
+                try:
+                    await client.start()
+                    if kind != 'session_welcome':
+                        stamp = START + 1 if kind == 'handover_welcome' else START + 29
+                        message = {'metadata': {'message_type': 'session_reconnect' if kind == 'handover_welcome' else kind,
+                                               'message_timestamp': datetime.fromtimestamp(stamp, timezone.utc).isoformat()}}
+                        if kind in ('session_reconnect', 'handover_welcome'):
+                            if kind == 'handover_welcome':
+                                self.welcome_stamp = START + 29
+                            self.planned_reconnect = True
+                            count = len(self.sockets)
+                            message['payload'] = {'session': {'reconnect_url': self.origin.replace('http://', 'ws://') + '/ws'}}
+                        await self.sockets[-1].send_json(message)
+                        if kind in ('session_reconnect', 'handover_welcome'):
+                            await until(lambda: len(self.sockets) > count and events.phase == 'ready')
+                    hold = notification('missing-' + kind)
+                    del hold['metadata']['message_timestamp']
+                    await self.send(hold)
+                    await until(lambda: control.state == 'HOLD')
+                    for index, stamp in enumerate((START + 28, START + 29), 2):
+                        await self.send(notification('old-' + str(index), '!shield resume', actor='1', at=stamp))
+                        await until(lambda: events.remembered >= index)
+                        self.assertEqual(control.state, 'HOLD')
+                    await self.send(notification('new-' + kind, '!shield resume', actor='1', at=START + 30))
+                    await until(lambda: control.state == 'LIVE')
+                finally:
+                    await client.stop()
 
     async def test_startup_revocation_settles_with_safe_error_and_closes_transport(self):
         for cause in ('subscription-validation', 'reconcile-validation', 'event-revocation'):

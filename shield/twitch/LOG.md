@@ -215,3 +215,55 @@ No new dependency, model weights, dataset, asset, scope, live Twitch, secrets,
 personal keyring, Mac or GPU work. All owned scopes/JVMs exited, no survivors.
 Final source is frozen; files remain unstaged/uncommitted for conductor audit,
 commit and PR #2 round3. [R2-HANDBACK.md](R2-HANDBACK.md) is the current receipt.
+
+## PR #2 review round 3
+
+Conductor committed R2 as `9cb8e812af152833f97adc2ce1cdd4858c5efdf3` and
+accepted one P1: the receipt+30 clamp let an older release clear a newer hold.
+Same dedicated worktree/branch, no M3 staging/commit/push/PR/merge. The fix
+orders finite holds/releases by raw Twitch time; host time is only freshness,
+replay accounting and engine hold time. A far-future release stays rejected
+with fixed warning `clock-skew`, without payload/identity/credential data.
+
+Parent run01 reproduced the base failure:20 tests/22 assertion+subtest failures.
+Run02 found an existing cache-retention assertion failing; receipt accounting
+was restored only for the replay cache, with raw ordering separate. Run03
+passed20 policy tests. Run04 passed the earlier152-test combined gate, later
+superseded. The conductor clarified that an unstamped hold with no history must
+fence its first stamped release, and added all-message metadata seeding plus
+Helix-active ordering. Run05 reproduced six failures across those contracts.
+Run06 passed all55 M3 tests, including four real WebSocket header cases: welcome,
+keepalive, reconnect request and candidate handover welcome. Run07 passed154
+tests before final source review restored the upstream initial planned-dial
+watchdog reset. That run is not the gate for final transport bytes.
+
+An isolated Ultra child used four calls: old config error counted, old raw-order
+TLC counterexample at state17, superseded703 candidate TLC pass, superseded703
+public replay pass. It returned the final0e90 bootstrap model/replay unexecuted
+under its exhausted cap. The parent audited every model, independent obligation,
+counterexample, replay, command, license/hash and cleanup receipt before copying
+only owned model files. No703 result was claimed for the final revision.
+
+Prior33 + parent7 + child4 exhausted44. The conductor explicitly granted exactly
+two final calls, ceiling46, with stop-on-failure. Run08 checked the final model:
+**73,263,001 generated /7,380,396 distinct /0queued**, depth43, six unchanged
+invariants, exit0,4min59sec. Run09 executed the audited actual old/final replay
+and full functional gate in ONE Python process: replay PASS, **154 tests /
+153passed /1macOS-only skip**,55/55M3,75.292sec,exit0. Both approved calls passed;
+all frozen source, test, TLA/config and replay input hashes matched afterward.
+Exact final review usage **46/46**; no further test was run or authorized.
+
+Source freeze: policy0e90e43f52b3bd9444925469baf96b40d29480ecefd22c4eeb5afdd68bb630fd;
+transportd991ee39489544eeba61965330761087643beebaa1e5ba91791afb40019d91d8.
+No source/test edit followed final freeze. Model header comment alone was
+corrected before08; exact checked projection hash8dc2ae824f16cea93e274abdd6f22a717afb45aff167e86b21d0efd753d564f5.
+Independent raw evidence has no cap; missing-first anchoring and Helix-active
+barriers are explicit. Bounded assumptions/omissions remain in the model report.
+
+No dependency, model weights, dataset, asset, scope, live Twitch, device login,
+secret read, personal keyring, Mac, GPU, OCR or performance measurement. All
+parent/child scopes and JVMs exited; no process/listener retained. Exact runners,
+all receipts and seals live in `/tmp/agents/irl-shield/m3-r3/`; final model raw
+receipts are also under `docs/model/evidence/r3/`. Source remains uncommitted
+for conductor artifact audit, commit and the last review round.
+[R3-HANDBACK.md](R3-HANDBACK.md) is the current hand-back.

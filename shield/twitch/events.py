@@ -1,4 +1,5 @@
 """Twitch control policy, shared by the real transport and offline replay."""
+import logging
 import math
 import time
 from collections import OrderedDict
@@ -8,6 +9,7 @@ from threading import RLock
 from urllib.parse import urlsplit
 
 TOPICS = ('channel.chat.message', 'channel.shield_mode.begin', 'channel.shield_mode.end')
+_LOGGER = logging.getLogger(__name__)
 
 
 def websocket_url(url, *, mock=False):
@@ -50,8 +52,7 @@ class ShieldEvents:
         self._lock = RLock()
         self._floor = self.started_at - 0.000001
         self._seen = OrderedDict()
-        self._shield_time = self.started_at - 0.000001
-        self._chat_time = self.started_at - 0.000001
+        self._shield_time = self._chat_time = self._twitch_time = -math.inf
         self._shield_revision = 0
         self._generation = 0
         self._phase, self._session_id = 'connecting', None
@@ -79,6 +80,33 @@ class ShieldEvents:
     def remembered(self):
         with self._lock:
             return len(self._seen)
+
+    def observe_timestamp(self, metadata):
+        """Observe metadata from the authenticated EventSub socket, in any phase."""
+        with self._lock:
+            try:
+                stamp = datetime.fromisoformat(metadata['message_timestamp'].replace('Z', '+00:00'))
+                at = stamp.timestamp() if stamp.tzinfo is not None else None
+                if at is not None and not math.isfinite(at):
+                    at = None
+            except (KeyError, TypeError, ValueError, AttributeError, OverflowError, OSError):
+                at = None
+            if at is not None:
+                self._twitch_time = max(self._twitch_time, at)
+                # With no history, the first stamp anchors pending holds before
+                # its event can release one. A strictly later stamp is required.
+                if self._chat_time is None:
+                    self._chat_time = self._twitch_time
+                if self._shield_time is None:
+                    self._shield_time = self._twitch_time
+            return at
+
+    def _protective_order(self, current, at):
+        if at is None:
+            if self._twitch_time == -math.inf:
+                return None
+            at = self._twitch_time
+        return max(-math.inf if current is None else current, at)
 
     def _connection_hold(self, active, reason):
         self.hold(active, source='twitch-connection', reason=reason, now=self.control_clock())
@@ -145,6 +173,8 @@ class ShieldEvents:
             if not self.reconciliation_current(snapshot) or not isinstance(active, bool):
                 return False
             if snapshot.shield_revision == self._shield_revision:
+                if active:
+                    self._shield_time = self._protective_order(self._shield_time, None)
                 self.hold(active, source='shield_mode', reason='twitch-shield-status', now=self.control_clock())
                 if not self.reconciliation_current(snapshot):
                     return False
@@ -203,6 +233,10 @@ class ShieldEvents:
                         or event['broadcaster_user_id'] != self.broadcaster_id
                         or not isinstance(mid, str) or not 0 < len(mid) <= 256):
                     return 'invalid'
+            except (KeyError, TypeError, ValueError, AttributeError):
+                return 'invalid'
+            at = self.observe_timestamp(metadata)
+            try:
                 if topic == 'channel.chat.message':
                     # Shared-chat badges describe their origin channel, not ours.
                     if event.get('source_broadcaster_user_id') not in (None, '', self.broadcaster_id):
@@ -221,13 +255,6 @@ class ShieldEvents:
                     outcome = 'shield-begin' if active else 'shield-end'
             except (KeyError, TypeError, ValueError, AttributeError):
                 return 'invalid'
-            try:
-                stamp = datetime.fromisoformat(metadata['message_timestamp'].replace('Z', '+00:00'))
-                at = stamp.timestamp() if stamp.tzinfo is not None else None
-                if at is not None and not math.isfinite(at):
-                    at = None
-            except (KeyError, TypeError, ValueError, AttributeError, OverflowError, OSError):
-                at = None
             now = self.clock()
             self._floor = max(self._floor, now - self.max_age)
             for old_id, old_time in list(self._seen.items()):
@@ -239,34 +266,33 @@ class ShieldEvents:
                     return 'inactive'
                 # Thirty seconds of forward skew is a local engineering choice;
                 # protective admission never depends on the wall clock.
-                if at is None or at < self.started_at or at <= self._floor or at > now + 30:
+                if at is None or at < self.started_at or at <= self._floor:
+                    return 'invalid'
+                if at > now + 30:
+                    _LOGGER.warning('clock-skew')
                     return 'invalid'
             if mid in self._seen:
                 return 'duplicate'
-            if active:
-                # Preserve Twitch ordering within the same skew bound as releases.
-                # Unusable stamps use receipt; extreme future stamps fail closed
-                # for at most the forward-skew window before a fresh release.
-                if at is None or at < self.started_at or at <= self._floor:
-                    at = now
-                at = max(self.started_at, min(at, now + 30))
+            # Local receipt is only a replay-cache time. Raw Twitch time orders
+            # control. An unstamped hold wins ties with every stamp seen so far.
+            cache_at = now if at is None or (active and (at < self.started_at or at <= self._floor)) else at
             if len(self._seen) >= self.capacity:
                 _, evicted = self._seen.popitem(last=False)
                 self._floor = max(self._floor, evicted)
                 if not active and at <= self._floor:
                     return 'expired'
-            self._seen[mid] = at
+            self._seen[mid] = cache_at
             if source == 'chat':
-                if not active and at <= self._chat_time:
+                if not active and (self._chat_time is None or at <= self._chat_time):
                     return 'expired'
-                self._chat_time = max(self._chat_time, at)
+                self._chat_time = self._protective_order(self._chat_time, at)
                 reason = 'twitch-chat-hold' if active else 'twitch-chat-resume'
             else:
                 # Equal timestamps favor protection, including subsecond stamps
                 # rounded to the same Python float.
-                if not active and at <= self._shield_time:
+                if not active and (self._shield_time is None or at <= self._shield_time):
                     return 'expired'
-                self._shield_time = max(self._shield_time, at)
+                self._shield_time = self._protective_order(self._shield_time, at)
                 self._shield_revision += 1
                 reason = 'twitch-' + topic
             self.hold(active, source=source, reason=reason, now=self.control_clock())

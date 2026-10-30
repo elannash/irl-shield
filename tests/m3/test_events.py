@@ -258,7 +258,7 @@ class ChatControl(unittest.TestCase):
                                      if expected == 'released' else expected)
                     self.assertEqual(control.state, 'LIVE' if expected == 'released' else 'HOLD')
 
-    def test_far_future_hold_cannot_poison_later_release_ordering(self):
+    def test_far_future_hold_keeps_raw_order_until_newer_release_is_fresh(self):
         for topic, release_topic, release in [('channel.chat.message', 'channel.chat.message', '!shield resume'),
                                             ('channel.shield_mode.begin', 'channel.shield_mode.end', '')]:
             with self.subTest(topic=topic):
@@ -275,31 +275,122 @@ class ChatControl(unittest.TestCase):
                                                            topic=release_topic, at=START + 40),
                                                generation=events.generation), 'expired')
                 self.assertEqual(control.state, 'HOLD')
+                self.assertEqual(events.accept(notification('older-release', release, actor='1',
+                                                           topic=release_topic, at=START + 41),
+                                               generation=events.generation), 'expired')
+                self.assertEqual(control.state, 'HOLD')
+                events.clock = lambda: START + 100000
                 self.assertIn(events.accept(notification('later-release', release, actor='1',
-                                                        topic=release_topic, at=START + 41),
+                                                        topic=release_topic, at=START + 100001),
                                             generation=events.generation), ('chat-resume', 'shield-end'))
                 self.assertEqual(control.state, 'LIVE')
 
     def test_forward_skew_rejects_older_and_equal_releases(self):
-        for skew in (10, 29):
+        for skew in (10, 29, 29.9, 30.0, 30.001, 31, 41):
             for topic, release_topic, release in [
                     ('channel.chat.message', 'channel.chat.message', '!shield resume'),
                     ('channel.shield_mode.begin', 'channel.shield_mode.end', '')]:
-                with self.subTest(skew=skew, topic=topic):
+                for relation, offset in [('older', -.0005), ('equal', 0)]:
+                    with self.subTest(skew=skew, topic=topic, relation=relation):
+                        control, events = adapter()
+                        at = START + 10 + skew
+                        self.assertIn(events.accept(notification('new-hold', topic=topic, at=at),
+                                                    generation=events.generation), ('chat-hold', 'shield-begin'))
+                        self.assertEqual(control.state, 'HOLD')
+                        events.clock = lambda: START + max(11, skew - 19)
+                        self.assertEqual(events.accept(notification(relation, release, actor='1',
+                                                                   topic=release_topic, at=at + offset),
+                                                       generation=events.generation), 'expired')
+                        self.assertEqual(control.state, 'HOLD')
+                        self.assertIn(events.accept(notification('newer', release, actor='1',
+                                                                topic=release_topic, at=at + 1),
+                                                    generation=events.generation), ('chat-resume', 'shield-end'))
+                        self.assertEqual(control.state, 'LIVE')
+
+    def test_unstamped_hold_uses_global_twitch_watermark_including_ignored_chat(self):
+        for topic, release_topic, release in [('channel.chat.message', 'channel.chat.message', '!shield resume'),
+                                            ('channel.shield_mode.begin', 'channel.shield_mode.end', '')]:
+            for raw in ('missing', 'malformed', 'naive'):
+                with self.subTest(topic=topic, raw=raw):
                     control, events = adapter()
-                    at = START + 10 + skew
-                    self.assertIn(events.accept(notification('new-hold', topic=topic, at=at),
-                                                generation=events.generation), ('chat-hold', 'shield-begin'))
-                    self.assertEqual(control.state, 'HOLD')
-                    for name, stamp in [('older', at - 2), ('equal', at)]:
+                    self.assertEqual(events.accept(notification('ordinary', 'ordinary text', actor='3',
+                                                                badge=None, at=START + 29),
+                                                   generation=events.generation), 'ignored')
+                    self.assertEqual(events.remembered, 0)
+                    hold = notification('unstamped', topic=topic)
+                    if raw == 'missing':
+                        del hold['metadata']['message_timestamp']
+                    else:
+                        hold['metadata']['message_timestamp'] = 'bad' if raw == 'malformed' else '2026-10-29T00:00:01'
+                    self.assertIn(events.accept(hold, generation=events.generation), ('chat-hold', 'shield-begin'))
+                    for name, at in [('older', START + 28), ('equal', START + 29)]:
                         self.assertEqual(events.accept(notification(name, release, actor='1',
-                                                                   topic=release_topic, at=stamp),
+                                                                   topic=release_topic, at=at),
                                                        generation=events.generation), 'expired')
                         self.assertEqual(control.state, 'HOLD')
                     self.assertIn(events.accept(notification('newer', release, actor='1',
-                                                            topic=release_topic, at=at + 1),
+                                                            topic=release_topic, at=START + 30),
                                                 generation=events.generation), ('chat-resume', 'shield-end'))
                     self.assertEqual(control.state, 'LIVE')
+
+    def test_first_unstamped_hold_fences_first_fresh_twitch_stamp(self):
+        control, events = adapter()
+        foreign = notification('foreign', at=START + 100000)
+        foreign['payload']['event']['broadcaster_user_id'] = '9'
+        self.assertEqual(events.accept(foreign, generation=events.generation), 'invalid')
+        hold = notification()
+        del hold['metadata']['message_timestamp']
+        self.assertEqual(events.accept(hold, generation=events.generation), 'chat-hold')
+        self.assertEqual(control.state, 'HOLD')
+        self.assertEqual(events.accept(notification('first-stamp', '!shield resume', actor='1', at=START + 2),
+                                       generation=events.generation), 'expired')
+        self.assertEqual(control.state, 'HOLD')
+        self.assertEqual(events.accept(notification('equal-stamp', '!shield resume', actor='1', at=START + 2),
+                                       generation=events.generation), 'expired')
+        self.assertEqual(control.state, 'HOLD')
+        self.assertEqual(events.accept(notification('later-stamp', '!shield resume', actor='1', at=START + 3),
+                                       generation=events.generation), 'chat-resume')
+        self.assertEqual(control.state, 'LIVE')
+
+    def test_reconcile_shield_hold_uses_missing_stamp_barrier(self):
+        for seed in (None, START + 29):
+            with self.subTest(seed=seed):
+                control, events = adapter()
+                if seed is not None:
+                    self.assertEqual(events.accept(notification('ordinary', 'ordinary text', actor='3',
+                                                                badge=None, at=seed),
+                                                   generation=events.generation), 'ignored')
+                token = events.begin_reconcile(generation=events.generation, session_id=events.session_id)
+                self.assertTrue(events.reconciled(True, token))
+                self.assertEqual(control.state, 'HOLD')
+                barrier = START + 25 if seed is None else seed
+                stamps = [barrier, barrier] if seed is None else [barrier - 1, barrier]
+                for index, stamp in enumerate(stamps):
+                    self.assertEqual(events.accept(notification('older-' + str(index), topic='channel.shield_mode.end',
+                                                               at=stamp), generation=events.generation), 'expired')
+                    self.assertEqual(control.state, 'HOLD')
+                self.assertEqual(events.accept(notification('newer', topic='channel.shield_mode.end', at=barrier + 1),
+                                               generation=events.generation), 'shield-end')
+                self.assertEqual(control.state, 'LIVE')
+
+    def test_far_future_release_warns_with_fixed_code_and_retains_hold(self):
+        control, events = adapter()
+        events.accept(notification('hold', at=START + 40), generation=events.generation)
+        with self.assertLogs('shield.twitch.events', level='WARNING') as captured:
+            self.assertEqual(events.accept(notification('synthetic-private-id', '!shield resume', actor='1',
+                                                       at=START + 100000), generation=events.generation), 'invalid')
+        self.assertEqual([(r.msg, r.args, r.exc_info) for r in captured.records], [('clock-skew', (), None)])
+        self.assertEqual(control.state, 'HOLD')
+        missing = notification('missing-after-future')
+        del missing['metadata']['message_timestamp']
+        self.assertEqual(events.accept(missing, generation=events.generation), 'chat-hold')
+        events.clock = lambda: START + 100000
+        self.assertEqual(events.accept(notification('seen-stamp', '!shield resume', actor='1', at=START + 100000),
+                                       generation=events.generation), 'expired')
+        self.assertEqual(control.state, 'HOLD')
+        self.assertEqual(events.accept(notification('new-stamp', '!shield resume', actor='1', at=START + 100001),
+                                       generation=events.generation), 'chat-resume')
+        self.assertEqual(control.state, 'LIVE')
 
     def test_tlc_release_clobber_shortest_path_retains_active_shield(self):
         control = Control()

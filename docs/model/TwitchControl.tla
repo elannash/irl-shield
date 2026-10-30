@@ -1,7 +1,8 @@
 --------------------------- MODULE TwitchControl ---------------------------
-EXTENDS ControlEnvironment
-\* Frozen policy source: aa359f9b; no production mutation flags.
-Init == EnvironmentInit /\ policy = InitialPolicy(1)
+EXTENDS BootstrapEnvironment
+\* Frozen policy 0e90e43f: raw order, metadata observation and pending bootstrap.
+Init == EnvironmentInit /\ policy = [InitialPolicy(1) EXCEPT
+  !.chatTime = InitialBarrier, !.shieldTime = InitialBarrier]
 NewConnection ==
   /\ execution.pc = "idle" /\ ~env.socketLive /\ ~policy.revoked
   /\ env.generation < MaxGeneration
@@ -39,7 +40,14 @@ StartCompletion(q) ==
   /\ execution.pc = "idle" /\ q \in 1..Len(queries) /\ Current(q)
   /\ execution' = [pc |-> "statusCallback", token |-> q,
                     applyStatus |-> queries[q].revision = policy.revision]
-  /\ UNCHANGED <<env, policy, queries, obligation, received, coverage, local>>
+  /\ LET active == queries[q].revision = policy.revision /\ queries[q].active
+     IN /\ policy' = IF active THEN [policy EXCEPT
+                  !.shieldTime = Max(@,policy.rawHighWater),
+                  !.pending.shield = policy.rawHighWater = InitialBarrier] ELSE policy
+        /\ env' = IF active THEN [env EXCEPT !.helixObserved = TRUE, !.helix = MissingEvidence]
+                  ELSE env
+        /\ obligation' = IF active THEN [obligation EXCEPT !.shield = TRUE] ELSE obligation
+  /\ UNCHANGED <<queries, received, coverage, local>>
 \* The branch was decided before entering the callback. A reentrant begin can
 \* change revision, then the callback still applies the older FALSE afterward.
 ApplyStatus ==
@@ -84,10 +92,14 @@ FinishCompletion ==
   /\ UNCHANGED <<env, queries, obligation, received, coverage, local>>
 
 \* Admission is independent of phase, origin generation and remote timestamp.
-\* Missing and pre-start stamps order at receipt. Expiry is outside these bounds.
-OrderTime(t) == IF t = Missing THEN env.now
-  ELSE IF t < StartedAt THEN env.now ELSE Max(StartedAt, Min(t, env.now + 30))
-DeliverHold(s,t,g) == ProtectiveHoldReceived(s,t,g,TRUE,OrderTime(t))
+\* Numeric raw stamps never clamp or fall back to receipt, even when expired.
+\* A missing hold snapshots the policy's PRIOR global high water independently
+\* of the environment's evidence. Pending missing holds anchor on the first
+\* observation; subsequent observations never move an established source key.
+OrderTime(t) == IF t = Missing THEN policy.rawHighWater ELSE t
+DeliverHold(s,t,g) == ProtectiveHoldReceived(s,t,g,TRUE,OrderTime(t),
+                                           ObservedPolicy(t))
+DeliverRelease(s,t) == ReleaseReceived(s,t,ObservedPolicy(t))
 Reconnect ==
   /\ execution.pc = "idle" /\ policy.live /\ ~policy.revoked /\ policy.phase = "ready"
   /\ policy' = [policy EXCEPT !.phase = "handover"]
@@ -105,7 +117,8 @@ Next == QueueWelcome \/ (\E t \in Topics: EnableSubscription(t)) \/ NewConnectio
   \/ ApplyStatus \/ CheckStatus \/ ApplyConnectionRelease \/ CheckConnection
   \/ ApplyGuardRelease \/ FinishCompletion
   \/ (\E s \in Sources, t \in HoldStamps, g \in 1..env.generation: DeliverHold(s,t,g))
-  \/ (\E s \in Sources, t \in ReleaseStamps: ReleaseReceived(s,t))
+  \/ (\E s \in Sources, t \in ReleaseStamps: DeliverRelease(s,t))
+  \/ (\E t \in ObservationStamps: ObserveTimestamp(t)) \/ ShieldBecomesActive
   \/ Reconnect \/ HandedOver
   \/ (\E c \in BOOLEAN: CoverageChange(c)) \/ (\E h \in BOOLEAN: LocalHold(h))
   \/ ClockAdvance \/ StatusFailure \/ Idle

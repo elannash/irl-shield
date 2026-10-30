@@ -9,7 +9,7 @@ import logging
 from functools import partial
 
 import aiohttp
-from twitchAPI.eventsub.websocket import EventSubWebsocket
+from twitchAPI.eventsub.websocket import EventSubWebsocket, Reconnect, Session
 from twitchAPI.helper import done_task_callback
 from twitchAPI.twitch import Twitch
 from twitchAPI.type import AuthScope
@@ -178,10 +178,11 @@ class _PolicySocket(EventSubWebsocket):
         url = data.get('payload', {}).get('session', {}).get('reconnect_url')
         if not await self.owner(self.events.reconnect, url, generation=generation):
             return
+        self._reset_timeout()
         self._planned_generation = generation
         previous_id = self.events.session_id
         try:
-            await asyncio.wait_for(super()._handle_reconnect(data), 30)
+            await asyncio.wait_for(self._handover(url), 30)
             migrated = self._reconnect.session if self._reconnect else self.active_session
             if migrated is None or migrated.id == previous_id:
                 raise TwitchError('EventSub handover incomplete')
@@ -200,6 +201,30 @@ class _PolicySocket(EventSubWebsocket):
             await self.owner(self.events.fault, 'reconnect-failed')
             if self._connection is not None:
                 await self._connection.close()
+
+    async def _handover(self, url):
+        candidate, delay = None, 1
+        while candidate is None:
+            try:
+                candidate = await self._session.ws_connect(url)
+            except Exception:
+                await asyncio.sleep(delay)
+                delay = min(30, delay * 2)
+        try:
+            message = await candidate.receive()
+            if message.type != aiohttp.WSMsgType.TEXT:
+                raise TwitchError('EventSub handover welcome missing')
+            welcome = json.loads(message.data)
+            await self.owner(self.events.observe_timestamp, welcome.get('metadata', {}))
+            if welcome.get('metadata', {}).get('message_type') != 'session_welcome':
+                raise TwitchError('EventSub handover welcome missing')
+            session = Session.from_twitch(welcome.get('payload', {}).get('session', {}))
+            self._reconnect = Reconnect(session=session, connection=candidate)
+            self._reset_timeout()
+            await self._connection.close()
+        except BaseException:
+            await candidate.close()
+            raise
 
     async def _handle_notification(self, data):
         if data['_irl_generation'] == self.events.generation and self.active_session is not None:
@@ -257,6 +282,7 @@ class _PolicySocket(EventSubWebsocket):
                 if message.type == aiohttp.WSMsgType.TEXT:
                     data = json.loads(message.data)
                     data['_irl_generation'] = generation
+                    await self.owner(self.events.observe_timestamp, data.get('metadata', {}))
                     subscription_id = data.get('payload', {}).get('subscription', {}).get('id')
                     data['_irl_subscription'] = next((dict(record) for record in subscriptions.values()
                                                       if record['id'] == subscription_id), None)

@@ -117,16 +117,37 @@ favor holding. [Chat event fields](https://dev.twitch.tv/docs/eventsub/eventsub-
 
 Authorized chat holds and Shield begins apply in every phase, even from an older
 connection generation, and are never dropped for timestamp reasons alone.
-Holds and releases use Twitch timestamps for ordering within the skew window.
-A protective ordering timestamp clamps to the interval from policy start through
-receipt time plus 30 seconds; malformed, pre-start or expired times first fall
-back to receipt time. An extreme future hold therefore caps its ordering key at
-receipt plus 30 seconds. It still needs a legitimate newer release and does not
-expire automatically. Releases require the current live READY generation, aware finite timestamps,
+Holds and releases order by their raw Twitch timestamps, with no local-clock
+clamp or receipt-time fallback. A parseable hold keeps its raw ordering stamp
+even when it predates policy start, is expired, or is far ahead of local time.
+Older and equal releases cannot clear it. Local time is used only for freshness
+and replay bounds. Releases require the current live READY generation, aware finite timestamps,
 the session-start/ten-minute replay floor, and strict source ordering. Releases
 allow at most 30 seconds of forward skew. That bound is a local engineering choice;
 the inspected Twitch WebSocket references define RFC3339/nanosecond UTC timestamps
-but give no host-clock tolerance. [Timestamp and redelivery fields](https://dev.twitch.tv/docs/eventsub/websocket-reference/).
+but give no host-clock tolerance. A release beyond that allowance stays rejected
+under HOLD and logs the fixed warning `clock-skew`, with no timestamp, actor,
+message text, URL, code or credential in the record. There is no deferred release:
+the owner must send a fresh command when clock/freshness checks permit it.
+[Timestamp and redelivery fields](https://dev.twitch.tv/docs/eventsub/websocket-reference/).
+
+A missing, naive or unparseable hold stamp uses a strict barrier at the highest
+valid Twitch timestamp observed so far. A release at or below that barrier stays
+HOLD; a greater fresh stamp can release immediately. With no timestamp history,
+the barrier is pending: the first valid observed stamp establishes it before
+its event can release the hold, and a later strictly greater fresh stamp is
+required. Host receipt time never guesses the hold's ordering time.
+
+`EventSubClient` feeds every received message's `metadata.message_timestamp`
+through the policy's public `observe_timestamp(metadata)` method before dispatch,
+including welcome, keepalive, reconnect and the welcome consumed during planned
+handover. It does so on the owner loop. Missing/invalid metadata does not advance
+the watermark. Valid notification envelopes also observe timestamps before chat
+command admission; ignored ordinary chat can advance the watermark without
+consuming dedup memory. Direct/custom transports must preserve that observation
+seam. An active Helix reconciliation result creates the same missing-stamp Shield
+barrier. Authoritative subsequent status results still obey query identity and
+Shield revision fences; they remain separate from EventSub end-event ordering.
 
 Engine hold times use monotonic time. The ID cache defaults to 4,096 entries.
 An ID still remembered is deduplicated. An evicted protective ID may conservatively

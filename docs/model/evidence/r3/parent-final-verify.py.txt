@@ -1,0 +1,9 @@
+"""Run the audited model replay and repository gate in one Python process."""
+from pathlib import Path
+import runpy
+
+root = Path(__file__).resolve().parents[2]
+print('R3 FINAL PUBLIC REPLAY START', flush=True)
+runpy.run_path(str(root / 'docs/model/evidence/r3/public_replay.py'), run_name='__main__')
+print('R3 FINAL PUBLIC REPLAY COMPLETE; COMBINED GATE START', flush=True)
+runpy.run_path(str(root / 'tests/m3/run_gate.py'), run_name='__main__')

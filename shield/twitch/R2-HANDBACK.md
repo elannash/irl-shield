@@ -1,5 +1,9 @@
 # PR #2 R2 implementation hand-back
 
+Historical receipt, committed by the conductor as `9cb8e81`.
+[R3-HANDBACK.md](R3-HANDBACK.md) supersedes the bounded hold clamp, missing-stamp
+receipt fallback and capped model-obligation claims after round 3 review.
+
 **Ready for conductor round 3:** all three accepted R2 findings have old-code
 RED and fixed GREEN evidence. The final combined gate exited 0: **149 tests
 ran in 76.938 seconds, 148 passed, one expected macOS-only skip**, including
