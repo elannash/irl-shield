@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Sync this lane's source to its dedicated Mac mirror, then run one command.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [[ $# -lt 2 || ( $1 != shared && $1 != exclusive ) ]]; then
+  echo 'usage: bench/fast-host shared|exclusive command [args...]' >&2
+  exit 2
+fi
+mode=$1
+shift
+mkdir -p .tmp/fast
+cp /home/elan/code/irl-shield/scripts/host-lock .tmp/fast/host-lock
+ssh mac 'bash -lc '\''mkdir -p ~/code/irl-shield-fast; if [[ -e ~/code/irl-shield-fast/.fast-lane && "$(cat ~/code/irl-shield-fast/.fast-lane)" != "m1-fast-2dd52a6" ]]; then exit 3; fi; printf "%s\n" m1-fast-2dd52a6 > ~/code/irl-shield-fast/.fast-lane'\'
+rsync -a --exclude='.git' --exclude='.build' --exclude='out' --exclude='.tmp' \
+  --exclude='.venv' --exclude='venvs' --exclude='__pycache__' --exclude='cache' --exclude='caches' \
+  ./ mac:code/irl-shield-fast/
+rsync -a .tmp/fast/host-lock mac:code/irl-shield-fast/.fast-host-lock
+printf -v command '%q ' "$@"
+printf -v remote 'cd ~/code/irl-shield-fast && mkdir -p .tmp/fast && jq -e %q /tmp/agents/irl-shield/m1-20261029-ready.json >/dev/null && perl -e %q ./.fast-host-lock %q nice -n 10 env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 HF_HUB_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 ONNXTR_MULTIPROCESSING_DISABLE=TRUE python3 -m bench.fast_lease %s' \
+  '.complete == true' 'use POSIX (); POSIX::setpgid(0,0) == 0 or die "setpgid: $!" unless getpgrp(0) == $$; open my $pid, ">", ".tmp/fast/command.pid" or die $!; print $pid "$$ ", getpgrp(0), "\n"; close $pid; alarm 6800; exec @ARGV' "$mode" "$command"
+printf -v login 'bash -lc %q' "$remote"
+ssh mac "$login"

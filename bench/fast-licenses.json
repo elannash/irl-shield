@@ -1,0 +1,87 @@
+{
+  "reviewed_at": "2026-10-29",
+  "scope": "FAST-only additions. Existing dependencies retain models/licenses/dependencies.json. Packages are installed from PyPI, not vendored; their wheel/sdist license notices remain installed. No new dataset is introduced.",
+  "model_manifest": "models/manifest.json#artifacts.fast-tiny",
+  "dependencies": [
+    {
+      "name": "onnxtr",
+      "version": "0.9.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/felixdittrich92/OnnxTR/tree/06fd099fd48510f4202d1fb43db5ed23d5f61c80",
+      "license_source": "https://github.com/felixdittrich92/OnnxTR/blob/06fd099fd48510f4202d1fb43db5ed23d5f61c80/LICENSE",
+      "wheel_sha256": "bb8a47af8253e51c81950519d30e499373830cc20a27552c41a0b888f9171a05"
+    },
+    {
+      "name": "scipy",
+      "version": "1.16.3",
+      "license": "BSD-3-Clause",
+      "license_source": "https://github.com/scipy/scipy/blob/v1.16.3/LICENSE.txt",
+      "binary_notices": "https://github.com/scipy/scipy/blob/v1.16.3/LICENSES_bundled.txt"
+    },
+    {
+      "name": "pypdfium2",
+      "version": "4.30.1",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "license_source": "https://github.com/pypdfium2-team/pypdfium2/tree/4.30.1/LICENSES",
+      "binary_notices": "PDFium BSD-3-Clause and additional third-party notices are bundled in pypdfium2_raw/licenses; inventory installed files with bench.fast_licenses. PDF support is an unused OnnxTR import dependency."
+    },
+    {
+      "name": "rapidfuzz",
+      "version": "3.14.3",
+      "license": "MIT",
+      "license_source": "https://github.com/rapidfuzz/RapidFuzz/blob/v3.14.3/LICENSE"
+    },
+    {
+      "name": "langdetect",
+      "version": "1.0.9",
+      "license": "Apache-2.0",
+      "license_source": "https://pypi.org/pypi/langdetect/1.0.9/json"
+    },
+    {
+      "name": "huggingface-hub",
+      "version": "0.36.0",
+      "license": "Apache-2.0",
+      "license_source": "https://github.com/huggingface/huggingface_hub/blob/v0.36.0/LICENSE"
+    },
+    {
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "license": "PSF-2.0",
+      "license_source": "https://github.com/tiran/defusedxml/blob/v0.7.1/LICENSE"
+    },
+    {
+      "name": "anyascii",
+      "version": "0.3.3",
+      "license": "ISC",
+      "license_source": "https://github.com/anyascii/anyascii/blob/0.3.3/LICENSE"
+    },
+    {
+      "name": "filelock",
+      "version": "4.2.4",
+      "license": "MIT",
+      "license_source": "https://pypi.org/pypi/filelock/4.2.4/json",
+      "installed_notice_sha256": [
+        "608c89d5060ae9921adccf3236695bc654a9946e12323ef6c021dfa04e294d48"
+      ]
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.9.0",
+      "license": "BSD-3-Clause",
+      "license_source": "https://pypi.org/pypi/fsspec/2026.9.0/json",
+      "installed_notice_sha256": [
+        "2dc35496ce53a7307915c008a844aad53e772b49b34cdd00445067691407ec94"
+      ]
+    },
+    {
+      "name": "hf-xet",
+      "version": "1.7.1",
+      "license": "Apache-2.0",
+      "license_source": "https://pypi.org/pypi/hf-xet/1.7.1/json",
+      "installed_notice_sha256": [
+        "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      ]
+    }
+  ],
+  "transitive_dependencies": "Captured with exact versions, license metadata, notice paths and notice SHA-256 in each host's .tmp/fast/license-inventory.json after setup. PyPI JSON metadata and file digests are retained in .tmp/fast/dependency-metadata.json."
+}

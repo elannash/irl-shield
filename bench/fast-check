@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Run FAST seam tests and the repo's unchanged full gate in this lane's env.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [[ ! -e .venv && ! -L .venv ]]; then
+  ln -s .tmp/fast/.venv .venv
+fi
+if [[ ! -L .venv || $(readlink .venv) != .tmp/fast/.venv ]]; then
+  echo 'Refusing to use an environment outside .tmp/fast/.venv' >&2
+  exit 2
+fi
+.tmp/fast/.venv/bin/python -m unittest bench.fast_test bench.fast_onnx_test -v
+scripts/check

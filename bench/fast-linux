@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# One locked, low-priority job in the agents slice; private CUDA wheel libraries.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [[ $# -lt 2 || ( $1 != shared && $1 != exclusive ) ]]; then
+  echo 'usage: bench/fast-linux shared|exclusive command [args...]' >&2
+  exit 2
+fi
+mode=$1
+shift
+python_bin=${FAST_PYTHON:-"$PWD/.tmp/fast/.venv/bin/python"}
+if [[ ! -x $python_bin ]]; then
+  python_bin=${FAST_PYTHON:-python3.11}
+fi
+"$python_bin" - <<'PY'
+import json
+from pathlib import Path
+p=Path('/tmp/agents/irl-shield/m1-20261029-ready.json')
+if not p.exists() or json.loads(p.read_text()).get('complete') is not True:
+    raise SystemExit('Root sustained receipt must complete before FAST host work')
+PY
+mkdir -p .tmp/fast
+cp /home/elan/code/irl-shield/scripts/host-lock .tmp/fast/host-lock
+libraries=()
+for path in "$PWD"/.tmp/fast/.venv/lib/python*/site-packages/nvidia/*/lib; do
+  [[ ! -d $path ]] || libraries+=("$path")
+done
+library_path=$(IFS=:; echo "${libraries[*]}")
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+systemd-run --user --scope --slice=app-t3code-agents.slice \
+  .tmp/fast/host-lock "$mode" nice -n 10 \
+  env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 \
+      HF_HUB_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 ONNXTR_MULTIPROCESSING_DISABLE=TRUE \
+      LD_LIBRARY_PATH="$library_path" FAST_PYTHON="$python_bin" \
+  perl -e 'alarm 6800; exec @ARGV' "$python_bin" -m bench.fast_lease "$@"

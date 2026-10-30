@@ -188,6 +188,52 @@
         "thresh": 0.2,
         "unclip_ratio": 1.4
       }
+    },
+    "fast-tiny": {
+      "filename": "fast-tiny.onnx",
+      "url": "https://huggingface.co/Felix92/onnxtr-fast-tiny/resolve/f694deb1e32bddfd96d33be5e1e7b804564594ab/model.onnx",
+      "sha256": "2886777913e837ea3a5ab79f7fb9fd5db5897fc6560f21d16a4f54c64fc0b357",
+      "bytes": 34110202,
+      "source": "https://github.com/felixdittrich92/OnnxTR/blob/06fd099fd48510f4202d1fb43db5ed23d5f61c80/onnxtr/models/detection/models/fast.py",
+      "conversion": "OnnxTR reparameterized FAST tiny ONNX export; identical upstream rep_fast_tiny-28867779.onnx",
+      "upstream_model": "fast_tiny",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/Felix92/onnxtr-fast-tiny/blob/f694deb1e32bddfd96d33be5e1e7b804564594ab/README.md",
+      "license_source_sha256": "699ba52493a824258ad58e2c05aead19c7c8ec9dc48c852cd0bd894035a06aad",
+      "configuration_source": "https://huggingface.co/Felix92/onnxtr-fast-tiny/raw/f694deb1e32bddfd96d33be5e1e7b804564594ab/config.json",
+      "configuration_sha256": "fc4c6885d04e108e7b3c25fea5f0daed9bc10edd951252d9df26a06e0c8eaf72",
+      "package": {
+        "name": "onnxtr",
+        "version": "0.9.0",
+        "source_commit": "06fd099fd48510f4202d1fb43db5ed23d5f61c80",
+        "wheel_sha256": "bb8a47af8253e51c81950519d30e499373830cc20a27552c41a0b888f9171a05",
+        "license": "Apache-2.0",
+        "license_source": "https://github.com/felixdittrich92/OnnxTR/blob/06fd099fd48510f4202d1fb43db5ed23d5f61c80/LICENSE",
+        "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+      },
+      "preprocess": {
+        "channel_order": "RGB",
+        "mean": [
+          0.798,
+          0.785,
+          0.772
+        ],
+        "std": [
+          0.264,
+          0.2749,
+          0.287
+        ],
+        "scale": "1/255",
+        "resize": "square letterbox, aspect preserved, symmetric padding"
+      },
+      "upstream_postprocess": {
+        "name": "GeneralDetectionPostProcessor",
+        "bin_thresh": 0.1,
+        "box_thresh": 0.1,
+        "assume_straight_pages": false
+      },
+      "task": "det",
+      "source_sha256": "2d07b0cdfdbffb6775a614ed003754ea6280dfa18e878a7e695dfc9bb84d011c"
     }
   }
 }

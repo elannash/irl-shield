@@ -1,0 +1,14 @@
+# Add to requirements-models.txt (Mac) or requirements-linux-gpu.txt (Linux).
+# License/source receipts: bench/fast-licenses.json; do not select an ORT extra.
+onnxtr==0.9.0
+scipy==1.16.3
+pypdfium2==4.30.1
+rapidfuzz==3.14.3
+langdetect==1.0.9
+huggingface-hub==0.36.0
+defusedxml==0.7.1
+anyascii==0.3.3
+# Additional transitive pins from this lane's successful isolated setup.
+filelock==4.2.4
+fsspec==2026.9.0
+hf-xet==1.7.1

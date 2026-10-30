@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Isolated FAST environments; no service/account or global installation.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+python_bin=${FAST_PYTHON:-python3.11}
+"$python_bin" - <<'PY'
+import json
+from pathlib import Path
+p=Path('/tmp/agents/irl-shield/m1-20261029-ready.json')
+if not p.exists() or json.loads(p.read_text()).get('complete') is not True:
+    raise SystemExit('Root sustained receipt must complete before FAST setup')
+PY
+mkdir -p .tmp/fast
+snapshot_health() {
+  date -u
+  uptime
+  if [[ $(uname -s) == Darwin ]]; then
+    memory_pressure -Q
+    sysctl vm.swapusage kern.memorystatus_vm_pressure_level
+  else
+    free -b
+    cat /proc/pressure/memory /proc/pressure/cpu /proc/pressure/io
+    cat /proc/meminfo
+  fi
+}
+snapshot_health > .tmp/fast/setup-health-start.log
+trap 'snapshot_health > .tmp/fast/setup-health-end.log' EXIT
+if [[ ! -x .tmp/fast/.venv/bin/python ]]; then
+  "$python_bin" -m venv .tmp/fast/.venv
+fi
+export PIP_CACHE_DIR="$PWD/.tmp/fast/pip-cache"
+export TMPDIR="$PWD/.tmp/fast"
+export HF_HUB_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 ONNXTR_MULTIPROCESSING_DISABLE=TRUE
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2
+case "$(uname -s)" in
+  Darwin)
+    .tmp/fast/.venv/bin/python -m pip install --report .tmp/fast/install-report.json \
+      -r requirements.txt -r requirements-models.txt -r requirements-relay.txt -r bench/fast-requirements.txt
+    mkdir -p .build
+    swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge
+    ;;
+  Linux)
+    .tmp/fast/.venv/bin/python -m pip install --report .tmp/fast/install-report.json \
+      -r requirements.txt -r requirements-linux-gpu.txt -r requirements-relay.txt \
+      -r bench/fast-requirements.txt onnx==1.23.2 ml_dtypes==0.6.0 typing_extensions==4.16.0
+    ;;
+  *) echo 'Only Mac and Linux are configured' >&2; exit 2 ;;
+esac
+.tmp/fast/.venv/bin/python -m pip freeze > .tmp/fast/freeze.txt
+.tmp/fast/.venv/bin/python -m bench.fast_licenses --output .tmp/fast/license-inventory.json
