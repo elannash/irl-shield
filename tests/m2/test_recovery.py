@@ -113,7 +113,10 @@ class EgressRecovery(unittest.TestCase):
                                proxy_stopped=not sink.proxy.thread.is_alive())
             receipt.update(failure=failure, acknowledged=output.count if output else 0,
                            owned_worker_pids=sorted(owned), surviving_workers=sorted(child_pids() - before),
-                           worker_pids_gone=all(not Path(f'/proc/{pid}').exists() for pid in owned))
+                           worker_pids_gone=all(not Path(f'/proc/{pid}').exists() for pid in owned),
+                           egress_recoveries=list(output.recovery_events) if output else [],
+                           worker_reaped=output._worker_reaped if output else None)
+        record(self, {'control_condition': receipt}, sink.secrets if sink else ())
         self.assertEqual(receipt['surviving_workers'], [])
         self.assertTrue(receipt['worker_pids_gone'])
         return receipt, sink, output
@@ -187,10 +190,17 @@ class EgressRecovery(unittest.TestCase):
                         with observation_lock:
                             inflight = observation['inflight']
                             stale = now - observation['last_ack']
-                        if inflight and now - inflight[0] > .25 and stale > .2:
+                        phase, operation_start, active_index, _ = tuple(output._progress)
+                        network_blocked = (int(phase) == 3 and inflight is not None
+                                           and int(active_index) == inflight[1]
+                                           and now - operation_start > .25)
+                        if network_blocked and now - inflight[0] > .25 and stale > .2:
                             receipt.update(blocked_seconds_before_pause=now - inflight[0],
                                            blocked_index=inflight[1], blocked_state=inflight[2],
-                                           blocked_batch_presented_at=inflight[3])
+                                           blocked_batch_presented_at=inflight[3],
+                                           worker_phase=int(output._progress[0]),
+                                           worker_operation_started_at=float(output._progress[1]),
+                                           worker_active_index=int(output._progress[2]))
                             sink.proxy.pause.set()
                             if not sink.proxy.pause_started.wait(1):
                                 observation['controller_error'] = 'fixture-pause-not-reached'
@@ -258,7 +268,11 @@ class EgressRecovery(unittest.TestCase):
                                controller_stopped=controller is not None and not controller.is_alive(),
                                acknowledged=output.count if output else 0,
                                owned_worker_pids=sorted(owned), surviving_workers=sorted(child_pids() - before),
-                               worker_pids_gone=all(not Path(f'/proc/{pid}').exists() for pid in owned))
+                               worker_pids_gone=all(not Path(f'/proc/{pid}').exists() for pid in owned),
+                               egress_recoveries=list(output.recovery_events) if output else [],
+                               egress_error_code=output.error_code if output else None,
+                               egress_error_details=output.error_details if output else None,
+                               worker_reaped=output._worker_reaped if output else None)
             manifest = rows(directory, 'frames.jsonl')
             receipt['live_baseline_rows'] = sum(row['state'] == 'LIVE' and not row['slate'] for row in manifest)
             diagnostic = record(self, receipt, sink.secrets if sink else ())
