@@ -41,13 +41,22 @@ class RuntimeDestination(unittest.TestCase):
                 pass
             def close(self):
                 pass
+        class Forwarder:
+            def __init__(self, host, port):
+                assert (host, port) == ('live.twitch.tv', 443)
+            port = 54321
+            stats = {'connections': 0, 'failures': 0}
+            def __enter__(self):
+                return self
+            def close(self):
+                pass
         stopped = threading.Event()
         stopped.set()
         phone, internal = Credentials.generate(), Credentials.generate()
         from shield.cli import parser
         self.assertFalse(parser().parse_args(['run', '--host', '127.0.0.1']).twitch_bandwidth_test)
         with tempfile.TemporaryDirectory() as directory, patch('relay.runtime.Egress', Output), \
-                patch('relay.runtime.NetworkInput', Source):
+                patch('relay.runtime.NetworkInput', Source), patch('relay.tls_forwarder.TLSForwarder', Forwarder):
             # A configured/stored key alone must not even form a Twitch URL.
             with patch('relay.security.TwitchDestination.destination', side_effect=AssertionError('default route formed Twitch URL')):
                 run(Engine(), RelayAddress('127.0.0.1'), phone, internal, directory, stopped,
@@ -63,11 +72,22 @@ class RuntimeDestination(unittest.TestCase):
             self.assertEqual(len(captured), 2)
             self.assertTrue(captured[0].startswith('rtmp://127.0.0.1:19350/shielded?'))
             self.assertEqual(captured[1],
-                             'rtmps://live.twitch.tv:443/app/SYNTHETIC-ROUTE-SENTINEL?bandwidthtest=true')
+                             'rtmp://127.0.0.1:54321/app/SYNTHETIC-ROUTE-SENTINEL?bandwidthtest=true')
             summary = (Path(directory) / 'runtime.json').read_text()
             self.assertNotIn('SYNTHETIC-ROUTE-SENTINEL', summary)
             self.assertNotIn(internal.password, summary)
             self.assertEqual(json.loads(summary)['status'], 'stopped')
+            import asyncio
+            from shield.app.live import LiveModeError
+            grant = asyncio.run(approved_live())
+            captured.clear()
+            run(Engine(), RelayAddress('127.0.0.1'), phone, internal, directory, stopped,
+                width=32, height=32, control_ready=lambda control:
+                control.set_stream_key('SYNTHETIC-ROUTE-SENTINEL'), publish_twitch=True,
+                twitch_live=True, live_approval=grant)
+            self.assertEqual(captured[1], 'rtmp://127.0.0.1:54321/app/SYNTHETIC-ROUTE-SENTINEL')
+            with self.assertRaises(LiveModeError):
+                grant.consume()
 
 
 class RuntimeWriterFailure(unittest.TestCase):
@@ -175,3 +195,35 @@ class RuntimeWriterFailure(unittest.TestCase):
         self.assertEqual(summary['status'], 'failed')
         self.assertEqual(summary['failure']['output_code'], 'egress-recovery-limit')
         self.assertEqual(summary['cleanup_errors'], [])
+
+
+async def approved_live():
+    from aiohttp import ClientSession
+    from shield.app.live import authorize_live
+    from shield.twitch.http import TwitchHTTP
+    from test_live_mode import LiveTwitch, Terminal, user_session
+    async with LiveTwitch() as mock, ClientSession() as network:
+        http = TwitchHTTP(network, mock_origin=mock.origin)
+        with patch('builtins.open', return_value=Terminal('LIVE naie\n')):
+            return await authorize_live(user_session(http), http)
+
+
+class RuntimeLiveApproval(unittest.IsolatedAsyncioTestCase):
+    async def test_real_runtime_refuses_missing_or_consumed_approval_before_any_route(self):
+        from recovery_fixture import engine
+        grant = await approved_live()
+        grant.consume()
+        for approval in (None, object(), grant):
+            with self.subTest(approval=type(approval).__name__), \
+                    patch('relay.runtime.Egress') as output, \
+                    patch('relay.runtime.NetworkInput') as source, \
+                    patch('relay.tls_forwarder.TLSForwarder', side_effect=AssertionError('verified route opened before approval')) as forwarder:
+                stopped = threading.Event()
+                stopped.set()
+                with self.assertRaises(RuntimeError):
+                    run(engine(), RelayAddress('127.0.0.1'), Credentials.generate(),
+                        Credentials.generate(), None, stopped, width=32, height=32,
+                        publish_twitch=True, twitch_live=True, live_approval=approval)
+                output.assert_not_called()
+                source.assert_not_called()
+                forwarder.assert_not_called()

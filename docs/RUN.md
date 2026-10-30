@@ -3,7 +3,8 @@
 This is an experimental RTMP relay. The command layer connects the existing
 MediaMTX ingest, CUDA detector lanes, one masking engine and one NVENC encoder.
 OBS can pull the local shielded RTMP stream. Optional Twitch egress uses the
-same encoded packets and always appends `?bandwidthtest=true`.
+same encoded packets through a verified TLS forwarder. Bandwidth-test mode
+appends `?bandwidthtest=true`; attended live mode is restricted to `naie`.
 
 **Privacy and walking use are unqualified.** SRT is not qualified. The existing
 M2 transport starts a private SRT listener, but these instructions expose only
@@ -135,35 +136,48 @@ reconciliation preserves manual and newer event holds. HOLD overrides PROTECT,
 which overrides LIVE. The same event policy object survives reconnects, keeping
 its replay barriers.
 
-To publish to Twitch test ingest, the owner must separately authorize that
-session and add `--twitch-bandwidth-test`. This is an external publish even
-though viewers cannot watch it. It is never part of the local verification
-recipe. There is no live-publish flag. Twitch documents the RTMP URL and query
-parameter in [Video Broadcast](https://dev.twitch.tv/docs/video-broadcast/).
-The destination uses `rtmps://live.twitch.tv:443/app/` with the memory-only key
-and mandatory `?bandwidthtest=true`. **This route has an unresolved active
-MITM/key-capture risk on the pinned Linux SDK.** PyAV 16.0.1 opens output with
-`avio_open()` without protocol options; bundled FFmpeg 8.0/libavformat
-62.3.100 (GnuTLS) defaults to `tls_verify=0`. Supplying `tls_verify`, `ca_file`
-and `verifyhost` to `av.open(options=...)` does not enable certificate-chain
-or hostname verification. A loopback test published real synthetic H.264
-to a peer rejected by the same bundled library when verification was enabled
-through `avio_open2()`.
+Twitch publication requires one explicit, mutually exclusive mode:
 
-RTMPS encrypts the connection but does not authenticate this server. A rogue
-access point, DNS spoofing or another connection redirect can impersonate
-Twitch, terminate TLS and receive the key through RTMP. Memory-only storage
-does not protect the key in transit. The bandwidth-test query applies to this
-publication, not the key's authority: a stolen key can be reused for a live
-publication. Use `--local-only` while this remains unresolved; an authorization
-to test ingest does not make the transport authenticated.
+- `--twitch-bandwidth-test` sends to test ingest with `?bandwidthtest=true`.
+- `--twitch-live` sends live only after fresh token validation identifies the
+  exact broadcaster login `naie`, then the owner confirms `LIVE naie` on an
+  attended `/dev/tty`. `nale` and every other login are refused. This approval
+  lasts for one runtime session and cannot be saved or reused.
 
-[The TLS follow-up](PR5-TLS-FOLLOWUP.md) records source versions, controls,
-limitations and a loopback-only reproducer. Protocol enumeration and Twitch's
-[secure ingest URL catalog](https://ingest.twitch.tv/ingests) establish neither
-peer verification nor a successful Twitch session. No Twitch connection was
-made to qualify this endpoint; real Twitch device login and platform behavior
-remain an attended check. macOS peer verification was not measured here.
+Only live sessions the owner starts on Saturday/Sunday are authorized by the
+current owner decision. A stored login or key never turns publication on.
+Omit both publication flags to retain authenticated EventSub controls and
+local OBS output without publishing. `--local-only` instead disables Twitch
+login and controls, and cannot be combined with `login`.
+
+The attended recipes below are external writes requiring their own authorized
+session. They have **not** been run as part of local verification:
+
+```sh
+# The owner qualifies real ingest acceptance with this attended test first.
+infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-bandwidth-test
+# Only during an owner-started Sat/Sun live session on naie:
+infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-live
+```
+
+The runtime creates one standard-library forwarder on `127.0.0.1` at an
+OS-selected port. PyAV writes plain RTMP to that listener; the forwarder
+completes TLS verification before forwarding any RTMP bytes to
+`live.twitch.tv:443`. `ssl.create_default_context()` supplies system CAs,
+`check_hostname=True` and `CERT_REQUIRED`; `server_hostname` is the ingest
+hostname. This avoids the pinned PyAV output API's ignored TLS options.
+No direct RTMPS destination or unverified fallback remains in the runtime.
+TLS/verification failures close the local connection and enter the existing
+egress recovery path. The listener accepts replacement writer connections.
+The key never appears in process arguments, logs, receipts or archives.
+
+The [live guard](LIVE-GUARD.md) and [forwarder evidence](LIVE-EGRESS.md) describe
+synthetic loopback verification, including CA/hostname rejection and the
+verification-disable mutation. The [earlier TLS investigation](PR5-TLS-FOLLOWUP.md)
+remains a historical record of the direct PyAV defect, not an available runtime
+route. Real Twitch ingest acceptance is qualified only by the attended
+bandwidth test; no Twitch connection or real stream key was used here.
+macOS and Windows execution of this route remain untested.
 
 ## Local integration verification
 

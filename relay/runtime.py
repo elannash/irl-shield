@@ -1,4 +1,4 @@
-"""Live relay with optional bandwidth-test RTMPS; key acquisition belongs to controls."""
+"""Live relay with verified TLS egress; key acquisition belongs to controls."""
 import argparse
 import json
 import math
@@ -40,13 +40,13 @@ def make_engine(cache, provider='cuda', faults=()):
 
 def run(engine, address, phone, internal, directory, stopped, seconds=None,
         width=1280, height=720, encoder='h264_nvenc', control_ready=None,
-        publish_twitch=False, local_sink=None):
+        publish_twitch=False, local_sink=None, twitch_live=False, live_approval=None):
     """M3's control_ready(callbacks) gets hold/set_stream_key; key stays in memory.
 
     This function owns engine lifetime. The caller owns MediaMTX and the stop
     event, and must never log the credentials it supplied.
     """
-    source = output = writer = None
+    source = output = writer = forwarder = None
     session = None
     summary = {'status': 'failed'}
     started = time.monotonic()
@@ -62,6 +62,11 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                               'input_failure': source.last_failure if source is not None else None}
 
     try:
+        if twitch_live:
+            from shield.app.live import LiveApproval, LiveModeError
+            if not publish_twitch or not isinstance(live_approval, LiveApproval):
+                raise LiveModeError()
+            live_approval.consume()
         control = RelayControl(engine)
         if control_ready:
             control_ready(control)
@@ -69,7 +74,10 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
         if publish_twitch and local_sink is not None:
             raise ValueError('Choose one egress destination')
         if publish_twitch:
-            destinations.append(control.twitch.destination())
+            from relay.tls_forwarder import TLSForwarder
+            forwarder = TLSForwarder('live.twitch.tv', 443)
+            forwarder.__enter__()
+            destinations.append(control.twitch.destination(forwarder.port, live=twitch_live))
         elif local_sink is not None:
             from urllib.parse import urlsplit
             parsed = urlsplit(local_sink)
@@ -97,7 +105,7 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
         record_failure(error)
     finally:
         cleanup = []
-        for resource in (source, writer if writer is not None else output, engine):
+        for resource in (source, writer if writer is not None else output, forwarder, engine):
             if resource is not None:
                 try:
                     resource.close()
@@ -119,6 +127,7 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                                            'recent_events': list(output.recovery_events),
                                            'minimum_failures': 5, 'budget_seconds': 60}
                                           if output else None))
+        summary['verified_tls'] = forwarder.stats if forwarder else None
         summary['input_diagnostics'] = ({'active_generation': source.active_generation,
                                          'last_failure': source.last_failure,
                                          'failure_counts': dict(getattr(source, 'failure_counts', {})),

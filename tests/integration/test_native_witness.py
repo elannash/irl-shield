@@ -143,3 +143,10 @@ class CaptureAlignment(unittest.TestCase):
         rows[0]['pts'] = rows[1]['pts']
         with self.assertRaisesRegex(RuntimeError, 'one frame period'):
             capture_alignment(rows, manifest)
+
+    def test_cumulative_drift_fails_absolute_guard_with_every_interval_inside_tolerance(self):
+        rows, manifest = self.timeline()
+        for index, row in enumerate(rows):
+            row['pts'] += index * .0015
+        with self.assertRaisesRegex(RuntimeError, '^Steady capture timestamps disagree with manifest mapping$'):
+            capture_alignment(rows, manifest)
