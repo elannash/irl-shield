@@ -29,7 +29,8 @@ class MaskingEngine:
         if motion is None:
             from shield.motion import MotionHistory,MotionWorker
             motion=MotionWorker(MotionHistory(max_frames=120,analysis_width=options.get('motion_width',320),mode=options.get('motion_mode','phase'),
-                                              phase_min_response=options.get('motion_min_response',.5)),
+                                              phase_min_response=options.get('motion_min_response',.5),
+                                              max_projection_frames=math.floor(self.delay*self.fps)),
                                 capacity=self.max_buffer_frames)
         self.motion=motion
         self.renderer=renderer or Renderer(padding=options.get('padding',.3),badge=options.get('badge',False))
@@ -51,7 +52,15 @@ class MaskingEngine:
         self.stage_cpu_seconds={name:deque(maxlen=4096) for name in ['motion_submit','coverage','render','emit_poll_per_frame']}
         self.emit_poll_cpu_seconds=0.
 
-    def submit(self,frame,now=None):
+    def submit(self,frame,now=None,*,generation=None):
+        """Flow callers pass the ingest generation captured with this frame.
+
+        Indices remain globally increasing across generations. The default
+        token zero is for uninterrupted inputs such as an offline file.
+        """
+        if generation is not None and (self.options.get('motion_mode') != 'flow'
+                                       or type(generation) is not int or generation < 0):
+            raise ValueError('Ingest generation requires optical flow and a nonnegative integer')
         now=time.monotonic() if now is None else now
         if not math.isfinite(frame.pts) or not math.isfinite(now):
             raise ValueError('Frame and clock timestamps must be finite')
@@ -85,7 +94,10 @@ class MaskingEngine:
             self.last_frame=owned
             self.last_index=frame.index
             began,cpu=time.monotonic(),time.thread_time()
-            self.motion.add(frame.index,pixels)
+            if self.options.get('motion_mode') == 'flow':
+                self.motion.add(frame.index,pixels,generation=0 if generation is None else generation)
+            else:
+                self.motion.add(frame.index,pixels)
             self.stage_seconds['motion_submit'].append(time.monotonic()-began)
             self.stage_cpu_seconds['motion_submit'].append(time.thread_time()-cpu)
             for lane in self.lanes.values():
@@ -110,6 +122,8 @@ class MaskingEngine:
             inside=[r for r in available if index-before<=r.frame_index<=index+after]
             connected=[]
             for receipt in inside:
+                if self.options.get('motion_mode') == 'flow' and abs(receipt.frame_index-index)>math.floor(self.delay*self.fps):
+                    continue
                 # Empty results still describe a particular scene, never every scene.
                 projected=self.motion.project_many(receipt.quads,receipt.frame_index,index,deadline)
                 if projected is None:

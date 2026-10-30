@@ -28,14 +28,14 @@ class MotionWorker:
         self.cpu_seconds=deque(maxlen=4096)
         self.thread=threading.Thread(target=self._run,name='shield-motion',daemon=True)
         self.thread.start()
-    def add(self,index,pixels):
+    def add(self,index,pixels,*,generation=None):
         with self.condition:
             if self.stopping:
                 raise RuntimeError('Motion worker is closed')
             if len(self.pending)>=self.capacity:
                 self.pending.popleft()
                 self.dropped+=1
-            self.pending.append((index,pixels))
+            self.pending.append((index,pixels,generation))
             self.condition.notify()
     def _run(self):
         while True:
@@ -44,10 +44,13 @@ class MotionWorker:
                     self.condition.wait()
                 if self.stopping:
                     return
-                index,pixels=self.pending.popleft()
+                index,pixels,generation=self.pending.popleft()
             wall,cpu=time.monotonic(),time.thread_time()
             try:
-                self.history.add(index,pixels)
+                if generation is None:
+                    self.history.add(index,pixels)
+                else:
+                    self.history.add(index,pixels,generation=generation)
                 with self.condition:
                     self.completed_at[index]=self.clock()
                     while len(self.completed_at)>self.history_capacity:
@@ -97,19 +100,23 @@ class MotionHistory:
     are retained. Confidence is a heuristic fit score, not a probability.
     """
 
-    def __init__(self, max_frames=120, analysis_width=320, mode='orb', phase_min_response=.5):
+    def __init__(self, max_frames=120, analysis_width=320, mode='orb', phase_min_response=.5,
+                 max_projection_frames=None):
         if not isinstance(max_frames, int) or max_frames < 1:
             raise ValueError('max_frames must be a positive integer')
         if not isinstance(analysis_width, int) or analysis_width < 32:
             raise ValueError('analysis_width must be an integer at least32')
-        if mode not in {'orb', 'phase'}:
-            raise ValueError("mode must be 'orb' or 'phase'")
+        if mode not in {'orb', 'phase', 'flow'}:
+            raise ValueError("mode must be 'orb', 'phase' or 'flow'")
+        if mode == 'flow' and (type(max_projection_frames) is not int or max_projection_frames < 0):
+            raise ValueError('Optical flow requires a nonnegative integer projection horizon')
         if not math.isfinite(phase_min_response) or not 0 <= phase_min_response <= 1:
             raise ValueError('phase_min_response must be finite and between zero and one')
         self.phase_min_response = phase_min_response
         self.max_frames = max_frames
         self.analysis_width = analysis_width
         self.mode = mode
+        self.max_projection_frames = max_projection_frames
         self._orb = cv2.ORB_create(nfeatures=600, nlevels=5, edgeThreshold=15, fastThreshold=10) if mode == 'orb' else None
         self._matcher = cv2.BFMatcher(cv2.NORM_HAMMING)
         self._frames = {}
@@ -117,8 +124,11 @@ class MotionHistory:
         self._diagnostics = {}
         self._projection_cache = {}
         self._state_lock=threading.RLock()
+        self._generation = None
 
-    def add(self, index, frame_bgr):
+    def add(self, index, frame_bgr, *, generation=0):
+        if self.mode == 'flow' and (type(generation) is not int or generation < 0):
+            raise ValueError('Ingest generation must be a nonnegative integer')
         if not isinstance(index, int):
             raise ValueError('Frame index must be an integer')
         if self._frames and index <= next(reversed(self._frames)):
@@ -137,7 +147,10 @@ class MotionHistory:
         features = self._orb.detectAndCompute(gray, None) if self._orb is not None else ([], None)
         diagnostic = {'valid': False, 'confidence': 0.0, 'burst': False, 'reason': 'first-frame'}
         transform = None
-        if self._frames and index - 1 in self._frames:
+        changed_generation = self.mode == 'flow' and self._generation != generation
+        if self._frames and changed_generation:
+            diagnostic = {'valid': False, 'confidence': 0.0, 'burst': True, 'reason': 'ingest-generation-change'}
+        elif self._frames and index - 1 in self._frames:
             previous_gray, previous_scale, previous_features = self._frames[next(reversed(self._frames))]
             textured = min(float(previous_gray.std()), float(gray.std())) >= 3
             diagnostic = {'valid': False, 'confidence': 0.0, 'burst': textured, 'reason': 'unreliable-motion' if textured else 'low-texture'}
@@ -146,8 +159,12 @@ class MotionHistory:
                 if np.array_equal(previous_gray, gray):
                     analysis_transform, confidence, reason = np.eye(3), 1.0, 'stationary'
                 else:
-                    analysis_transform, confidence = self._homography(previous_features, features, previous_gray.shape)
-                if analysis_transform is None and previous_gray.shape == gray.shape:
+                    if self.mode == 'flow':
+                        analysis_transform, confidence = self._flow(previous_gray, gray)
+                        reason = 'flow'
+                    else:
+                        analysis_transform, confidence = self._homography(previous_features, features, previous_gray.shape)
+                if self.mode != 'flow' and analysis_transform is None and previous_gray.shape == gray.shape:
                     window = cv2.createHanningWindow((small_width, small_height), cv2.CV_32F)
                     (dx, dy), response = cv2.phaseCorrelate(previous_gray.astype(np.float32), gray.astype(np.float32), window)
                     if response >= self.phase_min_response and np.hypot(dx, dy) <= min(gray.shape) * .25:
@@ -163,6 +180,7 @@ class MotionHistory:
         elif self._frames:
             diagnostic = {'valid': False, 'confidence': 0.0, 'burst': True, 'reason': 'nonconsecutive-frame'}
         with self._state_lock:
+            self._generation = generation
             self._frames[index] = gray, scale, features
             self._transforms[index] = transform
             self._diagnostics[index] = diagnostic
@@ -191,6 +209,38 @@ class MotionHistory:
         if cv2.contourArea(cv2.convexHull(inliers)) < .03 * np.prod(previous_shape):
             return None, 0.0
         return matrix, float(mask.mean()) * min(1.0, int(mask.sum()) / 30)
+
+    def _flow(self, previous, current):
+        if previous.shape != current.shape:
+            return None, 0.0
+        source = cv2.goodFeaturesToTrack(previous, maxCorners=400, qualityLevel=.01,
+                                        minDistance=6, blockSize=7)
+        if source is None or len(source) < 12:
+            return None, 0.0
+        options = dict(winSize=(21, 21), maxLevel=3,
+                       criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, .01))
+        target, forward, _ = cv2.calcOpticalFlowPyrLK(previous, current, source, None, **options)
+        if target is None or forward is None or not np.isfinite(target).all():
+            return None, 0.0
+        returned, backward, _ = cv2.calcOpticalFlowPyrLK(current, previous, target, None, **options)
+        if returned is None or backward is None:
+            return None, 0.0
+        a, b, c = source[:, 0], target[:, 0], returned[:, 0]
+        height, width = current.shape
+        consistent = ((forward.ravel() == 1) & (backward.ravel() == 1)
+                      & np.isfinite(c).all(axis=1) & (np.linalg.norm(c - a, axis=1) <= 1.)
+                      & (b[:, 0] >= 0) & (b[:, 0] < width)
+                      & (b[:, 1] >= 0) & (b[:, 1] < height))
+        if int(consistent.sum()) < 12 or float(consistent.mean()) < .6:
+            return None, 0.0
+        a, b = a[consistent], b[consistent]
+        matrix, mask = cv2.findHomography(a, b, cv2.RANSAC, 2., maxIters=1000, confidence=.995)
+        if matrix is None or mask is None or int(mask.sum()) < 12 or float(mask.mean()) < .6:
+            return None, 0.0
+        inliers = mask.ravel().astype(bool)
+        if any(cv2.contourArea(cv2.convexHull(points[inliers])) < .03 * previous.size for points in (a, b)):
+            return None, 0.0
+        return matrix, float(consistent.mean() * mask.mean())
 
     def _alignment_error(self, previous, current, matrix):
         if not np.isfinite(matrix).all() or abs(matrix[2, 2]) < 1e-8:
@@ -223,6 +273,8 @@ class MotionHistory:
         if ((len(points) and points.shape[1:] != (4, 2)) or not np.isfinite(points).all()):
             raise ValueError('Expected four finite quad vertices')
         with self._state_lock:
+            if self.mode == 'flow' and abs(source_index - target_index) > self.max_projection_frames:
+                return None
             if source_index not in self._frames or target_index not in self._frames:
                 return None
             key = (source_index, target_index)

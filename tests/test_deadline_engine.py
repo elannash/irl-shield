@@ -181,3 +181,58 @@ class DeadlineEngine(unittest.TestCase):
         self.assertFalse(np.array_equal(result[0].pixels,source))
         self.assertTrue(engine.drained)
         engine.close()
+
+    def test_flow_generation_change_fails_closed_and_fresh_receipts_recover(self):
+        import threading
+        from shield.motion import MotionWorker
+        from test_motion import scene
+        complete = threading.Event()
+        count = [0]
+        def clock():
+            count[0] += 1
+            if count[0] == 3:
+                complete.set()
+            return 10.1
+        quad = [[100, 70], [300, 70], [300, 190], [100, 190]]
+        lanes = {name: ScriptedLane([Detection(name, 0, [quad], 10.1),
+                                    Detection(name, 2, [quad], 10.1)])
+                 for name in ('fast', 'accurate')}
+        motion = MotionWorker(MotionHistory(mode='flow', max_projection_frames=30), clock=clock)
+        engine = MaskingEngine(lanes, {'fps':30, 'delay_seconds':1, 'motion_mode':'flow'}, motion=motion)
+        try:
+            source = scene()
+            engine.submit(Frame(0, 0, source), now=10, generation=0)
+            engine.submit(Frame(1, 1/30, source), now=10+1/30, generation=1)
+            engine.submit(Frame(2, 2/30, source), now=10+2/30, generation=2)
+            self.assertTrue(complete.wait(2))
+            engine.end(2)
+            frames = engine.poll(now=11+2/30)
+            self.assertEqual([f.state for f in frames], ['LIVE', 'PROTECT', 'LIVE'])
+            self.assertFalse(frames[1].coverage.ok)
+            self.assertTrue(frames[1].protected)
+            self.assertEqual(frames[1].coverage.reason, 'unresolved-motion-accurate-coverage')
+            self.assertEqual(frames[2].mask[120, 200], 255)
+            self.assertEqual((frames[2].coverage.fast_age, frames[2].coverage.accurate_age), (0, 0))
+        finally:
+            engine.close()
+        self.assertFalse(motion.stats['running'])
+
+    def test_flow_receipts_cannot_exceed_delay_with_a_more_permissive_motion_adapter(self):
+        from test_motion import scene
+        quad = [[100, 70], [300, 70], [300, 190], [100, 190]]
+        lanes = {name: ScriptedLane([Detection(name, 0, [quad], 10.),
+                                    Detection(name, 3, [quad], 11.5)])
+                 for name in ('fast', 'accurate')}
+        engine = MaskingEngine(lanes, {'fps':2, 'delay_seconds':1, 'motion_mode':'flow'},
+                               motion=MotionHistory(mode='flow', max_projection_frames=30))
+        try:
+            for index in range(4):
+                engine.submit(Frame(index, index/2, scene()), now=10+index/2)
+            engine.end(3)
+            frames = engine.poll(now=12.5)
+            self.assertEqual([f.state for f in frames], ['LIVE', 'LIVE', 'LIVE', 'LIVE'])
+            self.assertEqual(len(frames[1].quads), 4)
+            self.assertEqual(len(frames[0].quads), 2)
+            self.assertEqual(len(frames[3].quads), 2)
+        finally:
+            engine.close()
