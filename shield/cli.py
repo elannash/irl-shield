@@ -186,10 +186,15 @@ async def execute(args):
 
 
 def main(argv=None):
-    args = parser().parse_args(argv)
+    arguments = parser()
+    args = arguments.parse_args(argv)
     if args.command == 'doctor':
         print(json.dumps(doctor(), indent=2))
         return 0
+    if (args.command == 'run' or args.command == 'login' and args.run) and not args.host:
+        arguments.error('--host is required: use IPv4 loopback (127.0.0.0/8) or a Tailscale address '
+                        '(100.64.0.0/10), or set SHIELD_BIND_HOST. Run shield doctor '
+                        '(python -m shield.cli doctor) to find the address.')
     try:
         asyncio.run(execute(args))
     except (Exception, asyncio.CancelledError):

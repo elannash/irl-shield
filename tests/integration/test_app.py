@@ -1,6 +1,6 @@
 """Application auth/key/control wiring across real loopback HTTP and SDK sockets."""
 import asyncio
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 import json
 import threading
@@ -10,7 +10,7 @@ from unittest.mock import patch
 from aiohttp import ClientSession
 
 from shield.app.session import TwitchControls, login
-from shield.cli import doctor, parser, validate, execute
+from shield.cli import doctor, parser, validate, execute, main
 from shield.control import Control
 from shield.twitch.http import TwitchHTTP
 from relay.live import RelayControl
@@ -25,6 +25,41 @@ class EngineControl:
 
     def hold(self, active, source, reason, now=None):
         return self.control.set_hold(active, source, reason, now or 0)
+
+
+class CommandLine(unittest.TestCase):
+    def test_missing_bind_is_actionable_before_any_authentication(self):
+        for arguments in (['run', '--local-only'], ['login', '--run']):
+            with self.subTest(arguments=arguments), patch.dict('os.environ', {}, clear=True):
+                error = StringIO()
+                with patch('shield.cli.execute', side_effect=AssertionError('authentication reached')) as execute_mock:
+                    with redirect_stderr(error), self.assertRaises(SystemExit) as stopped:
+                        main(arguments)
+                    self.assertEqual(stopped.exception.code, 2)
+                    execute_mock.assert_not_called()
+                for hint in ('--host', '127.0.0.0/8', '100.64.0.0/10', 'shield doctor'):
+                    self.assertIn(hint, error.getvalue())
+
+    def test_synthetic_soak_defaults_to_loopback_even_with_phone_bind_environment(self):
+        import argparse
+        from relay import soak
+
+        class NativeBoundary(Exception):
+            pass
+
+        parsed = []
+        original = argparse.ArgumentParser.parse_args
+        def observe(parser, *args, **kwargs):
+            result = original(parser, *args, **kwargs)
+            parsed.append(result)
+            return result
+        with patch.dict('os.environ', {'SHIELD_BIND_HOST': '100.80.1.2'}), \
+                patch.object(argparse.ArgumentParser, 'parse_args', observe), \
+                patch('relay.soak.require_queue_lease', side_effect=NativeBoundary):
+            with self.assertRaises(NativeBoundary):
+                soak.main(['--output', 'unused-synthetic-output', '--model-cache', 'unused-cache'])
+        self.assertEqual(len(parsed), 1)
+        self.assertEqual(parsed[0].host, '127.0.0.1')
 
 
 class Application(unittest.IsolatedAsyncioTestCase):

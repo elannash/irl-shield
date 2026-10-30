@@ -141,11 +141,29 @@ though viewers cannot watch it. It is never part of the local verification
 recipe. There is no live-publish flag. Twitch documents the RTMP URL and query
 parameter in [Video Broadcast](https://dev.twitch.tv/docs/video-broadcast/).
 The destination uses `rtmps://live.twitch.tv:443/app/` with the memory-only key
-and mandatory `?bandwidthtest=true`. The pinned Linux PyAV/FFmpeg SDK enumerates
-RTMPS and TLS output protocols. Twitch also publishes secure URL templates in
-[its ingest catalog](https://ingest.twitch.tv/ingests). No Twitch connection was
+and mandatory `?bandwidthtest=true`. **This route has an unresolved active
+MITM/key-capture risk on the pinned Linux SDK.** PyAV 16.0.1 opens output with
+`avio_open()` without protocol options; bundled FFmpeg 8.0/libavformat
+62.3.100 (GnuTLS) defaults to `tls_verify=0`. Supplying `tls_verify`, `ca_file`
+and `verifyhost` to `av.open(options=...)` does not enable certificate-chain
+or hostname verification. A loopback test published real synthetic H.264
+to a peer rejected by the same bundled library when verification was enabled
+through `avio_open2()`.
+
+RTMPS encrypts the connection but does not authenticate this server. A rogue
+access point, DNS spoofing or another connection redirect can impersonate
+Twitch, terminate TLS and receive the key through RTMP. Memory-only storage
+does not protect the key in transit. The bandwidth-test query applies to this
+publication, not the key's authority: a stolen key can be reused for a live
+publication. Use `--local-only` while this remains unresolved; an authorization
+to test ingest does not make the transport authenticated.
+
+[The TLS follow-up](PR5-TLS-FOLLOWUP.md) records source versions, controls,
+limitations and a loopback-only reproducer. Protocol enumeration and Twitch's
+[secure ingest URL catalog](https://ingest.twitch.tv/ingests) establish neither
+peer verification nor a successful Twitch session. No Twitch connection was
 made to qualify this endpoint; real Twitch device login and platform behavior
-remain an attended check.
+remain an attended check. macOS peer verification was not measured here.
 
 ## Local integration verification
 

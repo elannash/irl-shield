@@ -68,3 +68,110 @@ class RuntimeDestination(unittest.TestCase):
             self.assertNotIn('SYNTHETIC-ROUTE-SENTINEL', summary)
             self.assertNotIn(internal.password, summary)
             self.assertEqual(json.loads(summary)['status'], 'stopped')
+
+
+class RuntimeWriterFailure(unittest.TestCase):
+    def failure(self, write_fails, close_fails, stop_on_write=False):
+        from contextlib import redirect_stderr, redirect_stdout
+        import io
+        import traceback
+        from relay.stream import EgressError
+        from recovery_fixture import engine, record
+
+        # This intentionally invalid synthetic destination is never contacted.
+        private_url = 'rtmp://127.0.0.1:1/shielded?password=SYNTHETIC-PRIVATE-SENTINEL'
+        outputs, sources = [], []
+        stopped = threading.Event()
+
+        class Output:
+            error_code = 'egress-recovery-limit' if write_fails else None
+            error_details = None
+            count = max_write_seconds = recovery_count = 0
+            recovery_events = ()
+
+            def __init__(self, *args):
+                self.closed = False
+                self.attempts = 0
+                outputs.append(self)
+
+            def write(self, frame, pcm):
+                self.attempts += 1
+                if stop_on_write:
+                    stopped.set()
+                if write_fails:
+                    try:
+                        raise OSError(private_url)
+                    except OSError:
+                        raise EgressError('egress-recovery-limit')
+                self.count += 1
+                return True
+
+            def close(self):
+                self.closed = True
+                if close_fails:
+                    raise OSError(private_url)
+
+        class Source:
+            error_code = last_failure = None
+            high_water = active_generation = 0
+            timestamp_issues = {}
+
+            def __init__(self, url):
+                self.closed = False
+                sources.append(self)
+
+            def drain(self):
+                return []
+
+            def close(self):
+                self.closed = True
+
+        source_engine = engine(delay=.01)
+        output = io.StringIO()
+        with tempfile.TemporaryDirectory() as directory, patch('relay.runtime.Egress', Output), \
+                patch('relay.runtime.NetworkInput', Source), redirect_stdout(output), redirect_stderr(output):
+            with self.assertRaises(RuntimeError) as caught:
+                run(source_engine, RelayAddress('127.0.0.1'), Credentials.generate(), Credentials.generate(),
+                    directory, stopped, seconds=.15, width=64, height=32, encoder='libx264')
+            summary_text = (Path(directory) / 'runtime.json').read_text()
+            diagnostics = ''.join(traceback.format_exception(caught.exception)) + output.getvalue() + summary_text
+            self.assertNotIn(private_url, diagnostics)
+            self.assertNotIn('SYNTHETIC-PRIVATE-SENTINEL', diagnostics)
+            self.assertGreater(outputs[0].attempts, 0, 'the terminal path must reach the actual writer')
+            self.assertTrue(outputs[0].closed)
+            self.assertTrue(sources[0].closed)
+            self.assertFalse(any(thread.name == 'relay-egress-writer' for thread in threading.enumerate()))
+            self.assertTrue(all(not lane.thread.is_alive() for lane in source_engine.lanes.values()))
+            summary = json.loads(summary_text)
+            record(self, {'summary': summary, 'surfaced_message': str(caught.exception),
+                          'write_attempts': outputs[0].attempts, 'output_closed': outputs[0].closed,
+                          'input_closed': sources[0].closed, 'writer_and_engine_threads_reaped': True},
+                   secrets=(private_url, 'SYNTHETIC-PRIVATE-SENTINEL'))
+            return str(caught.exception), summary
+
+    def test_terminal_write_error_survives_successful_cleanup(self):
+        message, summary = self.failure(write_fails=True, close_fails=False)
+        self.assertEqual(message, 'Relay transport failed (upstream diagnostics suppressed)')
+        self.assertEqual(summary['status'], 'failed')
+        self.assertEqual(summary['failure']['output_code'], 'egress-recovery-limit')
+        self.assertEqual(summary['cleanup_errors'], [])
+
+    def test_actual_writer_cleanup_failure_is_reported(self):
+        message, summary = self.failure(write_fails=False, close_fails=True)
+        self.assertEqual(message, 'Relay cleanup failed: EgressWriter')
+        self.assertNotIn('failure', summary)
+        self.assertEqual(summary['cleanup_errors'], ['EgressWriter'])
+        self.assertGreater(summary['output_frames'], 0, 'the real runtime must have written frames')
+
+    def test_terminal_write_error_stays_primary_when_cleanup_also_fails(self):
+        message, summary = self.failure(write_fails=True, close_fails=True)
+        self.assertEqual(message, 'Relay transport failed (upstream diagnostics suppressed)')
+        self.assertEqual(summary['failure']['output_code'], 'egress-recovery-limit')
+        self.assertEqual(summary['cleanup_errors'], ['EgressWriter'])
+
+    def test_terminal_error_during_stop_is_not_lost_without_another_tick(self):
+        message, summary = self.failure(write_fails=True, close_fails=False, stop_on_write=True)
+        self.assertEqual(message, 'Relay transport failed (upstream diagnostics suppressed)')
+        self.assertEqual(summary['status'], 'failed')
+        self.assertEqual(summary['failure']['output_code'], 'egress-recovery-limit')
+        self.assertEqual(summary['cleanup_errors'], [])
