@@ -14,6 +14,9 @@ CANDIDATE_METADATA = {
     'ppocr-v6-medium': {'detector_families': ['paddleocr']},
     'ppocr-v5-english-rec': {'detector_families': ['paddleocr']},
 }
+for _candidate in ('w1-small-server-union', 'w1-small-light-pair', 'w1-small-tiled'):
+    CANDIDATE_METADATA[_candidate] = {'detector_families': ['paddleocr']}
+
 DEFAULT_FAST_CANDIDATES = {
     'unmasked': None, 'slate': None,
     'vision-fast': 'vision-rectangles', 'vision-accurate': 'vision-rectangles',
@@ -23,6 +26,9 @@ DEFAULT_FAST_CANDIDATES = {
     'ppocr-v6-tiny': 'ppocr-v6-tiny', 'ppocr-v6-small': 'ppocr-v6-tiny',
     'ppocr-v6-medium': 'ppocr-v6-tiny', 'ppocr-v5-english-rec': 'ppocr-v6-tiny',
 }
+for _candidate in ('w1-small-server-union', 'w1-small-light-pair', 'w1-small-tiled'):
+    DEFAULT_FAST_CANDIDATES[_candidate] = 'ppocr-v6-tiny'
+
 JUDGE_METADATA = {
     'tesseract': {'family': 'tesseract'},
     'vision-accurate': {'family': 'apple-vision'},

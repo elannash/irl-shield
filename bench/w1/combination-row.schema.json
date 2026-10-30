@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "irl-shield/w1/combination-row",
+  "title": "One real-footage selection row per combination",
+  "type": "object",
+  "required": [
+    "combination_id",
+    "parent_combination_id",
+    "changed_factor",
+    "source_freeze_sha256",
+    "selection_identity_sha256",
+    "status",
+    "natural_hidden_percent",
+    "natural_flicker_frames",
+    "w12_privacy_score",
+    "w12_readable_hits",
+    "mask_area_fraction_p50",
+    "mask_area_fraction_p95",
+    "real_video_guard_pass",
+    "w12_watchability_score",
+    "gpu_ms_per_source_frame",
+    "cpu_percent_one_core_100",
+    "cpu_walk_budget_one_core_percent",
+    "gpu_utilization_p95_percent",
+    "max_sustainable_fps",
+    "e2e_latency_p95_seconds_including_D",
+    "e2e_measurement_scope",
+    "D_seconds",
+    "sustained_30fps_pass",
+    "synthetic_regression_pass",
+    "per_clip_protection_pass",
+    "area_guard_pass",
+    "queue_clean",
+    "classifier_gpu_ms_per_crop",
+    "classifier_crops_per_source_frame",
+    "classifier_end_to_end_gpu_ms_per_source_frame",
+    "synthetic_regression",
+    "spent_v1_dev_only",
+    "evidence",
+    "missing_fields",
+    "owner_decision"
+  ],
+  "properties": {
+    "combination_id": {
+      "type": "string"
+    },
+    "parent_combination_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "changed_factor": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_freeze_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "selection_identity_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "unmeasured",
+        "screened",
+        "shortlisted",
+        "fully-measured",
+        "pending",
+        "rejected",
+        "owner-decision-pending"
+      ]
+    },
+    "natural_hidden_percent": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Independent OCR interval-weighted hidden percentage on the seven natural tune variants ONLY."
+    },
+    "natural_flicker_frames": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "w12_privacy_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "W12 native scale; panel manifest and scale identity required."
+    },
+    "w12_readable_hits": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "mask_area_fraction_p50": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Actual raster mask union, frame-weighted on natural7; not averaged clip quantiles."
+    },
+    "mask_area_fraction_p95": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Actual raster mask union, frame-weighted on natural7."
+    },
+    "real_video_guard_pass": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "w12_watchability_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "W12 native scale; no guessed score."
+    },
+    "gpu_ms_per_source_frame": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Verified CUDA event intervals / all steady source frames, including frames with no inference."
+    },
+    "cpu_percent_one_core_100": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Actual native-walk process-tree CPU;100%=one core, same units as CPU budget."
+    },
+    "cpu_walk_budget_one_core_percent": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Numeric walk budget from parent/owner; unknown remains null/pending."
+    },
+    "gpu_utilization_p95_percent": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Measured steady GPU compute utilization with NVENC active; cannot derive from event interval sums."
+    },
+    "max_sustainable_fps": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Separate sustainable/saturated throughput evidence; paced30fps is not proof of maximum throughput."
+    },
+    "e2e_latency_p95_seconds_including_D": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Actual added end-to-end latency including buffering D and transport, with declared clock/scope."
+    },
+    "e2e_measurement_scope": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "D_seconds": {
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "sustained_30fps_pass": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "synthetic_regression_pass": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "per_clip_protection_pass": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "area_guard_pass": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "queue_clean": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "classifier_gpu_ms_per_crop": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Required for any local-verifier factor; actual1080Ti event timing per crop."
+    },
+    "classifier_crops_per_source_frame": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Actual processed crop count / all source frames."
+    },
+    "classifier_end_to_end_gpu_ms_per_source_frame": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "description": "Full classifier contribution including actual scheduling/copies; no crop cost omitted."
+    },
+    "synthetic_regression": {
+      "type": "object",
+      "description": "Separate existing regression counts/guards; not a selection numerator."
+    },
+    "spent_v1_dev_only": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Explicitly dev-only real-footage diagnostics; not pooled into the natural7 score."
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "missing_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner_decision": {
+      "const": "required; no automatic adoption"
+    }
+  },
+  "additionalProperties": false
+}

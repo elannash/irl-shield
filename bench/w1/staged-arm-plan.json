@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_PLAN_ONLY_NO_RUNS_AUTHORIZED",
+  "primary_input_manifest": {
+    "path": "/home/elan/code/irl-shield/.tmp/q/frozen-a8a06e3/inputs.json",
+    "sha256": "4db58cb96244791874447951b893af48f99b6bd165a59c46884a40a3c5226972"
+  },
+  "selection": {
+    "corpus": "seven licensed tune NATURAL variants only",
+    "filter": "synthetic_variant is false (strict boolean)",
+    "synthetic_overlay_rows_in_selection_numerator": 0,
+    "synthetic": "Separate seven-overlay regression set; never pool overlay-background natural scores into selection.",
+    "spent_v1": "Permitted dev-only real-footage diagnostics, reported separately within the same combination row; do not pool with the primary tune denominator.",
+    "excluded": [
+      "fixtures/cache/owner-real: paths not provided/authorized; no access",
+      "fresh-v2 media: reserved Sunday one-shot; metadata blob only"
+    ]
+  },
+  "frozen_baseline": {
+    "first": true,
+    "fresh_after_final_source_freeze": true,
+    "historical": "Hash-verify old source artifacts as provenance only; historical invalid baseline is not a fresh qualified winner."
+  },
+  "search": {
+    "strategy": "staged one-factor screens then greedy additions; not a full grid",
+    "model_resolution_options": [
+      {
+        "model": "ppocr-v6-tiny",
+        "limit_side_len": 640,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-tiny",
+        "limit_side_len": 960,
+        "scheduled": true,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-tiny",
+        "limit_side_len": 1280,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-small",
+        "limit_side_len": 640,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-small",
+        "limit_side_len": 960,
+        "scheduled": true,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-small",
+        "limit_side_len": 1280,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-medium",
+        "limit_side_len": 640,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-medium",
+        "limit_side_len": 960,
+        "scheduled": true,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v6-medium",
+        "limit_side_len": 1280,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v5-server",
+        "limit_side_len": 640,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v5-server",
+        "limit_side_len": 960,
+        "scheduled": true,
+        "status": "unmeasured; exact shape parity/cost required"
+      },
+      {
+        "model": "ppocr-v5-server",
+        "limit_side_len": 1280,
+        "scheduled": false,
+        "status": "unmeasured; exact shape parity/cost required"
+      }
+    ],
+    "stages": [
+      {
+        "id": "baseline",
+        "action": "Measure fresh Small960/Tiny640, existing phase motion, D1, 720p30 NVENC baseline on natural7; keep synthetic regression separate."
+      },
+      {
+        "id": "model",
+        "one_factor": "accurate detector model",
+        "anchor_resolution": 960,
+        "choices": [
+          "ppocr-v6-tiny",
+          "ppocr-v6-small",
+          "ppocr-v6-medium",
+          "ppocr-v5-server"
+        ],
+        "note": "Hold fast lane/rates/D/padding/source fixed. Small960 baseline is reused."
+      },
+      {
+        "id": "resolution",
+        "one_factor": "accurate input limit side",
+        "choices": [
+          640,
+          1280
+        ],
+        "parent": "Best measured model screen; only revisit other model/size pairs if evidence warrants, not automatically all12."
+      },
+      {
+        "id": "tracking",
+        "one_factor": "per-object tracking",
+        "choices": [
+          "off:existing phase motion safety retained",
+          "on:box-flow"
+        ],
+        "parent": "Best guarded model/resolution. Persistence is its own follow-up factor."
+      },
+      {
+        "id": "lighting",
+        "one_factor": "detector preprocessing",
+        "choices": [
+          "original",
+          "CLAHE/gamma pair"
+        ],
+        "note": "All actual component inferences are charged; input-stress variants require independently re-observed input truth."
+      },
+      {
+        "id": "delay",
+        "one_factor": "D",
+        "choices": [
+          1,
+          2,
+          3
+        ],
+        "note": "D2/3 diagnostic only. Report actual end-to-end latency including D and all transport; cap3s. Adoption above1s reserved owner/Opus."
+      },
+      {
+        "id": "layers",
+        "one_factor": "recall layer",
+        "choices": [
+          "v6+v5server union",
+          "licensed open-vocabulary2Hz",
+          "licensed open-vocabulary4Hz",
+          "best-frame within D"
+        ],
+        "blocked": "Open-vocab runtime/export and best-frame adapter require separate verified implementation/parity; no readiness claim."
+      },
+      {
+        "id": "local-verifier",
+        "one_factor": "local crop classifier after open-vocabulary proposals",
+        "choices": [
+          "logo-confirm only",
+          "mask-removal safety experiment"
+        ],
+        "manifest": "models/w1-verifier-manifest.json",
+        "blocked": "No runtime/download/export or safety release. Require dual explicit text negatives; all-judge no-regression and physical safety mutation proof. Both-text-detector giant positives are ineligible."
+      },
+      {
+        "id": "shortlist",
+        "action": "Top3 guarded combinations receive full metrics and W12 pairwise panel; W12 owns bench/vision_panel. Pareto effectiveness first, then watchability. Final recommendation is an owner decision."
+      }
+    ],
+    "greedy_rule": "Best measured natural-hidden percentage-point gain per added actual GPUms/sourceframe. A cheaper improved arm dominates parent cost; never manufacture an infinite score.",
+    "stop_adding_factor": {
+      "minimum_natural_gain_percentage_points": 0.5,
+      "stop_if": "gain<.5pt OR speed/headroom guard breaks",
+      "unknown": "Missing cost is ineligible; missing CPU walk budget stays pending, never assumed safe."
+    }
+  },
+  "best_guard": {
+    "natural_independent_hidden_percent_min": 90,
+    "no_natural_OCR_regression_vs_fresh_baseline": true,
+    "sustained_source_fps": 30,
+    "resolution": [
+      1280,
+      720
+    ],
+    "GPU": "1080Ti",
+    "encoder": "h264_nvenc",
+    "gpu_utilization_p95_percent_max": 70,
+    "gpu_utilization_scope": "Actual measured steady compute utilization with NVENC active; not inferred from CUDA-event ms.",
+    "cpu_walk_budget_one_core_percent": null,
+    "cpu_budget_status": "Parent/owner numeric threshold pending; report actual CPU% explicitly.",
+    "added_e2e_latency_including_D_seconds_max": 3,
+    "max_sustainable_fps_min": 30,
+    "real_video_failures_allowed": 0,
+    "area_ceiling_max": 0.15,
+    "area_basis_required": true,
+    "per_clip_PROTECT_fraction_max_exclusive": 0.02,
+    "synthetic_regression": "Existing gate unchanged, separate from selection numerator",
+    "contended_timing": "explicit/unqualified; not best-eligible",
+    "no_cost": "not eligible"
+  },
+  "row_schema": "bench/w1/combination-row.schema.json",
+  "row_key": "one row per unique combination_id, with separate dev-only/regression subfields; no duplicate rows for natural/synthetic variants",
+  "barriers": [
+    "Final source/model/config/input freeze",
+    "Main9e37 swept test application plus fresh full compositionSH scripts/check0",
+    "Exact V2 metadata receipt",
+    "Root EX functional CUDA model/shape parity0"
+  ],
+  "checkpoints": {
+    "hard_stop_utc": "2026-10-30T23:30:00Z",
+    "v1_freeze_utc": "2026-10-31T13:00:00Z",
+    "final_freeze_utc": "2026-11-01T14:00:00Z"
+  },
+  "execution": "No child enqueue, queue polling, manual GPU/render/judge or shared SDK edits. Root executes only bound immutable packets with declared caps."
+}

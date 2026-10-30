@@ -6,6 +6,7 @@ The existing FFmpeg build supplies encoding; its LGPL/GPL terms are described
 at https://ffmpeg.org/legal.html . No codec binary or new asset is bundled.
 """
 from dataclasses import asdict
+from collections import deque
 import argparse
 from fractions import Fraction
 import hashlib
@@ -44,6 +45,19 @@ class _Noop:
 
     def close(self):
         pass
+
+
+class _RenderDiagnostics:
+    """Keep optional adapter diagnostics aligned with each engine presentation."""
+    def __init__(self, renderer):
+        self.renderer = renderer
+        self.pending = deque()
+
+    def render(self, *args):
+        rendered = self.renderer.render(*args)
+        budget = getattr(rendered, 'budget', None)
+        self.pending.append(asdict(budget) if budget is not None else None)
+        return rendered
 
 
 def _validate_models(candidate,options):
@@ -103,7 +117,7 @@ class _ScheduledLane:
                 'rate_hz': self.rate, 'backend': getattr(self.backend, 'metadata', {})}
 
 
-def render_offline(frames, fps, backends, options, emit, *, motion=None, renderer=None):
+def render_offline(frames, fps, backends, options, emit, *, motion=None, renderer=None, diagnostic_delay=False):
     """Consume every source pixel array, presenting on virtual PTS rather than wall time.
 
     Backends are borrowed and remain owned by the caller. All detector calls
@@ -113,7 +127,12 @@ def render_offline(frames, fps, backends, options, emit, *, motion=None, rendere
     options = {'delay_seconds': 1., 'before': 6, 'after': 30, 'fast_rate_hz': 8.,
                'accurate_rate_hz': 4., 'motion_width': 320, 'motion_mode': 'phase', **options}
     delay = float(options['delay_seconds'])
-    if not math.isfinite(fps) or fps <= 0 or not math.isfinite(delay) or not 0 <= delay <= 1:
+    if type(diagnostic_delay) is not bool:
+        raise ValueError('Diagnostic delay opt-in must be boolean')
+    maximum_delay=3. if diagnostic_delay else 1.
+    if not math.isfinite(fps) or fps <= 0 or not math.isfinite(delay) or not 0 <= delay <= maximum_delay:
+        if diagnostic_delay:
+            raise ValueError('Diagnostic delay must be at most three seconds')
         raise ValueError('Offline quality requires positive fps and a delay between zero and one second')
     control = options.get('control')
     if control not in (None, 'unmasked', 'slate'):
@@ -126,9 +145,12 @@ def render_offline(frames, fps, backends, options, emit, *, motion=None, rendere
     lanes = {name: _ScheduledLane(name, backends[name], fps, float(options[name + '_rate_hz']),
                                  int(options.get(name + '_width', 0)))
              for name in ('fast', 'accurate')}
+    motion_options = {'max_projection_frames': math.floor(delay * fps)} if options['motion_mode'] in {'flow','box-flow'} else {}
     motion = motion or MotionHistory(max_frames=max(120, math.ceil(fps * delay) + options['before'] + 4),
                                      analysis_width=options['motion_width'], mode=options['motion_mode'],
-                                     phase_min_response=options.get('motion_min_response',.5))
+                                     phase_min_response=options.get('motion_min_response',.5), **motion_options)
+    diagnostics = _RenderDiagnostics(renderer) if renderer is not None else None
+    renderer = diagnostics if diagnostics is not None else renderer
     engine = MaskingEngine(lanes, {**options, 'fps': fps}, motion=motion, renderer=renderer)
     if control == 'slate':
         engine.hold(True, source='offline-control', reason='slate-control', now=0.)
@@ -154,6 +176,8 @@ def render_offline(frames, fps, backends, options, emit, *, motion=None, rendere
                                 'mask_shape': list(frame.mask.shape),
                                 'mask_fraction': float((frame.mask > 0).mean()),
                                 'mask_sha256': hashlib.sha256(frame.mask.tobytes()).hexdigest()})
+                if diagnostics is not None:
+                    records[-1]['render_budget'] = diagnostics.pending.popleft()
 
     try:
         for index, pixels in enumerate(frames):
@@ -174,6 +198,7 @@ def render_offline(frames, fps, backends, options, emit, *, motion=None, rendere
         return {'mode': 'offline_quality', 'real_time_verified': False,
                 'gate_1': {'eligible': False, 'pass': False}, 'clock_domain': 'virtual-source-pts', 'control': control,
                 'frames': seen, 'records': records, 'motion': motion_rows,
+                'delay_adoption_eligible':delay<=1., 'diagnostic_delay':diagnostic_delay,
                 'detections': {name: lane.receipts for name, lane in lanes.items()}, 'engine': stats}
     finally:
         engine.close()
@@ -222,6 +247,8 @@ def _make_backends(candidate, options, resolution):
 def _score_saved(source, output, judge, truth, records, *, detector_families):
     before, after = cv2.VideoCapture(str(source)), cv2.VideoCapture(str(output))
     inputs, outputs, guards = [], [], []
+    mask_coverage = []
+    from bench.w1.flicker import mask_observations, interval_flicker
     try:
         with zipfile.ZipFile(output.with_suffix('.mask-pixels.zip')) as archive:
             if len(archive.namelist()) != len(records):
@@ -242,6 +269,7 @@ def _score_saved(source, output, judge, truth, records, *, detector_families):
                     raise RuntimeError('Saved raster mask SHA-256 differs')
                 inputs.append(judge.read(original))
                 outputs.append([reading for reading in judge.read(masked) if reading['confidence'] >= .5])
+                mask_coverage.append(mask_observations(mask, [*inputs[-1], *truth[index]]))
                 live = row['state'] == 'LIVE' and not row['protected']
                 guards.append(fidelity(original, masked, mask) if live else None)
                 if index % 30 == 0:
@@ -254,6 +282,15 @@ def _score_saved(source, output, judge, truth, records, *, detector_families):
     if len(truth) != len(records):
         raise ValueError('Synthetic truth must retain every source frame and label')
     quality, details = score_records(inputs, outputs, truth, [g for g in guards if g is not None], detector_families=detector_families)
+    protected_indices={row['frame'] for row in records if row['protected'] or row['state']!='LIVE'}
+    details['mask_observations']=mask_coverage
+    flicker={kind:interval_flicker(details[kind],mask_coverage,
+                                 sampled_frames=set(range(len(records))),protected_frames=protected_indices)
+             for kind in ('natural','synthetic')}
+    details['flicker']=flicker
+    quality['flicker']={kind:{k:v for k,v in result.items() if k!='intervals'} for kind,result in flicker.items()}
+    budgets=[row['render_budget'] for row in records if row.get('render_budget') is not None]
+    quality['render_budget']={'diagnostic_frames':len(budgets),'impossible_frames':sum(not row['satisfied'] for row in budgets),'source_frames':len(records)}
     quality['judging']=details['judging']=getattr(judge,'metadata',None)
     protected = sum(row['protected'] or row['state'] != 'LIVE' for row in records)
     quality.update({'live_frames': len(records) - protected, 'protected_frames': protected,
@@ -459,6 +496,8 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
 
 def _fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
+    paths.update((ROOT / 'bench/q2_execution').glob('*.py'))
+    paths.update((ROOT / 'bench/w1').glob('*.py'))
     paths.update(ROOT / name for name in (
         'bench/offline_quality.py', 'bench/independence.py', 'bench/scoring.py', 'bench/metrics.py', 'bench/pipeline.py',
         'bench/onnx_detectors.py', 'bench/static_model.py', 'bench/judges.py', 'bench/vision.py',

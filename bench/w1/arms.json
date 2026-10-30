@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "scope": "All arms tune/dev only. No V2 execution. No prior score is promoted.",
+  "baseline_status": "unmeasured-on-W1-source; historical baseline invalid",
+  "common_source_frozen": false,
+  "rules": [
+    "Baseline first; every candidate keeps natural>=.9, synthetic all-hidden, independent input truth/all output judges, area<=.15+basis, per-clipPROTECT<.02 and real-video guards.",
+    "Only guard-passing natural improvements may stack; dependent tracking/delay variants require their named frozen parent and do not claim baseline one-knob isolation.",
+    "Every arm requires sealed all14 tune results, area/protection/flicker, actual1080Ti event ms/source frame with NVENC, normal clocked fps/p95 and live feasibility.",
+    "Original spentv1 may be used for development only, explicitly labeled. Sunday finalone-shot exclusively reserves v2."
+  ],
+  "arms": [
+    {
+      "arm": "baseline",
+      "rank": 0,
+      "config": "bench/w1/policies/baseline.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Measure first. Prior baseline invalid; no winner carried forward.",
+      "metrics": null
+    },
+    {
+      "arm": "box-flow",
+      "rank": 1,
+      "config": "bench/w1/policies/box-flow.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Per-detection features, atomic failure. Same D1/rates/padding.",
+      "metrics": null
+    },
+    {
+      "arm": "persist-12",
+      "rank": 2,
+      "config": "bench/w1/policies/persist-12.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Conditional comparison vs frozen box-flow parent; only persistence changes. Not baseline-one-knob and not auto-stacked.",
+      "metrics": null
+    },
+    {
+      "arm": "box-flow-d2",
+      "rank": 4,
+      "config": "bench/w1/policies/box-flow-d2.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Conditional delay comparison vs box-flow D1. Diagnostic only; adoption above1s reserved Opus. Total measured latency including transport must stay<=3s.",
+      "metrics": null
+    },
+    {
+      "arm": "box-flow-d3",
+      "rank": 5,
+      "config": "bench/w1/policies/box-flow-d3.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Conditional delay comparison vs box-flow D1. Diagnostic only; adoption above1s reserved Opus. Total measured latency including transport must stay<=3s.",
+      "metrics": null
+    },
+    {
+      "arm": "server-union",
+      "rank": 6,
+      "config": "bench/w1/policies/server-union.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "One layered-recall lever: accurate Small+v5server. All component calls costed.",
+      "metrics": null
+    },
+    {
+      "arm": "light-pair",
+      "rank": 7,
+      "config": "bench/w1/policies/light-pair.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "One layered-recall lever: retain original plus CLAHE/gamma dark and bright passes. Cannot recover clipped information.",
+      "metrics": null
+    },
+    {
+      "arm": "tiled",
+      "rank": 8,
+      "config": "bench/w1/policies/tiled.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "One recall lever: full frame plus four20percent-overlap crops; all geometry retained.",
+      "metrics": null
+    },
+    {
+      "arm": "small1280",
+      "rank": 9,
+      "config": "bench/w1/policies/small1280.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "medium960",
+      "rank": 10,
+      "config": "bench/w1/policies/medium960.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "det020",
+      "rank": 11,
+      "config": "bench/w1/policies/det020.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "box040",
+      "rank": 12,
+      "config": "bench/w1/policies/box040.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "accurate8hz",
+      "rank": 13,
+      "config": "bench/w1/policies/accurate8hz.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "box065",
+      "rank": 14,
+      "config": "bench/w1/policies/box065.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Single knob against frozen baseline. No acceptance until all7 tune pairs, positives and runtime cost.",
+      "metrics": null
+    },
+    {
+      "arm": "padding-02",
+      "rank": 15,
+      "config": "bench/w1/policies/padding-02.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Height-based polygon padding; bare quads remain. Must retain actual ink positives.",
+      "metrics": null
+    },
+    {
+      "arm": "padding-01",
+      "rank": 15,
+      "config": "bench/w1/policies/padding-01.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Height-based polygon padding; bare quads remain. Must retain actual ink positives.",
+      "metrics": null
+    },
+    {
+      "arm": "padding-00",
+      "rank": 15,
+      "config": "bench/w1/policies/padding-00.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Height-based polygon padding; bare quads remain. Must retain actual ink positives.",
+      "metrics": null
+    },
+    {
+      "arm": "union015",
+      "rank": 16,
+      "config": "bench/w1/policies/union015.json",
+      "status": "prepared-unmeasured",
+      "stacked": false,
+      "note": "Tightens padding only. Any impossible bare budget remains explicit and rejects this arm.",
+      "metrics": null
+    }
+  ],
+  "blocked_arms": [
+    {
+      "arm": "open-vocab-sign-logo-2hz",
+      "reason": "Primary code/weight licenses verified in out/w1/model-license-receipts.json; private pinned SDK lacks torch/transformers or a verified ONNX export. No runtime/weights provisioned yet. Candidate adapter not claimed runnable."
+    },
+    {
+      "arm": "open-vocab-sign-logo-4hz",
+      "reason": "Same provisioning/parity/cost barrier; class prompts storefront sign, logo, street sign, house number, license plate."
+    }
+  ],
+  "precision_context": "Current composed renderer already rasterizes convex polygons and height-based padding. Polygon-vs-rectangle is not a new lever on this baseline; no fabricated gain."
+}

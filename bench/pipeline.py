@@ -27,6 +27,9 @@ class ControlDetector:
 
 
 def detector_for(name, options):
+    if name.startswith('w1-'):
+        from bench.w1.detectors import create_arm
+        return create_arm(name, options)
     if name=='vision-scheduled':
         from bench.scheduled import ScheduledVision
         return ScheduledVision(options)

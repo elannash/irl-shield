@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "scope": "CPU source/license preparation only; no weights bundled or downloaded. All candidates blocked until pinned private runtime/export, actual CUDA/output parity and measured live cost.",
+  "allowed_licenses": [
+    "Apache-2.0",
+    "MIT",
+    "BSD-2-Clause",
+    "BSD-3-Clause"
+  ],
+  "candidates": [
+    {
+      "id": "google/owlv2-base-patch16-ensemble",
+      "revision": "cfd3195ba4ea9592eec887ded089f4c08eff231d",
+      "weights_license": "apache-2.0",
+      "primary_model_card": "https://huggingface.co/google/owlv2-base-patch16-ensemble/blob/cfd3195ba4ea9592eec887ded089f4c08eff231d/README.md",
+      "model_card_sha256": "7c7426bc5ec939a42d1f96fb093031b6263400cceac4129ebb941a0c8c11b9b9",
+      "api_snapshot_sha256": "dbfb26aa331b11ad65d0987b459ab94b47d27c56643fd500563883ab4ebeb9c7",
+      "weights": [
+        {
+          "filename": "model.safetensors",
+          "lfs": {
+            "sha256": "e1e130b9e404cf91a75ad45644c1da9d7fa5284085eecc864266a6923efb99e7",
+            "size": 619918824,
+            "pointerSize": 134
+          }
+        },
+        {
+          "filename": "pytorch_model.bin",
+          "lfs": {
+            "sha256": "69feda8b53b1c9e2a85ae756bf58c120c3c1b4b4a4d97d4876578c1809a63d76",
+            "size": 620006741,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "status": "source metadata only; no weights downloaded or model constructed"
+    },
+    {
+      "id": "omlab/omdet-turbo-swin-tiny-hf",
+      "revision": "7fe93cecfb770c4d76cf71163956221249cab566",
+      "weights_license": "apache-2.0",
+      "primary_model_card": "https://huggingface.co/omlab/omdet-turbo-swin-tiny-hf/blob/7fe93cecfb770c4d76cf71163956221249cab566/README.md",
+      "model_card_sha256": "81b5b3ad13360e919cffbd80c24421c038e97c334d67636e7cb148d586591c90",
+      "api_snapshot_sha256": "113e295121a58cff3c6d8a99d7ade1685291826bf424721da602d8e4ebdc2ece",
+      "weights": [
+        {
+          "filename": "model.safetensors",
+          "lfs": {
+            "sha256": "439d1575d7e237ad565ed6969ea2a2dfcedf2086155e9ca3ac96cd6180a48cfd",
+            "size": 461822656,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "status": "source metadata only; no weights downloaded or model constructed"
+    },
+    {
+      "id": "IDEA-Research/grounding-dino-tiny",
+      "revision": "a2bb814dd30d776dcf7e30523b00659f4f141c71",
+      "weights_license": "apache-2.0",
+      "primary_model_card": "https://huggingface.co/IDEA-Research/grounding-dino-tiny/blob/a2bb814dd30d776dcf7e30523b00659f4f141c71/README.md",
+      "model_card_sha256": "cf46f74c7b6850f1d5cbe406028324d8798148726016d46a69a365b4a2d3e89f",
+      "api_snapshot_sha256": "dc54252c568aa070a19393a44d7ff210316654b20debb61d2e358ed5fb18d94e",
+      "weights": [
+        {
+          "filename": "model.safetensors",
+          "lfs": {
+            "sha256": "1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3",
+            "size": 689359096,
+            "pointerSize": 134
+          }
+        },
+        {
+          "filename": "pytorch_model.bin",
+          "lfs": {
+            "sha256": "f4d69c8403b9a569d90362c5fe8c6ea93dee4c8f08166df5b39e5eca8d227bbe",
+            "size": 691914602,
+            "pointerSize": 134
+          }
+        }
+      ],
+      "status": "source metadata only; no weights downloaded or model constructed"
+    }
+  ],
+  "code_licenses": {
+    "omdet": {
+      "url": "https://raw.githubusercontent.com/om-ai-lab/OmDet/main/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "license": "Apache-2.0"
+    },
+    "grounding-dino": {
+      "url": "https://raw.githubusercontent.com/IDEA-Research/GroundingDINO/main/LICENSE",
+      "sha256": "b403c98ec1ffaccb0124632592a3d99642cddc3031ca412b402568e6c06c202a",
+      "license": "Apache-2.0"
+    },
+    "owlv2-original": {
+      "url": "https://raw.githubusercontent.com/google-research/scenic/main/LICENSE",
+      "sha256": "432767cf806376886597e538ec4cf603335b9baa46fb9ef6466a12fd9c8a92dc",
+      "license": "Apache-2.0"
+    },
+    "transformers-runtime": {
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/main/LICENSE",
+      "sha256": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049",
+      "license": "Apache-2.0"
+    }
+  },
+  "prompts": [
+    "storefront sign",
+    "logo",
+    "street sign",
+    "house number",
+    "license plate"
+  ],
+  "sampling_hz": [
+    2,
+    4
+  ],
+  "model_selection": "No measured winner; do not infer speed from model names or papers.",
+  "source_receipts": "out/w1/primary-model-sources; copied source/license metadata only, no model code transplanted."
+}

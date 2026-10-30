@@ -1,0 +1,361 @@
+{
+  "status": "HELD_UNEXECUTED",
+  "required_release": [
+    "PHONE_TEST_DONE",
+    "GPU_RELEASED",
+    "V2_FROZEN exact manifestSHA"
+  ],
+  "v2_manifest_sha256": null,
+  "gpu_queue": null,
+  "judge_cache_signature": null,
+  "linux_interpreter": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+  "mac_interpreter": "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+  "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+  "quality_scope": "Frozen tune only; no v2 evaluation by this lane ever",
+  "paired_baseline": "New same-final-source baseline per flow/delay arm; never historical results",
+  "perf_source_requires_root_provisioning": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+  "screen": {
+    "clip": "mazatlan-aquiles",
+    "variants": [
+      "natural",
+      "synthetic"
+    ],
+    "arms": [
+      "baseline",
+      "flow"
+    ],
+    "quality_claim": false
+  },
+  "quality": [
+    {
+      "arm": "baseline",
+      "status": "BLOCKED on barriers; flow motion horizon seam / D>1 guard where applicable",
+      "commands": [
+        {
+          "label": "mazatlan-aquiles-natural",
+          "render_argv": [
+            "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+            "--lock-root",
+            "/home/elan/code/irl-shield",
+            "render",
+            "--inputs",
+            "/home/elan/code/irl-shield/.tmp/q/frozen-a8a06e3/inputs.json",
+            "--config",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/baseline.json",
+            "--directory",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/quality/baseline/mazatlan-aquiles-natural",
+            "--clip",
+            "mazatlan-aquiles"
+          ],
+          "grade_argv": [
+            "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+            "--lock-root",
+            "/Users/elannash/code/irl-shield",
+            "grade",
+            "--directory",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/baseline/mazatlan-aquiles-natural",
+            "--cache",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/judge-cache"
+          ],
+          "mac_cwd": "/Users/elannash/code/irl-shield-q2-temporal-26ca396c"
+        },
+        {
+          "label": "mazatlan-aquiles-synthetic",
+          "render_argv": [
+            "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+            "--lock-root",
+            "/home/elan/code/irl-shield",
+            "render",
+            "--inputs",
+            "/home/elan/code/irl-shield/.tmp/q/frozen-a8a06e3/inputs.json",
+            "--config",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/baseline.json",
+            "--directory",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/quality/baseline/mazatlan-aquiles-synthetic",
+            "--clip",
+            "mazatlan-aquiles",
+            "--synthetic"
+          ],
+          "grade_argv": [
+            "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+            "--lock-root",
+            "/Users/elannash/code/irl-shield",
+            "grade",
+            "--directory",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/baseline/mazatlan-aquiles-synthetic",
+            "--cache",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/judge-cache"
+          ],
+          "mac_cwd": "/Users/elannash/code/irl-shield-q2-temporal-26ca396c"
+        }
+      ],
+      "aggregate_argv": [
+        "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-m",
+        "bench.quality_bundle",
+        "--root",
+        "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+        "aggregate",
+        "--directory",
+        "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/baseline",
+        "--run-id",
+        "q2-temporal-baseline"
+      ]
+    },
+    {
+      "arm": "flow",
+      "status": "BLOCKED on barriers; flow motion horizon seam / D>1 guard where applicable",
+      "commands": [
+        {
+          "label": "mazatlan-aquiles-natural",
+          "render_argv": [
+            "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+            "--lock-root",
+            "/home/elan/code/irl-shield",
+            "render",
+            "--inputs",
+            "/home/elan/code/irl-shield/.tmp/q/frozen-a8a06e3/inputs.json",
+            "--config",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/flow.json",
+            "--directory",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/quality/flow/mazatlan-aquiles-natural",
+            "--clip",
+            "mazatlan-aquiles"
+          ],
+          "grade_argv": [
+            "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+            "--lock-root",
+            "/Users/elannash/code/irl-shield",
+            "grade",
+            "--directory",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/flow/mazatlan-aquiles-natural",
+            "--cache",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/judge-cache"
+          ],
+          "mac_cwd": "/Users/elannash/code/irl-shield-q2-temporal-26ca396c"
+        },
+        {
+          "label": "mazatlan-aquiles-synthetic",
+          "render_argv": [
+            "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+            "--lock-root",
+            "/home/elan/code/irl-shield",
+            "render",
+            "--inputs",
+            "/home/elan/code/irl-shield/.tmp/q/frozen-a8a06e3/inputs.json",
+            "--config",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/flow.json",
+            "--directory",
+            "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/quality/flow/mazatlan-aquiles-synthetic",
+            "--clip",
+            "mazatlan-aquiles",
+            "--synthetic"
+          ],
+          "grade_argv": [
+            "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+            "-u",
+            "-B",
+            "-m",
+            "bench.quality_bundle",
+            "--root",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+            "--lock-root",
+            "/Users/elannash/code/irl-shield",
+            "grade",
+            "--directory",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/flow/mazatlan-aquiles-synthetic",
+            "--cache",
+            "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/judge-cache"
+          ],
+          "mac_cwd": "/Users/elannash/code/irl-shield-q2-temporal-26ca396c"
+        }
+      ],
+      "aggregate_argv": [
+        "/Users/elannash/code/irl-shield-integration-run/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-m",
+        "bench.quality_bundle",
+        "--root",
+        "/Users/elannash/code/irl-shield-q2-temporal-26ca396c",
+        "aggregate",
+        "--directory",
+        "/Users/elannash/code/irl-shield-q2-temporal-26ca396c/out/q2-temporal/quality/flow",
+        "--run-id",
+        "q2-temporal-flow"
+      ]
+    }
+  ],
+  "sustained": [
+    {
+      "arm": "baseline",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/baseline.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/baseline/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/baseline/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    },
+    {
+      "arm": "flow",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/flow.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/flow/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/flow/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    },
+    {
+      "arm": "d2-fixed-a",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/d2-fixed-a.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d2-fixed-a/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d2-fixed-a/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    },
+    {
+      "arm": "d3-fixed-a",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/d3-fixed-a.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d3-fixed-a/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d3-fixed-a/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    },
+    {
+      "arm": "d2-derived-a",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/d2-derived-a.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d2-derived-a/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d2-derived-a/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    },
+    {
+      "arm": "d3-derived-a",
+      "argv": [
+        "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+        "-u",
+        "-B",
+        "-c",
+        "import json,sys; from bench.clocked_pipeline import run; p=json.load(open(sys.argv[1])); o={**p[\"options\"],\"repeat_seconds\":30.,\"warmup_seconds\":10.,\"encoder\":\"h264_nvenc\"}; run(sys.argv[2],sys.argv[3],p[\"candidate\"],o)",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/bench/q2_temporal/policies/d3-derived-a.json",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf-source-1080p30.mp4",
+        "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d3-derived-a/trial.mp4"
+      ],
+      "receipt": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/out/q2-temporal/perf/d3-derived-a/trial.performance.json",
+      "scope": "Existing host/CPU sustained receipt only, never GPU timing",
+      "status": "HELD; D>1 additionally rejected by frozen clocked pipeline",
+      "repetitions": "At least 5 separate cost trials after warmup; root must assign unique attempt output names"
+    }
+  ],
+  "gpu_cost": {
+    "argv": null,
+    "status": "UNVERIFIED: no known-userstream CUDA event or verifiable device profiler in lane; root must supply instrumentation",
+    "minimum_repetitions": 5,
+    "statistic": "median device service ms / source frame",
+    "nvenc_active": true
+  },
+  "all7_tune_pairs": [
+    "sf-market-natural",
+    "sf-market-synthetic",
+    "ljubljana-walk-natural",
+    "ljubljana-walk-synthetic",
+    "ljubljana-traffic-natural",
+    "ljubljana-traffic-synthetic",
+    "london-croydon-natural",
+    "london-croydon-synthetic",
+    "london-bus-pov-natural",
+    "london-bus-pov-synthetic",
+    "illinois-night-natural",
+    "illinois-night-synthetic",
+    "mazatlan-aquiles-natural",
+    "mazatlan-aquiles-synthetic"
+  ],
+  "full_tune_expansion": "Root expands the exact render/grade argv pattern for all 14 listed pairs and aggregates each arm; screen examples are not an all7 quality run."
+}

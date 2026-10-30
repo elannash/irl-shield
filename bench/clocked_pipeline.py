@@ -219,6 +219,8 @@ def performance_trust(performance):
 
 def fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
+    paths.update((ROOT / 'bench/q2_execution').glob('*.py'))
+    paths.update((ROOT / 'bench/w1').glob('*.py'))
     paths.update(ROOT / name for name in (
         'bench/clocked_pipeline.py', 'bench/independence.py', 'bench/clocked_bench.py', 'bench/cross_host.py', 'bench/scoring.py',
         'bench/metrics.py', 'bench/pipeline.py', 'bench/onnx_detectors.py',
@@ -279,7 +281,7 @@ class VideoSource:
     Queue overflow is an explicit ingest drop, so the engine must emit a protected
     placeholder. It cannot silently turn a slow transport into an unbounded buffer.
     """
-    def __init__(self, path, media, max_frames=None, repeat_seconds=None, skip_ranges=(), delay_seconds=1.):
+    def __init__(self, path, media, max_frames=None, repeat_seconds=None, skip_ranges=(), delay_seconds=1., *, diagnostic_delay=False):
         self.path = Path(path)
         self.media = media
         self.fps = media['fps']
@@ -295,7 +297,9 @@ class VideoSource:
         self.decoded_at = {}
         self.injected_drops = []
         self.queue_drops = []
-        if not math.isfinite(delay_seconds) or not 0 <= delay_seconds <= 1:
+        if type(diagnostic_delay) is not bool:
+            raise ValueError('Diagnostic delay opt-in must be boolean')
+        if not math.isfinite(delay_seconds) or not 0 <= delay_seconds <= (3. if diagnostic_delay else 1.):
             raise ValueError('Source buffering requires a delay between zero and one second')
         self.buffer_capacity_frames = max(1, math.ceil(self.fps * (delay_seconds + 1)))
         self.frames = queue.Queue(maxsize=self.buffer_capacity_frames)
@@ -666,7 +670,7 @@ class ResourceSampler:
                 'resource_sampling_scope': '10ms process-tree samples, including source, encoder drain and engine close'}
 
 
-def run(input_path, output_path, candidate, options, max_frames=None):
+def run(input_path, output_path, candidate, options, max_frames=None, *, backend_factory=None, factories=None, diagnostic_delay=False):
     """Run after a confirmed quiet window; contended trials remain diagnostic.
 
     `repeat_seconds` is the steady duration, preceded by warmup_seconds(default10).
@@ -687,7 +691,12 @@ def run(input_path, output_path, candidate, options, max_frames=None):
     try:
         if start['pressure_state'] != 'normal' and not options.get('contended', False):
             raise RuntimeError(f'Performance trial rejected before loading: memory pressure is {start["pressure_state"]}')
-        result = _run_file(input_path, output_path, candidate, options, max_frames, health)
+        injected = {'diagnostic_delay':True} if diagnostic_delay else {}
+        if backend_factory is not None:
+            injected['backend_factory'] = backend_factory
+        if factories is not None:
+            injected['factories'] = factories
+        result = _run_file(input_path, output_path, candidate, options, max_frames, health, **injected)
     except BaseException as error:
         failure = error
         result = {'candidate': candidate, 'options': options, 'phase': 'failed-or-preflight-rejected',
@@ -708,7 +717,7 @@ def run(input_path, output_path, candidate, options, max_frames=None):
     return result
 
 
-def _run_file(input_path, output_path, candidate, options, max_frames, health):
+def _run_file(input_path, output_path, candidate, options, max_frames, health, *, backend_factory=None, factories=None, diagnostic_delay=False):
     """Run a real paced file → asynchronous lanes → frame clock → encoder adapter.
 
     Writes .masks.json, actual .mask-pixels.zip, .egress.json and .performance.json.
@@ -722,15 +731,20 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     from shield.engine import MaskingEngine
     from shield.lanes import DetectorLane
     from shield.render import Renderer
+    from bench.q2_execution.adapters import factory_identity, verify_identity
 
     input_path, output_path = Path(input_path), Path(output_path)
     options = dict(options)
     # Detector lanes already own their concurrency; nested OpenCV pools contend.
     cv2.setNumThreads(1)
     delay = float(options.get('delay_seconds', 1.))
-    if not math.isfinite(delay) or not 0 <= delay <= 1:
+    if type(diagnostic_delay) is not bool:
+        raise ValueError('Diagnostic delay opt-in must be boolean')
+    if not math.isfinite(delay) or not 0 <= delay <= (3. if diagnostic_delay else 1.):
         raise ValueError('Presentation delay must be between zero and one second')
     source_fingerprint = fingerprint()
+    adapter_identity = factories.identity(ROOT) if factories is not None else None
+    backend_identity = factory_identity(backend_factory, ROOT) if backend_factory is not None else None
     preflight = time.monotonic()
     media = probe_media(input_path)
     if not math.isclose(media['fps'], 30., abs_tol=1e-6):
@@ -742,7 +756,7 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     ffmpeg_version = subprocess.check_output(['ffmpeg', '-version'], text=True).splitlines()
     window = source_window(media, options, max_frames)
     source = VideoSource(input_path, media, window['total_frames'], window['total_frames'] / media['fps'],
-                         options.get('source_skip_ranges', ()), delay_seconds=delay)
+                         options.get('source_skip_ranges', ()), delay_seconds=delay, diagnostic_delay=diagnostic_delay)
     sink = FFmpegSink(output_path, media['resolution'], media['fps'], options.get('encoder', 'h264_videotoolbox'))
     sampler = ResourceSampler()
     capture = cv2.VideoCapture(str(input_path), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 2])
@@ -764,9 +778,11 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     try:
         for name, (model, rate, lane_width, side, provider) in lane_specs.items():
             began = time.monotonic()
-            backend = detector_for(model, {**options, 'input_size': [height, width],
+            backend_options = {**options, 'input_size': [height, width],
                                           'detect_width': lane_width, 'limit_side_len': side,
-                                          'provider': provider, 'threads': 2})
+                                          'provider': provider, 'threads': 2}
+            backend = (backend_factory(name, model, backend_options) if backend_factory is not None
+                       else detector_for(model, backend_options))
             backends[name] = backend
             pixels = cv2.resize(warm, (lane_width, round(height * lane_width / width))) if lane_width and lane_width != width else warm
             if hasattr(backend, 'detect_quads'):
@@ -779,9 +795,19 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
         for name, (_, rate, lane_width, _, _) in lane_specs.items():
             lanes[name] = DetectorLane(name, backends[name], rate, lane_width,
                                        fault_intervals=options.get(name + '_faults', ()))
-        engine = MaskingEngine(lanes, {**options, 'fps': media['fps'], 'delay_seconds': delay},
-                               renderer=Renderer(style=options.get('style', 'opaque'),
-                                                 padding=options.get('padding', .3), badge=options.get('badge', False)))
+        adapters = factories.build(media['fps'], options) if factories is not None else {}
+        diagnostics = None
+        if 'renderer' in adapters:
+            from bench.offline_quality import _RenderDiagnostics
+            diagnostics = _RenderDiagnostics(adapters['renderer'])
+            adapters['renderer'] = diagnostics
+        else:
+            adapters['renderer'] = Renderer(style=options.get('style', 'opaque'),
+                                            padding=options.get('padding', .3), badge=options.get('badge', False))
+        if 'motion' in adapters:
+            from shield.motion import MotionWorker
+            adapters['motion'] = MotionWorker(adapters['motion'], capacity=math.ceil(media['fps'] * (delay + 1)) + 8)
+        engine = MaskingEngine(lanes, {**options, 'fps': media['fps'], 'delay_seconds': delay}, **adapters)
     except Exception as cause:
         errors = []
         for lane in lanes.values():
@@ -818,12 +844,24 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
         raise RuntimeError('Frame accounting: decoded output count, resolution or PTS differs from source clock')
     if fingerprint() != source_fingerprint:
         raise RuntimeError('Clocked pipeline source changed during measurement')
+    verify_identity(ROOT, adapter_identity)
+    verify_identity(ROOT, backend_identity)
+    if diagnostics is not None and len(diagnostics.pending) != len(result['records']):
+        raise RuntimeError('Clocked render diagnostic count differs from presented source frames')
     for row in result['records']:
+        if diagnostics is not None:
+            row['render_budget'] = diagnostics.pending.popleft()
         row['mask_shape'] = [height, width]
         row['decoded_at'] = source.decoded_at.get(row['frame'])
     windows = measurement_windows(result['records'], source_fps=media['fps'], origin=result['clock_origin'],
                                    ended_at=result['clock_origin'] + result['seconds'], warmup_frames=window['warmup_frames'])
     result.update(windows)
+    result['diagnostic_delay']=diagnostic_delay
+    result['delay_adoption_eligible']=delay<=1.
+    if adapter_identity is not None:
+        result['execution_adapters'] = adapter_identity
+    if backend_identity is not None:
+        result['backend_factory'] = backend_identity
     for key in ('fps', 'first_encoded_at', 'last_encoded_at', 'egress_span_seconds', 'output_clock_drift_seconds',
                 'output_wall_rate_fps', 'realtime_added_latency_seconds', 'source_arrival_latency_seconds',
                 'presentation_lateness_seconds', 'presentation_delay_seconds', 'coverage', 'deadline_miss_count', 'deadline_miss_over_frame_period_count',

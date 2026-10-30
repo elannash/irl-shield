@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "LICENSE_METADATA_VERIFIED_RUNTIME_AND_SAFETY_UNVERIFIED",
+  "model": "google/siglip-base-patch16-224",
+  "revision": "7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+  "weights_license": "Apache-2.0",
+  "primary_model_card": "https://huggingface.co/google/siglip-base-patch16-224/blob/7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed/README.md",
+  "model_card_sha256": "86c231c4a7bf0ee2435295413ad5c7cf567c9426f00b79711ce8eda884b7a8d3",
+  "weights": [
+    {
+      "filename": "model.safetensors",
+      "lfs": {
+        "sha256": "2c63cb7d1f2e95ba501893cbb8faeb4ea9a3af295498d35097126228659c2af8",
+        "size": 812672320,
+        "pointerSize": 134
+      }
+    },
+    {
+      "filename": "pytorch_model.bin",
+      "lfs": {
+        "sha256": "eb93f7f526b0a1b0e5f0612630f142bc5b6c05d329edff70478ff0a83e2bcd6e",
+        "size": 812762989,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "code_license": {
+    "runtime": "Hugging Face Transformers",
+    "license": "Apache-2.0",
+    "primary_source": "https://github.com/huggingface/transformers/blob/main/LICENSE",
+    "runtime_version": "not provisioned; must pin and verify before execution"
+  },
+  "cpu_gpu_state": "No weights downloaded, model constructed, export or GPU call. Pinned shared SDK unchanged.",
+  "factor_order": "Second-stage crop classifier only after a separately licensed open-vocabulary proposal factor.",
+  "prompts": {
+    "positive": [
+      "sign",
+      "logo",
+      "storefront",
+      "street sign",
+      "text"
+    ],
+    "negative": [
+      "wall",
+      "sky",
+      "road",
+      "person"
+    ]
+  },
+  "arms": {
+    "logo_confirm": "Separate mask-addition/confirmation experiment; area/protection and all existing guards remain.",
+    "mask_removal": "BLOCKED. A wall label cannot authorize removal. Both text detectors must explicitly agree NOT text for the same crop/source frame/generation; missing/failed/unobserved is not negative. Never remove OCR-judge-countable text; any text-detector positive, including a giant produced by both text detectors, forbids removal."
+  },
+  "required_evidence": [
+    "Actual1080Ti GPUms/CROP and end-to-end ms/sourceframe with crop counts and NVENC active.",
+    "Sealed dual-text-negative provenance and all-judge no-regression over natural7, synthetic regression and actual positive closeups/full-frame11.",
+    "Physical safety mutant red/restore/green before any removal release.",
+    "New actual registry/model/source requires new common freeze and paired baseline."
+  ],
+  "release": "UNVERIFIED; no active classifier or mask-removal adapter is installed."
+}

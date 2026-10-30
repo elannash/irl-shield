@@ -45,7 +45,7 @@ def _frame(frame):
     return np.ascontiguousarray(frame)
 
 
-def _session(name, options):
+def _session(name, options, *, user_compute_stream=None):
     path, artifact = verified_path(name, options.get("cache_dir", DEFAULT_CACHE))
     static_metadata=None
     if options.get('static_shape') and artifact['task']=='det':
@@ -79,8 +79,17 @@ def _session(name, options):
         providers=[('CUDAExecutionProvider',{'gpu_mem_limit':2*1024**3,'arena_extend_strategy':'kSameAsRequested',
                    'cudnn_conv_algo_search':'HEURISTIC','cudnn_conv_use_max_workspace':'0','do_copy_in_default_stream':'1'}),
                    'CPUExecutionProvider']
+    if user_compute_stream is not None:
+        if provider != 'cuda' or type(user_compute_stream) is not int or user_compute_stream <= 0:
+            raise ValueError('Explicit user compute stream requires CUDA and a nonzero stream pointer')
+        providers[0][1]['user_compute_stream'] = str(user_compute_stream)
     session = ort.InferenceSession(str(path), sess_options=config, providers=providers)
     session.disable_fallback()
+    if user_compute_stream is not None:
+        actual = session.get_provider_options().get('CUDAExecutionProvider', {})
+        if (actual.get('has_user_compute_stream') != '1'
+                or int(actual.get('user_compute_stream', '0')) != user_compute_stream):
+            raise RuntimeError('ORT did not verify the explicit CUDA user compute stream')
     if requested not in session.get_providers():
         raise RuntimeError(f"ONNX Runtime did not activate requested provider {requested}")
     # Provider failure must not turn a measured CoreML run into an unlabelled CPU run.
@@ -101,6 +110,8 @@ def _session(name, options):
         "onnxruntime_version": ort.__version__,
         "rapidocr_version": version("rapidocr"),
     }
+    if user_compute_stream is not None:
+        metadata['experimental_user_stream'] = session.get_provider_options()['CUDAExecutionProvider']
     return session, metadata, artifact
 
 
@@ -113,8 +124,8 @@ def _bounds(polygon, height, width):
 
 
 class PPOCRDetector:
-    def __init__(self, name, options):
-        session, self.metadata, artifact = _session(name, options)
+    def __init__(self, name, options, *, session_factory=None):
+        session, self.metadata, artifact = (session_factory or _session)(name, options)
         params = {
             "limit_side_len": options.get("limit_side_len", 960),
             "limit_type": options.get("limit_type", "max"),

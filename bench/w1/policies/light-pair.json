@@ -1,0 +1,32 @@
+{
+  "candidate": "w1-small-light-pair",
+  "options": {
+    "delay_seconds": 1.0,
+    "before": 6,
+    "after": 30,
+    "fast_max_age": 6,
+    "accurate_max_age": 12,
+    "fast_rate_hz": 8.0,
+    "accurate_rate_hz": 4.0,
+    "fast_width": 640,
+    "accurate_width": 1280,
+    "fast_provider": "cuda",
+    "provider": "cuda",
+    "limit_side_len": 960,
+    "fast_limit_side_len": 640,
+    "thresh": 0.3,
+    "box_thresh": 0.5,
+    "unclip_ratio": 1.6,
+    "static_model": true,
+    "encoder": "h264_nvenc",
+    "padding": 0.3,
+    "badge": false,
+    "style": "opaque",
+    "motion_width": 320,
+    "motion_mode": "phase",
+    "motion_min_response": 0.05,
+    "fast_candidate": "ppocr-v6-tiny",
+    "area_ceiling": 0.15,
+    "area_ceiling_basis": "bench/gate-1-policy.json"
+  }
+}

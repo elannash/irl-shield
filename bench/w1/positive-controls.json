@@ -1,0 +1,9 @@
+{
+  "status": "REQUIRED_UNEXECUTED",
+  "scope": "Actual positive controls from the prior giant audit; no substitute synthetic proof",
+  "required": ["full-frame house number11", "all8 actual audit-positive closeups", "remaining actual positive cases from the13-positive audit"],
+  "acceptance": "Known ink must remain within the actual raster mask for every required frame. Readability is judged separately. Lost ink or an impossible raw-quad union rejects the arm; never trim/drop raw quads to manufacture a pass.",
+  "inputs": "Root supplies exact existing private audit frame/ink-mask metadata and hashes; do not use phone diagnosis screenshots as fixtures or public demo assets.",
+  "source_reference": "bench/LOG-q2-precision.md and bench/q2_precision/README.md",
+  "results": null
+}

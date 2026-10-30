@@ -144,3 +144,72 @@ class MotionGeometry(unittest.TestCase):
         gap.add(13, frame.copy())
         self.assertIsNone(gap.project(quad, 10, 13))
         np.testing.assert_allclose(gap.project(quad, 12, 13), quad, atol=1e-6)
+
+
+class OpticalFlowGeometry(unittest.TestCase):
+    def test_optical_flow_preserves_transformed_polygons_in_both_directions(self):
+        frame = scene(seed=11, width=800, height=480)
+        # Literal camera mapping includes shear; a phase-only translation cannot pass.
+        matrix = np.array([[1., .035, 8.], [-.02, 1., 5.], [0., 0., 1.]])
+        moved = cv2.warpPerspective(frame, matrix, (800, 480))
+        quads = [[[150, 100], [470, 100], [470, 300], [150, 300]],
+                 [[550, 150], [650, 150], [650, 250], [550, 250]]]
+        expected = [[[161.5, 102.], [481.5, 95.6], [488.5, 295.6], [168.5, 302.]],
+                    [[563.25, 144.], [663.25, 142.], [666.75, 242.], [566.75, 244.]]]
+        history = MotionHistory(mode='flow', analysis_width=400, max_projection_frames=30)
+        history.add(0, frame)
+        history.add(1, moved)
+        projected = history.project_many(quads, 0, 1)
+        self.assertIsNotNone(projected)
+        np.testing.assert_allclose(projected, expected, atol=1.5)
+        np.testing.assert_allclose(history.project_many(projected, 1, 0), quads, atol=1e-6)
+        self.assertEqual(history.diagnostics(1)['reason'], 'flow')
+
+    def test_flow_horizon_and_ingest_generation_fence_even_empty_receipts(self):
+        frame = scene()
+        quad = [[100, 70], [300, 70], [300, 190], [100, 190]]
+        history = MotionHistory(mode='flow', max_projection_frames=1)
+        for index in range(3):
+            history.add(index, frame)
+        self.assertEqual(history.project_many([quad], 0, 1), [quad])
+        self.assertIsNone(history.project_many([quad], 0, 2))
+        self.assertIsNone(history.project_many([], 2, 0))
+        history.add(3, frame, generation=1)
+        self.assertIsNone(history.project_many([quad], 2, 3))
+        self.assertIsNone(history.project_many([], 3, 2))
+        self.assertEqual(history.diagnostics(3)['reason'], 'ingest-generation-change')
+        history.add(4, frame, generation=1)
+        self.assertEqual(history.project_many([quad], 3, 4), [quad])
+        self.assertIsNone(history.project_many([], 2, 4))
+        self.assertEqual(history.project_many([quad], 3, 3), [quad])
+
+    def test_flow_failure_never_falls_back_to_phase_or_bridges_a_cut(self):
+        frame = scene()
+        occluded = cv2.warpAffine(frame, np.float32([[1, 0, 8], [0, 1, 2]]), (640, 400))
+        occluded[:, :512] = 35
+        quad = [[540, 70], [610, 70], [610, 190], [540, 190]]
+        history = MotionHistory(mode='flow', phase_min_response=.2, max_projection_frames=30)
+        history.add(0, frame)
+        history.add(1, occluded)
+        self.assertIsNone(history.project_many([quad], 0, 1))
+        self.assertIsNone(history.project_many([], 1, 0))
+        history.add(2, occluded.copy())
+        self.assertEqual(history.project_many([quad], 1, 2), [quad])
+        self.assertIsNone(history.project_many([quad], 0, 2))
+        history.add(4, occluded)
+        self.assertIsNone(history.project_many([], 2, 4))
+        empty = MotionHistory(mode='flow', max_projection_frames=30)
+        empty.add(0, np.zeros_like(frame))
+        empty.add(1, np.zeros_like(frame))
+        self.assertIsNone(empty.project_many([], 0, 1))
+        self.assertEqual(empty.project_many([quad], 1, 1), [quad])
+
+    def test_forward_backward_disagreement_rejects_an_occluded_synthetic_scene(self):
+        frame = scene()
+        moved = cv2.warpAffine(frame, np.float32([[1, 0, 40], [0, 1, 2]]), (640, 400))
+        moved[:, :256] = 35
+        history = MotionHistory(mode='flow', max_projection_frames=30)
+        history.add(0, frame)
+        history.add(1, moved)
+        self.assertIsNone(history.project_many([[[100, 70], [300, 70], [300, 190], [100, 190]]], 0, 1))
+        self.assertIsNone(history.project_many([], 1, 0))

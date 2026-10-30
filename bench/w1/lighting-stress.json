@@ -1,0 +1,22 @@
+{
+  "scope": "Seven tune clips, dark/backlit/motion-blur source variants are dev-only. Input truth must be independently re-observed at each transformed input; do not reuse ordinary-input truth.",
+  "variants": [
+    {
+      "id": "dark",
+      "operation": "gamma",
+      "gamma": 1.8
+    },
+    {
+      "id": "backlit",
+      "operation": "gain-bias",
+      "gain": 1.6,
+      "bias": 30
+    },
+    {
+      "id": "motion-blur",
+      "operation": "horizontal-box",
+      "kernel": 9
+    }
+  ],
+  "execution": "not prepared/decoded until root-coordinated release; all-judge output leaks, including W5 contrast/sharpen/upscale readers when integrated, still apply."
+}

@@ -1,0 +1,101 @@
+{
+  "status": "NOT_SUBMITTED_NOT_EXECUTED",
+  "source_base": "65891cb0b515bc0c34ec4ded89aa6a3228992cc2",
+  "required_inputs": {
+    "ROOT_RELEASE_JSON": "Root-supplied JSON with GPU_RELEASED=true and V2_FROZEN exactly the supplied64hex manifest SHA. Freeze is still held; no v2 dataset access in this task.",
+    "ACTIVE_EX_QUEUE": "Root supplies active queue. No hard-coded expired queue, no submission by this task. Inherited lease/environment/attempt required.",
+    "PREPARED_720P30_SOURCE": "Root-relative path to already provisioned licensed tune clip1280x720 at30fps; use the same source for normal clocked and event trials.",
+    "FROZEN_TUNE_INPUTS_JSON": "Frozen manifest for seven tune clips and14variants from the final integration checkout.",
+    "CUDART_PATH": "Existing private CUDA12 libcudart.so.12 path; no install, no GPU calls until separately authorized."
+  },
+  "normal_clocked_argv": [
+    "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+    "-m",
+    "bench.q2_execution.queued",
+    "clocked",
+    "--release",
+    "<ROOT_RELEASE_JSON>",
+    "--v2-manifest-sha256",
+    "<EXACT_V2_FROZEN_SHA256>",
+    "--queue-dir",
+    "<ACTIVE_EX_QUEUE>",
+    "--config",
+    "bench/q2_execution/policies/baseline.json",
+    "--input",
+    "<PREPARED_720P30_SOURCE>",
+    "--directory",
+    "out/q2-execution-run/normal-{attempt}"
+  ],
+  "gpu_cost_argv": [
+    "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+    "-m",
+    "bench.q2_execution.queued",
+    "gpu-cost",
+    "--release",
+    "<ROOT_RELEASE_JSON>",
+    "--v2-manifest-sha256",
+    "<EXACT_V2_FROZEN_SHA256>",
+    "--queue-dir",
+    "<ACTIVE_EX_QUEUE>",
+    "--config",
+    "bench/q2_execution/policies/baseline.json",
+    "--input",
+    "<PREPARED_720P30_SOURCE>",
+    "--directory",
+    "out/q2-execution-run/events-{attempt}",
+    "--cudart",
+    "<CUDART_PATH>",
+    "--repetitions",
+    "5"
+  ],
+  "quality_render_argv": [
+    "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python",
+    "-m",
+    "bench.q2_execution.queued",
+    "render",
+    "--release",
+    "<ROOT_RELEASE_JSON>",
+    "--v2-manifest-sha256",
+    "<EXACT_V2_FROZEN_SHA256>",
+    "--queue-dir",
+    "<ACTIVE_EX_QUEUE>",
+    "--config",
+    "bench/q2_execution/policies/baseline.json",
+    "--inputs",
+    "<FROZEN_TUNE_INPUTS_JSON>",
+    "--clip",
+    "<TUNE_CLIP_ID>",
+    "--directory",
+    "out/q2-execution-run/<ARM>-<TUNE_CLIP_ID>-natural-{attempt}"
+  ],
+  "variants": "Repeat render argv for each of7tune clips, both natural and --synthetic; unique directory per variant/attempt. Replace config per arm; no heldout invocation.",
+  "configs": {
+    "baseline": "bench/q2_execution/policies/baseline.json",
+    "precision": "bench/q2_execution/policies/union-015.json",
+    "temporal": "bench/q2_execution/policies/flow-d1.json",
+    "recall": "Use each separately prepared bench/q2_recall/policies/*.json after Opus applies the child patch."
+  },
+  "timing": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "fps": 30,
+    "encoder": "h264_nvenc",
+    "warmup_seconds": 10,
+    "steady_seconds": 30,
+    "cost_repetitions": 5,
+    "D": 1
+  },
+  "environment": {
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "scope": "app-t3code-agents.slice",
+    "nice": 10,
+    "OpenCV_threads": 1,
+    "LD_LIBRARY_PATH": "Root supplies existing private NVIDIA wheel lib paths from authorized SDK; no site stacking."
+  },
+  "acceptance": "Event costs always diagnostic pending paired provider/output parity. Normal clocked run remains the sustained fps/p95/protected receipt. Compare arm qualities only on final common fingerprint with existing guards.",
+  "locks": "Already inherited canonical EX only. Do not wrap argv in scripts/host-lock, scripts/linux-bench or quality_bundle CLI clip_lease."
+}

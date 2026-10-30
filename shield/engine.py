@@ -22,6 +22,13 @@ class MaskingEngine:
         if not math.isfinite(self.fps) or not math.isfinite(self.delay) or self.fps<=0 or self.delay<0:
             raise ValueError('Invalid source rate or presentation delay')
         self.options=options
+        self.tracking_persist_frames=options.get('tracking_persist_frames',0)
+        if (type(self.tracking_persist_frames) is not int or self.tracking_persist_frames<0
+                or self.tracking_persist_frames>math.floor(self.delay*self.fps)
+                or self.tracking_persist_frames and options.get('motion_mode')!='box-flow'):
+            raise ValueError('Tracking persistence requires box-flow within the configured delay horizon')
+        self._frame_generations={}
+        self._generation_fencing=False
         self.max_buffer_frames=int(options.get('max_buffer_frames',math.ceil(self.fps*(self.delay+1))+8))
         self.max_poll_frames=int(options.get('max_poll_frames',4))
         if self.max_buffer_frames<1 or self.max_poll_frames<1:
@@ -29,7 +36,8 @@ class MaskingEngine:
         if motion is None:
             from shield.motion import MotionHistory,MotionWorker
             motion=MotionWorker(MotionHistory(max_frames=120,analysis_width=options.get('motion_width',320),mode=options.get('motion_mode','phase'),
-                                              phase_min_response=options.get('motion_min_response',.5)),
+                                              phase_min_response=options.get('motion_min_response',.5),
+                                              max_projection_frames=math.floor(self.delay*self.fps)),
                                 capacity=self.max_buffer_frames)
         self.motion=motion
         self.renderer=renderer or Renderer(padding=options.get('padding',.3),badge=options.get('badge',False))
@@ -51,7 +59,15 @@ class MaskingEngine:
         self.stage_cpu_seconds={name:deque(maxlen=4096) for name in ['motion_submit','coverage','render','emit_poll_per_frame']}
         self.emit_poll_cpu_seconds=0.
 
-    def submit(self,frame,now=None):
+    def submit(self,frame,now=None,*,generation=None):
+        """Flow callers pass the ingest generation captured with this frame.
+
+        Indices remain globally increasing across generations. The default
+        token zero is for uninterrupted inputs such as an offline file.
+        """
+        if generation is not None and (self.options.get('motion_mode') not in {'flow','box-flow'}
+                                       or type(generation) is not int or generation < 0):
+            raise ValueError('Ingest generation requires optical flow and a nonnegative integer')
         now=time.monotonic() if now is None else now
         if not math.isfinite(frame.pts) or not math.isfinite(now):
             raise ValueError('Frame and clock timestamps must be finite')
@@ -77,7 +93,12 @@ class MaskingEngine:
                 return
             pixels=frame.pixels.copy()
             pixels.setflags(write=False)
-            owned=Frame(frame.index,frame.pts,pixels)
+            token=frame.generation if generation is None else generation
+            if type(token) is not int or token<0:
+                raise ValueError('Ingest generation must be a nonnegative integer')
+            owned=Frame(frame.index,frame.pts,pixels,token)
+            self._frame_generations[frame.index]=token
+            self._generation_fencing=self._generation_fencing or token!=0
             self.frames[frame.index]=owned
             while len(self.frames)>self.max_buffer_frames:
                 self.frames.pop(next(iter(self.frames)))
@@ -85,7 +106,10 @@ class MaskingEngine:
             self.last_frame=owned
             self.last_index=frame.index
             began,cpu=time.monotonic(),time.thread_time()
-            self.motion.add(frame.index,pixels)
+            if self.options.get('motion_mode') in {'flow','box-flow'}:
+                self.motion.add(frame.index,pixels,generation=token)
+            else:
+                self.motion.add(frame.index,pixels)
             self.stage_seconds['motion_submit'].append(time.monotonic()-began)
             self.stage_cpu_seconds['motion_submit'].append(time.thread_time()-cpu)
             for lane in self.lanes.values():
@@ -105,22 +129,36 @@ class MaskingEngine:
         ages={}
         quads=[]
         reason='covered'
+        failed_active_track=False
         for name in ['fast','accurate']:
             available=[r for r in self.timeline[name] if r.error is None and r.completed_at<=deadline]
-            inside=[r for r in available if index-before<=r.frame_index<=index+after]
+            had_candidates=any(index-before<=r.frame_index<=index+after for r in available)
+            if self.options.get('motion_mode')=='box-flow' or self._generation_fencing:
+                target_generation=self._frame_generations.get(index)
+                available=[r for r in available if target_generation is not None
+                    and all(self._frame_generations.get(step)==target_generation
+                            for step in range(min(r.frame_index,index),max(r.frame_index,index)+1))]
+            inside=[r for r in available if index-max(before,self.tracking_persist_frames)<=r.frame_index<=index+after]
             connected=[]
             for receipt in inside:
+                if self.options.get('motion_mode') in {'flow','box-flow'} and abs(receipt.frame_index-index)>math.floor(self.delay*self.fps):
+                    continue
                 # Empty results still describe a particular scene, never every scene.
                 projected=self.motion.project_many(receipt.quads,receipt.frame_index,index,deadline)
                 if projected is None:
+                    if self.options.get('motion_mode')=='box-flow' and receipt.quads:
+                        failed_active_track=True
                     continue
-                connected.append(receipt)
+                if index-before<=receipt.frame_index:
+                    connected.append(receipt)
                 quads.extend(projected)
             nearest=min(connected,key=lambda r:abs(r.frame_index-index),default=None)
             ages[name]=abs(nearest.frame_index-index) if nearest else None
             maximum=self.options.get(name+'_max_age',6 if name=='fast' else 12)
             if nearest is None or ages[name]>maximum:
-                reason=('unresolved-motion-' if inside else 'missing-')+name+'-coverage'
+                reason=('unresolved-motion-' if inside or had_candidates else 'missing-')+name+'-coverage'
+        if failed_active_track:
+            reason='unresolved-box-track'
         return Coverage(ages['fast'],ages['accurate'],reason=='covered',reason),quads
 
     def poll(self,now=None):
@@ -164,8 +202,9 @@ class MaskingEngine:
                 self.next_index+=1
                 self.outputs+=1
                 self.protected_count+=int(rendered.protected)
+            oldest=self.next_index-max(self.options.get('before',6),self.tracking_persist_frames)
+            self._frame_generations={index:token for index,token in self._frame_generations.items() if index>=oldest}
             for name in self.timeline:
-                oldest=self.next_index-self.options.get('before',6)
                 self.timeline[name]=[r for r in self.timeline[name] if r.frame_index>=oldest]
             if results:
                 self.stage_cpu_seconds['emit_poll_per_frame'].append((time.thread_time()-poll_cpu)/len(results))

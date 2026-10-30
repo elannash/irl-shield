@@ -8,6 +8,7 @@ class Frame:
     index: int
     pts: float
     pixels: np.ndarray
+    generation: int = 0
 
 
 @dataclass(frozen=True)

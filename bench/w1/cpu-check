@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+exec scripts/host-lock shared systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
+ env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+ /home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python -c \
+ 'import sys,cv2,unittest; sys.path.insert(0,"tests"); cv2.setNumThreads(1); result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromNames(sys.argv[1:])); raise SystemExit(not result.wasSuccessful())' "$@"

@@ -105,6 +105,7 @@ def dataset_file(root, name, cache_root=None):
 
 def verify(directory):
     from bench.metrics import validate_area_ceiling
+    from bench.q2_execution.adapters import verify_identity
     directory = Path(directory)
     path = directory / 'bundle.json'
     if digest(path) != (directory / 'bundle.sha256').read_text().strip():
@@ -113,6 +114,7 @@ def verify(directory):
     if plan['status'] != 'awaiting-judging' or plan['schema_version'] != 2:
         raise ValueError('Unsupported quality bundle')
     validate_area_ceiling(plan['options'].get('area_ceiling'), plan['options'].get('area_ceiling_basis'), required=True)
+    verify_identity(Path(__file__).resolve().parents[1], plan.get('execution_adapters'))
     for name, identity in plan['artifacts'].items():
         artifact = checked_file(directory, name)
         if artifact.stat().st_size != identity['bytes'] or digest(artifact) != identity['sha256']:
@@ -152,7 +154,7 @@ def clip_lease(root, host):
             yield
 
 
-def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, cache_root=None):
+def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, cache_root=None, factories=None):
     """Write one encoded clip and actual masks; privacy remains ungraded."""
     quality = modules(root)
     import cv2
@@ -165,6 +167,11 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
     quality.validate_area_ceiling(options.get('area_ceiling'), options.get('area_ceiling_basis'), required=True)
     from bench.independence import policy_metadata
     policy_metadata(candidate, options)
+    from bench.q2_execution.adapters import factories_for
+    if factories is not None and config.get('execution'):
+        raise ValueError('Choose explicit factories or execution config, not both')
+    factories = factories if factories is not None else factories_for(config.get('execution', {}), options)
+    adapter_identity = factories.identity(root) if factories is not None else None
     if cache_root is not None and dataset is None:
         raise ValueError('Cache override requires an explicit frozen heldout dataset')
     source_original, truth_original = (dataset_file(root, row[key], cache_root) if dataset is not None else Path(row[key])
@@ -224,13 +231,17 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
             def emit(frame):
                 process.stdin.write(frame.pixels.tobytes())
                 masks.writestr(f'{frame.index:08d}.bin', np.packbits(frame.mask > 0, bitorder='little').tobytes())
-            rendered = quality.render_offline(frames(), media['fps'], backends, options, emit)
+            adapters = factories.build(media['fps'], options) if factories is not None else {}
+            rendered = quality.render_offline(frames(), media['fps'], backends, options, emit,
+                diagnostic_delay=config.get('execution', {}).get('diagnostic_delay',False), **adapters)
             process.stdin.close()
             if process.wait(timeout=60):
                 raise RuntimeError('Quality encoder failed')
         if (quality._media(output) != media or quality._fingerprint() != code or
                 digest(__file__) != orchestrator):
             raise RuntimeError('Quality media accounting or source changed')
+        if factories is not None and factories.identity(root) != adapter_identity:
+            raise RuntimeError('Execution adapter source changed during rendering')
         for name, suffix in [('records', '.masks.json'), ('motion', '.motion.json'), ('detections', '.detections.json')]:
             write_json(output.with_suffix(suffix), rendered[name])
         write_json(directory / 'engine.json', {k: v for k, v in rendered.items() if k not in ('records', 'motion', 'detections')})
@@ -241,6 +252,8 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
                 'pipeline_sha256': code, 'orchestrator_sha256': orchestrator,
                 'input_manifest_sha256': hashlib.sha256(input_snapshot).hexdigest(), 'artifacts': artifacts,
                 'scope': 'Untimed ideal/offline Linux output; no OCR score or realtime qualification exists yet.'}
+        if adapter_identity is not None:
+            plan['execution_adapters'] = adapter_identity
         if dataset is not None:
             plan['dataset_identity'] = {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
                                         'manifest_sha256': digest(directory / 'dataset.json')}
@@ -288,6 +301,8 @@ def grade(root, directory, *, judge=None, cache=None):
                        'judges': list(judge.names), 'pipeline_sha256': plan['pipeline_sha256'],
                        'bundle_sha256': digest(directory / 'bundle.json'),
                        'evidence_sha256': digest(directory / 'masked.evidence.json'), **scored})
+        if 'execution_adapters' in plan:
+            result['execution_adapters'] = plan['execution_adapters']
         verify(directory)
         if quality._fingerprint() != plan['pipeline_sha256'] or digest(__file__) != plan['orchestrator_sha256']:
             raise ValueError('Quality grading source changed during OCR')
@@ -318,6 +333,8 @@ def aggregate(root, directory, run_id, *, dataset=None):
         plan = verify(path.parent)
         identity = {key: plan[key] for key in ('input_manifest_sha256', 'pipeline_sha256',
                                               'orchestrator_sha256')}
+        if 'execution_adapters' in plan:
+            identity['execution_adapters'] = plan['execution_adapters']
         if dataset is not None:
             identity['dataset_identity'] = plan.get('dataset_identity')
             if identity['dataset_identity'] != {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
@@ -338,6 +355,8 @@ def aggregate(root, directory, run_id, *, dataset=None):
             raise ValueError('Quality clips use different policies or source')
         if result['bundle_sha256'] != digest(path.parent / 'bundle.json'):
             raise ValueError('Quality grade refers to a different render')
+        if result.get('execution_adapters') != plan.get('execution_adapters'):
+            raise ValueError('Quality grade differs from sealed execution adapters')
         entries(root, path.parent / 'inputs.json', dataset=dataset)
         if any(result[key] != plan[key] for key in ('clip', 'synthetic_variant', 'candidate', 'options',
                                                     'frames', 'source_fps', 'pipeline_sha256')):

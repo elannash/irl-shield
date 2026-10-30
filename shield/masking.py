@@ -16,3 +16,26 @@ def masked_frame(frame, boxes, padding):
     return output, mask
 
 
+
+def text_geometry(quads):
+    """Return exact projected quads and per-quad text-height estimates for paint.
+
+    The shorter mean of opposite hull edges is a geometry estimate, not an OCR
+    ink measurement. Consumers must paint the supplied actual raster mask and
+    cannot shrink it using this estimate.
+    """
+    import cv2
+    points=np.asarray(list(quads),dtype=np.float64)
+    if not len(points):
+        return {"quads":[],"estimated_text_heights":[],"height_scope":"shorter opposite-edge mean; not observed ink"}
+    if points.shape[1:]!=(4,2) or not np.isfinite(points).all():
+        raise ValueError("Text geometry needs four finite quad vertices")
+    heights=[]
+    for quad in points:
+        hull=cv2.convexHull(quad.astype(np.float32)).reshape(-1,2)
+        if len(hull)!=4:
+            raise ValueError("Text geometry needs convex quads")
+        edges=np.linalg.norm(np.roll(hull,-1,axis=0)-hull,axis=1)
+        heights.append(float(min((edges[0]+edges[2])/2,(edges[1]+edges[3])/2)))
+    return {"quads":points.tolist(),"estimated_text_heights":heights,
+            "height_scope":"shorter opposite-edge mean; not observed ink"}
