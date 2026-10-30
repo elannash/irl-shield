@@ -140,7 +140,7 @@ async def execute(args):
             if args.command == 'login' and not args.run:
                 print('Login validated. Memory-only session ends here; use login --run or --remember to continue.')
                 return
-            approval = await authorize_live(session, http) if args.twitch_live else None
+            approval = await authorize_live(session, http, cancel) if args.twitch_live else None
             from relay.mediamtx import MediaMTX, verified_binary
             from relay.runtime import make_engine, run
             from relay.security import Credentials, RelayAddress

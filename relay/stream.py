@@ -631,6 +631,9 @@ class Egress:
                 self._channel.settimeout(5)
                 # Re-read control after startup and queue waits, at the native handoff.
                 result = enforce_hold(result, self.hold_active())
+                guard = getattr(self, 'audio_guard', None)
+                if guard is not None:
+                    pcm = guard(pcm)
                 _message(self._channel, ('write', (result, pcm)))
             except TimeoutError:
                 self._fail('egress-write-timeout')

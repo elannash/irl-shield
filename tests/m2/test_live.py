@@ -30,7 +30,7 @@ class LiveSession(unittest.TestCase):
             self.assertTrue(all(frame.protected for frame, _ in outputs))
             self.assertFalse(any(frame.pixels.any() for frame, _ in outputs))
             self.assertEqual(outputs[-1][0].index, 6)
-            self.assertTrue(np.all(outputs[-1][1] == 123))
+            self.assertFalse(outputs[-1][1].any(), 'Moderator HOLD must silence audio')
             session.audio(3.3, np.full(1600, 999, np.int16), generation=1)
             session.disconnected()
             session.video(0, pixels, generation=2, now=10.5)

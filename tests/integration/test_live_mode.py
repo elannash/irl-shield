@@ -36,15 +36,28 @@ class LiveTwitch(MockTwitch):
 
 
 class Terminal(StringIO):
+    """A real canonical PTY descriptor for the attended-read boundary."""
     def __init__(self, response):
-        super().__init__(response)
+        super().__init__()
+        self.master, self.slave = os.openpty()
+        # Canonical EOF also makes deliberately incomplete input readable.
+        os.write(self.master, response.encode() + (b'\x04\x04' if not response.endswith('\n') else b''))
         self.output = StringIO()
+
+    def fileno(self):
+        return self.slave
 
     def isatty(self):
         return True
 
     def write(self, value):
         return self.output.write(value)
+
+    def close(self):
+        if not self.closed:
+            os.close(self.master)
+            os.close(self.slave)
+        super().close()
 
 
 def user_session(http):
@@ -149,7 +162,7 @@ class LiveAuthorization(unittest.IsolatedAsyncioTestCase):
                  ('EOF', '', None), ('wrong channel', 'LIVE nale\n', None),
                  ('incomplete', 'LIVE naie', None), ('whitespace', 'LIVE naie \n', None),
                  ('wrong case', 'live naie\n', None), ('too long', 'LIVE naie' + 'x' * 80 + '\n', None),
-                 ('read failure', 'LIVE naie\n', 'readline'),
+                 ('read failure', 'LIVE naie\n', 'fileno'),
                  ('write failure', 'LIVE naie\n', 'write'),
                  ('flush failure', 'LIVE naie\n', 'flush')]
         with local_network():
@@ -186,11 +199,11 @@ class LiveAuthorization(unittest.IsolatedAsyncioTestCase):
                 await user.access_token()
                 mock.validation['expires_in'] = 1
                 terminal = Terminal('LIVE naie\n')
-                def read_confirmation(size):
+                def descriptor():
                     now[0] = 102.
-                    return 'LIVE naie\n'
+                    return terminal.slave
                 with patch('builtins.open', return_value=terminal), \
-                        patch.object(terminal, 'readline', side_effect=read_confirmation), \
+                        patch.object(terminal, 'fileno', side_effect=descriptor), \
                         self.assertRaises(LiveModeError):
                     await authorize_live(user, http)
 

@@ -24,6 +24,7 @@ class PresentedEngine:
     delay = .1
 
     def __init__(self):
+        self.lock = threading.RLock()
         self.control = Control()
         self.control.update_coverage(True, 'covered', 0)
         self.results = []

@@ -25,6 +25,12 @@ live use. Omitting both flags keeps authenticated controls without publishing.
 real Twitch ingest acceptance still requires the owner's attended bandwidth
 test, and privacy/walking qualification remains separate.
 
+Manual, authenticated chat and Shield Mode holds mute audio and discard pending
+held sound; detector PROTECT and transport safety holds alone keep audio.
+Audio already crossing encoder IPC or sent downstream cannot be retracted, and
+a hold racing with that handoff can miss it. [Audio hold behavior and limits](docs/AUDIO-HOLDS.md)
+describe the queue boundaries and synthetic verification.
+
 For a local attended terminal after setup:
 
 ```sh

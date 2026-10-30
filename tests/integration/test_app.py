@@ -20,6 +20,7 @@ from network import local_network
 
 class EngineControl:
     def __init__(self):
+        self.lock = threading.RLock()
         self.control = Control()
         self.control.update_coverage(True, 'fresh', 0)
 

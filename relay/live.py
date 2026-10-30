@@ -13,24 +13,50 @@ from relay.security import TwitchDestination
 from shield.types import Frame
 
 
+# Only explicit operator controls mute sound; connection safety remains video-only.
+_AUDIO_HOLD_SOURCES = frozenset(('local', 'chat', 'shield_mode', 'twitch-chat', 'eventsub'))
+
+
 class RelayControl:
     def __init__(self, engine):
         self.engine = engine
         self.twitch = TwitchDestination()
+        self._audio_hold_epoch = 0
 
     def hold(self, active, source='local', reason='manual', now=None):
         twitch_sources = {'chat': 'moderator', 'shield_mode': 'shield-mode',
                           'twitch-connection': 'shield-mode', 'twitch-reconcile': 'shield-mode'}
         if source in twitch_sources:
             # M3 owns its fixed reasons; do not forward arbitrary callback text.
-            return self.engine.hold(bool(active), source=source, reason=twitch_sources[source], now=now)
+            reason = twitch_sources[source]
+        else:
+            # Source names/reasons are controlled vocabulary, never raw chat text.
+            if source not in ('local', 'twitch-chat', 'eventsub'):
+                raise ValueError('Unknown control source')
+            if reason not in ('manual', 'synthetic hold', 'moderator', 'shield-mode'):
+                raise ValueError('Unknown hold reason')
+        active = bool(active)
+        with self.engine.lock:
+            state = self.engine.hold(active, source=source, reason=reason, now=now)
+            if active and source in _AUDIO_HOLD_SOURCES:
+                self._audio_hold_epoch += 1
+            return state
 
-        # Source names/reasons are controlled vocabulary, never raw chat text.
-        if source not in ('local', 'twitch-chat', 'eventsub'):
-            raise ValueError('Unknown control source')
-        if reason not in ('manual', 'synthetic hold', 'moderator', 'shield-mode'):
-            raise ValueError('Unknown hold reason')
-        return self.engine.hold(bool(active), source=source, reason=reason, now=now)
+    def _audio_held(self):
+        # Control has no public hold snapshot. Read its actual source union only
+        # under engine.lock; state/reason can instead reflect an automatic hold.
+        return bool(_AUDIO_HOLD_SOURCES.intersection(self.engine.control._holds))
+
+    def audio_guard(self):
+        """Bind queued PCM to its original hold epoch, through the native handoff."""
+        with self.engine.lock:
+            epoch = self._audio_hold_epoch
+        def guard(pcm):
+            with self.engine.lock:
+                if self._audio_held() or epoch != self._audio_hold_epoch:
+                    return np.zeros_like(pcm)
+                return pcm
+        return guard
 
     def set_stream_key(self, key):
         self.twitch.set_key(key)
@@ -52,6 +78,8 @@ class RelaySession:
         self.samples = np.zeros(self.audio_capacity, np.int16)
         self.tags = np.full(self.audio_capacity, -1, np.int64)
         self.audio_cursor = 0
+        self._audio_epoch = self.control._audio_hold_epoch
+        self._audio_selection_guard = None
         self.egress_interruptions = 0
         self._egress_holding = False
         self.engine.hold(True, source='transport', reason='startup')
@@ -77,17 +105,28 @@ class RelaySession:
         self.engine.submit(Frame(index, index / self.fps, pixels), now=now)
         self.last_index = index
 
+    def _sync_audio_hold(self):
+        # A hold and release can both arrive between ticks. Discard the whole
+        # pending window, including pre-hold sound, rather than replaying it.
+        if self._audio_epoch != self.control._audio_hold_epoch:
+            self.audio_drops += int((self.tags >= self.audio_cursor).sum())
+            self.tags.fill(-1)
+            self._audio_epoch = self.control._audio_hold_epoch
+        return self.control._audio_held()
+
     def audio(self, pts, samples, generation):
-        if generation != self.generation or not math.isfinite(pts):
-            self.audio_drops += len(samples)
-            return
-        first = round((self.session_pts + pts - self.source_origin) * 48000)
-        indices = np.arange(first, first + len(samples))
-        valid = (indices >= self.audio_cursor) & (indices < self.audio_cursor + self.audio_capacity)
-        self.audio_drops += int((~valid).sum())
-        slots = indices[valid] % self.audio_capacity
-        self.samples[slots] = samples[valid]
-        self.tags[slots] = indices[valid]
+        with self.engine.lock:
+            held = self._sync_audio_hold()
+            if held or generation != self.generation or not math.isfinite(pts):
+                self.audio_drops += len(samples)
+                return
+            first = round((self.session_pts + pts - self.source_origin) * 48000)
+            indices = np.arange(first, first + len(samples))
+            valid = (indices >= self.audio_cursor) & (indices < self.audio_cursor + self.audio_capacity)
+            self.audio_drops += int((~valid).sum())
+            slots = indices[valid] % self.audio_capacity
+            self.samples[slots] = samples[valid]
+            self.tags[slots] = indices[valid]
 
     def disconnected(self):
         self.disconnections += 1
@@ -97,19 +136,26 @@ class RelaySession:
 
     def tick(self, now=None):
         for result in self.engine.poll(now=now):
-            first = round(result.pts * 48000)
-            indices = np.arange(first, first + 1600)
-            slots = indices % self.audio_capacity
-            pcm = np.where(self.tags[slots] == indices, self.samples[slots], 0).astype(np.int16)
-            self.tags[slots] = -1
-            self.audio_cursor = first + 1600
-            # poll() releases the engine lock before transport writes. A hold
-            # arriving in that interval must not forward the stale LIVE pixels.
-            if self.engine.control.state == 'HOLD' and not result.slate:
-                result.pixels = np.zeros_like(result.pixels)
-                result.mask = np.full_like(result.mask, 255)
-                result.quads = []
-                result.state, result.protected, result.slate = 'HOLD', True, True
+            # Snapshot PCM and its original guard together; arbitrary sinks can
+            # block, so invoke them after releasing the engine lock.
+            with self.engine.lock:
+                held = self._sync_audio_hold()
+                self._audio_selection_guard = self.control.audio_guard()
+                first = round(result.pts * 48000)
+                indices = np.arange(first, first + 1600)
+                slots = indices % self.audio_capacity
+                pcm = np.where(self.tags[slots] == indices, self.samples[slots], 0).astype(np.int16)
+                if held:
+                    pcm.fill(0)
+                self.tags[slots] = -1
+                self.audio_cursor = first + 1600
+                # poll() releases the engine lock before transport writes. A hold
+                # arriving in that interval must not forward the stale LIVE pixels.
+                if self.engine.control.state == 'HOLD' and not result.slate:
+                    result.pixels = np.zeros_like(result.pixels)
+                    result.mask = np.full_like(result.mask, 255)
+                    result.quads = []
+                    result.state, result.protected, result.slate = 'HOLD', True, True
             accepted = self.sink(result, pcm)
             if accepted is False:
                 self.egress_interruptions += 1

@@ -17,8 +17,9 @@ class EgressWriter:
     """
     capacity = 1
 
-    def __init__(self, output, hold_active):
+    def __init__(self, output, hold_active, audio_guard=None):
         self.output, self.hold_active = output, hold_active
+        self.audio_guard = audio_guard
         output.hold_active = hold_active
         self.dropped = 0
         self._condition = threading.Condition()
@@ -32,6 +33,8 @@ class EgressWriter:
         self.thread.start()
 
     def write(self, result, pcm):
+        # Factory takes the engine lock; never acquire it under our condition.
+        guard = self.audio_guard() if self.audio_guard is not None else None
         with self._condition:
             if self._error is not None:
                 raise self._error
@@ -42,7 +45,7 @@ class EgressWriter:
                 return self._ready
             if self._pending is not None:
                 self.dropped += 1
-            self._pending = (result, pcm)
+            self._pending = (result, pcm, guard)
             self._condition.notify()
             return self._ready
 
@@ -59,9 +62,14 @@ class EgressWriter:
                     self._condition.wait_for(lambda: self._stopped or self._pending is not None)
                     if self._stopped:
                         return
-                    result, pcm = self._pending
+                    result, pcm, guard = self._pending
                     self._pending = None
                 result = enforce_hold(result, self.hold_active())
+                if guard is not None:
+                    pcm = guard(pcm)
+                # Egress reuses the original guard after its own startup waits,
+                # immediately before IPC. Only this worker owns output.write.
+                self.output.audio_guard = guard
                 began = time.monotonic()
                 accepted = self.output.write(result, pcm)
                 with self._condition:

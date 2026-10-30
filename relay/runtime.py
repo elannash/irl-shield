@@ -87,7 +87,8 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                 raise ValueError('Synthetic sink must be loopback RTMP /shielded')
             destinations.append(local_sink)
         output = Egress(tuple(destinations), directory, width, height, encoder)
-        writer = EgressWriter(output, lambda: engine.control.state == 'HOLD')
+        writer = EgressWriter(output, lambda: engine.control.state == 'HOLD',
+                              audio_guard=lambda: session._audio_selection_guard)
         session = RelaySession(engine, writer.write, width=width, height=height, control=control)
         source = NetworkInput(address.rtsp('camera', internal))
         while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
