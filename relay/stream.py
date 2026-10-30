@@ -46,7 +46,10 @@ class NetworkInput:
         self.error_code = None
         self.last_failure = None
         self.active_generation = 0
-        self.timestamp_issues = {'missing': 0, 'nonincreasing': 0, 'last': None}
+        self.timestamp_issues = {'missing': 0, 'nonincreasing': 0, 'discontinuities': 0,
+                                 'last': None, 'packet_pts_ne_dts': 0,
+                                 'packet_dts_regressions': 0, 'last_packet_issue': None}
+        self._previous_dts = {}
         self._previous_pts = {}
         self.thread = threading.Thread(target=self._read, name='m2-input', daemon=True)
         self.thread.start()
@@ -97,11 +100,39 @@ class NetworkInput:
         self._previous_pts[kind] = pts
         return pts
 
+    def _packet_timestamp(self, packet, generation):
+        if not packet.size or packet.time_base is None:
+            return
+        if packet.pts is not None and packet.dts is not None and packet.pts != packet.dts:
+            self.timestamp_issues['packet_pts_ne_dts'] += 1
+        if packet.dts is None:
+            return
+        dts = float(packet.dts * packet.time_base)
+        previous = self._previous_dts.get(packet.stream.index)
+        if previous is not None and dts < previous:
+            self.timestamp_issues['packet_dts_regressions'] += 1
+            self.timestamp_issues['last_packet_issue'] = {
+                'kind': packet.stream.type, 'generation': generation, 'dts': dts,
+                'previous_dts': previous, 'at_monotonic': time.monotonic()}
+        self._previous_dts[packet.stream.index] = dts
+
+    def _invalidate(self, reason, generation, error_class=None):
+        self.failure_counts[reason] += 1
+        at = time.monotonic()
+        self.drop_events.append({'code': reason, 'generation': generation,
+                                 'at_monotonic': at, 'initiator': 'reader'})
+        self.error_code = reason
+        self.last_failure = {'code': reason, 'error_class': error_class,
+                             'generation': generation, 'at_monotonic': at}
+        self._send(('drop', None, reason, generation, at))
+
     def _read(self):
         generation = 0
         while not self.stopped.is_set():
             generation += 1
             self._previous_pts.clear()
+            self._previous_dts.clear()
+            previous_video_at = None
             reason = 'input-open'
             error_class = None
             try:
@@ -116,10 +147,30 @@ class NetworkInput:
                     for packet in incoming.demux():
                         if self.stopped.is_set():
                             break
+                        self._packet_timestamp(packet, generation)
                         for frame in packet.decode():
                             if isinstance(frame, av.VideoFrame):
                                 reason = 'input-timestamp'
+                                previous = self._previous_pts.get('video')
                                 pts = self._timestamp(frame, 'video', generation)
+                                at = time.monotonic()
+                                # Use decoded display PTS, never packet DTS. B-frame
+                                # reordering and small reported regressions do not
+                                # create a new source timeline.
+                                if previous is not None and (
+                                        pts < previous - .5 or
+                                        pts - previous > max(2., at - previous_video_at + 2.)):
+                                    self.timestamp_issues['discontinuities'] += 1
+                                    self.timestamp_issues['last'] = {
+                                        'kind': 'video', 'generation': generation,
+                                        'pts': pts, 'previous_pts': previous, 'at_monotonic': at}
+                                    self._invalidate('input-discontinuity', generation)
+                                    generation += 1
+                                    self.active_generation = generation
+                                    self._previous_pts.clear()
+                                    self._previous_pts['video'] = pts
+                                    resampler = av.AudioResampler(format='s16', layout='mono', rate=48000)
+                                previous_video_at = at
                                 reason = 'input-decode'
                                 self._send(('video', pts,
                                             frame.to_ndarray(format='bgr24'), generation, time.monotonic()))
@@ -146,15 +197,9 @@ class NetworkInput:
                 self.failures += 1
             if self.stopped.is_set():
                 break
-            self.failure_counts[reason] += 1
-            self.drop_events.append({'code': reason, 'generation': generation,
-                                     'at_monotonic': time.monotonic(), 'initiator': 'reader'})
-            self.error_code = reason
-            self.last_failure = {'code': reason, 'error_class': error_class,
-                                 'generation': generation, 'at_monotonic': time.monotonic()}
             if reason != 'input-eof' or self.messages.full():
                 self._discard()
-            self._send(('drop', None, reason, generation, time.monotonic()))
+            self._invalidate(reason, generation, error_class)
             self.stopped.wait(.2)
 
     def drain(self, limit=16):
