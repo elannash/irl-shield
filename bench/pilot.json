@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "run_id": "pilot-vision-fast-en",
+  "candidate": "vision-fast",
+  "split": "tune",
+  "options": {
+    "padding": 0.3,
+    "persistence": 1,
+    "stride": 1,
+    "detect_width": 1280,
+    "provider": "cpu",
+    "limit_side_len": 960
+  },
+  "seconds_per_clip": 1.0,
+  "pilot": true,
+  "manifest_sha256": "73dec256d1e886c78bdc07f29226eac49e3d4b2a62c9d6ceaeb627c4d9fb28b2",
+  "environment": {
+    "system": "macOS-27.0.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.11.15"
+  },
+  "judges": [
+    "tesseract-5-psm11",
+    "vision-accurate",
+    "ppocr-independent"
+  ],
+  "clips": [
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 30,
+        "seconds": 1.552497124997899,
+        "fps": 19.323707282253807,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.14133368752663955,
+          "p95": 0.3432500274910125
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 0.5050174374482594,
+          "p95": 0.5944231669593136
+        },
+        "service_seconds": {
+          "p50": 0.028595375071745366,
+          "p95": 0.12599582063266962
+        },
+        "cpu_percent_one_core_100": 91.18307456710644,
+        "peak_tree_rss_mb": 387.546875,
+        "detector": {
+          "engine": "vision-fast",
+          "framework": "macOS Vision",
+          "offline": true
+        }
+      },
+      "natural": {
+        "total": 137,
+        "hidden": 90,
+        "hidden_fraction": 0.656934306569343
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.013818901909722223,
+        "p95": 0.01813525390625
+      },
+      "outside_mae_p95": 3.1243858965773277
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 30,
+        "seconds": 1.5621429590974003,
+        "fps": 19.204388321369688,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.1173485005274415,
+          "p95": 0.2823790272988844
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 0.6971662920550443,
+          "p95": 0.782884546398418
+        },
+        "service_seconds": {
+          "p50": 0.028549208014737815,
+          "p95": 0.15701744360849249
+        },
+        "cpu_percent_one_core_100": 92.2275164233921,
+        "peak_tree_rss_mb": 481.890625,
+        "detector": {
+          "engine": "vision-fast",
+          "framework": "macOS Vision",
+          "offline": true
+        }
+      },
+      "natural": {
+        "total": 133,
+        "hidden": 104,
+        "hidden_fraction": 0.7819548872180451
+      },
+      "synthetic": {
+        "total": 4,
+        "hidden": 1,
+        "hidden_fraction": 0.25
+      },
+      "synthetic_input_control": {
+        "total": 4,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.09076443142361111,
+        "p95": 0.10024283854166667
+      },
+      "outside_mae_p95": 3.113298889859387
+    }
+  ],
+  "natural": {
+    "hidden": 194,
+    "total": 270,
+    "hidden_fraction": 0.7185185185185186
+  },
+  "synthetic": {
+    "hidden": 1,
+    "total": 4,
+    "hidden_fraction": 0.25
+  },
+  "masked_area_fraction": {
+    "p50": 0.027218424479166663,
+    "p95": 0.09830463324652777
+  },
+  "minimum_clip_fps": 19.204388321369688,
+  "latency_seconds": {
+    "p50": 0.14133368752663955,
+    "p95": 0.3432500274910125
+  },
+  "real_video_pass": true,
+  "sustained": null,
+  "cpu_percent_one_core_100": {
+    "p50": 91.70529549524927,
+    "p95": 92.17529433057781
+  },
+  "peak_tree_rss_mb": 481.890625,
+  "synthetic_input_control": {
+    "total": 4,
+    "unreadable": 0
+  },
+  "gate_1": {
+    "judge_discrimination": true,
+    "natural": false,
+    "synthetic": false,
+    "masked_area": true,
+    "throughput": false,
+    "latency": false,
+    "real_video": true,
+    "eligible": false,
+    "pass": false
+  },
+  "baseline_deltas": {},
+  "code_sha256": "658885de812f473425f1fbef7904920fc1e1a5bc90cde7ee51119d48c8580b62",
+  "scope": "Provisional Latin-script pilot: Tesseract eng, Vision accurate en-US, PP-OCRv5 English-mobile; uncalibrated input confidence>=.5, no temporal support filter. Non-Latin unproven.",
+  "status": "Superseded: natural denominator failed unmasked control; do not use for detector selection."
+}

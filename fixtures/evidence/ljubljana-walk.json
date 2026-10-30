@@ -1,0 +1,98 @@
+{
+  "pageid": 81894660,
+  "ns": 6,
+  "title": "File:Walking down the Trubarjeva street.webm",
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 6391239,
+      "width": 1920,
+      "height": 1080,
+      "duration": 13.196,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Walking_down_the_Trubarjeva_street.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Walking_down_the_Trubarjeva_street.webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=81894660",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2019-09-05 08:31:45",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Walking down the Trubarjeva street",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "Media from YouTube|Trubarjeva cesta|Uploaded with video2commons|Videos of road transport in Slovenia|Videos of 2019 from Slovenia|Videos from Ljubljana|License reviewed by YouTubeReviewBot|Roadworks in Ljubljana|Videos of roadworks|Excavators in Ljubljana",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Trubarjeva street is one of the many streets in Ljubljana which are temporary under reconstruction. On one side of the street the work is still in progress (digging, driving vans, lorries, workers talking) while one part of the street near Pre\u0161ern\u2019s square the works are finished. The recording was done by walking from one part of the street to the other. Various sounds can be heard (walking, digging, talking, driving, \u2026). The soundscape was recorded on 18th July 2019 At 9.15AM.",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2019-07-18",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=XrtRowutnCs\"><bdi lang=\"\">Walking down the  Trubarjeva street</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=XrtRowutnCs\">archive.org</a></bdi>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCjB-IQrc61I77sMDL_5g4Xw\">Sounds of Changes</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "Sounds of Changes",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "8672dd92cea7e4b702eade3a0caca3bbbaffa0bb"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "scope": "Ideal/offline all7 tune clips; Tiny8Hz640 + Small4Hz960, D1 B6 A30 padding.3; same exact input/truth bytes. English-configured independent judges; no realtime gate eligibility.",
+  "rows": [
+    {
+      "policy": "phase-050",
+      "source": "out/e1-small-phase-050/scorecard.json",
+      "sha256": "e01e4e8692b9658a4a6c9732ef2d17dc4803d336027869ee76f15279add45522",
+      "natural": {
+        "hidden": 393,
+        "total": 435,
+        "hidden_fraction": 0.903448275862069
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "protected_fraction": 0.08190476190476191,
+      "masked_area_fraction": {
+        "p50": 0.12995713975694445,
+        "p95": 1.0
+      },
+      "real_video_pass": false,
+      "comparison_valid": false
+    },
+    {
+      "policy": "phase-020",
+      "source": "out/e1-small-phase-020/scorecard.json",
+      "sha256": "91bfe940b4097bab0bdd993a91fdd4ea52d8f92283598488e9a63f4960cce2ac",
+      "natural": {
+        "hidden": 368,
+        "total": 435,
+        "hidden_fraction": 0.8459770114942529
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "protected_fraction": 0.018095238095238095,
+      "masked_area_fraction": {
+        "p50": 0.1280523003472222,
+        "p95": 0.5580483398437499
+      },
+      "real_video_pass": false,
+      "comparison_valid": false
+    },
+    {
+      "policy": "phase-005",
+      "source": "out/e1-small-phase-005/scorecard.json",
+      "sha256": "8e27ed9c694257c383c66db9b26ca1a9c9ceadd3d8791d0102aec38f6ab805df",
+      "natural": {
+        "hidden": 369,
+        "total": 435,
+        "hidden_fraction": 0.8482758620689655
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "protected_fraction": 0.002857142857142857,
+      "masked_area_fraction": {
+        "p50": 0.12692003038194444,
+        "p95": 0.5551158854166666
+      },
+      "real_video_pass": false,
+      "comparison_valid": false
+    },
+    {
+      "policy": "orb-050",
+      "source": "out/e1-small-orb-050/scorecard.json",
+      "sha256": "010b1a3c072efe9b4609869fcfb05443d99adbff716f5282adfe11dd68f667b6",
+      "natural": {
+        "hidden": 376,
+        "total": 435,
+        "hidden_fraction": 0.864367816091954
+      },
+      "synthetic": {
+        "hidden": 41,
+        "total": 54,
+        "hidden_fraction": 0.7592592592592593
+      },
+      "protected_fraction": 0.02761904761904762,
+      "masked_area_fraction": {
+        "p50": 0.124873046875,
+        "p95": 0.8075959743923611
+      },
+      "real_video_pass": false,
+      "comparison_valid": false
+    }
+  ]
+}

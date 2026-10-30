@@ -1,0 +1,190 @@
+{
+  "scope": "All seven tune clips; identical FP32 source ONNX/static shapes/preprocessing/postprocessing, batch1; call latency is not wall-clock stream fps",
+  "source_receipt": ".tmp/m1/openvino-mac-comparison.json",
+  "source_sha256": "234de43effc28f3b1bc4b6bf21f04c9c54723ee2a62c6806f2fd8972515a0a04",
+  "queue_receipt": ".tmp/m1/openvino-mac-attempt.json",
+  "queue_sha256": "b682cf504c5c3dc1118ec85ab42bacae5d776a7b5fd99acfb4a79c83295184b7",
+  "queue_clean": true,
+  "contamination": {
+    "valid": true,
+    "contended": false,
+    "mean_other_busy_percent": 12.520090545992357,
+    "max_other_busy_percent": 26.99192069843875,
+    "reasons": []
+  },
+  "repetitions": 3,
+  "rows": [
+    {
+      "name": "ppocr-v6-tiny",
+      "model": null,
+      "side": 640,
+      "summary": {
+        "ort": {
+          "inference_ms": {
+            "count": 63,
+            "median": 19.752708030864596,
+            "p95": 23.05101192323491
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 24.68858298379928,
+            "p95": 28.349924681242555
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 50.08999999999908,
+            "p95": 58.70980000000117
+          }
+        },
+        "openvino": {
+          "inference_ms": {
+            "count": 63,
+            "median": 22.335125016979873,
+            "p95": 23.27115796506405
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 26.79808298125863,
+            "p95": 27.865271479822695
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 43.804999999998984,
+            "p95": 45.534800000000786
+          }
+        }
+      },
+      "parity_pass": true,
+      "timing_valid": true
+    },
+    {
+      "name": "ppocr-v6-tiny",
+      "model": null,
+      "side": 960,
+      "summary": {
+        "ort": {
+          "inference_ms": {
+            "count": 63,
+            "median": 56.232042028568685,
+            "p95": 57.51062440685928
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 66.3643330335617,
+            "p95": 67.7303503267467
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 131.4390000000003,
+            "p95": 137.01049999999987
+          }
+        },
+        "openvino": {
+          "inference_ms": {
+            "count": 63,
+            "median": 51.34470900520682,
+            "p95": 52.97105412464589
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 61.167667037807405,
+            "p95": 63.140741374809295
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 99.85400000000055,
+            "p95": 103.37239999999923
+          }
+        }
+      },
+      "parity_pass": true,
+      "timing_valid": true
+    },
+    {
+      "name": "ppocr-v6-small",
+      "model": null,
+      "side": 640,
+      "summary": {
+        "ort": {
+          "inference_ms": {
+            "count": 63,
+            "median": 53.332915995270014,
+            "p95": 54.47576269507408
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 58.125499985180795,
+            "p95": 59.29802913451567
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 117.15600000000137,
+            "p95": 122.01929999999948
+          }
+        },
+        "openvino": {
+          "inference_ms": {
+            "count": 63,
+            "median": 50.14812492299825,
+            "p95": 57.56510478677228
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 54.81466592755169,
+            "p95": 65.55093751521781
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 97.25999999999146,
+            "p95": 106.63399999999399
+          }
+        }
+      },
+      "parity_pass": true,
+      "timing_valid": true
+    },
+    {
+      "name": "ppocr-v6-small",
+      "model": null,
+      "side": 960,
+      "summary": {
+        "ort": {
+          "inference_ms": {
+            "count": 63,
+            "median": 129.76841710042208,
+            "p95": 131.54997917590663
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 139.9587499909103,
+            "p95": 142.26664522429928
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 278.2279999999986,
+            "p95": 287.08499999999333
+          }
+        },
+        "openvino": {
+          "inference_ms": {
+            "count": 63,
+            "median": 113.43204195145518,
+            "p95": 118.66351669887081
+          },
+          "total_call_ms": {
+            "count": 63,
+            "median": 123.46516700927168,
+            "p95": 127.70771612413228
+          },
+          "process_cpu_ms": {
+            "count": 63,
+            "median": 219.17600000000448,
+            "p95": 225.0001000000026
+          }
+        }
+      },
+      "parity_pass": true,
+      "timing_valid": true
+    }
+  ]
+}

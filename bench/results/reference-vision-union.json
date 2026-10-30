@@ -1,0 +1,991 @@
+{
+  "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. Latin-script text and Arabic digits observed in input at confidence>=0.9 on at least2 frames per interval; judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven.",
+  "schema_version": 1,
+  "run_id": "final-reference-vision-union",
+  "candidate": "vision-union",
+  "split": "tune",
+  "options": {
+    "lookahead": 0,
+    "padding": 0.3,
+    "persistence": 1,
+    "stride": 1,
+    "detect_width": 1280,
+    "provider": "cpu",
+    "limit_side_len": 960
+  },
+  "seconds_per_clip": 5,
+  "pilot": false,
+  "manifest_sha256": "311979a75de193566e0da3135b7c65ad7995d5ce5ed644626dae54aefd3086cc",
+  "environment": {
+    "system": "macOS-27.0.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.11.15",
+    "opencv": "4.11.0",
+    "ffmpeg": "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "hardware": [
+      "Apple M1 Pro",
+      "8",
+      "17179869184"
+    ]
+  },
+  "judges": [
+    "tesseract-5-psm11",
+    "vision-accurate",
+    "ppocr-independent"
+  ],
+  "judge_models": {
+    "name": "ppocr-v5-english",
+    "detector": {
+      "name": "ppocr-v5-mobile",
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/ch_PP-OCRv5_det_mobile.onnx",
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/blob/0d63e78e2b680928f6b1747d76a08db6e645efb7/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "coreml_cpu_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0",
+      "parameters": {
+        "limit_side_len": 960,
+        "limit_type": "max",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "max_candidates": 1000,
+        "unclip_ratio": 1.6,
+        "use_dilation": true,
+        "score_mode": "fast"
+      }
+    },
+    "recognizer": {
+      "name": "ppocr-v5-english-rec",
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/en_PP-OCRv5_rec_mobile.onnx",
+      "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/blob/267c36e24c331595590fe7bd72bde2436fd286f2/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/rec/en_PP-OCRv5_rec_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "coreml_cpu_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0"
+    },
+    "text_score": 0.5,
+    "language": "English and Latin characters in the model's embedded dictionary",
+    "independence": "Non-Apple engine; shares PP-OCR family with PP-OCR detector candidates"
+  },
+  "clips": [
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 15.698091041995212,
+        "fps": 9.555301953512886,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.30497033352730796,
+          "p95": 0.3980982775683514
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 6.041842083213851,
+          "p95": 10.478479237295685
+        },
+        "service_seconds": {
+          "p50": 0.0982321664923802,
+          "p95": 0.13367440643487496
+        },
+        "cpu_percent_one_core_100": 79.71134000678339,
+        "peak_tree_rss_mb": 867.46875,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 57,
+      "natural": {
+        "total": 69,
+        "hidden": 48,
+        "hidden_fraction": 0.6956521739130435
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.04359266493055555,
+        "p95": 0.060694986979166664
+      },
+      "outside_mae_p95": 3.0331992331948996
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 18.419047834002413,
+        "fps": 8.143743441672,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.350934166519437,
+          "p95": 0.46579485419206307
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 7.018872062617447,
+          "p95": 12.924787329515672
+        },
+        "service_seconds": {
+          "p50": 0.11528227053349838,
+          "p95": 0.15222014639875853
+        },
+        "cpu_percent_one_core_100": 80.29905996741152,
+        "peak_tree_rss_mb": 825.109375,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 101,
+      "natural": {
+        "total": 77,
+        "hidden": 59,
+        "hidden_fraction": 0.7662337662337663
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.1410910373263889,
+        "p95": 0.16265391710069443
+      },
+      "outside_mae_p95": 2.968227886424581
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 14.43908299994655,
+        "fps": 10.388471345483316,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.2795083544915542,
+          "p95": 0.3668327517923898
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 5.397906958125532,
+          "p95": 9.190275585459311
+        },
+        "service_seconds": {
+          "p50": 0.0919371250201948,
+          "p95": 0.11990818138001487
+        },
+        "cpu_percent_one_core_100": 71.33320202949679,
+        "peak_tree_rss_mb": 794.84375,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 17,
+      "natural": {
+        "total": 30,
+        "hidden": 17,
+        "hidden_fraction": 0.5666666666666667
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.040651041666666665,
+        "p95": 0.06534532335069441
+      },
+      "outside_mae_p95": 2.8364638333799848
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 15.621064333012328,
+        "fps": 9.602418683021606,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.3014455829979852,
+          "p95": 0.413011554582044
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 5.967985895171296,
+          "p95": 10.325868470541899
+        },
+        "service_seconds": {
+          "p50": 0.09827689605299383,
+          "p95": 0.13029815883492113
+        },
+        "cpu_percent_one_core_100": 77.04954673072658,
+        "peak_tree_rss_mb": 516.328125,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 41,
+      "natural": {
+        "total": 36,
+        "hidden": 27,
+        "hidden_fraction": 0.75
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.13258734809027778,
+        "p95": 0.16489371744791667
+      },
+      "outside_mae_p95": 2.8305044912678614
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 19.629856167011894,
+        "fps": 7.641421247501345,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.5016712289652787,
+          "p95": 0.7219082834315486
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 8.28201247920515,
+          "p95": 14.301250624755628
+        },
+        "service_seconds": {
+          "p50": 0.12727941700723022,
+          "p95": 0.19178233097190964
+        },
+        "cpu_percent_one_core_100": 76.07115536855041,
+        "peak_tree_rss_mb": 466.296875,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 17,
+      "natural": {
+        "total": 21,
+        "hidden": 8,
+        "hidden_fraction": 0.38095238095238093
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.046714409722222225,
+        "p95": 0.12395285373263881
+      },
+      "outside_mae_p95": 2.8756529122359664
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 26.4090817499673,
+        "fps": 5.679864276242234,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.5169355420512147,
+          "p95": 0.674968167132465
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 11.920188520627562,
+          "p95": 20.718974474689453
+        },
+        "service_seconds": {
+          "p50": 0.16667820804286748,
+          "p95": 0.24224215902504512
+        },
+        "cpu_percent_one_core_100": 73.3335959108127,
+        "peak_tree_rss_mb": 340.78125,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 38,
+      "natural": {
+        "total": 36,
+        "hidden": 29,
+        "hidden_fraction": 0.8055555555555556
+      },
+      "synthetic": {
+        "total": 7,
+        "hidden": 7,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 7,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.11436306423611112,
+        "p95": 0.2157827690972222
+      },
+      "outside_mae_p95": 2.854603719394416
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 24.761102249962278,
+        "fps": 6.057888638629911,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.6450567500432953,
+          "p95": 0.8313948955677909
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 10.851220979180653,
+          "p95": 19.363686462223992
+        },
+        "service_seconds": {
+          "p50": 0.1602391460328363,
+          "p95": 0.23401106029050422
+        },
+        "cpu_percent_one_core_100": 68.97492540744405,
+        "peak_tree_rss_mb": 249.15625,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 13,
+      "natural": {
+        "total": 16,
+        "hidden": 2,
+        "hidden_fraction": 0.125
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.008434787326388889,
+        "p95": 0.056267686631944445
+      },
+      "outside_mae_p95": 2.626539071906543
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 29.055115042021498,
+        "fps": 5.162602171186028,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.723835249489639,
+          "p95": 0.9910685747163368
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 13.976106812129728,
+          "p95": 23.431611029326447
+        },
+        "service_seconds": {
+          "p50": 0.17284039605874568,
+          "p95": 0.30167353982105743
+        },
+        "cpu_percent_one_core_100": 71.18650946757332,
+        "peak_tree_rss_mb": 230.109375,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 31,
+      "natural": {
+        "total": 20,
+        "hidden": 17,
+        "hidden_fraction": 0.85
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.12024848090277777,
+        "p95": 0.14535150824652776
+      },
+      "outside_mae_p95": 2.5635869994855693
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 26.385265875025652,
+        "fps": 5.684991036682293,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.7333889794535935,
+          "p95": 1.014188843773445
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 14.147070541221183,
+          "p95": 21.041340208094333
+        },
+        "service_seconds": {
+          "p50": 0.17778597900178283,
+          "p95": 0.28448022711090737
+        },
+        "cpu_percent_one_core_100": 71.18911000048209,
+        "peak_tree_rss_mb": 267.875,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 64,
+      "natural": {
+        "total": 52,
+        "hidden": 42,
+        "hidden_fraction": 0.8076923076923077
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.04285210503472223,
+        "p95": 0.09104671223958319
+      },
+      "outside_mae_p95": 2.763747937308489
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 16.896284624934196,
+        "fps": 8.877691358172429,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.3261419790214859,
+          "p95": 0.42946175419492627
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 6.681143604626413,
+          "p95": 11.580976602295411
+        },
+        "service_seconds": {
+          "p50": 0.10665097902528942,
+          "p95": 0.15515407282509838
+        },
+        "cpu_percent_one_core_100": 77.26230314394557,
+        "peak_tree_rss_mb": 453.75,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 96,
+      "natural": {
+        "total": 49,
+        "hidden": 43,
+        "hidden_fraction": 0.8775510204081632
+      },
+      "synthetic": {
+        "total": 7,
+        "hidden": 7,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 7,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.12223958333333333,
+        "p95": 0.16796636284722222
+      },
+      "outside_mae_p95": 2.7404942570661097
+    },
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 17.581878500059247,
+        "fps": 8.531511578782354,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.32481456198729575,
+          "p95": 0.464150776725728
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 7.513136937224772,
+          "p95": 12.208652060182066
+        },
+        "service_seconds": {
+          "p50": 0.10770766652422026,
+          "p95": 0.1611602914170362
+        },
+        "cpu_percent_one_core_100": 73.32067252053754,
+        "peak_tree_rss_mb": 292.359375,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 3,
+      "natural": {
+        "total": 3,
+        "hidden": 3,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.006137152777777778,
+        "p95": 0.051352973090277684
+      },
+      "outside_mae_p95": 2.1535156612525315
+    },
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 20.267300292034633,
+        "fps": 7.401084398939525,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.3923702289466746,
+          "p95": 0.5431350668717642
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 9.46373847918585,
+          "p95": 14.628651402256216
+        },
+        "service_seconds": {
+          "p50": 0.1269384374609217,
+          "p95": 0.18837211255449793
+        },
+        "cpu_percent_one_core_100": 79.54252263903707,
+        "peak_tree_rss_mb": 342.015625,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 18,
+      "natural": {
+        "total": 14,
+        "hidden": 14,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.09231011284722222,
+        "p95": 0.13032020399305555
+      },
+      "outside_mae_p95": 2.1732215843854648
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": false,
+      "performance": {
+        "frames": 150,
+        "seconds": 12.63704083301127,
+        "fps": 11.869867477848185,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.31387929199263453,
+          "p95": 0.5105367623851632
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 4.282100354204886,
+          "p95": 7.619610480964184
+        },
+        "service_seconds": {
+          "p50": 0.07428941695252433,
+          "p95": 0.1458380062947981
+        },
+        "cpu_percent_one_core_100": 79.68891765320545,
+        "peak_tree_rss_mb": 363.78125,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 16,
+      "natural": {
+        "total": 4,
+        "hidden": 1,
+        "hidden_fraction": 0.25
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.0,
+        "p95": 0.012729275173611079
+      },
+      "outside_mae_p95": 3.029634457026029
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": true,
+      "performance": {
+        "frames": 150,
+        "seconds": 33.78983650007285,
+        "fps": 4.4392046703060135,
+        "source_fps": 30.0,
+        "resolution": [
+          1280,
+          720
+        ],
+        "latency_seconds": {
+          "p50": 0.5944148754933849,
+          "p95": 0.9787686832947655
+        },
+        "realtime_added_latency_seconds": {
+          "p50": 17.946311457664706,
+          "p95": 27.990108499594495
+        },
+        "service_seconds": {
+          "p50": 0.18924918753327802,
+          "p95": 0.3930210229591465
+        },
+        "cpu_percent_one_core_100": 57.14839468778974,
+        "peak_tree_rss_mb": 218.0,
+        "detector": {
+          "engine": "vision-union",
+          "framework": "macOS Vision",
+          "offline": true,
+          "recognition_languages": [
+            "en-US"
+          ],
+          "minimum_text_height": 0.005,
+          "uses_language_correction": false
+        }
+      },
+      "excluded_unstable_natural_intervals": 25,
+      "natural": {
+        "total": 8,
+        "hidden": 3,
+        "hidden_fraction": 0.375
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 6,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "masked_area_fraction": {
+        "p50": 0.03588107638888889,
+        "p95": 0.08749283854166666
+      },
+      "outside_mae_p95": 2.9986922400338045
+    }
+  ],
+  "natural": {
+    "hidden": 313,
+    "total": 435,
+    "hidden_fraction": 0.7195402298850575
+  },
+  "synthetic": {
+    "hidden": 54,
+    "total": 54,
+    "hidden_fraction": 1.0
+  },
+  "masked_area_fraction": {
+    "p50": 0.05936414930555556,
+    "p95": 0.15859798177083334
+  },
+  "minimum_clip_fps": 4.4392046703060135,
+  "latency_seconds": {
+    "p50": 0.7333889794535935,
+    "p95": 1.014188843773445
+  },
+  "real_video_pass": true,
+  "sustained": null,
+  "cpu_percent_one_core_100": {
+    "p50": 74.70237563968155,
+    "p95": 79.91704199300324
+  },
+  "peak_tree_rss_mb": 867.46875,
+  "synthetic_input_control": {
+    "total": 52,
+    "unreadable": 0,
+    "unverified_intervals": 2
+  },
+  "gate_1": {
+    "judge_discrimination": false,
+    "natural": false,
+    "synthetic": true,
+    "masked_area": true,
+    "throughput": false,
+    "latency": false,
+    "real_video": true,
+    "eligible": false,
+    "pass": false
+  },
+  "code_sha256": "b9c6489c9e08650dc2d6dacb04aef1afb04b838f2cc0146c70050dd081556426",
+  "rescore_of": "bakeoff-vision-union",
+  "evidence_base": "/home/elan/code/irl-shield/out/bakeoff-vision-union",
+  "measurement_code_sha256": "95495fc74886d1e752ff51205196b3d380197156928a0393c0a53ba4a5459092",
+  "baseline_deltas_pp": {
+    "natural": 71.95402298850576,
+    "synthetic": 100.0
+  },
+  "baseline_reference": {
+    "path": "bench/baseline.json",
+    "run_id": "final-control-unmasked-calibrated",
+    "sha256": "01603a721e14935eb7eeee0cd89074e00b300d8cc0422c7639265c37eb420b7b",
+    "natural": {
+      "hidden": 0,
+      "total": 61,
+      "hidden_fraction": 0.0
+    },
+    "synthetic": {
+      "hidden": 0,
+      "total": 4,
+      "hidden_fraction": 0.0
+    }
+  },
+  "rescore_scope": "Unrotated legacy/offline evidence only; no accepted real-time performance claim",
+  "regrade_code_sha256": "6141c74e7569d1dc1f430069bfa269709100074fe7cf372f8260ac4bd55d7756"
+}

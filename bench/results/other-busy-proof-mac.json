@@ -1,0 +1,69 @@
+{
+  "host": "mac",
+  "pass": true,
+  "source": "out/perf-policy-proof/mac-v2-2-proof.json",
+  "source_sha256": "abf04fee46dfad22604adb9d45198ff703a108cd8bb59ab633c3365692fdbb1b",
+  "counter_code_sha256": "45dbdd1a8745e14b1573adadc218b9d1c00de66183a02ebd97942beca36eaeed",
+  "scope": "Real synthetic four-core job, separate three-core sibling, then removal; all owned burners nice19. No video/privacy inference.",
+  "cleanup": [
+    {
+      "root_pid": 73154,
+      "returncode": 0,
+      "all_known_identities_exited": true
+    },
+    {
+      "root_pid": 72965,
+      "returncode": 0,
+      "all_known_identities_exited": true
+    }
+  ],
+  "phases": [
+    {
+      "phase": "clean-before",
+      "expected_contended": false,
+      "summary": {
+        "valid": true,
+        "contended": false,
+        "mean_other_busy_percent": 3.7767154993730485,
+        "max_other_busy_percent": 4.279917336643081,
+        "reasons": []
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    },
+    {
+      "phase": "external-burner",
+      "expected_contended": true,
+      "summary": {
+        "valid": true,
+        "contended": true,
+        "mean_other_busy_percent": 41.205834277338575,
+        "max_other_busy_percent": 41.34701812339978,
+        "reasons": [
+          "other_busy"
+        ]
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    },
+    {
+      "phase": "clean-after",
+      "expected_contended": false,
+      "summary": {
+        "valid": true,
+        "contended": false,
+        "mean_other_busy_percent": 5.4659367158745,
+        "max_other_busy_percent": 6.937447627556729,
+        "reasons": []
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Copy evidence back to the builder checkout without touching the remote run.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+mkdir -p out
+if [[ $# == 0 ]]; then
+  rsync -az --exclude=judge-cache/ mac:code/irl-shield/out/ out/
+else
+  for entry in "$@"; do
+    [[ $entry =~ ^[a-zA-Z0-9._-]+$ && $entry != . && $entry != .. ]] || { echo 'Invalid output entry' >&2; exit 2; }
+    rsync -az --exclude=judge-cache/ "mac:code/irl-shield/out/$entry" out/
+  done
+fi

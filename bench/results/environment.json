@@ -1,0 +1,150 @@
+{
+  "scope": "Environment/install inventory, not a performance receipt. Formula arrays include retained older kegs; only named M1/M2 transactions are attributed to this work.",
+  "mac_platform": [
+    "Darwin MacBookPro.lan 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:22:49 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T6000 arm64",
+    "ProductName:\t\tmacOS",
+    "ProductVersion:\t\t27.0.1",
+    "BuildVersion:\t\t26A434",
+    "Xcode 27.0",
+    "Build version 27A266a"
+  ],
+  "mac_relevant_formula_kegs": {
+    "tesseract": [
+      "5.5.4"
+    ],
+    "brotli": [
+      "1.2.0",
+      "1.2.1"
+    ],
+    "libpng": [
+      "1.6.58",
+      "1.6.59"
+    ],
+    "freetype": [
+      "2.14.3",
+      "2.15.0"
+    ],
+    "libunistring": [
+      "1.5",
+      "1.4.2"
+    ],
+    "fontconfig": [
+      "2.18.3",
+      "2.18.1"
+    ],
+    "pcre2": [
+      "10.47_1",
+      "10.49"
+    ],
+    "glib": [
+      "2.88.2",
+      "2.90.1"
+    ],
+    "xorgproto": [
+      "2026.1",
+      "2025.1"
+    ],
+    "libx11": [
+      "1.8.13",
+      "1.8.14"
+    ],
+    "libxrender": [
+      "0.9.12",
+      "0.9.13"
+    ],
+    "cairo": [
+      "1.18.6",
+      "1.18.4"
+    ],
+    "icu4c@79": [
+      "79.1"
+    ],
+    "jpeg-turbo": [
+      "3.2.0"
+    ],
+    "harfbuzz": [
+      "14.2.1",
+      "15.0.0_1"
+    ],
+    "openjpeg": [
+      "2.5.4",
+      "2.5.4_1"
+    ],
+    "leptonica": [
+      "1.87.0"
+    ],
+    "libarchive": [
+      "3.8.10"
+    ],
+    "fribidi": [
+      "1.0.17"
+    ],
+    "libdatrie": [
+      "0.2.14"
+    ],
+    "libthai": [
+      "0.1.30"
+    ],
+    "pango": [
+      "1.58.2"
+    ],
+    "srt": [
+      "1.5.7_1"
+    ],
+    "openssl@4": [
+      "4.1.0"
+    ],
+    "ca-certificates": [
+      "2026-09-25",
+      "2026-10-20"
+    ],
+    "ffmpeg": [
+      "8.1.2"
+    ],
+    "python@3.11": [
+      "3.11.15_3"
+    ]
+  },
+  "mac_main_venv": {
+    "av": "16.0.1",
+    "certifi": "2026.10.23",
+    "charset-normalizer": "3.5.2",
+    "colorlog": "6.12.0",
+    "flatbuffers": "25.12.19",
+    "idna": "3.20",
+    "ml_dtypes": "0.6.0",
+    "numpy": "2.2.6",
+    "omegaconf": "2.4.0",
+    "onnx": "1.23.2",
+    "onnxruntime": "1.31.1",
+    "opencv-python-headless": "4.11.0.86",
+    "packaging": "26.3",
+    "pillow": "11.2.1",
+    "protobuf": "7.36.2",
+    "psutil": "7.0.0",
+    "pyclipper": "1.4.0",
+    "pytesseract": "0.3.13",
+    "PyYAML": "6.0.3",
+    "rapidocr": "3.10.0",
+    "requests": "2.34.2",
+    "shapely": "2.2.0",
+    "six": "1.17.0",
+    "tqdm": "4.70.1",
+    "typing_extensions": "4.16.0",
+    "urllib3": "2.8.0"
+  },
+  "linux_private_environment_requirements": [
+    "requirements.txt",
+    "requirements-models.txt",
+    "requirements-linux-gpu.txt",
+    "requirements-relay.txt"
+  ],
+  "m2_global_side_effect": "Homebrew SRT installed OpenSSL4.1.0 and ca-certificates2026-10-20; it unlinked default OpenSSL3.6.4 symlinks while retaining its keg. No manual relink/removal.",
+  "unchanged_mac_ffmpeg": [
+    "ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers",
+    "built with Apple clang version 21.0.0 (clang-2100.0.123.102)",
+    "configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.1.2 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gpl --enable-libsvtav1 --enable-libopus --enable-libx264 --enable-libmp3lame --enable-libdav1d --enable-libvmaf --enable-libvpx --enable-libx265 --enable-openssl --enable-videotoolbox --enable-audiotoolbox --enable-neon"
+  ],
+  "homebrew_bootstrap_runtime": "portable Ruby4.0.9 was installed by Homebrew automatic update; existing brew Ruby4.0.5 is separate.",
+  "additional_optional_notice_copies": "Three optional ONNX dependency notice copies were rejected by automatic approval review and were not retried."
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+for candidate in vision-union ppocr-v5-mobile ppocr-v6-small; do
+  .venv/bin/python -m bench.run --candidate "$candidate" --run-id "bakeoff-$candidate"
+done

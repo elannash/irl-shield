@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "benchmark_only": true,
+  "demo_ready": false,
+  "scorecard": "out/regraded-v5-bakeoff-vision-union/scorecard.json",
+  "scorecard_sha256": "824ee1618783c21ecf77a85bf62f5599d5ad80e3d61978c9a231ced9cf9069b2",
+  "natural": {
+    "hidden": 313,
+    "total": 435,
+    "hidden_fraction": 0.7195402298850575
+  },
+  "synthetic": {
+    "hidden": 54,
+    "total": 54,
+    "hidden_fraction": 1.0
+  },
+  "overall": {
+    "failed_intervals": 122,
+    "primary_causes": {
+      "detector-miss": 118,
+      "partial-mask-coverage": 4
+    },
+    "nonexclusive_attributes": {
+      "intermittent-mask-coverage": 97,
+      "interpolated-leak-geometry": 77,
+      "small-text/distance-unproven": 30,
+      "partial-coverage-on-some-leak-frame": 25,
+      "near-edge": 22,
+      "low-sharpness/blur-candidate": 14,
+      "edge-entry-candidate": 13,
+      "target-motion-or-OCR-box-jitter": 11,
+      "fast-pan-candidate": 11,
+      "motion-blur-candidate": 0
+    },
+    "leak_frame_height_bins": {
+      "24-48": 327,
+      "12-24": 608,
+      "<=12": 41,
+      ">48": 118
+    },
+    "interval_median_height_bins": {
+      "24-48": 41,
+      "12-24": 54,
+      "<=12": 3,
+      ">48": 24
+    },
+    "observed_zero_overlap_intervals": 92,
+    "observed_geometry_leak_frames": 576,
+    "leak_frames": 1094
+  },
+  "per_clip": [
+    {
+      "clip": "sf-market",
+      "natural_total": 146,
+      "natural_hidden": 107,
+      "failed_intervals": 39,
+      "primary_causes": {
+        "detector-miss": 39
+      },
+      "nonexclusive_attributes": {
+        "intermittent-mask-coverage": 36,
+        "interpolated-leak-geometry": 22,
+        "near-edge": 13,
+        "small-text/distance-unproven": 13,
+        "edge-entry-candidate": 4,
+        "partial-coverage-on-some-leak-frame": 3,
+        "target-motion-or-OCR-box-jitter": 3,
+        "low-sharpness/blur-candidate": 0,
+        "fast-pan-candidate": 0,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        "24-48": 80,
+        "12-24": 106,
+        "<=12": 8,
+        ">48": 1
+      },
+      "interval_median_height_bins": {
+        "24-48": 13,
+        "12-24": 22,
+        "<=12": 3,
+        ">48": 1
+      },
+      "observed_zero_overlap_intervals": 30,
+      "observed_geometry_leak_frames": 109,
+      "leak_frames": 195
+    },
+    {
+      "clip": "ljubljana-walk",
+      "natural_total": 66,
+      "natural_hidden": 44,
+      "failed_intervals": 22,
+      "primary_causes": {
+        "detector-miss": 22
+      },
+      "nonexclusive_attributes": {
+        "intermittent-mask-coverage": 19,
+        "interpolated-leak-geometry": 19,
+        "small-text/distance-unproven": 9,
+        "low-sharpness/blur-candidate": 8,
+        "partial-coverage-on-some-leak-frame": 8,
+        "fast-pan-candidate": 0,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        "12-24": 234,
+        "24-48": 76,
+        ">48": 54,
+        "<=12": 30
+      },
+      "interval_median_height_bins": {
+        "24-48": 7,
+        "12-24": 13,
+        ">48": 2
+      },
+      "observed_zero_overlap_intervals": 12,
+      "observed_geometry_leak_frames": 155,
+      "leak_frames": 394
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "natural_total": 57,
+      "natural_hidden": 37,
+      "failed_intervals": 20,
+      "primary_causes": {
+        "detector-miss": 17,
+        "partial-mask-coverage": 3
+      },
+      "nonexclusive_attributes": {
+        "interpolated-leak-geometry": 16,
+        "intermittent-mask-coverage": 11,
+        "partial-coverage-on-some-leak-frame": 4,
+        "target-motion-or-OCR-box-jitter": 4,
+        "fast-pan-candidate": 4,
+        "small-text/distance-unproven": 2,
+        "low-sharpness/blur-candidate": 1,
+        "edge-entry-candidate": 1,
+        "near-edge": 1,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        "24-48": 62,
+        ">48": 28,
+        "12-24": 10
+      },
+      "interval_median_height_bins": {
+        "24-48": 11,
+        ">48": 6,
+        "12-24": 3
+      },
+      "observed_zero_overlap_intervals": 15,
+      "observed_geometry_leak_frames": 52,
+      "leak_frames": 100
+    },
+    {
+      "clip": "london-croydon",
+      "natural_total": 36,
+      "natural_hidden": 19,
+      "failed_intervals": 17,
+      "primary_causes": {
+        "detector-miss": 16,
+        "partial-mask-coverage": 1
+      },
+      "nonexclusive_attributes": {
+        "interpolated-leak-geometry": 15,
+        "intermittent-mask-coverage": 13,
+        "partial-coverage-on-some-leak-frame": 6,
+        "small-text/distance-unproven": 4,
+        "edge-entry-candidate": 2,
+        "near-edge": 2,
+        "low-sharpness/blur-candidate": 0,
+        "fast-pan-candidate": 0,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        "24-48": 104,
+        "12-24": 240,
+        "<=12": 2,
+        ">48": 13
+      },
+      "interval_median_height_bins": {
+        "24-48": 5,
+        "12-24": 10,
+        ">48": 2
+      },
+      "observed_zero_overlap_intervals": 12,
+      "observed_geometry_leak_frames": 223,
+      "leak_frames": 359
+    },
+    {
+      "clip": "london-bus-pov",
+      "natural_total": 101,
+      "natural_hidden": 85,
+      "failed_intervals": 16,
+      "primary_causes": {
+        "detector-miss": 16
+      },
+      "nonexclusive_attributes": {
+        "intermittent-mask-coverage": 11,
+        "low-sharpness/blur-candidate": 5,
+        "partial-coverage-on-some-leak-frame": 4,
+        "interpolated-leak-geometry": 3,
+        "target-motion-or-OCR-box-jitter": 2,
+        "edge-entry-candidate": 2,
+        "near-edge": 2,
+        "small-text/distance-unproven": 1,
+        "fast-pan-candidate": 0,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        ">48": 13,
+        "12-24": 18,
+        "24-48": 3
+      },
+      "interval_median_height_bins": {
+        ">48": 8,
+        "12-24": 6,
+        "24-48": 2
+      },
+      "observed_zero_overlap_intervals": 15,
+      "observed_geometry_leak_frames": 27,
+      "leak_frames": 34
+    },
+    {
+      "clip": "illinois-night",
+      "natural_total": 17,
+      "natural_hidden": 17,
+      "failed_intervals": 0,
+      "primary_causes": {},
+      "nonexclusive_attributes": {},
+      "leak_frame_height_bins": {},
+      "interval_median_height_bins": {},
+      "observed_zero_overlap_intervals": 0,
+      "observed_geometry_leak_frames": 0,
+      "leak_frames": 0
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "natural_total": 12,
+      "natural_hidden": 4,
+      "failed_intervals": 8,
+      "primary_causes": {
+        "detector-miss": 8
+      },
+      "nonexclusive_attributes": {
+        "fast-pan-candidate": 7,
+        "intermittent-mask-coverage": 7,
+        "edge-entry-candidate": 4,
+        "near-edge": 4,
+        "interpolated-leak-geometry": 2,
+        "target-motion-or-OCR-box-jitter": 2,
+        "small-text/distance-unproven": 1,
+        "low-sharpness/blur-candidate": 0,
+        "motion-blur-candidate": 0
+      },
+      "leak_frame_height_bins": {
+        ">48": 9,
+        "24-48": 2,
+        "<=12": 1
+      },
+      "interval_median_height_bins": {
+        ">48": 5,
+        "24-48": 3
+      },
+      "observed_zero_overlap_intervals": 8,
+      "observed_geometry_leak_frames": 10,
+      "leak_frames": 12
+    }
+  ],
+  "thresholds": {
+    "small_height_px": 16.0,
+    "edge_fraction": 0.02,
+    "entry_frames_from_first_OCR": 3,
+    "target_motion_px_per_frame": "max(8, .5*height)",
+    "Laplacian_variance": 80.0,
+    "phase_response": 0.5,
+    "fast_pan_px_per_frame": 8
+  },
+  "confidence": {
+    "primary": "automatic mask/box geometry; OCR truth and interpolation can be wrong",
+    "attributes": "nonexclusive heuristics, not causal/manual ground truth"
+  },
+  "limits": [
+    "Natural content repeats across natural/synthetic variants; intervals are not unique physical signs.",
+    "Distance, motion blur, physical entry, and target motion are hypotheses; OCR boxes can jitter.",
+    "No new OCR/detection; no timing miss inferred from a synchronous stride1 detector miss.",
+    "Historical AABB masks are reconstructed exactly and checked against saved mask area.",
+    "Whole-box coverage is not glyph coverage; full coverage with an OCR leak needs manual review."
+  ],
+  "historical_input_control": {
+    "total": 52,
+    "unreadable": 0,
+    "unverified_intervals": 2
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "unmasked": {
+    "run_id": "final-control-unmasked-calibrated",
+    "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. Latin-script text and Arabic digits observed in input at confidence>=0.9 on at least2 frames per interval; judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven.",
+    "natural": {
+      "hidden": 0,
+      "total": 61,
+      "hidden_fraction": 0.0
+    },
+    "synthetic": {
+      "hidden": 0,
+      "total": 4,
+      "hidden_fraction": 0.0
+    },
+    "synthetic_input_control": {
+      "total": 4,
+      "unreadable": 0,
+      "unverified_intervals": 0
+    },
+    "real_video_pass": true,
+    "gate_1": {
+      "judge_discrimination": true,
+      "natural": false,
+      "synthetic": false,
+      "masked_area": true,
+      "throughput": false,
+      "latency": false,
+      "real_video": true,
+      "eligible": false,
+      "pass": false
+    }
+  },
+  "slate": {
+    "run_id": "final-control-slate",
+    "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. Latin-script text and Arabic digits observed in input at confidence>=0.9 on at least2 frames per interval; judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven.",
+    "natural": {
+      "hidden": 0,
+      "total": 61,
+      "hidden_fraction": 0.0
+    },
+    "synthetic": {
+      "hidden": 0,
+      "total": 4,
+      "hidden_fraction": 0.0
+    },
+    "synthetic_input_control": {
+      "total": 4,
+      "unreadable": 0,
+      "unverified_intervals": 0
+    },
+    "real_video_pass": false,
+    "gate_1": {
+      "judge_discrimination": true,
+      "natural": false,
+      "synthetic": false,
+      "masked_area": false,
+      "throughput": false,
+      "latency": false,
+      "real_video": false,
+      "eligible": false,
+      "pass": false
+    }
+  }
+}

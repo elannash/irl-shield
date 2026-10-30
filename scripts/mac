@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Sync source and explicitly provisioned assets, then execute one bounded Mac command.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+seconds=7200
+if [[ ${1:-} == --seconds ]]; then seconds=$2; shift 2; fi
+sync=true
+if [[ ${1:-} == --no-sync ]]; then sync=false; shift; fi
+[[ $# -gt 0 ]] || { echo 'usage: scripts/mac [--seconds N] command [args...]' >&2; exit 2; }
+if $sync; then
+ssh mac 'bash -lc "mkdir -p ~/code/irl-shield"'
+rsync -az --exclude=.git --exclude=.build --exclude='.venv*' --exclude=out/ --exclude=.tmp/ --exclude=__pycache__ --exclude=fixtures/cache/ --exclude=models/cache/ ./ mac:code/irl-shield/
+for assets in fixtures/cache models/cache; do
+  if [[ -d $assets ]]; then
+    ssh mac "mkdir -p code/irl-shield/$assets"
+    rsync -az --exclude=originals/ "$assets/" "mac:code/irl-shield/$assets/"
+  fi
+done
+fi
+printf -v command '%q ' "$@"
+if $sync; then
+  printf -v remote 'cd ~/code/irl-shield && OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 perl -e %q %q python3 scripts/bounded.py %q %s' 'alarm shift; exec @ARGV' "$((seconds+10))" "$seconds" "$command"
+else
+  printf -v remote 'cd ~/code/irl-shield && OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 perl -e %q %q %s' 'alarm shift; exec @ARGV' "$seconds" "$command"
+fi
+ssh mac "bash -lc $(printf '%q' "$remote")"

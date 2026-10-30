@@ -1,0 +1,31 @@
+{
+  "scope": "Linux process CPU, 720p, synthetic quad geometry, opaque/badgeoff; conversion+validation+padding+allocation+owned-copy+two ROI fills+result allocation. 10 warmups; 5x75 calls per density; cv2 threads1. No OCR, motion, encoding, real-time or Mac claim.",
+  "equivalence": {
+    "cases": 203,
+    "valid_renders": 1152,
+    "rejected_renders": 66,
+    "exact_masks_and_pixels": true,
+    "reference_output_sha256": "051adaf180e9ce94aa0b1d49ff9e22911c0574efa5ddb72c66968edefbb7f11d"
+  },
+  "performance": {
+    "50": {
+      "before_cpu_ms_median": 5.196978213333334,
+      "after_cpu_ms_median": 0.7769734266666667,
+      "cpu_reduction_percent": 85.04951541506816,
+      "speedup": 6.688746403630758
+    },
+    "150": {
+      "before_cpu_ms_median": 15.123127053333333,
+      "after_cpu_ms_median": 1.7588637066666666,
+      "cpu_reduction_percent": 88.36970885410243,
+      "speedup": 8.59823702997097
+    },
+    "300": {
+      "before_cpu_ms_median": 29.563612466666665,
+      "after_cpu_ms_median": 2.927270373333333,
+      "cpu_reduction_percent": 90.09840094259837,
+      "speedup": 10.099378839748947
+    }
+  },
+  "source_sha256": "377e94c54573cf45d4c879e83e21d92b8af34b551d40dad4992ee738a7b4ddd9"
+}

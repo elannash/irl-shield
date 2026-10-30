@@ -1,0 +1,69 @@
+{
+  "host": "linux",
+  "pass": true,
+  "source": "out/perf-policy-proof/linux-v2-1/proof.json",
+  "source_sha256": "9db7fa34e9a35f2065b5d85c10639bab396614362bfc13604715d2b636b04dba",
+  "counter_code_sha256": "45dbdd1a8745e14b1573adadc218b9d1c00de66183a02ebd97942beca36eaeed",
+  "scope": "Real synthetic4-core job, separate3-core sibling, then removal; all owned burners at nice19. No video/privacy inference.",
+  "cleanup": [
+    {
+      "root_pid": 2771584,
+      "returncode": 0,
+      "all_known_identities_exited": true
+    },
+    {
+      "root_pid": 2771098,
+      "returncode": 0,
+      "all_known_identities_exited": true
+    }
+  ],
+  "phases": [
+    {
+      "phase": "clean-before",
+      "expected_contended": false,
+      "summary": {
+        "valid": true,
+        "contended": false,
+        "mean_other_busy_percent": 3.2978108865312876,
+        "max_other_busy_percent": 6.185417628378325,
+        "reasons": []
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    },
+    {
+      "phase": "external-burner",
+      "expected_contended": true,
+      "summary": {
+        "valid": true,
+        "contended": true,
+        "mean_other_busy_percent": 39.46144752110941,
+        "max_other_busy_percent": 39.834067849318515,
+        "reasons": [
+          "other_busy"
+        ]
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    },
+    {
+      "phase": "clean-after",
+      "expected_contended": false,
+      "summary": {
+        "valid": true,
+        "contended": false,
+        "mean_other_busy_percent": 2.180891406676854,
+        "max_other_busy_percent": 2.723564254372633,
+        "reasons": []
+      },
+      "pass": true,
+      "foreign_never_attributed": true,
+      "all_four_workers_attributed": true,
+      "heavy_job_observed": true
+    }
+  ]
+}

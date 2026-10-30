@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Install requirements-linux-gpu.txt in .tmp/linux-probe/.venv first.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+root=$PWD
+probe_python="$root/.tmp/linux-probe/.venv/bin/python"
+if [[ ! -x "$probe_python" ]]; then
+  printf '%s\n' 'Missing .tmp/linux-probe/.venv; see bench/PORTABILITY.md' >&2
+  exit 1
+fi
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+export CUDA_CACHE_PATH="$root/.tmp/linux-probe/cuda-cache"
+export TMPDIR="$root/.tmp/linux-probe"
+mkdir -p "$CUDA_CACHE_PATH"
+# ORT 1.20 predates preload_dlls; expose only this venv's NVIDIA wheels.
+nvidia_root="$root/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia"
+cuda_libraries=()
+for directory in "$nvidia_root"/*/lib; do
+  [[ -d "$directory" ]] && cuda_libraries+=("$directory")
+done
+if [[ ${#cuda_libraries[@]} -eq 0 ]]; then
+  printf '%s\n' 'Missing isolated NVIDIA CUDA runtime wheels' >&2
+  exit 1
+fi
+export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${cuda_libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+free -g
+uptime
+exec systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
+  "$probe_python" -u -m bench.linux_probe "$@"

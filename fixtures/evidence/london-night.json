@@ -1,0 +1,94 @@
+{
+  "pageid": 28292156,
+  "ns": 6,
+  "title": "File:London Bus at night 2013-09-14 720p.ogv",
+  "index": 9,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 44561244,
+      "width": 1280,
+      "height": 720,
+      "duration": 24.466666666666665,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/London_Bus_at_night_2013-09-14_720p.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:London_Bus_at_night_2013-09-14_720p.ogv",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=28292156",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2013-09-14 22:45:15",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "London Bus at night 2013-09-14 720p",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "Finsbury Square, London|Self-published work|Images by Brian McNeil|2013 in the London Borough of Islington|September 2013 in London|London buses on route 43|Buses in London at night|Videos of buses|London buses on route 76|Video by Brian McNeil",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Short clip of iconic London Buses at night.",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2013-09-14",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:Brian_McNeil\" title=\"User:Brian McNeil\">Brian McNeil</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "a3725a39b0991aa8cc2f464cc4808164a9dd4a46"
+    }
+  ]
+}

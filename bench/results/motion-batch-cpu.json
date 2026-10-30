@@ -1,0 +1,254 @@
+{
+  "stage": "after",
+  "performance": {
+    "50": {
+      "projection": {
+        "repetitions": [
+          {
+            "cpu_ms": 0.10363135000000001,
+            "wall_ms": 0.10364657499999999
+          },
+          {
+            "cpu_ms": 0.13274529999999998,
+            "wall_ms": 0.13282715
+          },
+          {
+            "cpu_ms": 0.106128175,
+            "wall_ms": 0.1061818
+          },
+          {
+            "cpu_ms": 0.093815875,
+            "wall_ms": 0.09384564999999999
+          },
+          {
+            "cpu_ms": 0.1329951,
+            "wall_ms": 0.133076875
+          }
+        ],
+        "cpu_ms_median": 0.106128175,
+        "wall_ms_median": 0.1061818
+      },
+      "projection_and_owned_render": {
+        "repetitions": [
+          {
+            "cpu_ms": 1.4854807749999999,
+            "wall_ms": 1.4850770249999998
+          },
+          {
+            "cpu_ms": 1.535331625,
+            "wall_ms": 1.534814575
+          },
+          {
+            "cpu_ms": 1.241598575,
+            "wall_ms": 1.241301625
+          },
+          {
+            "cpu_ms": 1.24042725,
+            "wall_ms": 1.243233625
+          },
+          {
+            "cpu_ms": 1.05470455,
+            "wall_ms": 1.0547721
+          }
+        ],
+        "cpu_ms_median": 1.241598575,
+        "wall_ms_median": 1.243233625
+      }
+    },
+    "150": {
+      "projection": {
+        "repetitions": [
+          {
+            "cpu_ms": 0.34180745,
+            "wall_ms": 0.341826325
+          },
+          {
+            "cpu_ms": 0.270540125,
+            "wall_ms": 0.27060775
+          },
+          {
+            "cpu_ms": 0.343452625,
+            "wall_ms": 0.34355284999999997
+          },
+          {
+            "cpu_ms": 0.330474325,
+            "wall_ms": 0.33055635
+          },
+          {
+            "cpu_ms": 0.3621344,
+            "wall_ms": 0.36161577500000003
+          }
+        ],
+        "cpu_ms_median": 0.34180745,
+        "wall_ms_median": 0.341826325
+      },
+      "projection_and_owned_render": {
+        "repetitions": [
+          {
+            "cpu_ms": 2.516496,
+            "wall_ms": 2.5159629
+          },
+          {
+            "cpu_ms": 3.171709975,
+            "wall_ms": 3.18704025
+          },
+          {
+            "cpu_ms": 3.316822525,
+            "wall_ms": 3.3202921749999996
+          },
+          {
+            "cpu_ms": 2.387752625,
+            "wall_ms": 2.387105725
+          },
+          {
+            "cpu_ms": 2.433864125,
+            "wall_ms": 2.4338688250000002
+          }
+        ],
+        "cpu_ms_median": 2.516496,
+        "wall_ms_median": 2.5159629
+      }
+    },
+    "500": {
+      "projection": {
+        "repetitions": [
+          {
+            "cpu_ms": 1.1786858500000001,
+            "wall_ms": 1.180540875
+          },
+          {
+            "cpu_ms": 0.9788933249999999,
+            "wall_ms": 0.979007025
+          },
+          {
+            "cpu_ms": 1.1682321,
+            "wall_ms": 1.1683066000000002
+          },
+          {
+            "cpu_ms": 1.11607905,
+            "wall_ms": 1.116353375
+          },
+          {
+            "cpu_ms": 1.03196075,
+            "wall_ms": 1.032212475
+          }
+        ],
+        "cpu_ms_median": 1.11607905,
+        "wall_ms_median": 1.116353375
+      },
+      "projection_and_owned_render": {
+        "repetitions": [
+          {
+            "cpu_ms": 8.535967925000001,
+            "wall_ms": 8.530372974999999
+          },
+          {
+            "cpu_ms": 7.756688575,
+            "wall_ms": 7.759855175
+          },
+          {
+            "cpu_ms": 8.727240925,
+            "wall_ms": 8.726914574999999
+          },
+          {
+            "cpu_ms": 7.1857446,
+            "wall_ms": 7.19010615
+          },
+          {
+            "cpu_ms": 7.1353845,
+            "wall_ms": 7.1325916
+          }
+        ],
+        "cpu_ms_median": 7.756688575,
+        "wall_ms_median": 7.759855175
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "quads": 50,
+      "padding": 0.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "e4608f68e0994dc02890da0e7921df2b792e6a4f3e74c7251a04ad896c3e2e41"
+    },
+    {
+      "quads": 50,
+      "padding": 0.3,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "16753859002f4f58da4f195da9efef377070701f95a327665564747449c5c279"
+    },
+    {
+      "quads": 50,
+      "padding": 1.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "b23bfcc53abfb47f8eb20e41b42e21182e93dc24b3fca67b13ed2806fbfd6678"
+    },
+    {
+      "quads": 150,
+      "padding": 0.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "a3e5cc948a99bc775c430370413ebfab4376cd2ad6cd03cecf9feb52f3d834de"
+    },
+    {
+      "quads": 150,
+      "padding": 0.3,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "2f7cca1e256db68af619ae48bbaa5df99a7927ea9be86849a382d7c6b7fb1dd2"
+    },
+    {
+      "quads": 150,
+      "padding": 1.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "498e5aeb483796f668c6518e9216a84733c775da5f30064c375a42664d0d72a6"
+    },
+    {
+      "quads": 500,
+      "padding": 0.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "317a3366ee9e3075c652711775649a6749c15634845ca13a75ee07e8596576dc"
+    },
+    {
+      "quads": 500,
+      "padding": 0.3,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "adf8a96b4778486699f982cdbda14fe7d3b66266a73e21ffdec2c63e79e69531"
+    },
+    {
+      "quads": 500,
+      "padding": 1.0,
+      "max_geometry_error": 0.0,
+      "exact_masks_and_pixels": true,
+      "mask_sha256": "aaed04ed5b38e4571dd02d5fb39e77a2bfd6d98d7a8d5a0c449b0e0bc9579faa"
+    },
+    {
+      "source": 30,
+      "target": 0,
+      "quads": 50,
+      "exact_masks_and_pixels": true
+    },
+    {
+      "source": 15,
+      "target": 30,
+      "quads": 50,
+      "exact_masks_and_pixels": true
+    },
+    {
+      "source": 10,
+      "target": 10,
+      "quads": 50,
+      "exact_masks_and_pixels": true
+    }
+  ],
+  "scope": "Linux process CPU, synthetic720p, phase320 actual31-frame camera translation; ready worker idle. 0->30 path, deadline check included; first cached composition warmed. 5x40 calls, cv2threads1; second metric also includes Renderer opaque.3 geometry/allocations/frame copy/two ROI fills. No detector, motion estimation, encoding or real-time claim.",
+  "source_sha256": "d72c70745cd68375a740b41399ced02b64cc02b6e08e827c02b424c811020aef",
+  "reference_sha256": "65cd7e49d3a870dd4a3fb2041a30f9e16a82367788e6df4dfe88de53f0cb4e00",
+  "renderer_sha256": "e197ebec4b7aaeb6f762d7742bcc94d2665528dbc820d990a85d4bd3179007d3"
+}

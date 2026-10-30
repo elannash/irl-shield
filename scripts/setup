@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+[[ $(uname) == Darwin ]] || { echo 'Run with scripts/mac scripts/setup (Apple Vision required)' >&2; exit 1; }
+mkdir -p .tmp/pip-cache .tmp/setup
+export PIP_CACHE_DIR="$PWD/.tmp/pip-cache"
+export TMPDIR="$PWD/.tmp/setup"
+command -v tesseract >/dev/null || brew install tesseract
+command -v ffmpeg >/dev/null || brew install ffmpeg
+command -v python3.11 >/dev/null || brew install python@3.11
+python3.11 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+if [[ -f requirements-models.txt ]]; then .venv/bin/pip install -r requirements-models.txt; fi
+if [[ -f requirements-relay.txt ]]; then .venv/bin/pip install -r requirements-relay.txt; fi
+mkdir -p .build
+swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge

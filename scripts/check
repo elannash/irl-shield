@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m unittest discover -s tests/m2 -v
+.venv/bin/python -m compileall -q bench fixtures models shield relay
+swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge

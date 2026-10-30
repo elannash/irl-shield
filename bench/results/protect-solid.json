@@ -1,0 +1,321 @@
+{
+  "benchmark_only": true,
+  "demo_ready": false,
+  "renderer_source": "/Users/elannash/code/irl-shield/shield/render.py",
+  "renderer_source_sha256": "e197ebec4b7aaeb6f762d7742bcc94d2665528dbc820d990a85d4bd3179007d3",
+  "judges": [
+    "tesseract-5-psm11",
+    "vision-accurate",
+    "ppocr-independent"
+  ],
+  "vision": {
+    "engine": "vision-accurate",
+    "framework": "macOS Vision",
+    "offline": true,
+    "recognition_languages": [
+      "en-US"
+    ],
+    "minimum_text_height": 0.005,
+    "uses_language_correction": false
+  },
+  "paddle": {
+    "name": "ppocr-v5-english",
+    "detector": {
+      "name": "ppocr-v5-mobile",
+      "static_artifact": null,
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/ch_PP-OCRv5_det_mobile.onnx",
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/blob/0d63e78e2b680928f6b1747d76a08db6e645efb7/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_det_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "cpu_operator_partition_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0",
+      "parameters": {
+        "limit_side_len": 960,
+        "limit_type": "max",
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "max_candidates": 1000,
+        "unclip_ratio": 1.6,
+        "use_dilation": true,
+        "score_mode": "fast"
+      }
+    },
+    "recognizer": {
+      "name": "ppocr-v5-english-rec",
+      "static_artifact": null,
+      "model_path": "/Users/elannash/code/irl-shield/models/cache/en_PP-OCRv5_rec_mobile.onnx",
+      "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+      "license": "Apache-2.0",
+      "license_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/blob/267c36e24c331595590fe7bd72bde2436fd286f2/README.md",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/v3.10.0/python/rapidocr/default_models.yaml",
+      "download_url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.10.0/onnx/PP-OCRv5/rec/en_PP-OCRv5_rec_mobile.onnx",
+      "execution_provider": "CPUExecutionProvider",
+      "active_execution_providers": [
+        "CPUExecutionProvider"
+      ],
+      "cpu_operator_partition_fallback_allowed": false,
+      "threads": 2,
+      "onnxruntime_version": "1.31.1",
+      "rapidocr_version": "3.10.0"
+    },
+    "text_score": 0.5,
+    "language": "English and Latin characters in the model's embedded dictionary",
+    "independence": "Non-Apple engine; shares PP-OCR family with PP-OCR detector candidates"
+  },
+  "cases": [
+    {
+      "target": "8",
+      "input_readable": true,
+      "output_readable": false,
+      "input": [
+        {
+          "box": [
+            469.33333811737407,
+            159.99999350929258,
+            815.9999946115147,
+            581.333337015152
+          ],
+          "confidence": 1,
+          "quad": [
+            [
+              469.33333811737407,
+              159.99999350929258
+            ],
+            [
+              815.9999946115147,
+              159.99999350929258
+            ],
+            [
+              815.9999946115147,
+              581.333337015152
+            ],
+            [
+              469.33333811737407,
+              581.333337015152
+            ]
+          ],
+          "text": "8",
+          "judge": "vision-accurate"
+        },
+        {
+          "text": "8",
+          "confidence": 1.0,
+          "box": [
+            423,
+            97,
+            874,
+            664
+          ],
+          "judge": "ppocr-independent"
+        }
+      ],
+      "output": []
+    },
+    {
+      "target": "59",
+      "input_readable": true,
+      "output_readable": false,
+      "input": [
+        {
+          "text": "59",
+          "confidence": 0.55,
+          "box": [
+            269,
+            133,
+            1019,
+            587
+          ],
+          "judge": "tesseract"
+        },
+        {
+          "box": [
+            240.00001102866645,
+            159.99999890526314,
+            1013.3333240169477,
+            575.9999989052632
+          ],
+          "confidence": 1,
+          "quad": [
+            [
+              240.00001102866645,
+              159.99999890526314
+            ],
+            [
+              1013.3333240169477,
+              159.99999890526314
+            ],
+            [
+              1013.3333240169477,
+              575.9999989052632
+            ],
+            [
+              240.00001102866645,
+              575.9999989052632
+            ]
+          ],
+          "text": "59",
+          "judge": "vision-accurate"
+        }
+      ],
+      "output": []
+    },
+    {
+      "target": "1842",
+      "input_readable": true,
+      "output_readable": false,
+      "input": [
+        {
+          "text": "1842",
+          "confidence": 0.96,
+          "box": [
+            129,
+            208,
+            1162,
+            511
+          ],
+          "judge": "tesseract"
+        },
+        {
+          "box": [
+            111.56681288412733,
+            211.81400036149813,
+            1173.7665199153773,
+            518.8526661329824
+          ],
+          "confidence": 1,
+          "quad": [
+            [
+              111.56681288412733,
+              214.8539173536856
+            ],
+            [
+              1172.8957923763148,
+              211.81400036149813
+            ],
+            [
+              1173.7665199153773,
+              515.812749140795
+            ],
+            [
+              112.43754042318983,
+              518.8526661329824
+            ]
+          ],
+          "text": "1842",
+          "judge": "vision-accurate"
+        },
+        {
+          "text": "8",
+          "confidence": 0.99023,
+          "box": [
+            379,
+            192,
+            666,
+            397
+          ],
+          "judge": "ppocr-independent"
+        },
+        {
+          "text": "8",
+          "confidence": 0.80835,
+          "box": [
+            355,
+            322,
+            658,
+            537
+          ],
+          "judge": "ppocr-independent"
+        }
+      ],
+      "output": []
+    },
+    {
+      "target": "CEDAR AVE",
+      "input_readable": true,
+      "output_readable": false,
+      "input": [
+        {
+          "text": "CEDAR",
+          "confidence": 0.96,
+          "box": [
+            51,
+            288,
+            758,
+            432
+          ],
+          "judge": "tesseract"
+        },
+        {
+          "text": "AVE",
+          "confidence": 0.96,
+          "box": [
+            829,
+            290,
+            1225,
+            429
+          ],
+          "judge": "tesseract"
+        },
+        {
+          "box": [
+            -0.20391705606391497,
+            291.49151912480943,
+            1242.2114882173737,
+            438.0084563806688
+          ],
+          "confidence": 1,
+          "quad": [
+            [
+              -0.20391705606391497,
+              294.1917449548875
+            ],
+            [
+              1241.8988661470612,
+              291.49151912480943
+            ],
+            [
+              1242.2114882173737,
+              435.3082305505907
+            ],
+            [
+              0.10870501424858503,
+              438.0084563806688
+            ]
+          ],
+          "text": "CEDAR AVE",
+          "judge": "vision-accurate"
+        },
+        {
+          "text": "CEDAR AVE",
+          "confidence": 0.99982,
+          "box": [
+            36,
+            262,
+            1248,
+            458
+          ],
+          "judge": "ppocr-independent"
+        }
+      ],
+      "output": []
+    }
+  ]
+}

@@ -1,0 +1,680 @@
+{
+  "scope": "CPU-stage profile on retained tune quads;5+repetitions; wall cost not a real-time receipt",
+  "cpu_scope": "Thread CPU for emit/motion; process-tree CPU includes native ORT threads and owned Vision bridge. Hardware GPU/ANE and system-daemon CPU are not attributed.",
+  "emit_cost_scope": "Projection and render only; excludes timeline selection/control and transport. Full poll CPU is recorded by the engine in sustained receipts.",
+  "candidate": "vision-union",
+  "samples": 16,
+  "repetitions": 5,
+  "runs": [
+    {
+      "repetition": 0,
+      "health_start": {
+        "platform": "Darwin",
+        "observed_at": 1028900.83940075,
+        "utc": "2026-10-29T22:06:27Z",
+        "load_average": [
+          13.63818359375,
+          34.44970703125,
+          61.6142578125
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.70477294921875,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 36%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "health_end": {
+        "platform": "Darwin",
+        "observed_at": 1028903.100054833,
+        "utc": "2026-10-29T22:06:29Z",
+        "load_average": [
+          13.63818359375,
+          34.44970703125,
+          61.6142578125
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.70477294921875,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "stages": {
+        "motion": {
+          "wall_ms_per_frame": 2.1384323117672466,
+          "process_cpu_ms_per_frame": 2.0035625,
+          "thread_cpu_ms_per_frame": 2.0037005000000003,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.0035625
+        },
+        "projection": {
+          "wall_ms_per_frame": 0.6241301889531314,
+          "process_cpu_ms_per_frame": 0.6220000000000045,
+          "thread_cpu_ms_per_frame": 0.6220259999999977,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 0.6220000000000045
+        },
+        "render": {
+          "wall_ms_per_frame": 2.4770338131929748,
+          "process_cpu_ms_per_frame": 2.402812499999997,
+          "thread_cpu_ms_per_frame": 2.403023437500002,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.402812499999997
+        },
+        "inference": {
+          "wall_ms_per_frame": 126.07484118780121,
+          "process_cpu_ms_per_frame": 1.4318749999999991,
+          "thread_cpu_ms_per_frame": 1.4319140624999975,
+          "owned_subprocess_cpu_ms_per_frame": 59.602582,
+          "process_tree_cpu_ms_per_frame": 61.034457
+        }
+      }
+    },
+    {
+      "repetition": 1,
+      "health_start": {
+        "platform": "Darwin",
+        "observed_at": 1028903.111647041,
+        "utc": "2026-10-29T22:06:29Z",
+        "load_average": [
+          13.63818359375,
+          34.44970703125,
+          61.6142578125
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.70477294921875,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "health_end": {
+        "platform": "Darwin",
+        "observed_at": 1028905.000105958,
+        "utc": "2026-10-29T22:06:31Z",
+        "load_average": [
+          12.9462890625,
+          33.96044921875,
+          61.2822265625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.6182861328125,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "stages": {
+        "motion": {
+          "wall_ms_per_frame": 1.9071927454206161,
+          "process_cpu_ms_per_frame": 1.8998125000000003,
+          "thread_cpu_ms_per_frame": 1.8995859375000035,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 1.8998125000000003
+        },
+        "projection": {
+          "wall_ms_per_frame": 0.5890651227673516,
+          "process_cpu_ms_per_frame": 0.586749999999997,
+          "thread_cpu_ms_per_frame": 0.5867369374999987,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 0.586749999999997
+        },
+        "render": {
+          "wall_ms_per_frame": 2.4260598729597405,
+          "process_cpu_ms_per_frame": 2.4203124999999934,
+          "thread_cpu_ms_per_frame": 2.420309937499997,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.4203124999999934
+        },
+        "inference": {
+          "wall_ms_per_frame": 104.09764587529935,
+          "process_cpu_ms_per_frame": 1.093562500000006,
+          "thread_cpu_ms_per_frame": 1.0935937499999966,
+          "owned_subprocess_cpu_ms_per_frame": 53.91078399999999,
+          "process_tree_cpu_ms_per_frame": 55.0043465
+        }
+      }
+    },
+    {
+      "repetition": 2,
+      "health_start": {
+        "platform": "Darwin",
+        "observed_at": 1028905.013063708,
+        "utc": "2026-10-29T22:06:31Z",
+        "load_average": [
+          12.9462890625,
+          33.96044921875,
+          61.2822265625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.6182861328125,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "health_end": {
+        "platform": "Darwin",
+        "observed_at": 1028907.14597175,
+        "utc": "2026-10-29T22:06:33Z",
+        "load_average": [
+          12.9462890625,
+          33.96044921875,
+          61.2822265625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.6182861328125,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 35%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "stages": {
+        "motion": {
+          "wall_ms_per_frame": 1.8687161209527403,
+          "process_cpu_ms_per_frame": 1.862500000000003,
+          "thread_cpu_ms_per_frame": 1.8625781250000002,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 1.862500000000003
+        },
+        "projection": {
+          "wall_ms_per_frame": 0.5911276311962865,
+          "process_cpu_ms_per_frame": 0.5882499999999985,
+          "thread_cpu_ms_per_frame": 0.5883619999999951,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 0.5882499999999985
+        },
+        "render": {
+          "wall_ms_per_frame": 2.3632942466065288,
+          "process_cpu_ms_per_frame": 2.3524999999999934,
+          "thread_cpu_ms_per_frame": 2.352536437499997,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.3524999999999934
+        },
+        "inference": {
+          "wall_ms_per_frame": 119.15499738097424,
+          "process_cpu_ms_per_frame": 1.0339999999999931,
+          "thread_cpu_ms_per_frame": 1.0340989999999968,
+          "owned_subprocess_cpu_ms_per_frame": 60.11385599999999,
+          "process_tree_cpu_ms_per_frame": 61.14785599999998
+        }
+      }
+    },
+    {
+      "repetition": 3,
+      "health_start": {
+        "platform": "Darwin",
+        "observed_at": 1028907.159429583,
+        "utc": "2026-10-29T22:06:33Z",
+        "load_average": [
+          12.9462890625,
+          33.96044921875,
+          61.2822265625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.6182861328125,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 35%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "health_end": {
+        "platform": "Darwin",
+        "observed_at": 1028909.274515333,
+        "utc": "2026-10-29T22:06:35Z",
+        "load_average": [
+          12.2294921875,
+          33.462890625,
+          60.9462890625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.5286865234375,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "stages": {
+        "motion": {
+          "wall_ms_per_frame": 1.8939349392894655,
+          "process_cpu_ms_per_frame": 1.8906875000000016,
+          "thread_cpu_ms_per_frame": 1.8907499999999966,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 1.8906875000000016
+        },
+        "projection": {
+          "wall_ms_per_frame": 0.5903098717681132,
+          "process_cpu_ms_per_frame": 0.589062500000001,
+          "thread_cpu_ms_per_frame": 0.5891068125000037,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 0.589062500000001
+        },
+        "render": {
+          "wall_ms_per_frame": 2.2626432473771274,
+          "process_cpu_ms_per_frame": 2.25874999999999,
+          "thread_cpu_ms_per_frame": 2.2588463749999983,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.25874999999999
+        },
+        "inference": {
+          "wall_ms_per_frame": 118.18761718313908,
+          "process_cpu_ms_per_frame": 0.9403749999999933,
+          "thread_cpu_ms_per_frame": 0.9404245000000089,
+          "owned_subprocess_cpu_ms_per_frame": 57.50911200000003,
+          "process_tree_cpu_ms_per_frame": 58.44948700000002
+        }
+      }
+    },
+    {
+      "repetition": 4,
+      "health_start": {
+        "platform": "Darwin",
+        "observed_at": 1028909.286614875,
+        "utc": "2026-10-29T22:06:35Z",
+        "load_average": [
+          12.2294921875,
+          33.462890625,
+          60.9462890625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.5286865234375,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 34%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "health_end": {
+        "platform": "Darwin",
+        "observed_at": 1028911.179679125,
+        "utc": "2026-10-29T22:06:37Z",
+        "load_average": [
+          12.2294921875,
+          33.462890625,
+          60.9462890625
+        ],
+        "cpu_count": 8,
+        "load_per_cpu": 1.5286865234375,
+        "pressure_state": "warn",
+        "pressure_level": 2,
+        "raw": {
+          "memory_pressure": {
+            "command": [
+              "memory_pressure",
+              "-Q"
+            ],
+            "returncode": 0,
+            "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 33%\n",
+            "stderr": ""
+          },
+          "swapusage": {
+            "command": [
+              "sysctl",
+              "vm.swapusage"
+            ],
+            "returncode": 0,
+            "stdout": "vm.swapusage: total = 14336.00M  used = 13216.56M  free = 1119.44M  (encrypted)\n",
+            "stderr": ""
+          },
+          "pressure_level": {
+            "command": [
+              "sysctl",
+              "kern.memorystatus_vm_pressure_level"
+            ],
+            "returncode": 0,
+            "stdout": "kern.memorystatus_vm_pressure_level: 2\n",
+            "stderr": ""
+          }
+        }
+      },
+      "stages": {
+        "motion": {
+          "wall_ms_per_frame": 1.8359323148615658,
+          "process_cpu_ms_per_frame": 1.8135624999999904,
+          "thread_cpu_ms_per_frame": 1.813606812500007,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 1.8135624999999904
+        },
+        "projection": {
+          "wall_ms_per_frame": 0.5751198186771944,
+          "process_cpu_ms_per_frame": 0.574687500000004,
+          "thread_cpu_ms_per_frame": 0.5748255000000008,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 0.574687500000004
+        },
+        "render": {
+          "wall_ms_per_frame": 2.33490106620593,
+          "process_cpu_ms_per_frame": 2.2881250000000017,
+          "thread_cpu_ms_per_frame": 2.2881640625000004,
+          "owned_subprocess_cpu_ms_per_frame": 0.0,
+          "process_tree_cpu_ms_per_frame": 2.2881250000000017
+        },
+        "inference": {
+          "wall_ms_per_frame": 104.44896612898447,
+          "process_cpu_ms_per_frame": 1.1635625000000065,
+          "thread_cpu_ms_per_frame": 1.1636328125000095,
+          "owned_subprocess_cpu_ms_per_frame": 54.253863999999986,
+          "process_tree_cpu_ms_per_frame": 55.41742649999999
+        }
+      }
+    }
+  ],
+  "median_repetition_cost": {
+    "motion": {
+      "wall_ms_per_frame": 1.8939349392894655,
+      "process_cpu_ms_per_frame": 1.8906875000000016,
+      "thread_cpu_ms_per_frame": 1.8907499999999966,
+      "owned_subprocess_cpu_ms_per_frame": 0.0,
+      "process_tree_cpu_ms_per_frame": 1.8906875000000016
+    },
+    "projection": {
+      "wall_ms_per_frame": 0.5903098717681132,
+      "process_cpu_ms_per_frame": 0.5882499999999985,
+      "thread_cpu_ms_per_frame": 0.5883619999999951,
+      "owned_subprocess_cpu_ms_per_frame": 0.0,
+      "process_tree_cpu_ms_per_frame": 0.5882499999999985
+    },
+    "render": {
+      "wall_ms_per_frame": 2.3632942466065288,
+      "process_cpu_ms_per_frame": 2.3524999999999934,
+      "thread_cpu_ms_per_frame": 2.352536437499997,
+      "owned_subprocess_cpu_ms_per_frame": 0.0,
+      "process_tree_cpu_ms_per_frame": 2.3524999999999934
+    },
+    "inference": {
+      "wall_ms_per_frame": 118.18761718313908,
+      "process_cpu_ms_per_frame": 1.093562500000006,
+      "thread_cpu_ms_per_frame": 1.0935937499999966,
+      "owned_subprocess_cpu_ms_per_frame": 57.50911200000003,
+      "process_tree_cpu_ms_per_frame": 58.44948700000002
+    }
+  },
+  "emit_thread_cpu_ms_per_frame": 2.940898437499992,
+  "emit_under_8ms": true,
+  "quad_counts": [
+    52,
+    52,
+    52,
+    52,
+    54,
+    54,
+    54,
+    37,
+    52,
+    52,
+    50,
+    50,
+    51,
+    51,
+    51,
+    51
+  ],
+  "source_sha256": "2e43de364ae1e00175bb8e919127909780adc44d5a370b78ab7f57b4092788c1",
+  "mask_records_sha256": "113b0c67566341998f0c1146de1b98232d9e1838ff8abbed2b488a67007887ca",
+  "detector": {
+    "engine": "vision-union",
+    "framework": "macOS Vision",
+    "offline": true,
+    "recognition_languages": [
+      "en-US"
+    ],
+    "minimum_text_height": 0.005,
+    "uses_language_correction": false
+  },
+  "options": {
+    "source": "out/clocked-tiny-fast8/sf-market-natural-input.mp4",
+    "masks": "out/clocked-tiny-fast8/sf-market-natural-masked.masks.json",
+    "out": "out/cpu-cost-vision-union.json",
+    "candidate": "vision-union",
+    "provider": "cpu",
+    "static_model": false,
+    "width": 1280,
+    "side": 960,
+    "samples": 16,
+    "repetitions": 5,
+    "padding": 0.3
+  }
+}

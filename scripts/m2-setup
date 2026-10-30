@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ -n ${M2_MAC_WINDOW:-} ]] || { echo 'HOLD: no parent-granted Mac window' >&2; exit 2; }
+[[ $(uname) == Darwin ]] || { echo 'This setup targets macOS' >&2; exit 2; }
+# New independent tools only; never upgrade or relink the running M1 ffmpeg.
+HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_UPGRADE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install srt
+/Users/elannash/code/irl-shield/.venv/bin/python -m venv ../venv
+../venv/bin/python -m pip install --only-binary=:all: -r requirements-relay.txt
+../venv/bin/python -c 'import av,cv2,numpy; print("PyAV",av.__version__,"OpenCV",cv2.__version__,"NumPy",numpy.__version__); print(av.library_versions)'
+brew list --versions srt openssl@4
+ffmpeg -hide_banner -version

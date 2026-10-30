@@ -1,0 +1,99 @@
+{
+  "pageid": 185817907,
+  "ns": 6,
+  "title": "File:Time Lapse - London Bus View.webm",
+  "index": 15,
+  "imagerepository": "local",
+  "imageinfo": [
+    {
+      "size": 81220887,
+      "width": 1920,
+      "height": 1080,
+      "duration": 82.88,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Time_Lapse_-_London_Bus_View.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Time_Lapse_-_London_Bus_View.webm",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=185817907",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2026-03-09 22:59:28",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Time Lapse - London Bus View",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "2017 in London|Media from YouTube|License review needed (video)|Videos of 2017|Uploaded with video2commons|Videos from London|Videos without audio|Videos uploaded by Prototyperspective|Time-lapse videos taken from double decker buses front seat",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "London Time lapse from a bus",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2017-06-16",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=_Vnr8FvH6MQ\"><bdi lang=\"\">Time Lapse - London Bus View</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=_Vnr8FvH6MQ\">archive.org</a></bdi>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/@alessandromassi121\">Alessandro Massi</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC BY 3.0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Attribution 3.0",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "true",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Attribution": {
+          "value": "Alessandro Massi",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "https://creativecommons.org/licenses/by/3.0",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc-by-3.0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "sha1": "f1b92ed5a9143a8dcf0b41f7a47dfa8f28ae25ce"
+    }
+  ]
+}

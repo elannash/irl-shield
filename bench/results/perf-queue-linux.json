@@ -1,0 +1,1695 @@
+{
+  "scope": "Queue health AND hash-verified raw benchmark endpoint trust; no OCR quality inference. Every attempt remains visible; accepted timing does not establish a privacy gate pass.",
+  "rows": [
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cuda-720-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.07791726388803,
+      "steady_p95_seconds": 1.1274696046726604,
+      "presentation_delay_seconds": {
+        "p50": 1.0374741404957604,
+        "p95": 1.0447999463052837
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 69.92998090388288,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 83.55555555555556,
+      "end_idle_percent": 88.66057838660578,
+      "cpu_percent_one_core_100": 155.728619925142,
+      "peak_tree_rss_mb": 1248.9296875,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cuda-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/6df192ed2bef476fbeb512e9a3c6862e/attempts/001/attempt.json",
+      "performance_receipt_sha256": "3af3d74d3a97e11a8326373dfae852da1887411c49b6db7e90bf035f5dfe9602",
+      "queue_receipt_sha256": "eafb120691b9e3f2c329b1a92848f440217fe0429a677dc15459ab9b3c8197a1",
+      "startup_first_packet_seconds": 1.136333967995597,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.561153083333431
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.013577381003415212,
+            "p95": 0.026982648641569545
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.036242040994693525,
+            "p95": 0.057579909000196494
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T01:49:34Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.45263671875,
+            2.64892578125,
+            5.01904296875
+          ],
+          "mem_available_bytes": 6302904320,
+          "swap_used_bytes": 7584305152,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T01:49:38Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.416015625,
+            2.62109375,
+            4.9970703125
+          ],
+          "mem_available_bytes": 5692461056,
+          "swap_used_bytes": 7584514048,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T01:50:26Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.5146484375,
+            2.49853515625,
+            4.83251953125
+          ],
+          "mem_available_bytes": 5695016960,
+          "swap_used_bytes": 7577735168,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cuda-720-fast30",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.078905713322488,
+      "steady_p95_seconds": 1.1280233430916269,
+      "presentation_delay_seconds": {
+        "p50": 1.0391561796714086,
+        "p95": 1.0466676454947446
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 68.10652395514781,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 92.99089068825911,
+      "end_idle_percent": 82.41855748510585,
+      "cpu_percent_one_core_100": 182.34150629278167,
+      "peak_tree_rss_mb": 1277.33984375,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cuda-720-fast30/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/2fd8a2ea743142a88be734d98a7e4c12/attempts/001/attempt.json",
+      "performance_receipt_sha256": "22f854a39896fb975c259bee7fd0e6b7840325c13dd49fdbe5de54a30914c12a",
+      "queue_receipt_sha256": "901b3cb940752040821432219c61fb94aa25487afdd8c041415fdd449e26a692",
+      "startup_first_packet_seconds": 1.1379436220013304,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 7.27548901833343
+      },
+      "lanes": {
+        "fast": {
+          "completed": 1181,
+          "failed": 0,
+          "actual_hz": 29.525,
+          "service_quantiles_seconds": {
+            "p50": 0.014036609994946048,
+            "p95": 0.020904912002151832
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.03778512999997474,
+            "p95": 0.04795179900247604
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T01:50:58Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.21142578125,
+            2.33740234375,
+            4.703125
+          ],
+          "mem_available_bytes": 6529560576,
+          "swap_used_bytes": 7569661952,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T01:51:01Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.1943359375,
+            2.31494140625,
+            4.68310546875
+          ],
+          "mem_available_bytes": 6069608448,
+          "swap_used_bytes": 7573991424,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T01:51:50Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            2.03857421875,
+            2.35595703125,
+            4.58203125
+          ],
+          "mem_available_bytes": 5728194560,
+          "swap_used_bytes": 7571443712,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cuda-1080-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "command": [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-y",
+            "-filter_threads",
+            "1",
+            "-i",
+            "/home/elan/code/irl-shield/out/offline-vision-union-a30/sf-market-natural-input.mp4",
+            "-an",
+            "-vf",
+            "scale=1920:1080,fps=30,setsar=1",
+            "-c:v",
+            "h264_nvenc",
+            "-preset",
+            "p4",
+            "-bf",
+            "0",
+            "-b:v",
+            "15M",
+            "-pix_fmt",
+            "yuv420p",
+            "-map_metadata",
+            "-1",
+            "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cuda-1080-fast8/attempt-1/output-1080-input.mp4"
+          ],
+          "scope": "Upscaled runtime cost; native1080p recognition unproven"
+        }
+      },
+      "resolution": [
+        1920,
+        1080
+      ],
+      "steady_fps": 30.06892915828994,
+      "steady_p95_seconds": 1.184626093753468,
+      "presentation_delay_seconds": {
+        "p50": 1.085783441165404,
+        "p95": 1.0916552007518476
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 63.40842560773832,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 89.78379061828296,
+      "end_idle_percent": 83.71827411167513,
+      "cpu_percent_one_core_100": 187.69989604159133,
+      "peak_tree_rss_mb": 1434.578125,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "1544a6255e89d16a9947145e322dfe6b0d2d95b55d2976549dbfce8bb6658111",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cuda-1080-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/d8ddfbd8b6364fd0ae157bcb45294533/attempts/001/attempt.json",
+      "performance_receipt_sha256": "7936e05bb5a1e29165e1975b5df2277d636c351dade4b6cffc3e75979ea3e000",
+      "queue_receipt_sha256": "684e490a4c9a5cf0b5e711fc5c16444d3caff1cd5cd90a6ba69bb5c5ded16b91",
+      "startup_first_packet_seconds": 1.1935250389942667,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.529889154166651
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.013748345998465084,
+            "p95": 0.020136402099888075
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.03725691199360881,
+            "p95": 0.05203247899771668
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:02:18Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.775390625,
+            2.47314453125,
+            3.55126953125
+          ],
+          "mem_available_bytes": 6710841344,
+          "swap_used_bytes": 8007024640,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:02:21Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.79345703125,
+            2.46484375,
+            3.54248046875
+          ],
+          "mem_available_bytes": 6247456768,
+          "swap_used_bytes": 8008265728,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:03:12Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.90771484375,
+            2.39208984375,
+            3.4599609375
+          ],
+          "mem_available_bytes": 5860945920,
+          "swap_used_bytes": 8020873216,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cpu-720-fast8",
+      "attempt": 1,
+      "job_state": "held-policy-change",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cpu",
+        "provider": "cpu",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.072057904497434,
+      "steady_p95_seconds": 1.2009266044085962,
+      "presentation_delay_seconds": {
+        "p50": 1.039320599171333,
+        "p95": 1.0990084745681088
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 23.60864040660737,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 80.93257718966603,
+      "end_idle_percent": 79.52855161981596,
+      "cpu_percent_one_core_100": 401.0229520042217,
+      "peak_tree_rss_mb": 801.4609375,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cpu-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/5935d168a90d4b79a8f870951af80290/attempts/001/attempt.json",
+      "performance_receipt_sha256": "c2ac7c818bba3ff80a68dacd48a20ab1889f4e6ec3b2da1bfdb9c416b3192403",
+      "queue_receipt_sha256": "e5d705efed4ae7bd88efdc310c08848ebc9df2bf381509264af2a9b78cfb63f1",
+      "startup_first_packet_seconds": 1.229342236998491,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.890072967500086
+      },
+      "lanes": {
+        "fast": {
+          "completed": 319,
+          "failed": 0,
+          "actual_hz": 7.975,
+          "service_quantiles_seconds": {
+            "p50": 0.04823595999914687,
+            "p95": 0.07799232900142657
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.21561894100159407,
+            "p95": 0.26593328234739605
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T01:58:54Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.34130859375,
+            1.92333984375,
+            3.60986328125
+          ],
+          "mem_available_bytes": 5337288704,
+          "swap_used_bytes": 7847698432,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T01:58:56Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.474609375,
+            1.94140625,
+            3.6064453125
+          ],
+          "mem_available_bytes": 5118963712,
+          "swap_used_bytes": 7847878656,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T01:59:45Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            5.45166015625,
+            2.96875,
+            3.87841796875
+          ],
+          "mem_available_bytes": 5502939136,
+          "swap_used_bytes": 8022654976,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cpu-720-x264-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "libx264",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cpu",
+        "provider": "cpu",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "libx264",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.009203051484846,
+      "steady_p95_seconds": 1.0658164207314258,
+      "presentation_delay_seconds": {
+        "p50": 1.0402281348360702,
+        "p95": 1.0445362952406867
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 46.59520807061791,
+      "mean_other_busy_percent": 3.202850644874428,
+      "max_other_busy_percent": 4.910480024317721,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 97.61156505342552,
+      "end_idle_percent": 95.81916635184486,
+      "cpu_percent_one_core_100": 377.78033912100807,
+      "peak_tree_rss_mb": 720.30859375,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cpu-720-x264-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/4777228d993349898db1ddf8b6576117/attempts/001/attempt.json",
+      "performance_receipt_sha256": "88321ff2041df865e2b28c76221e95f997835967ac63cb18143ecdbaa3a2e9a7",
+      "queue_receipt_sha256": "65ab760e651f5fb72d301c055669a29744f4dc3ff1f11d21624ab1d599887ae1",
+      "startup_first_packet_seconds": 1.2734725960035576,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.503403790833327
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.03916983099770732,
+            "p95": 0.052956387846643346
+          }
+        },
+        "accurate": {
+          "completed": 160,
+          "failed": 0,
+          "actual_hz": 4.0,
+          "service_quantiles_seconds": {
+            "p50": 0.18163938550424064,
+            "p95": 0.22087612329632972
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:28:55Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            0.74853515625,
+            1.13720703125,
+            1.28173828125
+          ],
+          "mem_available_bytes": 10319347712,
+          "swap_used_bytes": 4585349120,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:28:57Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            0.76904296875,
+            1.134765625,
+            1.27978515625
+          ],
+          "mem_available_bytes": 10217897984,
+          "swap_used_bytes": 4585336832,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:29:42Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            2.59521484375,
+            1.60595703125,
+            1.43505859375
+          ],
+          "mem_available_bytes": 9929728000,
+          "swap_used_bytes": 4585459712,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-medium-cuda-720-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-medium-cuda-720-fast8/attempt-1/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 78.87129210658622,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 78.87129210658622,
+      "end_idle_percent": 81.11474584801208,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-medium-cuda-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/c8d7cb28f09943dfb12d4f03253c3ccc/attempts/001/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "a83b037e82f08a8be1f4a09ebbf07c75124d8fb8f7616b8fe7a6ede319eaa976",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-medium-cuda-720-fast8",
+      "attempt": 2,
+      "job_state": "completed",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-medium-cuda-720-fast8/attempt-2/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 73.9604462474645,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 90.87115943861424,
+      "end_idle_percent": null,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-medium-cuda-720-fast8/attempt-2/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/c8d7cb28f09943dfb12d4f03253c3ccc/attempts/002/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "8b5f08e7e418ee6e8b7b79c820a784368242c7874f548a0537c7bd1eb3231666",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-medium-cuda-720-fast8",
+      "attempt": 3,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-medium",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.071530320951442,
+      "steady_p95_seconds": 1.1237098436642554,
+      "presentation_delay_seconds": {
+        "p50": 1.0349920871667564,
+        "p95": 1.0422333549460745
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 74.11898446381205,
+      "mean_other_busy_percent": 3.3375146000771325,
+      "max_other_busy_percent": 5.875386991176832,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 95.95616024187453,
+      "end_idle_percent": 97.89963526600428,
+      "cpu_percent_one_core_100": 158.22699622707037,
+      "peak_tree_rss_mb": 1486.78515625,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-medium-cuda-720-fast8/attempt-3/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/c8d7cb28f09943dfb12d4f03253c3ccc/attempts/003/attempt.json",
+      "performance_receipt_sha256": "511120e8557467c2bfd35b5be7099eddbee3b4bc30197f20230d6b2008501b7d",
+      "queue_receipt_sha256": "4a3c2342be4bdec2b06c5b6f2cddd7cbaac5b7f1f12f39585a5b4759843a4278",
+      "startup_first_packet_seconds": 1.1341444379941095,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.13377332833332
+      },
+      "lanes": {
+        "fast": {
+          "completed": 321,
+          "failed": 0,
+          "actual_hz": 8.025,
+          "service_quantiles_seconds": {
+            "p50": 0.012282891999348067,
+            "p95": 0.01834031700855121
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.06092776499281172,
+            "p95": 0.07386885001324117
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:30:13Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.76416015625,
+            1.49951171875,
+            1.40478515625
+          ],
+          "mem_available_bytes": 10288046080,
+          "swap_used_bytes": 4585328640,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:30:16Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.70263671875,
+            1.4912109375,
+            1.40234375
+          ],
+          "mem_available_bytes": 9333305344,
+          "swap_used_bytes": 4585271296,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:31:05Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            1.58154296875,
+            1.51025390625,
+            1.4140625
+          ],
+          "mem_available_bytes": 9198739456,
+          "swap_used_bytes": 4587180032,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "root-ppocr-v6-small-cpu-720-fast8-v2",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cpu",
+        "provider": "cpu",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.07747375128258,
+      "steady_p95_seconds": 1.1253349336206155,
+      "presentation_delay_seconds": {
+        "p50": 1.0356332136652782,
+        "p95": 1.0422768563112186
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 50.02528445006321,
+      "mean_other_busy_percent": 2.280877996854907,
+      "max_other_busy_percent": 3.1739684169462024,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 97.04216488357457,
+      "end_idle_percent": 97.55790533736153,
+      "cpu_percent_one_core_100": 358.7042310125515,
+      "peak_tree_rss_mb": 843.66015625,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/home/elan/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cpu-720-fast8-v2/attempt-1/output.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/0eceeb155d5e45248434a6154bb41e71/attempts/001/attempt.json",
+      "performance_receipt_sha256": "574c7d49eabc0469b6325d13b3dea5c87fae21af4c984e9f23b96cdd4bfeb4c2",
+      "queue_receipt_sha256": "18856e6b5f22e2d0cfee8038b30568e9d030dff024816939b759f1537cfa4bda",
+      "startup_first_packet_seconds": 1.1655320989957545,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.601103714166701
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.037370949001342524,
+            "p95": 0.04940531439278857
+          }
+        },
+        "accurate": {
+          "completed": 160,
+          "failed": 0,
+          "actual_hz": 4.0,
+          "service_quantiles_seconds": {
+            "p50": 0.1772784490021877,
+            "p95": 0.20753655274456828
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:31:36Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            0.9609375,
+            1.3583984375,
+            1.36474609375
+          ],
+          "mem_available_bytes": 10246017024,
+          "swap_used_bytes": 4586754048,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:31:38Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            0.9609375,
+            1.3583984375,
+            1.36474609375
+          ],
+          "mem_available_bytes": 10027851776,
+          "swap_used_bytes": 4585140224,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:32:26Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-available-owner-v2",
+          "load_average": [
+            2.8359375,
+            1.80078125,
+            1.51513671875
+          ],
+          "mem_available_bytes": 10040909824,
+          "swap_used_bytes": 4581928960,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "openvino-linux-stream",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_limit_side_len": 640,
+        "limit_side_len": 960,
+        "fast_candidate": "ppocr-v6-tiny",
+        "static_model": true,
+        "provider": "openvino-cpu",
+        "fast_provider": "openvino-cpu",
+        "precision": "fp32",
+        "threads": 2,
+        "contended": false,
+        "warmup_seconds": 10.0,
+        "repeat_seconds": 30,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.066901054510684,
+      "steady_p95_seconds": 1.1569645439754823,
+      "presentation_delay_seconds": {
+        "p50": 1.060051269167161,
+        "p95": 1.0738319467011024
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 64.94623655913979,
+      "mean_other_busy_percent": 1.468720698800862,
+      "max_other_busy_percent": 4.070808369228777,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 97.0414201183432,
+      "end_idle_percent": 96.19599445774027,
+      "cpu_percent_one_core_100": 242.16211937048658,
+      "peak_tree_rss_mb": 800.2265625,
+      "pipeline_sha256": "17ec5477dc6f6f02d6c2370cc4e4e8726de2fe91eea1a244b9977a18b8a40b18",
+      "source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+      "performance_receipt": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/out/openvino/queue-openvino-linux-stream-1/stream.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/30f19e4c05c64961916892ee8f577ef3/attempts/001/attempt.json",
+      "performance_receipt_sha256": "17cd3b954e95ec4fc7729fffbd7e06f3456a432871466285b2fcd7e6b97674dd",
+      "queue_receipt_sha256": "fd5769739dd45cf74bb4b5b84c4bc3cacf6807f55c97204142d0f84e303711b9",
+      "startup_first_packet_seconds": 1.1856615520082414,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 4.361601451666651
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.04756899350468302,
+            "p95": 0.0809017911538831
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.13120566100405995,
+            "p95": 0.21773921999556478
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:33:56Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            1.37548828125,
+            1.58984375,
+            1.46533203125
+          ],
+          "mem_available_bytes": 10280652800,
+          "swap_used_bytes": 4582129664,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:33:58Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            1.37548828125,
+            1.58984375,
+            1.46533203125
+          ],
+          "mem_available_bytes": 9996161024,
+          "swap_used_bytes": 4582109184,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:34:45Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            2.30224609375,
+            1.81640625,
+            1.548828125
+          ],
+          "mem_available_bytes": 10049609728,
+          "swap_used_bytes": 4581961728,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "gst-linux-gst-20261030",
+      "attempt": 1,
+      "job_state": "failed",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-gst-1/sustained-masked.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 77.78057372924006,
+      "mean_other_busy_percent": 1.7690506649629991,
+      "max_other_busy_percent": 5.180872850090079,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 97.63611215893374,
+      "end_idle_percent": 98.37919336600075,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-gst-1/sustained-masked.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/7b22173a250345feabda70f634d3e727/attempts/001/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "2e7a346fa08415f41e311d00950ec878b378664d4585b357a1a7dc9599b52260",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "linux",
+      "job": "gst-linux-ffmpeg-20261030",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_nvenc",
+      "options": {
+        "delay_seconds": 1.0,
+        "static_model": true,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "warmup_seconds": 10.0,
+        "provider": "cuda",
+        "fast_provider": "cuda",
+        "padding": 0.3,
+        "style": "opaque",
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "encoder": "h264_nvenc",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "badge": false,
+        "contended": false,
+        "decoder": "nvh264dec",
+        "transport": "ffmpeg",
+        "perf_queue": {
+          "forced": false,
+          "attempt": 1,
+          "attempt_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/0ef015c1b73b43c286d3ae17feaa9cb4/attempts/001/attempt.json",
+          "lease_fd": 5,
+          "lease_device": 66306,
+          "lease_inode": 29775811
+        },
+        "repeat_seconds": 30.0
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.065747487648085,
+      "steady_p95_seconds": 1.1352066036000905,
+      "presentation_delay_seconds": {
+        "p50": 1.0511126898418297,
+        "p95": 1.0546180271056074
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 75.31549722362443,
+      "mean_other_busy_percent": 2.968389144226307,
+      "max_other_busy_percent": 9.194676740526958,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 97.63522012578616,
+      "end_idle_percent": 91.62567789128515,
+      "cpu_percent_one_core_100": 133.40250378139464,
+      "peak_tree_rss_mb": 1462.671875,
+      "pipeline_sha256": "17ec5477dc6f6f02d6c2370cc4e4e8726de2fe91eea1a244b9977a18b8a40b18",
+      "source_sha256": "ef17865ed8c36d5ea7559f7eb0b62ee87eb08c4bf85897358c98d23ce5070e46",
+      "performance_receipt": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-ffmpeg-1/sustained-masked.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/0ef015c1b73b43c286d3ae17feaa9cb4/attempts/001/attempt.json",
+      "performance_receipt_sha256": "79f44edbbe06b68004e92e734c337afb688cbd5b845652aba667cfb89e1f1c0d",
+      "queue_receipt_sha256": "eff3b8f6d59cb1eb92a8b81278f1f0da04825e217f70b4cebc211822cac08351",
+      "startup_first_packet_seconds": 1.1389619230030803,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 3.552109498333428
+      },
+      "lanes": {
+        "fast": {
+          "completed": 320,
+          "failed": 0,
+          "actual_hz": 8.0,
+          "service_quantiles_seconds": {
+            "p50": 0.012249474501004443,
+            "p95": 0.018039309953019264
+          }
+        },
+        "accurate": {
+          "completed": 161,
+          "failed": 0,
+          "actual_hz": 4.025,
+          "service_quantiles_seconds": {
+            "p50": 0.03257571600261144,
+            "p95": 0.040587922994745895
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:41:44Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            0.8056640625,
+            1.1953125,
+            1.34619140625
+          ],
+          "mem_available_bytes": 9390395392,
+          "swap_used_bytes": 4576825344,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:41:46Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            0.8056640625,
+            1.1953125,
+            1.34619140625
+          ],
+          "mem_available_bytes": 9365958656,
+          "swap_used_bytes": 4576825344,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:42:33Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            1.40576171875,
+            1.3154296875,
+            1.37890625
+          ],
+          "mem_available_bytes": 9206456320,
+          "swap_used_bytes": 4575506432,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    },
+    {
+      "host": "linux",
+      "job": "gst-linux-nut-20261030",
+      "attempt": 1,
+      "job_state": "failed",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-nut-1/sustained-masked.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 46.73160728018457,
+      "mean_other_busy_percent": 9.176459447189282,
+      "max_other_busy_percent": 31.47885350027913,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 93.23659305993691,
+      "end_idle_percent": 76.55399417647804,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-nut-1/sustained-masked.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/707989e5b6374199a79d7e155587a67c/attempts/001/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "ac8386dc0364ea2096fa39057af43460ce85aee59aa66a4c16af449690e2e68c",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "linux",
+      "job": "gst-linux-av-20261030",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "unmasked",
+      "encoder": "nvh264enc",
+      "options": {
+        "transport": "gst",
+        "encoder": "nvh264enc",
+        "decoder": "nvh264dec",
+        "audio": true,
+        "delay_seconds": 1.0,
+        "warmup_seconds": 0.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 30.0,
+        "motion_mode": "phase",
+        "contended": false,
+        "before": 0,
+        "after": 2,
+        "fast_max_age": 2,
+        "accurate_max_age": 2
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.007818413513483,
+      "steady_p95_seconds": 1.2226129272050457,
+      "presentation_delay_seconds": {
+        "p50": 1.1165690126581467,
+        "p95": 1.1174595514115935
+      },
+      "protected_fraction": 0.008333333333333333,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "steady-window-shorter-than-30s",
+        "no-warmup-window"
+      ],
+      "minimum_sampled_idle_percent": 78.9791603745092,
+      "mean_other_busy_percent": 8.00717676466235,
+      "max_other_busy_percent": 8.00717676466235,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 88.60903683078091,
+      "end_idle_percent": 90.44182807950374,
+      "cpu_percent_one_core_100": 105.16621475263108,
+      "peak_tree_rss_mb": 793.5703125,
+      "pipeline_sha256": "17ec5477dc6f6f02d6c2370cc4e4e8726de2fe91eea1a244b9977a18b8a40b18",
+      "source_sha256": "6e064ae053991888e167eecb54fed608f7580c3a07060dc2920c01f2bd6c4cce",
+      "performance_receipt": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-queued-linux-av-1/flash-beep-engine.performance.json",
+      "queue_receipt": "/home/elan/code/irl-shield/.tmp/perf-queue/linux/jobs/ba0d5517ef214da783d1db214c369642/attempts/001/attempt.json",
+      "performance_receipt_sha256": "c60f4358f8ac590abe000241232494b1d91545dc1de07f0eac6f27238e8d5e33",
+      "queue_receipt_sha256": "4d2f35732e31e845dbdf7a53770b0653353506aee855c8c9db101dcf0a29faa7",
+      "startup_first_packet_seconds": 1.1241638049978064,
+      "engine": {
+        "outputs": 120,
+        "protected": 1,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 0.9041948083333232
+      },
+      "lanes": {
+        "fast": {
+          "completed": 117,
+          "failed": 0,
+          "actual_hz": 29.25,
+          "service_quantiles_seconds": {
+            "p50": 1.04970094980672e-05,
+            "p95": 1.6534794121980632e-05
+          }
+        },
+        "accurate": {
+          "completed": 117,
+          "failed": 0,
+          "actual_hz": 29.25,
+          "service_quantiles_seconds": {
+            "p50": 1.0668009053915739e-05,
+            "p95": 2.215218846686181e-05
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:45:00Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            2.015625,
+            1.64892578125,
+            1.494140625
+          ],
+          "mem_available_bytes": 9089142784,
+          "swap_used_bytes": 4574236672,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "start": {
+          "utc": "2026-10-30T02:45:01Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            2.015625,
+            1.64892578125,
+            1.494140625
+          ],
+          "mem_available_bytes": 9118314496,
+          "swap_used_bytes": 4574236672,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        },
+        "end": {
+          "utc": "2026-10-30T02:45:06Z",
+          "pressure_state": "normal",
+          "health_adapter": "linux-psi-memavailable-v1",
+          "load_average": [
+            2.17333984375,
+            1.69384765625,
+            1.5107421875
+          ],
+          "mem_available_bytes": 8537980928,
+          "swap_used_bytes": 4574183424,
+          "pressure_level": null,
+          "raw_swapusage": null,
+          "raw_memory_pressure": null
+        }
+      }
+    }
+  ]
+}

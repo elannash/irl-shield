@@ -1,0 +1,1655 @@
+{
+  "schema_version": 1,
+  "mode": "offline_quality",
+  "real_time_verified": false,
+  "benchmark_only": true,
+  "demo_ready": false,
+  "run_id": "final-offline-vision-union-a30",
+  "split": "tune",
+  "candidate": "vision-union",
+  "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+  "options": {
+    "delay_seconds": 1.0,
+    "before": 6,
+    "after": 30,
+    "fast_rate_hz": 8.0,
+    "accurate_rate_hz": 4.0,
+    "motion_mode": "phase",
+    "motion_width": 320,
+    "padding": 0.3,
+    "fast_width": 640,
+    "accurate_width": 1280,
+    "fast_max_age": 6,
+    "accurate_max_age": 12,
+    "fast_provider": "coreml",
+    "provider": "coreml",
+    "limit_side_len": 960,
+    "fast_limit_side_len": 640,
+    "static_model": true,
+    "encoder": "h264_videotoolbox",
+    "control": null
+  },
+  "clips": [
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 57,
+      "natural": {
+        "total": 69,
+        "hidden": 56,
+        "hidden_fraction": 0.8115942028985508
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.10514485677083332,
+        "p95": 0.4279539388020833
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.10514485677083332,
+        "p95": 0.4279539388020833
+      }
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 101,
+      "natural": {
+        "total": 77,
+        "hidden": 68,
+        "hidden_fraction": 0.8831168831168831
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.18304144965277777,
+        "p95": 0.22078217230902777
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.18304144965277777,
+        "p95": 0.22078217230902777
+      }
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 17,
+      "natural": {
+        "total": 30,
+        "hidden": 23,
+        "hidden_fraction": 0.7666666666666667
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.06249945746527778,
+        "p95": 0.09303352864583334
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.06249945746527778,
+        "p95": 0.09303352864583334
+      }
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 41,
+      "natural": {
+        "total": 36,
+        "hidden": 34,
+        "hidden_fraction": 0.9444444444444444
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.18487196180555554,
+        "p95": 0.2686866861979167
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.18487196180555554,
+        "p95": 0.2686866861979167
+      }
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 17,
+      "natural": {
+        "total": 21,
+        "hidden": 9,
+        "hidden_fraction": 0.42857142857142855
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.08638943142361111,
+        "p95": 0.2413037651909722
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.08638943142361111,
+        "p95": 0.2413037651909722
+      }
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 38,
+      "natural": {
+        "total": 36,
+        "hidden": 29,
+        "hidden_fraction": 0.8055555555555556
+      },
+      "synthetic": {
+        "total": 7,
+        "hidden": 7,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 7,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.15820692274305556,
+        "p95": 0.32750949435763893
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.15820692274305556,
+        "p95": 0.32750949435763893
+      }
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 13,
+      "natural": {
+        "total": 16,
+        "hidden": 11,
+        "hidden_fraction": 0.6875
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.028147786458333334,
+        "p95": 0.06378374565972222
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.028147786458333334,
+        "p95": 0.06378374565972222
+      }
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 31,
+      "natural": {
+        "total": 20,
+        "hidden": 18,
+        "hidden_fraction": 0.9
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.1558132595486111,
+        "p95": 0.20226817491319446
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.1558132595486111,
+        "p95": 0.20226817491319446
+      }
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 64,
+      "natural": {
+        "total": 52,
+        "hidden": 50,
+        "hidden_fraction": 0.9615384615384616
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 98,
+      "protected_frames": 52,
+      "protected_fraction": 0.3466666666666667,
+      "protected_guard": false,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.0956884765625,
+        "p95": 1.0
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.0924386935763889,
+        "p95": 0.10261241319444445
+      }
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 96,
+      "natural": {
+        "total": 49,
+        "hidden": 47,
+        "hidden_fraction": 0.9591836734693877
+      },
+      "synthetic": {
+        "total": 7,
+        "hidden": 7,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 7,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 97,
+      "protected_frames": 53,
+      "protected_fraction": 0.35333333333333333,
+      "protected_guard": false,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.19100043402777778,
+        "p95": 1.0
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.1853298611111111,
+        "p95": 0.2098383246527778
+      }
+    },
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 3,
+      "natural": {
+        "total": 3,
+        "hidden": 3,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.03200249565972223,
+        "p95": 0.09734467230902777
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.03200249565972223,
+        "p95": 0.09734467230902777
+      }
+    },
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 18,
+      "natural": {
+        "total": 14,
+        "hidden": 14,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.12950792100694447,
+        "p95": 0.1759264865451389
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.12950792100694447,
+        "p95": 0.1759264865451389
+      }
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": false,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 16,
+      "natural": {
+        "total": 4,
+        "hidden": 3,
+        "hidden_fraction": 0.75
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 114,
+      "protected_frames": 36,
+      "protected_fraction": 0.24,
+      "protected_guard": false,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.0023866102430555557,
+        "p95": 1.0
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.0,
+        "p95": 0.007195475260416666
+      }
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": true,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      },
+      "benchmark_only": true,
+      "demo_ready": false,
+      "candidate": "vision-union",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-input.mp4",
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
+      "frames": 150,
+      "source_fps": 30.0,
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "encoder_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostdin",
+        "-y",
+        "-filter_threads",
+        "1",
+        "-f",
+        "rawvideo",
+        "-pix_fmt",
+        "bgr24",
+        "-s",
+        "1280x720",
+        "-r",
+        "30.0",
+        "-i",
+        "pipe:0",
+        "-an",
+        "-c:v",
+        "h264_videotoolbox",
+        "-realtime",
+        "1",
+        "-bf",
+        "0",
+        "-b:v",
+        "10M",
+        "-pix_fmt",
+        "yuv420p",
+        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4"
+      ],
+      "excluded_unstable_natural_intervals": 25,
+      "natural": {
+        "total": 8,
+        "hidden": 5,
+        "hidden_fraction": 0.625
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 2,
+        "hidden_fraction": 0.25
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "live_frames": 119,
+      "protected_frames": 31,
+      "protected_fraction": 0.20666666666666667,
+      "protected_guard": false,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.06797471788194445,
+        "p95": 1.0
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.05595377604166667,
+        "p95": 0.10815299479166667
+      }
+    }
+  ],
+  "gate_1": {
+    "eligible": false,
+    "pass": false,
+    "natural": false,
+    "synthetic": false,
+    "judge_discrimination": true
+  },
+  "frames": 2100,
+  "protected_fraction": 0.08190476190476191,
+  "protected_frames": 172,
+  "per_clip_protected": [
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
+      "protected_fraction": 0.3466666666666667,
+      "pass": false
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
+      "protected_fraction": 0.35333333333333333,
+      "pass": false
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
+      "protected_fraction": 0.24,
+      "pass": false
+    },
+    {
+      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
+      "protected_fraction": 0.20666666666666667,
+      "pass": false
+    }
+  ],
+  "live_frames": 1928,
+  "slate_frames": 0,
+  "masked_area_fraction": {
+    "p50": 0.10846733940972222,
+    "p95": 1.0
+  },
+  "live_masked_area_fraction": {
+    "p50": 0.09493109809027778,
+    "p95": 0.24126426866319445
+  },
+  "real_video_pass": true,
+  "performance_ignored_for_quality": true,
+  "diagnostic_timing_scope": "Per-call wall and caller-thread CPU observations only; native worker CPU is not summed.",
+  "licenses": [
+    "fixtures/ATTRIBUTION.md",
+    "models/manifest.json",
+    "models/licenses/dependencies.json",
+    "https://ffmpeg.org/legal.html"
+  ],
+  "natural": {
+    "hidden": 370,
+    "total": 435,
+    "hidden_fraction": 0.8505747126436781
+  },
+  "synthetic": {
+    "hidden": 48,
+    "total": 54,
+    "hidden_fraction": 0.8888888888888888
+  },
+  "synthetic_input_control": {
+    "total": 54,
+    "unreadable": 0,
+    "unverified_intervals": 0
+  },
+  "quality_checks": {
+    "judge_discrimination": true,
+    "natural": false,
+    "synthetic": false,
+    "protected": false,
+    "protected_aggregate": false,
+    "protected_each_clip": false,
+    "real_video": true,
+    "masked_area": null
+  },
+  "comparison_valid": false,
+  "comparison_notes": "Protected frames must remain below2% both per clip and in aggregate; a protected/slate-heavy result cannot win. Area is reported over ALL raster masks; no tune-derived ceiling is invented.",
+  "baseline_deltas_pp": {
+    "natural": 85.0574712643678,
+    "synthetic": 88.88888888888889
+  },
+  "baseline_comparison": "Descriptive interval-fraction deltas only; the baseline may use another corpus/mode.",
+  "pipeline_sha256": "ef394167fc31eb16042c37e153dc56b065e6b7558089cbdac31475828630b5ec",
+  "manifest_sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c",
+  "seconds_per_clip": 5,
+  "pilot": false,
+  "resume_receipt": {
+    "prior_complete_variants": 12,
+    "reason": "Prior remote shell exited143; all completed evidence retained. Interrupted variants rerun; partial artifacts preserved."
+  },
+  "environment": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python": "3.11.15"
+  },
+  "rescore_of": "offline-vision-union-a30",
+  "evidence_base": "/home/elan/code/irl-shield/out/offline-vision-union-a30",
+  "measurement_code_sha256": "95495fc74886d1e752ff51205196b3d380197156928a0393c0a53ba4a5459092",
+  "baseline_reference": {
+    "path": "bench/baseline.json",
+    "run_id": "final-control-unmasked-calibrated",
+    "sha256": "01603a721e14935eb7eeee0cd89074e00b300d8cc0422c7639265c37eb420b7b",
+    "natural": {
+      "hidden": 0,
+      "total": 61,
+      "hidden_fraction": 0.0
+    },
+    "synthetic": {
+      "hidden": 0,
+      "total": 4,
+      "hidden_fraction": 0.0
+    }
+  },
+  "rescore_scope": "Unrotated legacy/offline evidence only; no accepted real-time performance claim",
+  "regrade_code_sha256": "6141c74e7569d1dc1f430069bfa269709100074fe7cf372f8260ac4bd55d7756"
+}

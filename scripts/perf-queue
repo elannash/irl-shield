@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Call the central checkout's queue while preserving the caller's cwd."""
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from bench.perf_queue import main
+
+main()

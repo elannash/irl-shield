@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# Freeze source once, then run the bounded tune ladder in a private Mac checkout.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+scratch=/tmp/agents/irl-shield/m1-tune-probe
+mkdir -p "$scratch/source"
+rsync -a --exclude=.git --exclude=.build --exclude='.venv*' --exclude=out/ --exclude=.tmp/ \
+  --exclude=__pycache__ --exclude=fixtures/cache/ --exclude=models/cache/ \
+  --exclude=.env --exclude='.env.local' --exclude='.env.*.local' ./ "$scratch/source/"
+python3 - "$scratch" <<'PY'
+import hashlib,json,sys
+from pathlib import Path
+scratch=Path(sys.argv[1]); root=scratch/'source'; digest=hashlib.sha256(); files=[]
+for path in sorted(root.rglob('*')):
+ if path.is_file():
+  relative=str(path.relative_to(root)); data=path.read_bytes()
+  digest.update(relative.encode()+b'\0'+data)
+  files.append({'path':relative,'sha256':hashlib.sha256(data).hexdigest()})
+(scratch/'source-snapshot.json').write_text(json.dumps({'sha256':digest.hexdigest(),'files':files},indent=2)+'\n')
+print('source snapshot SHA-256:',digest.hexdigest())
+PY
+cat > "$scratch/controller.py" <<'PY'
+import json,os,signal,subprocess,sys,time
+from pathlib import Path
+
+root=Path(__file__).resolve().parent
+os.chdir(root)
+child=None
+deadline=time.monotonic()+3600
+prefix='tune-static-'+time.strftime('%Y%m%d-%H%M%S')
+summary={'run_prefix':prefix,'source_snapshot':json.loads((root/'source-snapshot.json').read_text()),
+         'scope':'sf-market tune only; five seconds natural and synthetic; no gate eligibility',
+         'runs':[],'decisions':[]}
+
+def stop_child():
+ global child
+ if child is not None:
+  try: os.killpg(child.pid,signal.SIGTERM)
+  except ProcessLookupError: return
+  try: child.wait(timeout=5)
+  except subprocess.TimeoutExpired: pass
+  try: os.killpg(child.pid,signal.SIGKILL)
+  except ProcessLookupError: pass
+  child.wait(timeout=5)
+
+def stop(signum,frame):
+ stop_child()
+ raise SystemExit(128+signum)
+
+for sig in (signal.SIGALRM,signal.SIGTERM,signal.SIGINT): signal.signal(sig,stop)
+
+def save():
+ (root/'probe-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+
+base=['--candidate','ppocr-v5-mobile','--split','tune','--clip','sf-market','--seconds','5',
+      '--provider','coreml','--static-model','--limit-side-len','960','--detect-width','1280',
+      '--persistence','1']
+
+def run(label,stride,lookahead,padding):
+ global child
+ run_id=f'{prefix}-{label}'
+ command=[sys.executable,'-u','-m','bench.run',*base,'--stride',str(stride),
+          '--lookahead',str(lookahead),'--padding',str(padding),'--run-id',run_id]
+ logpath=root/'logs'/f'{run_id}.log';logpath.parent.mkdir(exist_ok=True)
+ print(json.dumps({'event':'run-start','label':label,'command':command,'log':str(logpath)}),flush=True)
+ before=time.monotonic()
+ timeout=min(1200,deadline-before)
+ if timeout<60: raise RuntimeError('Probe time budget exhausted before next run')
+ with logpath.open('w') as output,logpath.open() as reader:
+  child=subprocess.Popen(command,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
+  while child.poll() is None:
+   text=reader.read()
+   if text: print(text,end='',flush=True)
+   if time.monotonic()-before>timeout:
+    stop_child();raise TimeoutError(f'{run_id} exceeded {timeout}s')
+   time.sleep(2)
+  text=reader.read()
+  if text: print(text,end='',flush=True)
+  code=child.returncode
+ stop_child()
+ record={'label':label,'run_id':run_id,'command':command,'stdout':str(logpath),
+         'exit_code':code,'elapsed_seconds':time.monotonic()-before}
+ if code:
+  summary['runs'].append(record);save()
+  raise RuntimeError(f'{run_id} failed exit {code}; inspect log; no automatic retry')
+ cardpath=root/'out'/run_id/'scorecard.json'
+ card=json.loads(cardpath.read_text())
+ if card['gate_1']['eligible']:
+  raise RuntimeError('Short tune run unexpectedly claimed gate eligibility')
+ record.update({'scorecard':str(cardpath),'natural':card['natural'],'synthetic':card['synthetic'],
+                'gate_1':card['gate_1'],'minimum_clip_fps':card['minimum_clip_fps'],
+                'latency_seconds':card['latency_seconds'],'masked_area_fraction':card['masked_area_fraction'],
+                'real_video_pass':card['real_video_pass'],'code_sha256':card['code_sha256']})
+ summary['runs'].append(record);save()
+ print(json.dumps({'event':'run-complete',**record}),flush=True)
+ return card
+
+def drops(candidate,baseline):
+ return [kind for kind in ('natural','synthetic')
+         if candidate[kind]['hidden_fraction'] is None or baseline[kind]['hidden_fraction'] is None
+         or candidate[kind]['hidden_fraction']<baseline[kind]['hidden_fraction']]
+
+def guard_failures(card):
+ return [name for name in ('judge_discrimination','masked_area','real_video') if not card['gate_1'][name]]
+
+try:
+ a=run('a-s1-l0-p03',1,0,.3)
+ b=run('b-s3-l0-p03',3,0,.3)
+ summary['decisions'].append({'change':'A to B: stride 1 to 3','privacy_drops':drops(b,a),
+                             'guard_failures':guard_failures(b),
+                             'accepted':not drops(b,a) and not guard_failures(b),
+                             'note':'Any privacy loss remains an explicit speed trade, not an accepted improvement.'})
+ save()
+ c=run('c-s3-l6-p03',3,6,.3)
+ weak=bool(drops(c,a) or guard_failures(c) or not c['gate_1']['natural'] or not c['gate_1']['synthetic'])
+ summary['decisions'].append({'change':'B to C: lookahead 0 to 6','privacy_drops_vs_A':drops(c,a),
+                             'privacy_drops_vs_B':drops(c,b),'guard_failures':guard_failures(c),
+                             'accepted_vs_A':not drops(c,a) and not guard_failures(c),'weak':weak})
+ save()
+ if weak:
+  d=run('d-s3-l6-p10',3,6,1.0)
+  summary['decisions'].append({'change':'C to D: padding .3 to 1.0','privacy_drops_vs_A':drops(d,a),
+                              'privacy_drops_vs_C':drops(d,c),'guard_failures':guard_failures(d),
+                              'accepted_vs_A':not drops(d,a) and not guard_failures(d)})
+ else:
+  summary['decisions'].append({'change':'D skipped','reason':'C met short-probe privacy targets and guards without dropping versus A.'})
+ summary['complete']=True;save()
+ print(json.dumps({'event':'probe-complete','summary':str(root/'probe-summary.json')}),flush=True)
+finally:
+ stop_child()
+PY
+cat > "$scratch/bootstrap.sh" <<'REMOTE'
+#!/usr/bin/env bash
+set -euo pipefail
+cd ~/code/irl-shield/.tmp/tune-probe
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2
+if [[ ! -L .venv ]]; then ln -s ../static-probe/.venv .venv; fi
+perl -e 'alarm shift; exec @ARGV' 180 .venv/bin/python -m pip install --disable-pip-version-check --only-binary=:all: -r requirements.txt > install.log 2>&1
+mkdir -p .build models/cache
+if [[ ! -L fixtures/cache ]]; then ln -s ../../../fixtures/cache fixtures/cache; fi
+.venv/bin/python - <<'PY'
+import json,os
+from pathlib import Path
+root=Path.cwd(); main=root.parents[1]
+for artifact in json.loads((root/'models/manifest.json').read_text())['artifacts'].values():
+ source=main/'models/cache'/artifact['filename']; target=root/'models/cache'/artifact['filename']
+ if not source.is_file(): raise FileNotFoundError(source)
+ if not target.exists(): target.symlink_to(source)
+PY
+perl -e 'alarm shift; exec @ARGV' 180 swiftc -O -num-threads 2 Sources/VisionBridge/main.swift -o .build/vision-bridge
+exec perl -e 'alarm shift; exec @ARGV' 3660 .venv/bin/python -u controller.py
+REMOTE
+ssh mac 'bash -lc "mkdir -p ~/code/irl-shield/.tmp/tune-probe"'
+rsync -az "$scratch/source/" mac:code/irl-shield/.tmp/tune-probe/
+rsync -az "$scratch/controller.py" "$scratch/bootstrap.sh" "$scratch/source-snapshot.json" mac:code/irl-shield/.tmp/tune-probe/
+remote='cd ~/code/irl-shield/.tmp/tune-probe && bash ./bootstrap.sh'
+set +e
+ssh mac "bash -lc $(printf '%q' "$remote")" 2>&1 | tee "$scratch/run.log"
+probe_status=${PIPESTATUS[0]}
+set -e
+rsync -az --exclude=judge-cache/ mac:code/irl-shield/.tmp/tune-probe/out/ "$scratch/out/"
+rsync -az mac:code/irl-shield/.tmp/tune-probe/logs/ "$scratch/logs/"
+rsync -az mac:code/irl-shield/.tmp/tune-probe/probe-summary.json mac:code/irl-shield/.tmp/tune-probe/install.log "$scratch/"
+exit "$probe_status"
