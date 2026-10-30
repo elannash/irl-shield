@@ -137,18 +137,18 @@ def verify(directory):
 
 
 @contextmanager
-def clip_lease(root, host):
-    """One short clip per shared host lease; serialize heavy quality on each host."""
+def clip_lease(root, host, *, lock_root=None):
+    """One clip per exclusive host lease; callers can isolate their lock storage."""
     import fcntl
     # Task-local serialization adds no daemon, global setting or alternate perf lock.
     serial = Path(root) / '.tmp/q' / ('quality-' + host + '.lock')
     serial.parent.mkdir(parents=True, exist_ok=True)
     with serial.open('a+') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
-        canonical = Path('/tmp/agents/irl-shield/perf.lock')
+        canonical = (Path(lock_root) if lock_root is not None else Path('/tmp/agents/irl-shield')) / 'perf.lock'
         canonical.parent.mkdir(parents=True, exist_ok=True)
         with canonical.open('a+') as perf:
-            fcntl.flock(perf, fcntl.LOCK_SH)
+            fcntl.flock(perf, fcntl.LOCK_EX)
             yield
 
 
@@ -371,7 +371,7 @@ def main():
     probe = actions.add_parser('exec'); probe.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.action in ('render', 'grade', 'exec') and args.lock_root is None:
-        parser.error('Render/grade require --lock-root to serialize a single clip under the shared host lease')
+        parser.error('Render/grade require --lock-root to serialize a single clip under the exclusive host lease')
     if args.action == 'render':
         with clip_lease(args.lock_root, 'linux'):
             result = render(args.root, args.inputs, args.config, args.directory, args.clip, args.synthetic)

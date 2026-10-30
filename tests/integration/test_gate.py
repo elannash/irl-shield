@@ -24,6 +24,7 @@ class GateCompiler(unittest.TestCase):
                 '    def test_source_is_importable(self):\n'
                 '        self.assertTrue(__file__.endswith(".py"))\n')
         shutil.copy2(ROOT / 'tests/integration/gate.py', root / 'tests/integration/gate.py')
+        shutil.copy2(ROOT / 'tests/lock_isolation.py', root / 'tests/lock_isolation.py')
         shutil.copy2(ROOT / 'tests/m3/network.py', root / 'tests/m3/network.py')
         (root / 'models').mkdir()
         (root / 'models/keep.py').write_text('value = "project source must still compile"\n')

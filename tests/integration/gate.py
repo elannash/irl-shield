@@ -6,11 +6,13 @@ import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path[:0] = [str(ROOT), str(ROOT / 'tests/m3'), str(ROOT / 'tests/integration')]
+sys.path[:0] = [str(ROOT), str(ROOT / 'tests'), str(ROOT / 'tests/m3'), str(ROOT / 'tests/integration')]
 from network import local_network
+from lock_isolation import install_lock_guard
 
 
 def main():
+    install_lock_guard()
     suite = unittest.TestSuite()
     selection = {}
     selected_ids = []
