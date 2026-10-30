@@ -123,7 +123,7 @@ class OfflineSampling(unittest.TestCase):
                             '-c:v', 'libx264', '-preset', 'ultrafast', '-threads', '2', '-bf', '0',
                             '-pix_fmt', 'yuv420p', str(source)], input=pixels.tobytes() * 4, check=True, timeout=20)
             result = run_file(source, output, 'synthetic',
-                              {'encoder': 'libx264', 'fast_rate_hz': 10., 'accurate_rate_hz': 10.,
+                              {'encoder': 'libx264', 'detector_families': [], 'fast_rate_hz': 10., 'accurate_rate_hz': 10.,
                                'delay_seconds': .2, 'padding': 0},
                               judge=PixelJudge(), backends={name: Box() for name in ('fast', 'accurate')})
             self.assertTrue(output.is_file())
@@ -159,7 +159,7 @@ class OfflineSampling(unittest.TestCase):
                                 'synthetic': {'hidden': 1, 'total': 1, 'hidden_fraction': 1.},
                                 'synthetic_input_control': {'total': 1, 'unreadable': 0},
                                 'real_video_pass': True})
-            card = build_scorecard(results, 'synthetic', {}, run_id='synthetic-offline',
+            card = build_scorecard(results, 'unmasked', {}, run_id='synthetic-offline',
                                    baseline={'natural': {'hidden_fraction': .8},
                                              'synthetic': {'hidden_fraction': 1.}})
             self.assertEqual(card.get('natural'), {'hidden': 9, 'total': 10, 'hidden_fraction': .9})

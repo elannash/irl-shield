@@ -514,3 +514,21 @@ therefore selects attempt3, the **last complete contended measurement**, under
 the frozen pre-OCR selection rule. It does not select attempt1. Earlier root
 status prose about two rejected preflights was wrong; original attempt files
 and labels were never altered. No quality score or policy changed.
+
+
+### 2026-10-30 04:27Z — PR1 family independence, guard proof and cache identity
+
+Rescored all14 retained tune comparison/E1/E3 cards before changing OCR cache identity; all original pooled counts reproduce. PP Small A30 changes393/435 pooled to318/343 independent natural,46/54 synthetic; Linux static Small321/343 natural,44/54 synthetic. Real-video guards still fail; no policy wins or new Q measurement. Explicit per-lane detector families exclude their judges from input truth, output leaks and synthetic controls. Mixed PP+Vision reports only Tesseract and fails the two-independent-engine guard. Secondary pooled numbers remain labeled ineligible.
+
+One failed LIVE guard zeroes natural/synthetic credit through both entry points. Physical all→any mutation fails both subtests; exact source restore passes. A timestamp-pyc alias during a quick repeat was caught by the full suite; proof now uses -B and clears only its own scoring bytecode between legs. Final Mac scripts/check and Linux gate both exit0:104 tests with1 platform skip plus3 relay tests and compilation; Mac also builds optimized Swift. Cache schema2 includes ONNX detector implementation, OCR/runtime/OS versions and geometry. Full table, provenance, mutation/gate artifact hashes and commands are in docs/PR1-R1-FIXES.md and results/pr1-r1-proof.json. No new installs.
+
+The fresh all7 tune OCR re-judge is queued untimed/SH behind the sealed Mac timed queue, frozen fixed source, PID54753, deadlineFri09AMPT; no fresh numbers yet. M2 fresh Linux queue irl-shield-builder-m2-queue-1 is open with detached nice10 runner3141521 in the agent slice, same lock and other_busy-v2, hardstopFri09AMPT. Both process stop commands are in the hand-back. Historical one-shot heldout finishes unchanged at47/60 pooled natural,22/22 synthetic,19.88%medianarea,0%protection, real-video false/gatefalse; correlated pooled result is not promoted to independent.
+
+
+### 2026-10-30 04:38Z — correction: independent truth, all-judge output leaks
+
+Conductor corrects the prior instruction: independence constrains truth/input controls only. Every credible output judge, including the candidate family, counts as a leak. The previous independent-both policy/figures above are superseded, with their artifacts retained. A same-family-only output regression fails under physical independent-output mutation and passes after byte-exact restoration. The all→any live-guard mutation was also rerun on final source, red/revert/green. Both final full gates exit0:105tests with1 platformskip plus3relaytests, compilation and MacSwift build. No installs.
+
+All14 retained cards rescored into out/pr1-r1-truth-only-rescore-v2; pooled/independent-both/newprimary columns are in results/pr1-truth-only-rescore.json and docs/PR1-R1-FIXES.md. Primary SmallA30 311/343 (90.67%)natural and46/54 (85.19%)synthetic; LinuxstaticSmall 304/343 (88.63%)natural and44/54 (81.48%)synthetic. All original pooled counts reproduce; truth denominators unchanged from independent-both and hidden credit never increases with all output judges. Real-video guards remain false.
+
+Old queued rejudge54753 stopped before OCR; replacement22977 uses frozen final source and all-judge leaks, SH after sealed Mac timed queue drains, hardstopFri09AMPT. No fresh OCR score yet. M2queue3141521 unchanged. Qchildren await fixed committed head; no Q policy measurements started.

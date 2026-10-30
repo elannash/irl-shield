@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from bench.scoring import score_records
+from bench.independence import policy_metadata, annotate_card
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -20,6 +21,7 @@ def main():
     card=json.loads((source/'scorecard.json').read_text())
     if card.get('schema_version',0)>=2:
         raise ValueError('Clocked quality must be scored through bench.clocked_bench; regrade accepts unrotated legacy/offline evidence only')
+    families=policy_metadata(card['candidate'],card.get('options',{}))['detector_families']
     retained=[]
     for record in card['clips']:
         label=record['clip']+('-synthetic' if record['synthetic_variant'] else '-natural')
@@ -38,11 +40,9 @@ def main():
     card['run_id']=output_id
     card['evidence_base']=str(source)
     for record,label,evidence,truth in retained:
-        quality,details=score_records(evidence.get('raw_input_readings',evidence['input_readings']),evidence['output_readings'],truth,evidence['guards'])
         if 'raw_input_readings' not in evidence:
-            quality['synthetic_input_control']=record['synthetic_input_control']
-            details['raw_input_readings_complete']=False
-            details['input_control_provenance']='Original unfiltered input control retained from measured scorecard'
+            raise ValueError('Independent rescore requires original raw judge-tagged readings')
+        quality,details=score_records(evidence['raw_input_readings'],evidence['output_readings'],truth,evidence['guards'],detector_families=families)
         record.update(quality)
         (dest/f'{label}-masked.evidence.json').write_text(json.dumps(details))
     for kind in ['natural','synthetic']:
@@ -60,9 +60,12 @@ def main():
     if 'quality_checks' in card:
         for key in ['natural','synthetic','judge_discrimination']:
             card['quality_checks'][key]=card['gate_1'][key]
+    independence=annotate_card(card)
+    card['gate_1']['independent_judges']=independence['sufficient_independent_engines']
     if 'quality_checks' in card:
+        card['quality_checks']['independent_judges']=independence['sufficient_independent_engines']
         checks=card['quality_checks']
-        card['comparison_valid']=bool(checks['judge_discrimination'] and checks['protected'] and card['real_video_pass'] and checks.get('masked_area') is not False)
+        card['comparison_valid']=bool(checks['independent_judges'] and checks['judge_discrimination'] and checks['protected'] and card['real_video_pass'] and checks.get('masked_area') is not False)
     card['measurement_code_sha256']=hashlib.sha256((ROOT/'bench/scoring.py').read_bytes()+(ROOT/'bench/metrics.py').read_bytes()).hexdigest()
     baseline=json.loads((ROOT/'bench/baseline.json').read_text())
     card.pop('baseline_deltas',None)

@@ -695,7 +695,7 @@ class ClockedTransport(unittest.TestCase):
         records = [{'state': state, 'protected': state != 'LIVE', 'slate': False}
                    for state in ('LIVE', 'PROTECT', 'LIVE')]
         quality, details = score_observations(inputs, [[], [], []], truth,
-                                              [{'pass': True}, None, {'pass': True}], records)
+                                              [{'pass': True}, None, {'pass': True}], records, detector_families=[])
         self.assertTrue(quality['real_video_pass'])
         self.assertEqual(quality['natural']['hidden_fraction'], 1.)
         self.assertEqual(quality['synthetic']['hidden_fraction'], 1.)
@@ -703,12 +703,12 @@ class ClockedTransport(unittest.TestCase):
         self.assertAlmostEqual(quality['protected_fraction'], 1 / 3)
         self.assertEqual(len(details['frame_guards']), 3)
         protected = [{'state': 'PROTECT', 'protected': True, 'slate': False} for _ in range(3)]
-        quality, _ = score_observations(inputs, [[], [], []], truth, [None] * 3, protected)
+        quality, _ = score_observations(inputs, [[], [], []], truth, [None] * 3, protected, detector_families=[])
         self.assertFalse(quality['real_video_pass'])
         self.assertEqual(quality['natural']['hidden'], 0)
         self.assertEqual(quality['synthetic']['hidden'], 0)
         quality, _ = score_observations([[]] * 3, [[], [], []], truth,
-                                        [{'pass': True}, None, {'pass': True}], records)
+                                        [{'pass': True}, None, {'pass': True}], records, detector_families=[])
         self.assertEqual(quality['synthetic_input_control'], {'total': 1, 'unreadable': 1})
 
     def test_clock_gate_requires_media_pts_observed_egress_and_under_two_percent_protection(self):

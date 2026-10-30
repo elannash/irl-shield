@@ -31,7 +31,7 @@ class RetainedQuality(unittest.TestCase):
         source.mkdir(parents=True)
         row={'clip':'one','synthetic_variant':synthetic,
              'synthetic_input_control':{'total':1 if synthetic else 0,'unreadable':0}}
-        card={'run_id':'source','clips':[row],'gate_1':{},'real_video_pass':True,
+        card={'candidate':'unmasked','run_id':'source','clips':[row],'gate_1':{},'real_video_pass':True,
               'quality_checks':{'protected':True,'masked_area':None},
               'baseline_deltas_pp':{'natural':50.,'synthetic':None}}
         (source/'scorecard.json').write_text(json.dumps(card))

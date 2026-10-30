@@ -219,7 +219,7 @@ def performance_trust(performance):
 def fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
     paths.update(ROOT / name for name in (
-        'bench/clocked_pipeline.py', 'bench/clocked_bench.py', 'bench/cross_host.py', 'bench/scoring.py',
+        'bench/clocked_pipeline.py', 'bench/independence.py', 'bench/clocked_bench.py', 'bench/cross_host.py', 'bench/scoring.py',
         'bench/metrics.py', 'bench/pipeline.py', 'bench/onnx_detectors.py',
         'bench/run.py', 'bench/synthetic.py', 'bench/judges.py', 'bench/scheduled.py', 'fixtures/prepare.py',
         'bench/vision.py', 'bench/static_model.py', 'models/manifest.json',

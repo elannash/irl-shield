@@ -14,6 +14,7 @@ from bench.judges import Judges
 from bench.metrics import fidelity, quantiles
 from shield.masking import masked_frame
 from bench.scoring import score_records
+from bench.independence import policy_metadata, annotate_card
 from bench.pipeline import run
 from bench.provenance import pipeline_fingerprint,validate_sustained
 
@@ -98,7 +99,8 @@ def score(input_path, output_path, judge, synthetic_truth, options, slate):
         raise RuntimeError('Unexpected extra frames')
     cap.release()
     masked.release()
-    quality,details=score_records(input_readings,outputs,synthetic_truth,guards)
+    quality,details=score_records(input_readings,outputs,synthetic_truth,guards,detector_families=options["detector_families"])
+    quality['judging']=details['judging']=getattr(judge,'metadata',None)
     output_path.with_suffix('.evidence.json').write_text(json.dumps(details))
     return {**quality,'masked_area_fraction':quantiles([m['mask_fraction'] for m in masks]),
             'outside_mae_p95':quantiles([g['outside_mae'] for g in guards if g['outside_mae'] is not None])['p95']}
@@ -140,6 +142,7 @@ def main():
     args=p.parse_args()
     fingerprint=pipeline_fingerprint()
     options={'encoder':args.encoder,'static_model':args.static_model,'accurate_stride':args.accurate_stride,'rectangle_width':args.rectangle_width,'accurate_width':args.accurate_width,'lookahead':args.lookahead,'padding':args.padding,'persistence':args.persistence,'stride':args.stride,'detect_width':args.detect_width,'provider':args.provider,'limit_side_len':args.limit_side_len}
+    options['detector_families']=policy_metadata(args.candidate,options)['detector_families']
     manifest=json.loads((ROOT/'fixtures/manifest.json').read_text())
     clips=[c for c in manifest['clips'] if c['split']==args.split and (not args.clip or c['id']==args.clip)]
     if not clips:
@@ -206,7 +209,8 @@ def main():
     control_total=sum(c['total'] for c in controls)
     control_unreadable=sum(c['unreadable'] for c in controls)
     card['synthetic_input_control']={'total':control_total,'unreadable':control_unreadable}
-    card['gate_1']={'judge_discrimination':control_total>0 and control_unreadable==0,'natural':card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction']>=.9,
+    independence=annotate_card(card)
+    card['gate_1']={'independent_judges':independence['sufficient_independent_engines'],'judge_discrimination':control_total>0 and control_unreadable==0,'natural':card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction']>=.9,
                     'synthetic':card['synthetic']['total']>0 and card['synthetic']['hidden_fraction']==1,
                     'masked_area':card['masked_area_fraction']['p50']<=.2,
                     'throughput':bool(sustained) and sustained['results']['720-saturated']['fps']>=30,

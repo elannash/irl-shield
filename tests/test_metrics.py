@@ -78,6 +78,26 @@ class PrivacyScoring(unittest.TestCase):
         self.assertFalse(fidelity(image,black,np.full((120,160),255,np.uint8))['pass'])
         self.assertTrue(fidelity(image,image,np.zeros((120,160),np.uint8))['pass'])
 
+    def test_one_failed_live_guard_zeroes_both_primary_credits_at_both_scoring_entries(self):
+        from bench.scoring import score_records
+        from bench.clocked_bench import score_observations
+        natural={'text':'ELM ROAD','box':[0,0,80,20],'confidence':.99,'judge':'tesseract'}
+        label={'id':'plate','text':'BXR219','box':[100,0,180,20],'visible':True}
+        inputs=[[natural,{**label,'confidence':.99,'judge':'tesseract'}]]*3
+        truth=[[label]]*3
+        records=[{'state':s,'protected':s!='LIVE','slate':False} for s in ('LIVE','PROTECT','LIVE')]
+        for entry in ('score_records','score_observations'):
+            with self.subTest(entry=entry):
+                if entry=='score_records':
+                    quality,_=score_records(inputs,[[],[],[]],truth,[{'pass':True},{'pass':False}],detector_families=[])
+                else:
+                    quality,_=score_observations(inputs,[[],[],[]],truth,[{'pass':True},None,{'pass':False}],records,detector_families=[])
+                self.assertFalse(quality['real_video_pass'])
+                self.assertEqual(quality['natural']['total'],1)
+                self.assertEqual(quality['synthetic']['total'],1)
+                self.assertEqual(quality['natural']['hidden'],0)
+                self.assertEqual(quality['synthetic']['hidden'],0)
+
     def test_padding_area_uses_union_and_preserves_outside_pixels(self):
         source=np.full((100,100,3),127,np.uint8)
         output,mask=masked_frame(source,[[10,10,30,30],[20,10,40,30]],0)

@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 import cv2
+from bench.independence import candidate_metadata
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,7 +15,7 @@ class Vision:
     def __init__(self, mode="vision-accurate"):
         self.process = subprocess.Popen([str(ROOT / '.build/vision-bridge'), mode],
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        self.metadata = {"engine": mode, "framework": "macOS Vision", "offline": True,"recognition_languages":["en-US"],"minimum_text_height":.005,"uses_language_correction":False}
+        self.metadata = {**candidate_metadata(mode), "engine": mode, "framework": "macOS Vision", "offline": True,"recognition_languages":["en-US"],"minimum_text_height":.005,"uses_language_correction":False}
 
     def read(self, frame):
         pixels = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)

@@ -24,7 +24,7 @@ class ScheduledVision:
         self.accurate_width=options.get('accurate_width',960)
         if self.period<1:
             raise ValueError('accurate_stride must be positive')
-        self.metadata={'engine':'vision-scheduled','accurate_stride':self.period,
+        self.metadata={'engine':'vision-scheduled','detector_families':['apple-vision'],'accurate_stride':self.period,
                        'rectangle_width':self.fast_width,'accurate_width':self.accurate_width,
                        'schedule':'No dropped accurate jobs; block if previous pass is late',
                        'accurate':self.accurate.metadata,'rectangles':self.fast.metadata}

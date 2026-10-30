@@ -40,10 +40,27 @@ scene at320px; the plate has an independent entry path. This is approximate
 camera attachment, not a reconstructed3D scene. The seed is SHA256(clip ID)'s
 first four bytes, little-endian. Detector code never receives truth metadata.
 
-Scope is Latin-script text and Arabic digits observed by the judge union:
+Scope is Latin-script text and Arabic digits observed by the independent judge subset:
 Tesseract5 `eng --psm11` confidence>=50, Vision accurate `en-US` confidence>=.5,
 and PP-OCRv5 English-mobile confidence>=.5. Every detector has independent judges:
-PP candidates have Tesseract/Vision; Vision has Tesseract/PP. Models run offline.
+PP candidates use Tesseract/Vision for natural truth and synthetic input
+controls; Vision candidates use Tesseract/PP. Every detector declares its
+families in metadata. Truth/control selection excludes every family used by
+either lane, preventing same-family judges from choosing an easier denominator.
+Output leak detection uses ALL judges, including the detector's own family:
+any credible reading proves a leak, and adding output judges cannot hide one.
+Mixed PP+Vision leaves only Tesseract: it is explicitly reported and fails the
+minimum-two-independent-engines gate. Unknown candidates/input readers fail rather
+than inferring provenance from their names. Models run offline.
+
+Raw readings from all three engines remain retained. The pooled all-judge number
+is secondary, labeled `pooled_not_independent`, and cannot supply primary privacy
+credit. Independent input filtering precedes text deduplication and interval formation,
+so denominators can differ between detector families; compare them with that
+scope visible. Judge cache schema2 hashes judge/bridge/model sources, including
+`onnx_detectors.py`, Tesseract binary and Python package versions, the macOS
+product version, and pixel shape/type. Old cache entries remain on disk but are
+not reused by the new identity.
 Natural input truth requires confidence>=.9 on at least two observed frames per
 inferred interval, calibrated before detector selection against no-mask encoding.
 Excluded unstable observations remain in evidence. Non-Latin text, single-frame

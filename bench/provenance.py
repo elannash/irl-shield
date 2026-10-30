@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def pipeline_fingerprint():
-    paths=['shield/engine.py','shield/masking.py','bench/provenance.py','bench/pipeline.py','bench/scheduled.py','bench/vision.py',
+    paths=['shield/engine.py','shield/masking.py','bench/provenance.py','bench/independence.py','bench/pipeline.py','bench/scheduled.py','bench/vision.py',
            'bench/onnx_detectors.py','bench/static_model.py','bench/metrics.py',
            'Sources/VisionBridge/main.swift','models/manifest.json','requirements.txt','requirements-models.txt']
     digest=hashlib.sha256()

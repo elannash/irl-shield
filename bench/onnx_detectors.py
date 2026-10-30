@@ -5,6 +5,7 @@ top-left-origin pixel coordinates, with exclusive right and bottom edges.
 """
 
 from importlib.metadata import version
+from bench.independence import candidate_metadata
 
 import numpy as np
 import onnxruntime as ort
@@ -85,7 +86,7 @@ def _session(name, options):
     # Provider failure must not turn a measured CoreML run into an unlabelled CPU run.
     session.disable_fallback()
     metadata = {
-        "name": name,
+        **candidate_metadata(name), "name": name,
         "static_artifact":static_metadata,
         "model_path": str(path),
         "sha256": artifact["sha256"],

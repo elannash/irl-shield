@@ -20,6 +20,7 @@ import numpy as np
 
 from bench.metrics import fidelity, quantiles
 from bench.scoring import score_records
+from bench.independence import policy_metadata, annotate_card
 from bench.clocked_pipeline import performance_trust, coverage_distribution
 
 
@@ -30,7 +31,7 @@ SCOPE = ('Latin-script text and Arabic digits; natural input truth requires conf
          'Benchmark-only footage, no audio; non-Latin coverage and demo readiness unproven.')
 
 
-def score_observations(input_readings, outputs, synthetic_truth, guards, records):
+def score_observations(input_readings, outputs, synthetic_truth, guards, records, *, detector_families):
     """Keep OCR interval semantics while applying outside-pixel guards to LIVE."""
     count = len(records)
     if not count or any(len(values) != count for values in (input_readings, outputs, synthetic_truth, guards)):
@@ -40,7 +41,7 @@ def score_observations(input_readings, outputs, synthetic_truth, guards, records
         raise ValueError('A LIVE frame is missing its actual outside-mask pixel guard')
     output_readings = [[reading for reading in frame if reading['confidence'] >= .5] for frame in outputs]
     quality, details = score_records(input_readings, output_readings, synthetic_truth,
-                                     [guards[index] for index in live])
+                                     [guards[index] for index in live], detector_families=detector_families)
     quality.update({'live_frames': len(live), 'protected_frames': count - len(live),
                     'protected_fraction': (count - len(live)) / count,
                     'slate_frames': sum(row['slate'] for row in records)})
@@ -117,7 +118,9 @@ def score_video(input_path, output_path, judge, synthetic_truth):
     finally:
         before_capture.release()
         after_capture.release()
-    quality, details = score_observations(inputs, outputs, selected_truth, guards, records)
+    quality, details = score_observations(inputs, outputs, selected_truth, guards, records,
+        detector_families=policy_metadata(performance["candidate"],performance["options"])["detector_families"])
+    quality['judging']=details['judging']=getattr(judge,'metadata',None)
     window = {'judged_frames': len(records), 'original_start_frame': records[0]['original_frame'],
               'original_stop_frame_exclusive': records[-1]['original_frame'] + 1,
               'source_frame_count': len(synthetic_truth), 'warmup_frames': performance['warmup_frames']}
@@ -411,7 +414,9 @@ def aggregate_card(card, directory, *, root=None):
     sustained_guards = clock_guards(sustained) if sustained else {'throughput': False, 'latency': False, 'protected': False}
     area_configured = card['area_ceiling'] is not None and bool(card['area_ceiling_basis'])
     area = card['masked_area_fraction']['p50']
+    independence=annotate_card(card)
     card['gate_1'] = {
+        'independent_judges': independence['sufficient_independent_engines'],
         'judge_discrimination': control['total'] > 0 and control['unreadable'] == 0,
         'natural': card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction'] >= .9,
         'synthetic': card['synthetic']['total'] > 0 and card['synthetic']['hidden_fraction'] == 1.,

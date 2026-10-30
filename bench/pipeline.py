@@ -18,7 +18,7 @@ from bench.provenance import pipeline_fingerprint
 class ControlDetector:
     def __init__(self,name):
         self.name=name
-        self.metadata={'engine':name,'benchmark_control':True}
+        self.metadata={'engine':name,'benchmark_control':True,'detector_families':[]}
     def detect(self,frame):
         h,w=frame.shape[:2]
         return [[0,0,w,h]] if self.name=='slate' else []

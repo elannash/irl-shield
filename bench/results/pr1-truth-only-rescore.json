@@ -1,0 +1,957 @@
+{
+  "scope": "PRIMARY = independent truth and synthetic input controls, ALL-judge output leaks. Original pooled and superseded independent-both columns retained; no OCR or performance measurement.",
+  "rows": [
+    {
+      "run_id": "auto-final-offline-vision-union-a30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 370,
+          "total": 435,
+          "hidden_fraction": 0.8505747126436781
+        },
+        "synthetic": {
+          "hidden": 48,
+          "total": 54,
+          "hidden_fraction": 0.8888888888888888
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 201,
+          "total": 246,
+          "hidden_fraction": 0.8170731707317073
+        },
+        "synthetic": {
+          "hidden": 48,
+          "total": 54,
+          "hidden_fraction": 0.8888888888888888
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 200,
+          "total": 246,
+          "hidden_fraction": 0.8130081300813008
+        },
+        "synthetic": {
+          "hidden": 48,
+          "total": 54,
+          "hidden_fraction": 0.8888888888888888
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "apple-vision"
+        ],
+        "included_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "vision-accurate"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-vision-union-a30/scorecard.json"
+    },
+    {
+      "run_id": "auto-final-offline-ppocr-v5-mobile-a30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 385,
+          "total": 435,
+          "hidden_fraction": 0.8850574712643678
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 310,
+          "total": 343,
+          "hidden_fraction": 0.9037900874635568
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 304,
+          "total": 343,
+          "hidden_fraction": 0.8862973760932945
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v5-mobile-a30/scorecard.json"
+    },
+    {
+      "run_id": "auto-final-offline-ppocr-v6-small-a30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 393,
+          "total": 435,
+          "hidden_fraction": 0.903448275862069
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 318,
+          "total": 343,
+          "hidden_fraction": 0.9271137026239067
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 311,
+          "total": 343,
+          "hidden_fraction": 0.9067055393586005
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-small-a30/scorecard.json"
+    },
+    {
+      "run_id": "auto-final-offline-ppocr-v6-tiny-a30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 353,
+          "total": 435,
+          "hidden_fraction": 0.8114942528735632
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 299,
+          "total": 343,
+          "hidden_fraction": 0.8717201166180758
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 289,
+          "total": 343,
+          "hidden_fraction": 0.8425655976676385
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-tiny-a30/scorecard.json"
+    },
+    {
+      "run_id": "e1-small-phase-050",
+      "old_pooled": {
+        "natural": {
+          "hidden": 393,
+          "total": 435,
+          "hidden_fraction": 0.903448275862069
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 318,
+          "total": 343,
+          "hidden_fraction": 0.9271137026239067
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 311,
+          "total": 343,
+          "hidden_fraction": 0.9067055393586005
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-050/scorecard.json"
+    },
+    {
+      "run_id": "e1-small-phase-020",
+      "old_pooled": {
+        "natural": {
+          "hidden": 368,
+          "total": 435,
+          "hidden_fraction": 0.8459770114942529
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 307,
+          "total": 343,
+          "hidden_fraction": 0.8950437317784257
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 291,
+          "total": 343,
+          "hidden_fraction": 0.8483965014577259
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-020/scorecard.json"
+    },
+    {
+      "run_id": "e1-small-phase-005",
+      "old_pooled": {
+        "natural": {
+          "hidden": 369,
+          "total": 435,
+          "hidden_fraction": 0.8482758620689655
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 308,
+          "total": 343,
+          "hidden_fraction": 0.8979591836734694
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 293,
+          "total": 343,
+          "hidden_fraction": 0.8542274052478134
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-005/scorecard.json"
+    },
+    {
+      "run_id": "e1-small-orb-050",
+      "old_pooled": {
+        "natural": {
+          "hidden": 376,
+          "total": 435,
+          "hidden_fraction": 0.864367816091954
+        },
+        "synthetic": {
+          "hidden": 41,
+          "total": 54,
+          "hidden_fraction": 0.7592592592592593
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 311,
+          "total": 343,
+          "hidden_fraction": 0.9067055393586005
+        },
+        "synthetic": {
+          "hidden": 42,
+          "total": 54,
+          "hidden_fraction": 0.7777777777777778
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 300,
+          "total": 343,
+          "hidden_fraction": 0.8746355685131195
+        },
+        "synthetic": {
+          "hidden": 41,
+          "total": 54,
+          "hidden_fraction": 0.7592592592592593
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-orb-050/scorecard.json"
+    },
+    {
+      "run_id": "e2-small-box060",
+      "old_pooled": {
+        "natural": {
+          "hidden": 327,
+          "total": 435,
+          "hidden_fraction": 0.7517241379310344
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 287,
+          "total": 343,
+          "hidden_fraction": 0.8367346938775511
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 260,
+          "total": 343,
+          "hidden_fraction": 0.7580174927113703
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e2-small-box060/scorecard.json"
+    },
+    {
+      "run_id": "h3-small-fast30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 385,
+          "total": 435,
+          "hidden_fraction": 0.8850574712643678
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 321,
+          "total": 343,
+          "hidden_fraction": 0.9358600583090378
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 305,
+          "total": 343,
+          "hidden_fraction": 0.8892128279883382
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/h3-small-fast30/scorecard.json"
+    },
+    {
+      "run_id": "v1-vision-phase005",
+      "old_pooled": {
+        "natural": {
+          "hidden": 337,
+          "total": 435,
+          "hidden_fraction": 0.774712643678161
+        },
+        "synthetic": {
+          "hidden": 47,
+          "total": 54,
+          "hidden_fraction": 0.8703703703703703
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 173,
+          "total": 246,
+          "hidden_fraction": 0.7032520325203252
+        },
+        "synthetic": {
+          "hidden": 47,
+          "total": 54,
+          "hidden_fraction": 0.8703703703703703
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 172,
+          "total": 246,
+          "hidden_fraction": 0.6991869918699187
+        },
+        "synthetic": {
+          "hidden": 47,
+          "total": 54,
+          "hidden_fraction": 0.8703703703703703
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "apple-vision"
+        ],
+        "included_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "vision-accurate"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/v1-vision-phase005/scorecard.json"
+    },
+    {
+      "run_id": "v2-vision-fast30",
+      "old_pooled": {
+        "natural": {
+          "hidden": 355,
+          "total": 435,
+          "hidden_fraction": 0.8160919540229885
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 187,
+          "total": 246,
+          "hidden_fraction": 0.7601626016260162
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 187,
+          "total": 246,
+          "hidden_fraction": 0.7601626016260162
+        },
+        "synthetic": {
+          "hidden": 46,
+          "total": 54,
+          "hidden_fraction": 0.8518518518518519
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "apple-vision"
+        ],
+        "included_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "ppocr-independent"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "vision-accurate"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/v2-vision-fast30/scorecard.json"
+    },
+    {
+      "run_id": "linux-static-small-tune",
+      "old_pooled": {
+        "natural": {
+          "hidden": 380,
+          "total": 435,
+          "hidden_fraction": 0.8735632183908046
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 321,
+          "total": 343,
+          "hidden_fraction": 0.9358600583090378
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 304,
+          "total": 343,
+          "hidden_fraction": 0.8862973760932945
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/linux-static-small-tune/scorecard.json"
+    },
+    {
+      "run_id": "linux-cuda-medium-tune-contended",
+      "old_pooled": {
+        "natural": {
+          "hidden": 380,
+          "total": 435,
+          "hidden_fraction": 0.8735632183908046
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "independent_both": {
+        "natural": {
+          "hidden": 314,
+          "total": 343,
+          "hidden_fraction": 0.9154518950437318
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "primary": {
+        "natural": {
+          "hidden": 304,
+          "total": 343,
+          "hidden_fraction": 0.8862973760932945
+        },
+        "synthetic": {
+          "hidden": 44,
+          "total": 54,
+          "hidden_fraction": 0.8148148148148148
+        }
+      },
+      "judges": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/linux-cuda-medium-tune-contended/scorecard.json"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 """OCR-observed interval scoring, separate from detectors and video I/O."""
 import numpy as np
 from bench.metrics import matches,iou,readable,truth_from_readings
+from bench.independence import independent_readings, judging_scope
 
 
 def same_occurrence(track,index,box):
@@ -50,7 +51,7 @@ def intervals(truth, output, synthetic):
     return tracks
 
 
-def score_records(input_readings,outputs,synthetic_truth,guards):
+def _score_records(input_readings,outputs,synthetic_truth,guards):
     inputs=[truth_from_readings([r for r in frame if r['confidence']>=.9]) for frame in input_readings]
     natural_truth=[[t for t in frame if not any(matches(t['text'],l['text']) and iou(t['box'],l['box'])>.05 for l in synthetic_truth[i])]
                    for i,frame in enumerate(inputs)]
@@ -69,4 +70,17 @@ def score_records(input_readings,outputs,synthetic_truth,guards):
              'natural':result(natural),'synthetic':result(synthetic),
              'synthetic_input_control':{'total':len(control),'unreadable':sum(not t['leaked'] for t in control)},
              'real_video_pass':real}
+    return quality,details
+
+
+def score_records(input_readings,outputs,synthetic_truth,guards,*,detector_families):
+    """Independent truth/controls avoid denominator bias; all output judges find leaks."""
+    selected_inputs=independent_readings(input_readings,detector_families)
+    quality,details=_score_records(selected_inputs,outputs,synthetic_truth,guards)
+    pooled,_=_score_records(input_readings,outputs,synthetic_truth,guards)
+    scope=judging_scope(detector_families)
+    quality['judge_independence']=scope
+    quality['pooled_not_independent']={'scope':'Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.',**pooled}
+    details.update({'raw_input_readings':input_readings,'output_readings':outputs,
+                    'judge_independence':scope})
     return quality,details

@@ -26,6 +26,7 @@ from shield.motion import MotionHistory
 from shield.types import Detection, Frame
 from bench.metrics import fidelity, quantiles
 from bench.scoring import score_records
+from bench.independence import policy_metadata, annotate_card
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -216,7 +217,7 @@ def _make_backends(candidate, options, resolution):
         raise
 
 
-def _score_saved(source, output, judge, truth, records):
+def _score_saved(source, output, judge, truth, records, *, detector_families):
     before, after = cv2.VideoCapture(str(source)), cv2.VideoCapture(str(output))
     inputs, outputs, guards = [], [], []
     try:
@@ -250,7 +251,8 @@ def _score_saved(source, output, judge, truth, records):
         after.release()
     if len(truth) != len(records):
         raise ValueError('Synthetic truth must retain every source frame and label')
-    quality, details = score_records(inputs, outputs, truth, [g for g in guards if g is not None])
+    quality, details = score_records(inputs, outputs, truth, [g for g in guards if g is not None], detector_families=detector_families)
+    quality['judging']=details['judging']=getattr(judge,'metadata',None)
     protected = sum(row['protected'] or row['state'] != 'LIVE' for row in records)
     quality.update({'live_frames': len(records) - protected, 'protected_frames': protected,
                     'protected_fraction': protected / len(records), 'protected_guard': protected / len(records) < .02,
@@ -349,7 +351,8 @@ def run_file(input_path, output_path, candidate, options=None, *, judge=None, ba
             output.with_suffix(suffix).write_text(json.dumps(rendered[key]) + '\n')
         diagnostics = {key: value for key, value in rendered.items() if key not in {'records', 'detections', 'motion'}}
         output.with_suffix('.offline.json').write_text(json.dumps(diagnostics, indent=2) + '\n')
-        quality = _score_saved(source, output, judge, synthetic_truth, rendered['records'])
+        quality = _score_saved(source, output, judge, synthetic_truth, rendered['records'],
+            detector_families=(options['detector_families'] if 'detector_families' in options else policy_metadata(candidate, options)['detector_families']))
         result = {'mode': 'offline_quality', 'real_time_verified': False, 'gate_1': {'eligible': False, 'pass': False},
                   'benchmark_only': True, 'demo_ready': False, 'candidate': candidate, 'options': options,
                   'source': str(source), 'output': str(output), 'frames': media['frames'], 'source_fps': media['fps'],
@@ -420,12 +423,13 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
         hidden = sum(result[kind]['hidden'] for result in results)
         total = sum(result[kind]['total'] for result in results)
         card[kind] = {'hidden': hidden, 'total': total, 'hidden_fraction': hidden / total if total else None}
+    independence=annotate_card(card)
     controls = [result['synthetic_input_control'] for result in results if result.get('synthetic_variant')]
     control = {'total': sum(row['total'] for row in controls), 'unreadable': sum(row['unreadable'] for row in controls)}
     card['synthetic_input_control'] = control
     ceiling = options.get('area_ceiling')
     card['quality_checks'] = {
-        'judge_discrimination': control['total'] > 0 and control['unreadable'] == 0,
+        'independent_judges': independence['sufficient_independent_engines'], 'judge_discrimination': control['total'] > 0 and control['unreadable'] == 0,
         'natural': card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction'] >= .9,
         'synthetic': card['synthetic']['total'] > 0 and card['synthetic']['hidden_fraction'] == 1.,
         'protected': protected < .02 and all(row['pass'] for row in clip_protected),
@@ -433,7 +437,7 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
         'protected_each_clip': all(row['pass'] for row in clip_protected),
         'real_video': card['real_video_pass'],
         'masked_area': card['masked_area_fraction']['p50'] <= ceiling if ceiling is not None else None}
-    card['comparison_valid'] = (card['quality_checks']['judge_discrimination']
+    card['comparison_valid'] = (card['quality_checks']['independent_judges'] and card['quality_checks']['judge_discrimination']
                                 and card['quality_checks']['protected'] and card['real_video_pass']
                                 and card['quality_checks']['masked_area'] is not False)
     card['comparison_notes'] = ('Protected frames must remain below2% both per clip and in aggregate; a protected/slate-heavy result cannot win. '
@@ -451,7 +455,7 @@ def build_scorecard(results, candidate, options, *, run_id='offline-quality', sp
 def _fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
     paths.update(ROOT / name for name in (
-        'bench/offline_quality.py', 'bench/scoring.py', 'bench/metrics.py', 'bench/pipeline.py',
+        'bench/offline_quality.py', 'bench/independence.py', 'bench/scoring.py', 'bench/metrics.py', 'bench/pipeline.py',
         'bench/onnx_detectors.py', 'bench/static_model.py', 'bench/judges.py', 'bench/vision.py',
         'bench/run.py', 'bench/synthetic.py', 'fixtures/prepare.py', 'fixtures/manifest.json',
         'models/manifest.json', 'requirements.txt', 'requirements-models.txt', 'Sources/VisionBridge/main.swift'))
