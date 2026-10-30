@@ -1,0 +1,272 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "item_id",
+    "card_digest",
+    "grader_identity",
+    "start_id",
+    "status",
+    "complete",
+    "findings",
+    "utility",
+    "location",
+    "exposed_faces_count",
+    "notes"
+  ],
+  "properties": {
+    "version": {
+      "const": 2
+    },
+    "item_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "card_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "grader_identity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "start_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "missing",
+        "timeout"
+      ]
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "findings": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "leak",
+          "severity",
+          "evidence"
+        ],
+        "properties": {
+          "category": {
+            "enum": [
+              "text_sign",
+              "logo_storefront_landmark",
+              "house_number_address",
+              "plate",
+              "bystander_face"
+            ]
+          },
+          "leak": {
+            "enum": [
+              "present",
+              "absent_in_sample",
+              "uncertain"
+            ]
+          },
+          "severity": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "frame_id",
+                "timestamp",
+                "bbox",
+                "exact_string",
+                "cue"
+              ],
+              "properties": {
+                "frame_id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{32}$"
+                },
+                "timestamp": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMaximum": 2
+                },
+                "bbox": {
+                  "type": "array",
+                  "minItems": 4,
+                  "maxItems": 4,
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "exact_string": {
+                  "type": "string",
+                  "maxLength": 150
+                },
+                "cue": {
+                  "type": "string",
+                  "maxLength": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "utility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "defects"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "acceptable",
+            "unacceptable",
+            "uncertain"
+          ]
+        },
+        "defects": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "frame_id",
+              "timestamp",
+              "bbox",
+              "exact_string",
+              "cue"
+            ],
+            "properties": {
+              "frame_id": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{32}$"
+              },
+              "timestamp": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 2
+              },
+              "bbox": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "exact_string": {
+                "type": "string",
+                "maxLength": 150
+              },
+              "cue": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "evidence"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "grounded_specific",
+            "generic",
+            "uncertain",
+            "not_observed"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "frame_id",
+              "timestamp",
+              "bbox",
+              "exact_string",
+              "cue"
+            ],
+            "properties": {
+              "frame_id": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{32}$"
+              },
+              "timestamp": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMaximum": 2
+              },
+              "bbox": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "exact_string": {
+                "type": "string",
+                "maxLength": 150
+              },
+              "cue": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      }
+    },
+    "exposed_faces_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Runtime also enforces unique five categories, grounded evidence, no face identity, complete/status consistency, missing=uncertain, and <=250 visible words."
+}

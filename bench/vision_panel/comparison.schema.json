@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "start_id",
+    "grader_identity",
+    "items",
+    "utility",
+    "evidence"
+  ],
+  "properties": {
+    "version": {
+      "const": 2
+    },
+    "start_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "grader_identity": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{32}$"
+      }
+    },
+    "utility": {
+      "enum": [
+        "A",
+        "B",
+        "tie",
+        "uncertain"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 4,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{32}$"
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
