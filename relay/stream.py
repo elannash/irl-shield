@@ -1,7 +1,7 @@
 """Bounded decoder and sole encoder for the persistent engine transport."""
 import base64
-from collections import deque
-from dataclasses import asdict
+from collections import Counter, deque
+from dataclasses import asdict, replace
 from fractions import Fraction
 import hashlib
 from io import BytesIO
@@ -10,6 +10,7 @@ import math
 import multiprocessing
 import pickle
 import resource
+import random
 import socket
 import struct
 from pathlib import Path
@@ -22,6 +23,7 @@ import av
 import numpy as np
 
 from shield.types import PresentedFrame
+from relay.archive import Archive, MuxSink
 
 _OPERATIONS = ('unknown', 'encoder-startup', 'archive-mux', 'network-mux',
                'network-startup', 'video-encode', 'audio-encode', 'manifest-write')
@@ -33,9 +35,14 @@ class NetworkInput:
         av.logging.set_level(None)
         self.url = url
         self.messages = Queue(maxsize=8)
+        self._drop_lock = threading.Lock()
+        self._pending_drop = None
+        self._invalid_generation = 0
         self.stopped = threading.Event()
         self.dropped = self.high_water = 0
         self.failures = 0
+        self.failure_counts = Counter()
+        self.drop_events = deque(maxlen=64)
         self.error_code = None
         self.last_failure = None
         self.active_generation = 0
@@ -47,8 +54,26 @@ class NetworkInput:
     def _send(self, item):
         if self.stopped.is_set():
             return
-        self.messages.put_nowait(item)
-        self.high_water = max(self.high_water, self.messages.qsize())
+        if item[0] == 'drop':
+            # Media replacement must never evict the transport HOLD signal.
+            # Multiple failures coalesce; aggregate counts preserve their causes.
+            with self._drop_lock:
+                self._invalid_generation = max(self._invalid_generation, item[3])
+                self._pending_drop = item
+            return
+        while not self.stopped.is_set():
+            try:
+                self.messages.put_nowait(item)
+                self.high_water = max(self.high_water, self.messages.qsize())
+                return
+            except Full:
+                # A decode burst is not a broken connection. Keep the newest
+                # media; the engine protects honest gaps and audio becomes silence.
+                try:
+                    self.messages.get_nowait()
+                    self.dropped += 1
+                except Empty:
+                    continue
 
     def _discard(self):
         while True:
@@ -115,17 +140,15 @@ class NetworkInput:
                         self._send(('audio', pts,
                                     sound.to_ndarray().reshape(-1), generation, time.monotonic()))
                     reason = 'input-eof'
-            except Full:
-                # A socket timeout cannot unblock a producer waiting on Queue.
-                # Invalidate this generation rather than presenting stale video.
-                reason = 'input-backpressure'
-                self.failures += 1
             except Exception as error:
                 # Retain the fixed phase, never a libav diagnostic or URL.
                 error_class = type(error).__name__
                 self.failures += 1
             if self.stopped.is_set():
                 break
+            self.failure_counts[reason] += 1
+            self.drop_events.append({'code': reason, 'generation': generation,
+                                     'at_monotonic': time.monotonic(), 'initiator': 'reader'})
             self.error_code = reason
             self.last_failure = {'code': reason, 'error_class': error_class,
                                  'generation': generation, 'at_monotonic': time.monotonic()}
@@ -136,11 +159,23 @@ class NetworkInput:
 
     def drain(self, limit=16):
         rows = []
-        for _ in range(limit):
-            try:
-                rows.append(self.messages.get_nowait())
-            except Empty:
-                break
+        # Publish invalidation and media as one ordered reader boundary. A
+        # buffered frame cannot release transport HOLD after its DROP, even
+        # when EOF left fewer than eight items in the media queue.
+        with self._drop_lock:
+            if limit > 0:
+                if self._pending_drop is not None:
+                    rows.append(self._pending_drop)
+                    self._pending_drop = None
+            for _ in range(limit - len(rows)):
+                try:
+                    item = self.messages.get_nowait()
+                except Empty:
+                    break
+                if item[3] <= self._invalid_generation:
+                    self.dropped += 1
+                    continue
+                rows.append(item)
         return rows
 
     def close(self):
@@ -149,7 +184,16 @@ class NetworkInput:
         if self.thread.is_alive():
             raise RuntimeError('input-close-timeout')
         self._discard()
+        with self._drop_lock:
+            self._pending_drop = None
         self.url = None
+
+
+def enforce_hold(result, active):
+    if active and not result.slate:
+        return replace(result, pixels=np.zeros_like(result.pixels), mask=np.full_like(result.mask, 255),
+                       quads=[], state='HOLD', protected=True, slate=True)
+    return result
 
 
 class EgressError(RuntimeError):
@@ -204,7 +248,7 @@ class _EncodedOutput:
         self._progress = progress
         self.generation = generation
         self.phase = 'encoder-startup'
-        self.out = self.archive = self.manifest = None
+        self.out = self.archive = None
         self.ready = False
         self.pending = []
         self.packet_types = set()
@@ -212,17 +256,14 @@ class _EncodedOutput:
         if not 1 <= len(self.urls) <= 2 or not all(isinstance(u, str) and u for u in self.urls):
             raise EgressError('egress-destinations')
         self.outputs = []
-        self.directory = Path(directory)
-        self.directory.mkdir(parents=True, exist_ok=True)
+        self.evidence = Archive(directory)
+        self.directory = self.evidence.directory
         try:
             if recoveries:
-                self.phase = 'manifest-write'
-                with (self.directory / 'egress-recovery.jsonl').open('a') as events:
-                    for event in recoveries:
-                        events.write(json.dumps(event) + '\n')
-                self.phase = 'encoder-startup'
-            archive_path = self.directory / ('encoded.flv' if generation == 1 else f'encoded-g{generation:04d}.flv')
-            self.archive = av.open(str(archive_path), 'w', format='flv', options={
+                self.evidence.text('egress-recovery.jsonl', ''.join(json.dumps(e) + '\n' for e in recoveries))
+            name = 'encoded.flv' if generation == 1 else f'encoded-g{generation:04d}.flv'
+            self._mux_sink = MuxSink(self.evidence, name)
+            self.archive = av.open(self._mux_sink, 'w', format='flv', options={
                 'flvflags': 'no_duration_filesize', 'flush_packets': '1'})
             self.video = self.archive.add_stream(encoder, rate=30)
             self.video.width, self.video.height, self.video.pix_fmt = width, height, 'yuv420p'
@@ -241,15 +282,17 @@ class _EncodedOutput:
             self.audio.codec_context.thread_count = 2
             self.audio.time_base = self.audio.codec_context.time_base = Fraction(1, 48000)
             self.archive.start_encoding()
-            manifest_path = self.directory / 'frames.jsonl'
-            if generation > 1 and manifest_path.exists() and manifest_path.stat().st_size:
-                with manifest_path.open('rb+') as previous:
-                    previous.seek(-1, 2)
-                    if previous.read(1) != b'\n':
-                        # Preserve a killed writer's partial row as evidence; a
-                        # later strict audit can reject it without losing rows.
-                        previous.write(b'\n')
-            self.manifest = manifest_path.open('w' if generation == 1 else 'a')
+            if self.evidence.check():
+                manifest_path = self.directory / 'frames.jsonl'
+                try:
+                    if generation > 1 and manifest_path.exists() and manifest_path.stat().st_size:
+                        with manifest_path.open('rb+') as previous:
+                            previous.seek(-1, 2)
+                            if previous.read(1) != b'\n':
+                                previous.write(b'\n')
+                    self.evidence.text('frames.jsonl', '', 'w' if generation == 1 else 'a')
+                except OSError:
+                    self.evidence.enabled = False
             self.ready = True
         except BaseException:
             self.close(flush=False)
@@ -279,10 +322,9 @@ class _EncodedOutput:
         # Header-only FLV probing crashes this bundled libav; wait for both
         # streams, bounded above by 16 packets, without submitting dummy pixels.
         self.phase = 'network-startup'
-        archive_path = self.directory / ('encoded.flv' if self.generation == 1 else f'encoded-g{self.generation:04d}.flv')
         for url in self.urls:
             self.out = av.open(url, 'w', format='flv', options={'flvflags': 'no_duration_filesize'})
-            with av.open(BytesIO(archive_path.read_bytes()), format='flv') as header:
+            with av.open(BytesIO(bytes(self._mux_sink.prefix)), format='flv') as header:
                 self.streams = {}
                 for stream in header.streams:
                     copied = self.out.add_stream_from_template(stream, opaque=True)
@@ -307,6 +349,7 @@ class _EncodedOutput:
         for kind, pending in self.pending:
             self._network_mux(kind, pending)
         self.pending.clear()
+        self._mux_sink.prefix = None
 
     def _network_mux(self, kind, packet):
         for output, streams in self.outputs:
@@ -332,6 +375,8 @@ class _EncodedOutput:
         self.phase = 'audio-encode'
         for packet in self.audio.encode(sound):
             self._mux(packet)
+        if not self.evidence.check():
+            return
         row = {'index': result.index, 'pts': result.pts, 'state': result.state,
                'egress_generation': self.generation,
                'protected': result.protected, 'slate': result.slate, 'coverage': asdict(result.coverage),
@@ -344,8 +389,7 @@ class _EncodedOutput:
                'audio_pcm_sha256': hashlib.sha256(pcm.tobytes()).hexdigest(),
                'audio_pts_samples': result.index * 1600, 'audio_samples': 1600}
         self.phase = 'manifest-write'
-        self.manifest.write(json.dumps(row) + '\n')
-        self.manifest.flush()
+        self.evidence.text('frames.jsonl', json.dumps(row) + '\n')
 
     def close(self, flush=True):
         failed = False
@@ -360,14 +404,15 @@ class _EncodedOutput:
         networks = [output for output, _ in self.outputs]
         if self.out is not None and self.out not in networks:
             networks.append(self.out)
-        for resource in (*networks, self.archive, self.manifest):
+        for resource in (*networks, self.archive):
             if resource is not None:
                 try:
                     resource.close()
                 except Exception:
                     failed = True
-        self.out = self.archive = self.manifest = None
+        self.out = self.archive = None
         self.outputs.clear()
+        self.evidence.close()
         self.urls = ()
         self.ready = False
         if failed:
@@ -428,14 +473,16 @@ class Egress:
         if any(type(n) is not int or n < 2 or n % 2 for n in (width, height)):
             raise ValueError('Expected even egress dimensions')
         self.width, self.height = width, height
-        self.directory = Path(directory)
+        self.directory = Path(directory) if directory is not None else None
         self._url, self._encoder = url, encoder
+        self.hold_active = lambda: False
         self.count = self.recovery_count = 0
         self.error_code = self.error_details = None
         self.max_write_seconds = 0.
         self.generation = 1
         self.recovery_events = deque(maxlen=64)
-        self._recovery_times = deque()
+        self._outage_started = None
+        self._retry_attempts = 0
         self._pending_events = deque(maxlen=64)
         self._last_index = None
         self._last_attempted = -1
@@ -453,7 +500,7 @@ class Egress:
         context = multiprocessing.get_context('spawn')
         self._progress = context.Array('d', [0., time.monotonic(), -1., -1.], lock=False)
         self._process = context.Process(target=_encode_worker,
-            args=(worker_channel, self._url, str(self.directory), self.width, self.height,
+            args=(worker_channel, self._url, str(self.directory) if self.directory is not None else None, self.width, self.height,
                   self._encoder, self._progress, self.generation, list(self._pending_events)),
             name='m2-egress')
         self._worker_reaped = self._closed = False
@@ -519,28 +566,30 @@ class Egress:
         if not self._worker_reaped:
             raise EgressError('egress-worker-survived') from None
         now = time.monotonic()
-        while self._recovery_times and now - self._recovery_times[0] >= 60:
-            self._recovery_times.popleft()
-        if len(self._recovery_times) >= 5:
+        if self._outage_started is None:
+            self._outage_started = now
+        if self._retry_attempts >= 5 and now - self._outage_started >= 60:
             self._terminal = True
             self.error_code = 'egress-recovery-limit'
             self.error_details = {'phase': 'egress-recovery',
                                   'operation': (self.error_details or {}).get('operation', 'unknown'),
-                                  'error_class': 'EgressError', 'max_reconnects': 5, 'window_seconds': 60,
-                                  'message': 'Egress reconnect limit exceeded'}
+                                  'error_class': 'EgressError', 'minimum_failures': 5, 'budget_seconds': 60,
+                                  'message': 'Egress outage time budget exhausted'}
             raise EgressError(self.error_code) from None
-        self._recovery_times.append(now)
+        self._retry_attempts += 1
         self.recovery_count += 1
         event = {'event': 'egress-recovery', 'code': error.code,
                  'operation': (self.error_details or {}).get('operation', 'unknown'),
                  'at_monotonic': now, 'failed_index': index,
                  'generation': self.generation, 'next_generation': self.generation + 1,
-                 'attempts_in_window': len(self._recovery_times),
-                 'window_seconds': 60, 'max_reconnects': 5, 'old_worker_reaped': True}
+                 'attempt_in_outage': self._retry_attempts,
+                 'budget_seconds': 60, 'minimum_failures': 5, 'old_worker_reaped': True}
         self.recovery_events.append(event)
         self._pending_events.append(event)
         self._recovering = True
-        self._fresh_after, self._retry_at = now, now + .25
+        delay = min(8., .5 * 2 ** min(self._retry_attempts - 1, 4))
+        self._fresh_after = now
+        self._retry_at = now + delay + random.uniform(0., delay * .2)
         self._last_attempted = max(self._last_attempted, index)
 
     def write(self, result, pcm):
@@ -551,7 +600,7 @@ class Egress:
                 or type(result.index) is not int or result.index < 0
                 or not math.isfinite(result.pts) or abs(result.pts - result.index / 30) > 1e-7
                 or (not self._recovering and self._last_index is not None
-                    and result.index != self._last_index + 1)
+                    and result.index <= self._last_index)
                 or not isinstance(result.pixels, np.ndarray) or result.pixels.dtype != np.uint8
                 or result.pixels.shape != (self.height, self.width, 3)
                 or not isinstance(result.mask, np.ndarray) or result.mask.shape != (self.height, self.width)
@@ -580,6 +629,8 @@ class Egress:
             self._last_attempted = result.index
             try:
                 self._channel.settimeout(5)
+                # Re-read control after startup and queue waits, at the native handoff.
+                result = enforce_hold(result, self.hold_active())
                 _message(self._channel, ('write', (result, pcm)))
             except TimeoutError:
                 self._fail('egress-write-timeout')
@@ -599,6 +650,8 @@ class Egress:
             if not self._network_ready:
                 return None
             self._recovering = False
+            self._outage_started = None
+            self._retry_attempts = 0
             self.error_code = self.error_details = None
         return True
 

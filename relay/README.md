@@ -35,13 +35,14 @@ or pass its already verified model cache. The manual phone-setup command is:
 ```bash
 scripts/host-lock exclusive systemd-run --user --scope --slice=app-t3code-agents.slice \
   scripts/m2-live --model-cache /home/elan/code/irl-shield/models/cache \
-  --artifacts .tmp/m2/manual-session --phone-setup
+  --host 127.0.0.1 --archive .tmp/m2/manual-session --phone-setup
 ```
 
 This explicit interactive-terminal action displays runtime-generated phone
 credentials once. Do not redirect, record or save that terminal. Automated
-runs omit `--phone-setup` and never print credentials. The default listeners
-are `100.109.49.77:19350` (RTMP) and `100.109.49.77:18890` (SRT).
+runs omit `--phone-setup` and never print credentials. Listeners require an explicit `--host` or `SHIELD_BIND_HOST`: IPv4 loopback or
+a Tailscale address in `100.64.0.0/10`, on ports 19350 (RTMP) and 18890 (SRT).
+`python -m shield.cli doctor` reports the detected Tailscale IP or `unavailable`.
 The sole internal reader uses TCP RTSP on `127.0.0.1:18554`, protected by the
 internal credential. RTSP UDP/multicast transports are disabled. Phone
 publication over either RTMP or SRT converges on this reader.
@@ -49,8 +50,8 @@ publication over either RTMP or SRT converges on this reader.
 allowed. Port conflicts fail startup; an incumbent process is never stopped.
 
 Moblin publishes to `camera`; phone credentials grant no read permission and
-cannot publish to `shielded`. OBS pulls `rtmp://100.109.49.77:19350/shielded`
-or `srt://100.109.49.77:18890?streamid=read:shielded`. Only the internal
+cannot publish to `shielded`. OBS pulls `rtmp://<your-tailscale-ip>:19350/shielded`
+or `srt://<your-tailscale-ip>:18890?streamid=read:shielded`. Only the internal
 runtime credential can publish protected output. Other listeners, recording,
 anonymous publication and publisher replacement are disabled.
 
@@ -80,10 +81,14 @@ Source names are `local`, `twitch-chat`, or `eventsub`; reasons are `manual`,
 events to this vocabulary; do not send raw chat text as reasons. Each source
 owns its hold. A reconnect clears only the transport hold.
 
-The Twitch destination is a **stub** with no network implementation. It holds
-a supplied key in memory, enforces `?bandwidthtest=true`, and never obtains a
-key or contacts Twitch. M3 must acquire credentials through Infisical and the
-authorized Twitch flow after owner approval. Key removal is explicit.
+The application controls acquire the stream key through the authorized Helix
+flow and install it in memory. The runtime sends that destination to the sole
+encoder worker through a private spawn pipe only when `publish_twitch=True`
+(the CLI flag is `--twitch-bandwidth-test`). A configured key alone never forms
+a Twitch destination. The route is RTMPS on port 443 with mandatory
+`?bandwidthtest=true`; it is an external publish requiring separate session
+authorization. No live-publish override exists. Keys never enter argv, logs,
+archives or the OS keyring; removal is explicit. No Twitch request was run here.
 
 ## Evidence and limits
 
@@ -102,7 +107,10 @@ become silence and increment counters. Each output frame carries 1,600 mono
 effects must be measured with the flash/beep fixture; timestamp math alone
 does not establish A/V sync.
 
-`encoded.flv`, `frames.jsonl` and `runtime.json` describe actual encoded
+Archives are off by default. `--archive <dir>` opts in; below 128 MiB free or
+on a disk I/O error, diagnostics stop while the relay continues. The encoder
+uses a startup fragment bounded to 1 MiB in memory even without an archive.
+Opt-in `encoded.flv`, `frames.jsonl` and `runtime.json` describe actual encoded
 packets, PTS, per-frame protection/coverage, compressed masks, pixel/PCM hashes
 and bounds. An independent native capture is needed to prove network egress.
 Root's corrected independent-family OCR grades sealed captures after PR1
@@ -112,7 +120,11 @@ without music, and are not demo-ready.
 
 Timed/20-minute jobs go through root's fresh `scripts/perf-queue` session and
 inherit its exclusive lease; never wrap a queue-owned job in another lock.
-Short untimed functional media checks take the canonical exclusive host lock.
+Short untimed functional checks take the canonical shared host lock; timed jobs
+take it exclusively. A dedicated egress writer retains only one replaceable
+pending frame and never backpressures ingest. Reconnect delays grow from 0.5
+to 8 seconds plus positive jitter, with a minimum 60-second continuous outage
+budget. OBS and Twitch still share failures in one native worker.
 
 ## Dependencies and licenses
 

@@ -1,7 +1,8 @@
-"""Linux live relay; no Twitch login, key acquisition, or Twitch network egress."""
+"""Live relay with optional bandwidth-test RTMPS; key acquisition belongs to controls."""
 import argparse
 import json
 import math
+import os
 from pathlib import Path
 import signal
 import sys
@@ -9,6 +10,8 @@ import threading
 import time
 
 from relay.live import RelayControl, RelaySession
+from relay.egress import EgressWriter
+from relay.archive import Archive
 from relay.mediamtx import MediaMTX
 from relay.security import Credentials, RelayAddress
 from relay.stream import Egress, NetworkInput
@@ -43,7 +46,7 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
     This function owns engine lifetime. The caller owns MediaMTX and the stop
     event, and must never log the credentials it supplied.
     """
-    source = output = None
+    source = output = writer = None
     session = None
     summary = {'status': 'failed'}
     started = time.monotonic()
@@ -65,7 +68,8 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                 raise ValueError('Synthetic sink must be loopback RTMP /shielded')
             destinations.append(local_sink)
         output = Egress(tuple(destinations), directory, width, height, encoder)
-        session = RelaySession(engine, output.write, width=width, height=height, control=control)
+        writer = EgressWriter(output, lambda: engine.control.state == 'HOLD')
+        session = RelaySession(engine, writer.write, width=width, height=height, control=control)
         source = NetworkInput(address.rtsp('camera', internal))
         while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
             for kind, pts, value, generation, arrived in source.drain():
@@ -89,7 +93,7 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
         raise RuntimeError('Relay transport failed (upstream diagnostics suppressed)') from None
     finally:
         cleanup = []
-        for resource in (source, engine, output):
+        for resource in (source, writer if writer is not None else output, engine):
             if resource is not None:
                 try:
                     resource.close()
@@ -97,20 +101,22 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                     cleanup.append(type(resource).__name__)
         summary.update(seconds=time.monotonic() - started, cleanup_errors=cleanup,
                        session=session.stats if session else None,
-                       input_queue_capacity=8, input_queue_high_water=source.high_water if source else None,
+                       egress_queue_capacity=1, egress_dropped=writer.dropped if writer else 0,
+                       input_queue_capacity=8, input_control_capacity=1, input_queue_high_water=source.high_water if source else None,
                        engine=engine.stats, output_frames=output.count if output else 0,
                        max_egress_write_seconds=output.max_write_seconds if output else None,
                        egress_recoveries=({'count': output.recovery_count,
                                            'recent_events': list(output.recovery_events),
-                                           'max_reconnects': 5, 'window_seconds': 60}
+                                           'minimum_failures': 5, 'budget_seconds': 60}
                                           if output else None))
         summary['input_diagnostics'] = ({'active_generation': source.active_generation,
                                          'last_failure': source.last_failure,
+                                         'failure_counts': dict(getattr(source, 'failure_counts', {})),
+                                         'recent_drop_events': list(getattr(source, 'drop_events', ())),
+                                         'dropped_media': getattr(source, 'dropped', 0),
                                          'timestamp_issues': source.timestamp_issues}
                                         if source else None)
-        directory = Path(directory)
-        directory.mkdir(parents=True, exist_ok=True)
-        (directory / 'runtime.json').write_text(json.dumps(summary, indent=2) + '\n')
+        Archive(directory).text('runtime.json', json.dumps(summary, indent=2) + '\n', 'w')
         if cleanup:
             raise RuntimeError('Relay cleanup failed: ' + ','.join(cleanup)) from None
     return summary
@@ -118,8 +124,8 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--host', default='100.109.49.77')
-    parser.add_argument('--artifacts', type=Path, required=True)
+    parser.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'))
+    parser.add_argument('--archive', type=Path, help='Opt in to full diagnostic evidence')
     parser.add_argument('--model-cache', type=Path, default=Path('models/cache'))
     parser.add_argument('--phone-setup', action='store_true')
     parser.add_argument('--seconds', type=float)
@@ -142,7 +148,7 @@ def main():
             print('Moblin SRT URL:', address.srt('publish', 'camera', phone))
             print('OBS RTMP:', address.rtmp('shielded'))
             print('OBS SRT:', address.srt('read', 'shielded'))
-        run(engine, address, phone, internal, args.artifacts, stopped, args.seconds)
+        run(engine, address, phone, internal, args.archive, stopped, args.seconds)
 
 
 if __name__ == '__main__':

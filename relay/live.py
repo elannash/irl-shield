@@ -9,14 +9,14 @@ import time
 import cv2
 import numpy as np
 
-from relay.security import TwitchStub
+from relay.security import TwitchDestination
 from shield.types import Frame
 
 
 class RelayControl:
     def __init__(self, engine):
         self.engine = engine
-        self.twitch = TwitchStub()
+        self.twitch = TwitchDestination()
 
     def hold(self, active, source='local', reason='manual', now=None):
         twitch_sources = {'chat': 'moderator', 'shield_mode': 'shield-mode',

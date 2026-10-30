@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import resource
 import signal
+import subprocess
 import sys
 import threading
 from urllib.parse import urlsplit
@@ -26,12 +27,13 @@ def parser():
         command.add_argument('--local-only', action='store_true', help='No Twitch authentication or EventSub')
         command.add_argument('--twitch-bandwidth-test', action='store_true', help='Explicitly publish to Twitch test ingest')
         command.add_argument('--local-sink', help='Local fake Twitch RTMP /shielded sink; requires --mock-origin')
-        command.add_argument('--host', choices=('127.0.0.1', '100.109.49.77'), default='127.0.0.1')
+        command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'),
+                             help='Required relay bind: IPv4 loopback or Tailscale 100.64.0.0/10 (or SHIELD_BIND_HOST)')
         command.add_argument('--rtmp-port', type=int, default=19350)
         command.add_argument('--rtsp-port', type=int, default=18554)
         command.add_argument('--srt-port', type=int, default=18890)
         command.add_argument('--model-cache', type=Path, default=Path('models/cache'))
-        command.add_argument('--artifacts', type=Path, default=Path('out/run'))
+        command.add_argument('--archive', type=Path, help='Opt in to full stream and per-frame evidence')
         command.add_argument('--mediamtx-dir', type=Path, help='Directory with the hash-pinned MediaMTX binary')
         command.add_argument('--seconds', type=float)
         command.add_argument('--phone-setup', action='store_true', help='Show runtime phone credentials on /dev/tty')
@@ -40,6 +42,9 @@ def parser():
 
 
 def validate(args):
+    if args.command == 'run' or args.command == 'login' and args.run:
+        from relay.security import RelayAddress
+        RelayAddress(args.host, args.rtmp_port, args.srt_port, args.rtsp_port)
     if args.command == 'login' and args.local_only:
         raise ValueError('Login requires Twitch authorization')
     if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
@@ -61,6 +66,20 @@ def validate(args):
         raise ValueError('Local-only mode cannot use Twitch controls or credentials')
 
 
+def tailscale_ipv4():
+    import ipaddress
+    try:
+        result = subprocess.run(['tailscale', 'ip', '-4'], capture_output=True, text=True, timeout=2)
+        if result.returncode == 0:
+            for line in result.stdout.splitlines():
+                address = ipaddress.IPv4Address(line.strip())
+                if address in ipaddress.IPv4Network('100.64.0.0/10'):
+                    return str(address)
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        pass  # An absent/disabled Tailscale is an explicit doctor result.
+    return 'unavailable'
+
+
 def doctor():
     packages = {}
     for name in ('numpy', 'opencv-python-headless', 'av', 'onnxruntime-gpu', 'twitchAPI', 'aiohttp'):
@@ -74,7 +93,7 @@ def doctor():
         media = 'hash-verified'
     except (OSError, RuntimeError):
         media = 'missing-or-invalid; run scripts/m2-tools'
-    return {'platform': sys.platform, 'packages': packages, 'mediamtx': media,
+    return {'tailscale_ipv4': tailscale_ipv4(), 'platform': sys.platform, 'packages': packages, 'mediamtx': media,
             'cuda': 'not exercised', 'nvenc': 'not exercised',
             'rtmp': 'implemented; native qualification separate', 'srt': 'UNQUALIFIED; do not use for walking',
             'privacy': 'UNQUALIFIED; independent Q gate required',
@@ -144,7 +163,7 @@ async def execute(args):
                         terminal_setup(address, phone)
                     engine = await asyncio.to_thread(make_engine, args.model_cache)
                     work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
-                        args.artifacts, stopped, args.seconds, control_ready=register,
+                        args.archive, stopped, args.seconds, control_ready=register,
                         publish_twitch=args.twitch_bandwidth_test, local_sink=args.local_sink))
                     try:
                         await asyncio.shield(work)
