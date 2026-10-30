@@ -1,0 +1,114 @@
+{
+  "base": "65891cb0b515bc0c34ec4ded89aa6a3228992cc2",
+  "capabilities_called_once": true,
+  "children": [
+    {
+      "arm": "precision",
+      "task_id": "node:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Aa97fa9fb-f02e-4e0f-8207-19156058d9e6",
+      "thread_id": "thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Aa97fa9fb-f02e-4e0f-8207-19156058d9e6",
+      "link": "<t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Aa97fa9fb-f02e-4e0f-8207-19156058d9e6>",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "options": {
+        "reasoningEffort": "xhigh",
+        "serviceTier": "priority"
+      },
+      "isolation": "worktree",
+      "requested_base": "65891cb0b515bc0c34ec4ded89aa6a3228992cc2",
+      "fence": [
+        "shield/render.py",
+        "shield/masking.py",
+        "shield/mask_precision.py",
+        "related render/masking tests",
+        "bench/q2_precision/**",
+        "bench/LOG-q2-precision.md"
+      ],
+      "readiness": "CPU/source receipts accepted with integration and qualification gaps",
+      "worktree": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b",
+      "branch": "t3/q2-mask-precision",
+      "budget_used": 12,
+      "budget_remaining": 8,
+      "patch": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/.tmp/q2-precision/implementation.patch",
+      "patch_sha256": "14e14c13d575604157180eee72f683feeeb22cf3b67458881a05f23dbbc523c1",
+      "pipeline_sha256": "b9bbc630e0ad2213bb5f16576fcba832141422cce97d5643f40ca62f4ea6037a",
+      "integration_gaps": [
+        "union adapter not wired into sealed/clocked harness",
+        "budget diagnostics not retained by harness"
+      ],
+      "receipt_audit": "out/q2-hillclimb/precision-audit.json",
+      "evaluation": "HELD; no quality/performance measurements",
+      "posthash_manifest": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/out/q2-precision/postapply.sha256",
+      "handback": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/out/q2-precision/handback.json"
+    },
+    {
+      "arm": "recall",
+      "task_id": "node:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Ad0d04b89-1576-4be2-8bcd-832f9ea26cab",
+      "thread_id": "thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Ad0d04b89-1576-4be2-8bcd-832f9ea26cab",
+      "link": "<t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3Ad0d04b89-1576-4be2-8bcd-832f9ea26cab>",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "options": {
+        "reasoningEffort": "xhigh",
+        "serviceTier": "priority"
+      },
+      "isolation": "worktree",
+      "requested_base": "65891cb0b515bc0c34ec4ded89aa6a3228992cc2",
+      "fence": [
+        "bench/onnx_detectors.py",
+        "necessary new derived static model entries only",
+        "bench/q2_recall/**",
+        "bench/LOG-q2-recall.md"
+      ],
+      "readiness": "CPU/config receipts accepted; measurement HELD",
+      "worktree": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190",
+      "branch": "t3/q2-recall-detector-arms",
+      "budget_used": 10,
+      "budget_remaining": 10,
+      "receipt_audit": "out/q2-hillclimb/recall-audit.json",
+      "evaluation": "HELD; no quality/performance measurements",
+      "patch": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/.tmp/q2-recall/recall.patch",
+      "patch_sha256": "9e5933f97839df600978139e2192c46ea0b23b01db89dac54f0e1b3d5492e8e0",
+      "posthash_manifest": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/.tmp/q2-recall/post-sha256.json",
+      "handback": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/out/q2-recall/handback.json"
+    },
+    {
+      "arm": "temporal",
+      "task_id": "node:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3A22093f51-5cd1-411b-a06d-bd805ee95e07",
+      "thread_id": "thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3A22093f51-5cd1-411b-a06d-bd805ee95e07",
+      "link": "<t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A4604c41b-99c6-432d-bed9-120571e9de69%3Adelegate-task%3A22093f51-5cd1-411b-a06d-bd805ee95e07>",
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "options": {
+        "reasoningEffort": "xhigh",
+        "serviceTier": "priority"
+      },
+      "isolation": "worktree",
+      "requested_base": "65891cb0b515bc0c34ec4ded89aa6a3228992cc2",
+      "fence": [
+        "shield/engine.py",
+        "shield/motion.py",
+        "shield/optical_tracking.py",
+        "related engine/motion tests",
+        "bench/q2_temporal/**",
+        "bench/LOG-q2-temporal.md"
+      ],
+      "readiness": "CPU/source receipts accepted with integration and qualification gaps",
+      "worktree": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c",
+      "branch": "t3/temporal-optical-flow-tracking",
+      "budget_used": 11,
+      "budget_remaining": 9,
+      "patch": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/.tmp/q2-temporal/implementation.patch",
+      "patch_sha256": "945f5ad10fb58699271359f81a7bcc4059a7c0cab76e3246cb0be5f04525f9e7",
+      "pipeline_sha256": "f4d212faff6a2f750e4ed9e636a81d0f02b5252f8d2f3fdca903c11857abfdbe",
+      "integration_gaps": [
+        "sealed offline factory omits mandatory flow horizon",
+        "D2/D3 blocked by frozen D<=1 validators",
+        "live adapter does not relay generation token"
+      ],
+      "receipt_audit": "out/q2-hillclimb/temporal-audit.json",
+      "evaluation": "HELD; no quality/performance measurements",
+      "handback": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/.tmp/q2-temporal/handback.json",
+      "posthash_manifest": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/.tmp/q2-temporal/handback.json"
+    }
+  ]
+}

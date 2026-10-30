@@ -1,0 +1,90 @@
+{
+  "status": "HELD",
+  "quality_ranking": null,
+  "best_guard_passing": null,
+  "closest_measured_nearmiss": null,
+  "barriers": {
+    "PHONE_TEST_DONE": null,
+    "GPU_RELEASED": null,
+    "V2_FROZEN_manifestSHA": null,
+    "active_EX_queue": null
+  },
+  "budget": {
+    "aggregate_cap": 76,
+    "coordinator_cap": 16,
+    "coordinator_used": 7,
+    "coordinator_remaining": 9,
+    "recall_used": 10,
+    "recall_remaining": 10,
+    "precision_used": 12,
+    "precision_remaining": 8,
+    "temporal_used": 11,
+    "temporal_remaining": 9,
+    "aggregate_used": 40,
+    "aggregate_remaining": 36
+  },
+  "current": [
+    {
+      "id": "baseline-658",
+      "status": "Unexecuted plan ready",
+      "scorecard": null,
+      "quality": null,
+      "gpu_ms_per_source_frame": null,
+      "promotable": false
+    },
+    {
+      "id": "precision",
+      "status": "CPU/source receipts accepted with integration and qualification gaps",
+      "quality": null,
+      "gpu_ms_per_source_frame": null,
+      "promotable": false
+    },
+    {
+      "id": "recall",
+      "status": "CPU/config receipts accepted; measurement HELD",
+      "quality": null,
+      "gpu_ms_per_source_frame": null,
+      "promotable": false
+    },
+    {
+      "id": "temporal",
+      "status": "CPU/source receipts accepted with integration and qualification gaps",
+      "quality": null,
+      "gpu_ms_per_source_frame": null,
+      "promotable": false
+    }
+  ],
+  "historical": [
+    {
+      "id": "a8-baseline",
+      "status": "Historical diagnostic; not a new common baseline",
+      "source": "docs/Q-FRESH-HELDOUT-RESULT.md"
+    },
+    {
+      "id": "b12",
+      "status": "Rejected historically; no hiding improvement; area regression",
+      "source": "docs/Q-B6-B12.md"
+    },
+    {
+      "id": "giant-confirmation-cap",
+      "status": "Rejected historically; positives must remain masked; no validated full solution",
+      "source": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/docs/Q-GIANT-AUDIT.md"
+    },
+    {
+      "id": "q1-edge-clamp",
+      "status": "Falsified per root packet; not re-executed in this task",
+      "source": "root Q2 work order"
+    }
+  ],
+  "cleanup": {
+    "coordinator_persistent_processes_started": false,
+    "child_process_cleanup": "all three cleanup receipts read; no reported survivor"
+  },
+  "deadlines": {
+    "interim_ready_utc": "2026-10-30T23:00:00Z",
+    "v1_handback_utc": "2026-10-31T12:30:00Z",
+    "v1_freeze_utc": "2026-10-31T13:00:00Z",
+    "final_freeze_utc": "2026-11-01T14:00:00Z",
+    "zone": "America/Los_Angeles"
+  }
+}
