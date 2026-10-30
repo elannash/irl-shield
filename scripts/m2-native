@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ulimit -c 0
+cd "$(dirname "$0")/.."
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+exec nice -n 10 "${M2_PYTHON:-.tmp/m2/py311/bin/python}" -m relay.native_auth "$@"

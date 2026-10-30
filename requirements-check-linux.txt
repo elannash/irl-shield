@@ -1,0 +1,7 @@
+# One Python 3.11 Linux environment. GPU runtime retains Pascal/CUDA12.4.
+# Never combine requirements-models.txt (CPU ORT) with this environment.
+# Licenses: bench/PORTABILITY.md, models/licenses/dependencies.json,
+# shield/app/DEPENDENCIES.json and shield/twitch/LICENSES.md.
+-r requirements.txt
+-r requirements-linux-gpu.txt
+-r shield/app/requirements.txt

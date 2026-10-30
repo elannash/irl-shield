@@ -280,6 +280,10 @@ class ChatControl(unittest.TestCase):
                                                generation=events.generation), 'expired')
                 self.assertEqual(control.state, 'HOLD')
                 events.clock = lambda: START + 100000
+                self.assertEqual(events.accept(notification('far-future-older-release', release, actor='1',
+                                                           topic=release_topic, at=START + 99999.5),
+                                               generation=events.generation), 'expired')
+                self.assertEqual(control.state, 'HOLD')
                 self.assertIn(events.accept(notification('later-release', release, actor='1',
                                                         topic=release_topic, at=START + 100001),
                                             generation=events.generation), ('chat-resume', 'shield-end'))

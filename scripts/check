@@ -1,7 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python -m unittest discover -s tests/m2 -v
-.venv/bin/python -m compileall -q -x '/\.venv' bench fixtures models shield relay
-swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge
+python=${SHIELD_PYTHON:-.venv/bin/python}
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+export VECLIB_MAXIMUM_THREADS=2 OPENCV_FOR_THREADS_NUM=1 PYTHONDONTWRITEBYTECODE=1
+# Imports must come from one provisioned interpreter, not mixed venv overlays.
+unset PYTHONPATH
+"$python" - <<'PY'
+import sys
+from importlib import metadata
+if sys.version_info[:2] != (3, 11):
+    raise RuntimeError('scripts/check requires the pinned Python 3.11 environment')
+import av, twitchAPI, onnxruntime, rapidocr, pytesseract, cv2, psutil, aiohttp
+installed = {d.metadata['Name'].lower().replace('_', '-'): d.version for d in metadata.distributions()}
+if 'onnxruntime' in installed and 'onnxruntime-gpu' in installed:
+    raise RuntimeError('Conflicting CPU/GPU ONNX Runtime distributions in one environment')
+print('Gate interpreter:', sys.executable, sys.version.split()[0], flush=True)
+print('ONNX Runtime:', onnxruntime.__version__, 'PyAV:', av.__version__, flush=True)
+PY
+"$python" tests/integration/gate.py
+if [[ $(uname -s) == Darwin ]]; then
+  mkdir -p .build
+  swiftc -O Sources/VisionBridge/main.swift -o .build/vision-bridge
+else
+  printf '%s\n' 'NOT RUN BY DESIGN: Apple Vision Swift build requires macOS; Linux gate is Python/relay.'
+fi

@@ -1,0 +1,7 @@
+# Full standalone Linux install. CUDA12.4/ORT1.20.2 retain Pascal support.
+# Existing pins and license inventory: ../bench/PORTABILITY.md.
+-r ../requirements-linux-gpu.txt
+# BSD-3-Clause, https://github.com/PyAV-Org/PyAV/blob/v16.0.1/LICENSE.txt
+# Installed Linux wheel bundles FFmpeg with GPL components (including x264).
+# FFmpeg GPL-2.0-or-later/component notices: https://ffmpeg.org/legal.html
+av==16.0.1

@@ -1,0 +1,198 @@
+{
+  "purpose": "Pinned integration Python 3.11 overlay for existing engine environment",
+  "gpu_pins": "../../requirements-linux-gpu.txt",
+  "existing_license_records": [
+    "../twitch/LICENSES.md",
+    "../twitch/DEPENDENCIES.json",
+    "../../bench/PORTABILITY.md",
+    "../../relay/requirements.txt"
+  ],
+  "packages": [
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "license": "PSF-2.0",
+      "source": "https://pypi.org/project/aiohappyeyeballs/2.7.1/"
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.14.5",
+      "license": "Apache-2.0 AND MIT",
+      "source": "https://pypi.org/project/aiohttp/3.14.5/"
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "license": "Apache 2.0",
+      "source": "https://pypi.org/project/aiosignal/1.4.0/"
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "license": "MIT",
+      "source": "https://pypi.org/project/attrs/26.1.0/"
+    },
+    {
+      "name": "av",
+      "version": "16.0.1",
+      "license": "BSD-3-Clause",
+      "source": "https://pypi.org/project/av/16.0.1/"
+    },
+    {
+      "name": "backports.tarfile",
+      "version": "1.2.0",
+      "license": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "source": "https://pypi.org/project/backports.tarfile/1.2.0/"
+    },
+    {
+      "name": "cffi",
+      "version": "2.1.1",
+      "license": "MIT-0",
+      "source": "https://pypi.org/project/cffi/2.1.1/"
+    },
+    {
+      "name": "cryptography",
+      "version": "50.0.2",
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "source": "https://pypi.org/project/cryptography/50.0.2/"
+    },
+    {
+      "name": "enum-tools",
+      "version": "0.13.0",
+      "license": "LGPL-3.0-or-later",
+      "source": "https://pypi.org/project/enum-tools/0.13.0/"
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/frozenlist/1.8.0/"
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "license": "BSD-3-Clause",
+      "source": "https://pypi.org/project/idna/3.20/"
+    },
+    {
+      "name": "importlib_metadata",
+      "version": "10.1.0",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/importlib_metadata/10.1.0/"
+    },
+    {
+      "name": "jaraco.classes",
+      "version": "3.4.0",
+      "license": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "source": "https://pypi.org/project/jaraco.classes/3.4.0/"
+    },
+    {
+      "name": "jaraco.context",
+      "version": "6.1.2",
+      "license": "MIT",
+      "source": "https://pypi.org/project/jaraco.context/6.1.2/"
+    },
+    {
+      "name": "jaraco.functools",
+      "version": "4.6.0",
+      "license": "MIT",
+      "source": "https://pypi.org/project/jaraco.functools/4.6.0/"
+    },
+    {
+      "name": "jeepney",
+      "version": "0.9.0",
+      "license": "MIT",
+      "source": "https://pypi.org/project/jeepney/0.9.0/"
+    },
+    {
+      "name": "keyring",
+      "version": "25.6.0",
+      "license": [
+        "License :: OSI Approved :: MIT License"
+      ],
+      "source": "https://pypi.org/project/keyring/25.6.0/"
+    },
+    {
+      "name": "more-itertools",
+      "version": "11.2.1",
+      "license": "MIT",
+      "source": "https://pypi.org/project/more-itertools/11.2.1/"
+    },
+    {
+      "name": "multidict",
+      "version": "7.2.1",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/multidict/7.2.1/"
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.4",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/propcache/0.5.4/"
+    },
+    {
+      "name": "pycparser",
+      "version": "3.12",
+      "license": "BSD-3-Clause",
+      "source": "https://pypi.org/project/pycparser/3.12/"
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0",
+      "license": "BSD-2-Clause",
+      "source": "https://pypi.org/project/Pygments/2.21.0/"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "3.0.0",
+      "license": "Dual License",
+      "source": "https://pypi.org/project/python-dateutil/3.0.0/"
+    },
+    {
+      "name": "SecretStorage",
+      "version": "3.5.0",
+      "license": "BSD-3-Clause",
+      "source": "https://pypi.org/project/SecretStorage/3.5.0/"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "license": "MIT",
+      "source": "https://pypi.org/project/six/1.17.0/"
+    },
+    {
+      "name": "twitchAPI",
+      "version": "4.5.0",
+      "license": "MIT",
+      "source": "https://pypi.org/project/twitchAPI/4.5.0/"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "license": "PSF-2.0",
+      "source": "https://pypi.org/project/typing_extensions/4.16.0/"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.6",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/tzdata/2026.6/"
+    },
+    {
+      "name": "yarl",
+      "version": "1.25.1",
+      "license": "Apache-2.0",
+      "source": "https://pypi.org/project/yarl/1.25.1/"
+    },
+    {
+      "name": "zipp",
+      "version": "4.1.2",
+      "license": "MIT",
+      "source": "https://pypi.org/project/zipp/4.1.2/"
+    }
+  ]
+}

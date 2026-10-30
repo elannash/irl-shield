@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+[[ $(uname) == Linux ]] || { echo 'This setup targets Linux' >&2; exit 2; }
+mkdir -p .tmp/m2
+python3.11 -m venv .tmp/m2/py311
+if [[ -n ${M2_GPU_SITE:-} ]]; then
+  [[ -d "$M2_GPU_SITE/onnxruntime" && -d "$M2_GPU_SITE/nvidia" ]] || { echo 'Invalid reusable GPU site' >&2; exit 2; }
+  .tmp/m2/py311/bin/python - "$M2_GPU_SITE" <<'PY'
+from pathlib import Path
+import sys, sysconfig
+Path(sysconfig.get_path('purelib'), 'm2-readonly-gpu.pth').write_text(str(Path(sys.argv[1]).resolve()) + '\n')
+PY
+  .tmp/m2/py311/bin/python -m pip install --only-binary=:all: --no-deps \
+    --cache-dir .tmp/m2/pip-cache --report .tmp/m2/install-av.json av==16.0.1
+else
+  .tmp/m2/py311/bin/python -m pip install --only-binary=:all: \
+    --cache-dir .tmp/m2/pip-cache --report .tmp/m2/install.json -r relay/requirements.txt
+fi
+exec scripts/m2-tools
