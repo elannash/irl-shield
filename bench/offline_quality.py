@@ -26,7 +26,7 @@ from shield.motion import MotionHistory
 from shield.types import Detection, Frame
 from bench.metrics import fidelity, quantiles
 from bench.scoring import score_records
-from bench.independence import policy_metadata, annotate_card
+from bench.independence import policy_metadata, annotate_card, resolve_fast_candidate
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -196,9 +196,11 @@ def _media(path):
 
 def _make_backends(candidate, options, resolution):
     _validate_models(candidate,options)
+    fast = resolve_fast_candidate(candidate, options)
+    if fast is None:
+        return {name: _Noop() for name in ('fast', 'accurate')}
     from bench.pipeline import detector_for
     width, height = resolution
-    fast = options.get('fast_candidate', 'vision-rectangles' if candidate.startswith('vision') else 'ppocr-v6-tiny')
     backends = {}
     try:
         for lane, model in (('fast', fast), ('accurate', candidate)):
@@ -274,6 +276,7 @@ def run_file(input_path, output_path, candidate, options=None, *, judge=None, ba
     Encoding blocks freely; its speed does not alter the virtual source clock.
     """
     _validate_models(candidate,options or {})
+    metadata = policy_metadata(candidate, options or {})
     source, output = Path(input_path), Path(output_path)
     if output.exists():
         raise FileExistsError(output)
@@ -352,7 +355,7 @@ def run_file(input_path, output_path, candidate, options=None, *, judge=None, ba
         diagnostics = {key: value for key, value in rendered.items() if key not in {'records', 'detections', 'motion'}}
         output.with_suffix('.offline.json').write_text(json.dumps(diagnostics, indent=2) + '\n')
         quality = _score_saved(source, output, judge, synthetic_truth, rendered['records'],
-            detector_families=(options['detector_families'] if 'detector_families' in options else policy_metadata(candidate, options)['detector_families']))
+                               detector_families=metadata['detector_families'])
         result = {'mode': 'offline_quality', 'real_time_verified': False, 'gate_1': {'eligible': False, 'pass': False},
                   'benchmark_only': True, 'demo_ready': False, 'candidate': candidate, 'options': options,
                   'source': str(source), 'output': str(output), 'frames': media['frames'], 'source_fps': media['fps'],

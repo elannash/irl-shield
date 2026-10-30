@@ -26,6 +26,7 @@ import cv2
 import numpy as np
 
 from shield.types import Frame
+from bench.independence import resolve_fast_candidate
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -716,6 +717,7 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     """
     if candidate == 'vision-scheduled' or options.get('fast_candidate') == 'vision-scheduled':
         raise ValueError('legacy vision-scheduled cannot be used by the two-lane clocked pipeline')
+    fast_name = resolve_fast_candidate(candidate, options) or candidate
     from bench.pipeline import detector_for
     from shield.engine import MaskingEngine
     from shield.lanes import DetectorLane
@@ -752,8 +754,6 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
         capture.release()
     backends, lanes = {}, {}
     engine = None
-    fast_name = (candidate if candidate in ('unmasked', 'slate') else
-                 options.get('fast_candidate', 'vision-rectangles' if candidate.startswith('vision') else 'ppocr-v6-tiny'))
     lane_specs = {
         'fast': (fast_name, float(options.get('fast_rate_hz', 30)), int(options.get('fast_width', 640)),
                  int(options.get('fast_limit_side_len', 640)), options.get('fast_provider', 'cpu')),
