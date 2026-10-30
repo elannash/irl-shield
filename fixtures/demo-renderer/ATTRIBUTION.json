@@ -1,0 +1,39 @@
+{
+  "schema": "irl-shield-demo-assets-v1",
+  "assets": [
+    {
+      "path": "fixtures/demo-renderer/fictional-street.png",
+      "origin": "OpenAI built-in imagegen, generated in W8 submitted Codex child",
+      "prompt": "Use case: photorealistic-natural\nAsset type: wholly synthetic background for an IRL Shield demo fixture\nPrimary request: Create a fictional quiet street corner in a completely invented place. Wide landscape view, eye-level walking camera, ordinary anonymous low buildings, plain stucco walls, sidewalk and road. Leave a broad blank wall on the left-middle and a plain empty rectangular hanging sign near the right-middle for later programmatic fictional text. All sign faces completely blank.\nLighting: soft overcast daylight, natural texture, clear readable scene, realistic unremarkable street.\nConstraints: wholly invented scene, no references to real places. NO people, faces, cars, plates, real business designs, brands, logos, recognizable landmarks, flags, text, numbers, letters, symbols, watermarks, or music. NO readable writing anywhere. Do not add any text. Single coherent landscape image.",
+      "model_id": "not exposed",
+      "source_file": "/home/elan/.codex/generated_images/01a18dfa-931e-7220-88f0-8872ca833674/exec-24914029-8186-419f-813b-cd58ac0af55b.png",
+      "normalization": "Pillow RGB resize to 960x540 with Lanczos; no content edited",
+      "license": "CC0-1.0 dedication of project-owned generated asset; subject to applicable OpenAI terms",
+      "public_asset_review": {
+        "reviewer": "W8 Codex author",
+        "no_text": true,
+        "no_real_people": true,
+        "no_brands_or_logos": true,
+        "no_music": true
+      },
+      "sha256": "ddfaf72b9a30f6ffe78a1c52df357b5f9bd2e809cea95080cebbb244ee3dbcb6",
+      "original_sha256": "e5fdd312fa52fe9f225a2a271e2ab5625002c35a3c929df99726cae1441bdb4d"
+    },
+    {
+      "path": "fixtures/fonts/DejaVuSans-Bold.ttf",
+      "origin": "Existing bundled unmodified font; no new dependency",
+      "license": "Bitstream Vera license; DejaVu modifications public domain",
+      "license_file": "fixtures/fonts/LICENSE-DejaVu.txt",
+      "sha256": "e1d733afbbfce842a1b43dced0c9885a76a4e67290dc7e690c4e9b76ebfc7d23"
+    },
+    {
+      "path": "fixtures/fonts/DejaVuSansMono-Bold.ttf",
+      "origin": "Existing bundled unmodified font; no new dependency",
+      "license": "Bitstream Vera license; DejaVu modifications public domain",
+      "license_file": "fixtures/fonts/LICENSE-DejaVu.txt",
+      "sha256": "2d67eed9b325ee2e69f906ce4f3f6264d5105230a13352c8494daad4f17b12c8"
+    }
+  ],
+  "new_dependencies": [],
+  "sample_assets": "All sample signs, videos and receipts authored in tools/demo_renderer/sample.py. Fictional text Cedar Vale and 142. Generated videos have no audio. Sample receipts are illustrative, never measured native evidence."
+}
