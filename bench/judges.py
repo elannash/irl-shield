@@ -1,7 +1,9 @@
 """Independent OCR union with explicit, cached input/output evidence."""
+from contextlib import ExitStack
 import hashlib
 import json
 import platform
+import re
 import subprocess
 from importlib.metadata import version, PackageNotFoundError
 from pathlib import Path
@@ -17,21 +19,47 @@ CACHE_SOURCES=('bench/judges.py','bench/vision.py','bench/onnx_detectors.py',
                'Sources/VisionBridge/main.swift','models/manifest.json')
 
 
+def tesseract_data_identity():
+    command=[pytesseract.pytesseract.tesseract_cmd,'--list-langs']
+    try:
+        listing=subprocess.check_output(command,text=True,stderr=subprocess.STDOUT,timeout=30)
+    except (OSError,subprocess.SubprocessError) as error:
+        raise RuntimeError(f'Could not discover active Tesseract tessdata using {command!r}') from error
+    directories=re.findall(r'^List of available languages in "(.+)" \(\d+\):$',listing,re.MULTILINE)
+    if len(directories)!=1:
+        raise RuntimeError('Tesseract --list-langs did not report exactly one active tessdata directory')
+    directory=Path(directories[0])
+    if 'eng' not in listing.splitlines():
+        raise FileNotFoundError(f'Tesseract did not list eng in active tessdata directory {directory}')
+    language=(directory/'eng.traineddata').resolve(strict=True)
+    return {'language':'eng','path':str(language),'sha256':hashlib.sha256(language.read_bytes()).hexdigest()}
+
+
 def runtime_identity():
     try:
         ort_version=version('onnxruntime')
     except PackageNotFoundError:
         ort_version=version('onnxruntime-gpu')
+    opencv_versions={}
+    for name in ('opencv-python-headless','opencv-python',
+                 'opencv-contrib-python-headless','opencv-contrib-python'):
+        try:
+            opencv_versions[name]=version(name)
+        except PackageNotFoundError:
+            continue
+    if not opencv_versions:
+        raise PackageNotFoundError('No installed OpenCV distribution found')
     return {'tesseract_binary':str(pytesseract.get_tesseract_version()),
+            'tesseract_data':tesseract_data_identity(),
             'pytesseract':version('pytesseract'),'onnxruntime':ort_version,
-            'rapidocr':version('rapidocr'),
+            'rapidocr':version('rapidocr'),'opencv':opencv_versions,
             'macos_product_version':subprocess.check_output(['sw_vers','-productVersion'],text=True).strip()
                 if platform.system()=='Darwin' else None}
 
 
 def cache_identity():
     root=Path(__file__).resolve().parents[1]
-    identity={'schema_version':2,'runtime':runtime_identity(),
+    identity={'schema_version':3,'runtime':runtime_identity(),
               'source_sha256':{name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in CACHE_SOURCES}}
     signature=hashlib.sha256(json.dumps(identity,sort_keys=True,separators=(',',':')).encode()).digest()
     return signature,identity
@@ -41,19 +69,24 @@ class Judges:
     def __init__(self, detector, cache):
         self.signature,identity=cache_identity()
         self.metadata={'cache_signature':self.signature.hex(),'cache_identity':identity}
-        self.vision = Vision('vision-accurate')
-        from bench.onnx_detectors import create_recognizer
-        self.paddle = create_recognizer({})
-        self.cache = Path(cache)
-        self.cache.mkdir(parents=True, exist_ok=True)
-        self.names = ['tesseract-5-psm11', 'vision-accurate'] + (['ppocr-independent'] if self.paddle else [])
+        with ExitStack() as resources:
+            self.vision = Vision('vision-accurate')
+            resources.callback(self.vision.close)
+            from bench.onnx_detectors import create_recognizer
+            self.paddle = create_recognizer({})
+            if self.paddle:
+                resources.callback(self.paddle.close)
+            self.cache = Path(cache)
+            self.cache.mkdir(parents=True, exist_ok=True)
+            self.names = ['tesseract-5-psm11', 'vision-accurate'] + (['ppocr-independent'] if self.paddle else [])
+            resources.pop_all()
 
     def read(self, frame):
         digest = hashlib.sha256(frame.tobytes()+str((frame.shape,str(frame.dtype))).encode()+'|'.join(self.names).encode()+self.signature).hexdigest()
         path = self.cache / f'{digest}.json'
         if path.exists():
             return json.loads(path.read_text())
-        data = pytesseract.image_to_data(frame, config='--psm 11', output_type=Output.DICT, timeout=30)
+        data = pytesseract.image_to_data(frame, lang='eng', config='--psm 11', output_type=Output.DICT, timeout=30)
         result = []
         for i, word in enumerate(data['text']):
             if word.strip() and float(data['conf'][i]) >= 50:
