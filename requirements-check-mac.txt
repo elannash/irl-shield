@@ -1,0 +1,5 @@
+# One Python 3.11 macOS environment, CPU/CoreML ORT; no NVIDIA wheels.
+# Licenses: models/licenses/dependencies.json, shield/app/DEPENDENCIES.json.
+-r requirements.txt
+-r requirements-models.txt
+-r shield/app/requirements.txt

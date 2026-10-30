@@ -18,26 +18,32 @@ class RelayControl:
         self.engine = engine
         self.twitch = TwitchStub()
 
-    def hold(self, active, source='local', reason='manual'):
+    def hold(self, active, source='local', reason='manual', now=None):
+        twitch_sources = {'chat': 'moderator', 'shield_mode': 'shield-mode',
+                          'twitch-connection': 'shield-mode', 'twitch-reconcile': 'shield-mode'}
+        if source in twitch_sources:
+            # M3 owns its fixed reasons; do not forward arbitrary callback text.
+            return self.engine.hold(bool(active), source=source, reason=twitch_sources[source], now=now)
+
         # Source names/reasons are controlled vocabulary, never raw chat text.
         if source not in ('local', 'twitch-chat', 'eventsub'):
             raise ValueError('Unknown control source')
         if reason not in ('manual', 'synthetic hold', 'moderator', 'shield-mode'):
             raise ValueError('Unknown hold reason')
-        return self.engine.hold(bool(active), source=source, reason=reason)
+        return self.engine.hold(bool(active), source=source, reason=reason, now=now)
 
     def set_stream_key(self, key):
         self.twitch.set_key(key)
 
 
 class RelaySession:
-    def __init__(self, engine, sink, width=1280, height=720, fps=30, start=None):
+    def __init__(self, engine, sink, width=1280, height=720, fps=30, start=None, control=None):
         if fps != 30 or min(width, height) < 32 or width % 2 or height % 2:
             raise ValueError('Live transport requires even dimensions and 30fps')
         self.engine, self.sink = engine, sink
         self.width, self.height, self.fps = width, height, fps
         self.start = time.monotonic() if start is None else start
-        self.control = RelayControl(engine)
+        self.control = control if control is not None else RelayControl(engine)
         self.generation = None
         self.source_origin = self.session_pts = None
         self.last_index = 0
@@ -97,6 +103,13 @@ class RelaySession:
             pcm = np.where(self.tags[slots] == indices, self.samples[slots], 0).astype(np.int16)
             self.tags[slots] = -1
             self.audio_cursor = first + 1600
+            # poll() releases the engine lock before transport writes. A hold
+            # arriving in that interval must not forward the stale LIVE pixels.
+            if self.engine.control.state == 'HOLD' and not result.slate:
+                result.pixels = np.zeros_like(result.pixels)
+                result.mask = np.full_like(result.mask, 255)
+                result.quads = []
+                result.state, result.protected, result.slate = 'HOLD', True, True
             accepted = self.sink(result, pcm)
             if accepted is False:
                 self.egress_interruptions += 1

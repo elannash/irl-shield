@@ -208,7 +208,10 @@ class _EncodedOutput:
         self.ready = False
         self.pending = []
         self.packet_types = set()
-        self.url = url
+        self.urls = (url,) if isinstance(url, str) else tuple(url)
+        if not 1 <= len(self.urls) <= 2 or not all(isinstance(u, str) and u for u in self.urls):
+            raise EgressError('egress-destinations')
+        self.outputs = []
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
         try:
@@ -263,9 +266,7 @@ class _EncodedOutput:
         self.phase = 'archive-mux'
         self.archive.mux(packet)
         if self.out is not None:
-            clone.stream = self.streams[kind]
-            self.phase = 'network-mux'
-            self.out.mux(clone)
+            self._network_mux(kind, clone)
             return
         self.pending.append((kind, clone))
         self.packet_types.add(kind)
@@ -278,34 +279,46 @@ class _EncodedOutput:
         # Header-only FLV probing crashes this bundled libav; wait for both
         # streams, bounded above by 16 packets, without submitting dummy pixels.
         self.phase = 'network-startup'
-        self.out = av.open(self.url, 'w', format='flv', options={'flvflags': 'no_duration_filesize'})
         archive_path = self.directory / ('encoded.flv' if self.generation == 1 else f'encoded-g{self.generation:04d}.flv')
-        with av.open(BytesIO(archive_path.read_bytes()), format='flv') as header:
-            self.streams = {}
-            for stream in header.streams:
-                copied = self.out.add_stream_from_template(stream, opaque=True)
-                # add_stream_from_template does not copy the stream time base.
-                copied.time_base = stream.time_base
-                if stream.type == 'video':
-                    # The startup fragment has SPS/PPS but no decoded picture.
-                    # Its decoder template can have 0x0 dimensions; the sole
-                    # encoder already owns the negotiated immutable shape.
-                    copied.width, copied.height = self.video.width, self.video.height
-                    # The encoded packets are still Annex B. Both FLV muxers
-                    # must see the encoder's original extradata to perform the
-                    # same Annex-B -> length-prefixed packet conversion.
-                    copied.codec_context.extradata = self.video.codec_context.extradata
-                self.streams[stream.type] = copied
-        if set(self.streams) != {'video', 'audio'}:
-            raise EgressError('egress-header')
-        if any(stream.codec_context.is_encoder for stream in self.streams.values()):
-            raise EgressError('egress-duplicate-encoder')
-        self.out.start_encoding()
+        for url in self.urls:
+            self.out = av.open(url, 'w', format='flv', options={'flvflags': 'no_duration_filesize'})
+            with av.open(BytesIO(archive_path.read_bytes()), format='flv') as header:
+                self.streams = {}
+                for stream in header.streams:
+                    copied = self.out.add_stream_from_template(stream, opaque=True)
+                    # add_stream_from_template does not copy the stream time base.
+                    copied.time_base = stream.time_base
+                    if stream.type == 'video':
+                        # The startup fragment has SPS/PPS but no decoded picture.
+                        # Its decoder template can have 0x0 dimensions; the sole
+                        # encoder already owns the negotiated immutable shape.
+                        copied.width, copied.height = self.video.width, self.video.height
+                        # The encoded packets are still Annex B. Both FLV muxers
+                        # must see the encoder's original extradata to perform the
+                        # same Annex-B -> length-prefixed packet conversion.
+                        copied.codec_context.extradata = self.video.codec_context.extradata
+                    self.streams[stream.type] = copied
+            if set(self.streams) != {'video', 'audio'}:
+                raise EgressError('egress-header')
+            if any(stream.codec_context.is_encoder for stream in self.streams.values()):
+                raise EgressError('egress-duplicate-encoder')
+            self.out.start_encoding()
+            self.outputs.append((self.out, self.streams))
         for kind, pending in self.pending:
-            pending.stream = self.streams[kind]
-            self.phase = 'network-mux'
-            self.out.mux(pending)
+            self._network_mux(kind, pending)
         self.pending.clear()
+
+    def _network_mux(self, kind, packet):
+        for output, streams in self.outputs:
+            clone = av.Packet(bytes(packet))
+            clone.pts, clone.dts = packet.pts, packet.dts
+            clone.duration, clone.time_base = packet.duration, packet.time_base
+            clone.is_keyframe, clone.is_corrupt = packet.is_keyframe, packet.is_corrupt
+            for side in packet.iter_sidedata():
+                clone.set_sidedata(side)
+            clone.stream = streams[kind]
+            self.phase = 'network-mux'
+            output.mux(clone)
 
     def write(self, result, pcm):
         frame = av.VideoFrame.from_ndarray(result.pixels, format='bgr24')
@@ -344,13 +357,18 @@ class _EncodedOutput:
                         self._mux(packet)
                 except Exception:
                     failed = True
-        for resource in (self.out, self.archive, self.manifest):
+        networks = [output for output, _ in self.outputs]
+        if self.out is not None and self.out not in networks:
+            networks.append(self.out)
+        for resource in (*networks, self.archive, self.manifest):
             if resource is not None:
                 try:
                     resource.close()
                 except Exception:
                     failed = True
         self.out = self.archive = self.manifest = None
+        self.outputs.clear()
+        self.urls = ()
         self.ready = False
         if failed:
             raise EgressError('egress-cleanup') from None

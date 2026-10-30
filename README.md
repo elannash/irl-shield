@@ -5,10 +5,22 @@ looks for readable location clues and covers them before presentation. A delayed
 frame clock gives asynchronous detector lanes time to work; missing coverage
 produces a protected frame, and a local HOLD produces a slate.
 
-Milestone 1 builds the measurement system and compares offline detectors. Live
-phone ingestion, Twitch publishing, chat commands and Shield Mode are later work.
-The local RTMP/SRT experiment is separate groundwork, with its measured limits in
-[docs/M2-GROUNDWORK.md](docs/M2-GROUNDWORK.md). It is not a production relay.
+The Linux integration command is `python -m shield.cli login|run|doctor`.
+[Run instructions](docs/RUN.md) cover private RTMP phone ingest, OBS pull output,
+memory-only Twitch authorization, EventSub controls and optional bandwidth-test
+egress. Native Twitch publishing is not part of local verification. SRT and
+walking use remain unqualified; this is not a production relay.
+
+For a local attended terminal after setup:
+
+```sh
+.venv/bin/python -m shield.cli doctor
+.venv/bin/python -m shield.cli run --local-only --phone-setup
+```
+
+The default listeners are loopback only. The phone needs the explicit assigned
+Tailscale host described in [docs/RUN.md](docs/RUN.md). Credentials printed for
+phone setup go only to the private terminal; do not capture or share them.
 
 Gate 1 has not passed. Sustained timing is qualified on the M1 Pro and Linux,
 including Linux CPU detection with libx264, but no tune policy meets all privacy

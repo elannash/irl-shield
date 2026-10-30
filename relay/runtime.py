@@ -8,7 +8,7 @@ import sys
 import threading
 import time
 
-from relay.live import RelaySession
+from relay.live import RelayControl, RelaySession
 from relay.mediamtx import MediaMTX
 from relay.security import Credentials, RelayAddress
 from relay.stream import Egress, NetworkInput
@@ -36,7 +36,8 @@ def make_engine(cache, provider='cuda', faults=()):
 
 
 def run(engine, address, phone, internal, directory, stopped, seconds=None,
-        width=1280, height=720, encoder='h264_nvenc', control_ready=None):
+        width=1280, height=720, encoder='h264_nvenc', control_ready=None,
+        publish_twitch=False, local_sink=None):
     """M3's control_ready(callbacks) gets hold/set_stream_key; key stays in memory.
 
     This function owns engine lifetime. The caller owns MediaMTX and the stop
@@ -47,10 +48,24 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
     summary = {'status': 'failed'}
     started = time.monotonic()
     try:
-        output = Egress(address.rtmp('shielded', internal), directory, width, height, encoder)
-        session = RelaySession(engine, output.write, width=width, height=height)
+        control = RelayControl(engine)
         if control_ready:
-            control_ready(session.control)
+            control_ready(control)
+        destinations = [address.rtmp('shielded', internal)]
+        if publish_twitch and local_sink is not None:
+            raise ValueError('Choose one egress destination')
+        if publish_twitch:
+            destinations.append(control.twitch.destination())
+        elif local_sink is not None:
+            from urllib.parse import urlsplit
+            parsed = urlsplit(local_sink)
+            if (parsed.scheme != 'rtmp' or parsed.hostname != '127.0.0.1' or not parsed.port
+                    or parsed.username or parsed.password or parsed.fragment
+                    or parsed.path != '/shielded'):
+                raise ValueError('Synthetic sink must be loopback RTMP /shielded')
+            destinations.append(local_sink)
+        output = Egress(tuple(destinations), directory, width, height, encoder)
+        session = RelaySession(engine, output.write, width=width, height=height, control=control)
         source = NetworkInput(address.rtsp('camera', internal))
         while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
             for kind, pts, value, generation, arrived in source.drain():

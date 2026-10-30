@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Provision one private Python 3.11 interpreter for the complete host gate.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+venv=${SHIELD_VENV:-.venv}
+case $(uname -s) in
+  Linux) requirements=requirements-check-linux.txt ;;
+  Darwin) requirements=requirements-check-mac.txt ;;
+  *) printf '%s\n' 'Only Linux and macOS gate environments are qualified'; exit 2 ;;
+esac
+command -v uv >/dev/null || { printf '%s\n' 'Install uv privately first, or create Python 3.11 venv and pip install the host requirements'; exit 2; }
+export UV_CACHE_DIR="$PWD/.tmp/check-uv-cache"
+uv venv --python 3.11 "$venv"
+uv pip install --python "$venv/bin/python" -r "$requirements"
+printf 'Gate environment: %s/bin/python\n' "$venv"
