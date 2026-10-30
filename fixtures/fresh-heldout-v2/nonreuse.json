@@ -1,0 +1,2659 @@
+{
+  "sample_frame": "All standing worktree fixture manifests and fixture/evidence JSON; all prior *CANDIDATE*.md reports; prior heldout-prep metadata/search JSON; root fixture manifests. No pixels, quality outputs, or OCR caches.",
+  "files": [
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-051d7f7d/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/candidates.json",
+      "bytes": 5970,
+      "sha256": "d222f1c2e46bddd3a6256a16a2e38bd8be7859600d5e2e8940c3bc1f794e5959"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/chicago-wells.metadata-extract.json",
+      "bytes": 10642,
+      "sha256": "e6fe0e576bc5e8e81eccb197207cbeb0556b2cfc0ef9b1391711239f7df91272"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/chicago-wells.verified-api.json",
+      "bytes": 11929,
+      "sha256": "025160125e35177d236875aeab93bc557c7fc7bf2a3cb0c1406216ff86b20dab"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/document-audit.json",
+      "bytes": 1386,
+      "sha256": "89a8925821a8cd01ca23bbc40e7d8dd311994a0633f089b7e71435e5c9e7a600"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/final-batch.api.json",
+      "bytes": 56710,
+      "sha256": "cf1246403eeab12843d022318a128c6bb39162ddb3c36bccfba4633b4172f5f0"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/ljubljana-slovenska.api.json",
+      "bytes": 19784,
+      "sha256": "143a2842e9f5070360ea33fd88eba7b3f0db1b8b82c23db351e02d0ee3a68e54"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/manchester-portland.metadata-extract.json",
+      "bytes": 11782,
+      "sha256": "2677ee6190daf3639c0c09ebad4974b746f49ec2288ac5043889b28c5dc23a16"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/manchester-portland.verified-api.json",
+      "bytes": 13063,
+      "sha256": "2fb9c57657a0278228934817397b6415b93c4466fefd420ec1f7642db35c5304"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/nonreuse.json",
+      "bytes": 4744,
+      "sha256": "1d36790e1be4d9ccb6aee8374c96b34fb93ad6743714df605bd29c8a76f4aab6"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/original-url-head.json",
+      "bytes": 1482,
+      "sha256": "ffdadc945ba9eaea66f85cb7225444efc06ca1c2078ab7e2c6afe87bb462043a"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/retrieval-note.json",
+      "bytes": 309,
+      "sha256": "9bdc7e9ad208580fdff373141a21ad0bd43bd76065928018fb889186590cced6"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-bike-by3.json",
+      "bytes": 225603,
+      "sha256": "739f15a55834b26850e4480ffcaf4243fb6d75e1f233460cd78828f679470be7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-london.json",
+      "bytes": 708243,
+      "sha256": "8d9faa9b83815df7a1a695bb6c61631a297b341d74fd6a42c81353f02d7c149e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-street-by4.json",
+      "bytes": 820263,
+      "sha256": "b2c187fcbe8819dcbd28afa9a86325aa5e1681dda86cdc413243523f962b945b"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-street-title.json",
+      "bytes": 717405,
+      "sha256": "ad99c32bbec8aac6650109619160df44c9cafe858b009f21964a04b1533a6911"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-street.json",
+      "bytes": 327222,
+      "sha256": "4ca1e228e7985be514b8d81528a0bb7feddc7ed7f8966883279fdced2526af5f"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-traffic-by3.json",
+      "bytes": 435890,
+      "sha256": "367f07d95521423d1a35e3c0b5b3d419eaa9aea9b1e8a5fb6eec4196b1a2245b"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-walk-cc0.json",
+      "bytes": 795868,
+      "sha256": "c3f29041193f3ca6370bccfb3f2099b85f0fdc63c1a17114682d70acae55a568"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-walking-by4.json",
+      "bytes": 826753,
+      "sha256": "3699094ab4f0fd681f3401b7b4104c4c5d605efc058a2fd58a21f29c085ab071"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/search-walking-title.json",
+      "bytes": 775171,
+      "sha256": "7d9a5e7fdca6b9eaf014efe9895ceed5e79ef78e4128c47b688811818631f9fe"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/seattle-viaduct.metadata-extract.json",
+      "bytes": 13999,
+      "sha256": "d910476353b5f9dd6888b6bb62f6b1ac3a63647086699838b2a498ef52e4446e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/seattle-viaduct.verified-api.json",
+      "bytes": 15866,
+      "sha256": "99a825f1c82d1e1ddfe2a673ffb5328e90b75f908fc3652145cc74a226127f16"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/zurich-spiegelgasse.metadata-extract.json",
+      "bytes": 7533,
+      "sha256": "22747b8ebde6badbde2d48e81d170a568f15f20c5448057cb472362db6d03202"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/.tmp/heldout-prep/zurich-spiegelgasse.verified-api.json",
+      "bytes": 8654,
+      "sha256": "e9bc6fb3542a5b758991fa0f879addecf15177833d5fd83ff2abc61e2f24c72a"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/docs/research/FRESH-HELDOUT-CANDIDATES.md",
+      "bytes": 22855,
+      "sha256": "ed4d917ca06189ec4b971ed9ff9b3f14c63cd388a56aba0ca7718fcb87cd3092"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-07121fdd/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0d32c18a/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-0dceaab6/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-160a0c7d/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1980f025/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-1edd6a04/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-26ca396c/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-36250274/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-39e664cc/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3af688c7/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-414a256a/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4b7457f3/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-4fb60399/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-51d8de21/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-58b68875/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5bd3cc04/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-5e31c93b/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-63dad399/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6552b346/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6b46f095/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-6dc7f02c/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-826ecf47/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b3f40493/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-b539e401/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-bccad190/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d51dd993/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-d89084cc/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/fresh-heldout/manifest.json",
+      "bytes": 45150,
+      "sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/illinois-night.json",
+      "bytes": 3688,
+      "sha256": "6e7f5f577da89ac79b7e47d6686108e20510ee905664be46963cc05b04f826f9"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/illinois-snow.json",
+      "bytes": 3649,
+      "sha256": "4d9ad85a447f1146d448cb84e945a865f3bc0d3aefbb28e9a217bf8f0ce00db7"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/ljubljana-traffic.json",
+      "bytes": 4013,
+      "sha256": "d6292f9d2e2f9b519f93e844a9f5ff0c4fffc4674e22548333b4ddd978eaf28e"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/ljubljana-walk.json",
+      "bytes": 4201,
+      "sha256": "9d8a923817f3d38246c7928dff3e0da388575f378ec25aaeca60ebb85e208e70"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/london-bus-pov.json",
+      "bytes": 3692,
+      "sha256": "1dcf7d125deede4c204e6c1327aadcae7f8c007ddec5512b3a5d6d40db4e5081"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/london-croydon.json",
+      "bytes": 4148,
+      "sha256": "eb63f7bae33d63dbae5f6066553a22d56f4788d31ff95e2a0626c1d210aff286"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/london-night.json",
+      "bytes": 3170,
+      "sha256": "7dcd6786993b5eb8c1517ef53fe39ce60c7ff951f0ee78817ae4c3a868bfafa3"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/mazatlan-aquiles.json",
+      "bytes": 3197,
+      "sha256": "8dedf158af700f117e1fef04b4b101362e9a717e6ae26c07277b176d23fbb566"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/sf-lombard.json",
+      "bytes": 3931,
+      "sha256": "84660e016eaa884027532f399e544c272d5222166d531cd98c388bd50d221618"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/evidence/sf-market.json",
+      "bytes": 4243,
+      "sha256": "8ea8988a4d80816432ebf0175aad7088caf8867065ee700f1aa883689c1c8896"
+    },
+    {
+      "path": "/home/elan/.t3/worktrees/irl-shield/t3-ea758545/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    },
+    {
+      "path": "/home/elan/code/irl-shield/fixtures/manifest.json",
+      "bytes": 13916,
+      "sha256": "40d874198abb127eb3031da0fb4fc5ecc9b401ad82fb9509d55b51d583a3799c"
+    }
+  ],
+  "comparisons": [
+    "title",
+    "source_url",
+    "download_url",
+    "source_sha1"
+  ],
+  "normalization": "URL decode, underscore to space, casefold; selected identities absent as substrings throughout corpus. Three selected identities pairwise unique.",
+  "unused_seattle_backup": {
+    "title": "File:Alaskan Way Viaduct timelapse.webm",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Alaskan_Way_Viaduct_timelapse.webm",
+    "download_url": "https://upload.wikimedia.org/wikipedia/commons/7/78/Alaskan_Way_Viaduct_timelapse.webm",
+    "source_sha1": "6ef73fbc8ed316c8bbb2375b80d9fcd0259759f6"
+  },
+  "collisions": []
+}

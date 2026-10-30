@@ -1,0 +1,388 @@
+{
+  "access_date_utc": "2026-10-30",
+  "api_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3AWalking+in+LONDON+-+England+%28UK%29+-+Westminster+to+Piccadilly+Circus+%282019%29+-+4K+60fps+%28UHD%29.webm%7CFile%3AParis+%2C+France+-+A+Walking+Travel+Tour+-+YouTube.webm%7CFile%3AWalking+in+LIVERPOOL+-+UK+-+4K+60fps+%28UHD%29.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+  "page": {
+    "pageid": 105547564,
+    "ns": 6,
+    "title": "File:Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD).webm",
+    "imagerepository": "local",
+    "imageinfo": [
+      {
+        "size": 1900657185,
+        "width": 1920,
+        "height": 1080,
+        "duration": 3300.381,
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Walking_in_LONDON_-_England_%28UK%29_-_Westminster_to_Piccadilly_Circus_%282019%29_-_4K_60fps_%28UHD%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "descriptionurl": "https://commons.wikimedia.org/wiki/File:Walking_in_LONDON_-_England_(UK)_-_Westminster_to_Piccadilly_Circus_(2019)_-_4K_60fps_(UHD).webm",
+        "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=105547564",
+        "sha1": "e1d64199f8cdfb11bdd5a188cecf0493c546746a",
+        "metadata": [
+          {
+            "name": "GETID3_VERSION",
+            "value": "1.9.20-202006061653"
+          },
+          {
+            "name": "filesize",
+            "value": 1900657185
+          },
+          {
+            "name": "avdataoffset",
+            "value": 0
+          },
+          {
+            "name": "avdataend",
+            "value": 1900657185
+          },
+          {
+            "name": "fileformat",
+            "value": "webm"
+          },
+          {
+            "name": "audio",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "A_OPUS"
+              },
+              {
+                "name": "sample_rate",
+                "value": 48000
+              },
+              {
+                "name": "channels",
+                "value": 2
+              },
+              {
+                "name": "language",
+                "value": "eng"
+              },
+              {
+                "name": "bits_per_sample",
+                "value": 32
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": "a7af98bf5f560570",
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "A_OPUS"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "sample_rate",
+                        "value": 48000
+                      },
+                      {
+                        "name": "channels",
+                        "value": 2
+                      },
+                      {
+                        "name": "language",
+                        "value": "eng"
+                      },
+                      {
+                        "name": "bits_per_sample",
+                        "value": 32
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "channelmode",
+                "value": "stereo"
+              }
+            ]
+          },
+          {
+            "name": "video",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "V_VP9"
+              },
+              {
+                "name": "resolution_x",
+                "value": 1920
+              },
+              {
+                "name": "resolution_y",
+                "value": 1080
+              },
+              {
+                "name": "display_unit",
+                "value": "pixels"
+              },
+              {
+                "name": "display_x",
+                "value": 1920
+              },
+              {
+                "name": "display_y",
+                "value": 1080
+              },
+              {
+                "name": "frame_rate",
+                "value": 60
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": "69dc09677c0ea31b",
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "V_VP9"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "resolution_x",
+                        "value": 1920
+                      },
+                      {
+                        "name": "resolution_y",
+                        "value": 1080
+                      },
+                      {
+                        "name": "display_unit",
+                        "value": "pixels"
+                      },
+                      {
+                        "name": "display_x",
+                        "value": 1920
+                      },
+                      {
+                        "name": "display_y",
+                        "value": 1080
+                      },
+                      {
+                        "name": "frame_rate",
+                        "value": 60
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "warning",
+            "value": [
+              {
+                "name": 0,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 63"
+              },
+              {
+                "name": 1,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 77"
+              },
+              {
+                "name": 2,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [2 bytes]) at 91"
+              },
+              {
+                "name": 3,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [4 bytes]) at 106"
+              },
+              {
+                "name": 4,
+                "value": "Unhandled track.video element [module.audio-video.matroska.php:712] (5552::15b0 [16 bytes]) at 337"
+              },
+              {
+                "name": 5,
+                "value": "Unhandled track element [module.audio-video.matroska.php:819] (5802::16aa [3 bytes]) at 397"
+              },
+              {
+                "name": 6,
+                "value": "Unhandled track element [module.audio-video.matroska.php:819] (5819::16bb [4 bytes]) at 403"
+              },
+              {
+                "name": 7,
+                "value": "Unhandled audio type \"A_OPUS\""
+              }
+            ]
+          },
+          {
+            "name": "encoding",
+            "value": "UTF-8"
+          },
+          {
+            "name": "mime_type",
+            "value": "video/webm"
+          },
+          {
+            "name": "matroska",
+            "value": [
+              {
+                "name": "comments",
+                "value": [
+                  {
+                    "name": "muxingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf58.45.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "writingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf58.45.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "encoder",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf58.45.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "duration",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "00:55:00.373000000\ufffd\ufffd"
+                      },
+                      {
+                        "name": 1,
+                        "value": "00:55:00.381000000\ufffd\ufffd"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "playtime_seconds",
+            "value": 3300.381
+          },
+          {
+            "name": "bitrate",
+            "value": 4607121.868656983
+          },
+          {
+            "name": "playtime_string",
+            "value": "55:00"
+          },
+          {
+            "name": "version",
+            "value": 2
+          }
+        ],
+        "extmetadata": {
+          "DateTime": {
+            "value": "2021-05-20 03:48:35",
+            "source": "mediawiki-metadata",
+            "hidden": ""
+          },
+          "ObjectName": {
+            "value": "Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)",
+            "source": "mediawiki-metadata"
+          },
+          "CommonsMetadataExtension": {
+            "value": 1.2,
+            "source": "extension",
+            "hidden": ""
+          },
+          "Categories": {
+            "value": "WebM videos|Videos from YouTube|Media of the day|Videos from London|Uploaded with video2commons/Server-side uploads|Videos of 2019 from the United Kingdom|License reviewed by YouTubeReviewBot|4K videos|First-person videos on foot|Videos of cities by POPtravel",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "Assessments": {
+            "value": "",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "ImageDescription": {
+            "value": "We are in London, the great city and capital of the UK. On this cloudy day in fall (October 2019) we start our tour at Westminster Abbey, the royal church. N...",
+            "source": "commons-desc-page"
+          },
+          "DateTimeOriginal": {
+            "value": "2020-10-23",
+            "source": "commons-desc-page"
+          },
+          "Credit": {
+            "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=BgMKsDwIDgQ\"><bdi lang=\"\">Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=BgMKsDwIDgQ\">archive.org</a></bdi>",
+            "source": "commons-desc-page"
+          },
+          "Artist": {
+            "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+            "source": "commons-desc-page"
+          },
+          "LicenseShortName": {
+            "value": "CC BY 3.0",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "UsageTerms": {
+            "value": "Creative Commons Attribution 3.0",
+            "source": "commons-desc-page"
+          },
+          "AttributionRequired": {
+            "value": "true",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Attribution": {
+            "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "LicenseUrl": {
+            "value": "https://creativecommons.org/licenses/by/3.0",
+            "source": "commons-desc-page"
+          },
+          "Copyrighted": {
+            "value": "True",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Restrictions": {
+            "value": "",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "License": {
+            "value": "cc-by-3.0",
+            "source": "commons-templates",
+            "hidden": ""
+          }
+        },
+        "mime": "video/webm"
+      }
+    ],
+    "revisions": [
+      {
+        "revid": 1157657701,
+        "parentid": 1030825455,
+        "timestamp": "2026-02-01T15:11:24Z",
+        "slots": {
+          "main": {
+            "contentmodel": "wikitext",
+            "contentformat": "text/x-wiki",
+            "content": "== {{int:filedesc}} ==\n{{Information\n|description={{en|1=We are in London, the great city and capital of the UK. On this cloudy day in fall (October 2019) we start our tour at Westminster Abbey, the royal church. N...}}\n|date=2020-10-23\n|source={{From YouTube|1=BgMKsDwIDgQ|2=Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)}}\n|author=[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{YouTube CC-BY|[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]}}\n{{YouTubeReview|id=BgMKsDwIDgQ|ChannelName=POPtravel|ChannelID=UClODDXeUIz1-FaKyN8dsNrA|title=Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)|archive=https://web.archive.org/web/20201101234504/https://www.youtube.com/watch?v=BgMKsDwIDgQ&feature=youtu.be|date=2021-05-20}}\n=={{Assessment}}==\n{{Media of the day|2026|02|26}}\n[[Category:Uploaded with video2commons/Server-side uploads]]\n[[Category:WebM videos]]\n[[Category:Videos from London]]\n[[Category:First-person videos on foot]]\n[[Category:4K videos]]\n[[Category:Videos of 2019 from the United Kingdom]]\n[[Category:Videos of cities by POPtravel]]"
+          }
+        }
+      }
+    ]
+  }
+}
