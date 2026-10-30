@@ -58,6 +58,8 @@ licenses remain recorded at their original introduction.
 
 Formal checking reuses existing Java Temurin 25 and TLC 1.7.4 read-only. The
 TLC jar SHA-256 is `936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88`.
+The JAR's root `License.txt` is MIT; the R2 model evidence preserves that grant
+separately from bundled dependency notices in `META-INF/LICENSE.txt`.
 The model report in `docs/model/REPORT.md` records the exact tools, licenses,
 commands, state counts and bounded claims. No model/tool installer or global
 mise configuration was changed by M3.

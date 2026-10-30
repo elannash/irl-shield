@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 
 from aiohttp import ClientSession, WSMessage, WSMsgType, web
 
-from shield.twitch.auth import DeviceAuth, Tokens, Secret, UserSession, SCOPES
+from shield.twitch.auth import DeviceAuth, Tokens, Secret, UserSession, SCOPES, TwitchError
 from shield.twitch.http import TwitchHTTP
 from shield.twitch.transport import EventSubClient
 from network import local_network
@@ -33,6 +33,7 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
         self.sockets, self.subscriptions = [], []
         self.subscription_ids = {}
         self.subscribe_failure = False
+        self.invalidate_after_subscriptions = None
         self.connect_release = None
         self.connect_entered = asyncio.Event()
         self.validation_status = 200
@@ -80,6 +81,9 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
                 record.update(self.subscription_reply)
             if record['status'] == 'enabled' and record['transport']['session_id'] == sid:
                 self.subscription_ids[(sid, body['type'])] = identifier
+            if len(self.subscriptions) == self.invalidate_after_subscriptions:
+                self.now = 3600
+                self.validation_status = 401
             return web.json_response({'data': [record]}, status=202)
         async def validate(request):
             self.validations += 1
@@ -168,6 +172,44 @@ class MockTransport(unittest.IsolatedAsyncioTestCase):
             await until(lambda: self.events.phase == 'revoked')
             await until(lambda: all(ws.closed for ws in self.sockets))
         self.assertEqual(self.control.state, 'HOLD')
+
+    async def test_startup_revocation_settles_with_safe_error_and_closes_transport(self):
+        for cause in ('subscription-validation', 'reconcile-validation', 'event-revocation'):
+            with self.subTest(cause=cause):
+                self.now, self.validation_status = 0, 200
+                self.status_entered.clear()
+                release = asyncio.Event()
+                self.status_release = release if cause == 'event-revocation' else None
+                offset = {'subscription-validation': 1, 'reconcile-validation': 3}.get(cause)
+                self.invalidate_after_subscriptions = len(self.subscriptions) + offset if offset else None
+                control, events = adapter(mock=True)
+                user = UserSession(self.user.auth,
+                                   Tokens(Secret('synthetic-access'), Secret('synthetic-refresh'), 14400), '1')
+                client = EventSubClient(user, events, mock_origin=self.origin)
+                self.addAsyncCleanup(client.stop)
+                starting = asyncio.create_task(client.start())
+                try:
+                    if cause == 'event-revocation':
+                        await asyncio.wait_for(self.status_entered.wait(), 5)
+                        await self.send({'metadata': {'message_type': 'revocation',
+                                                     'subscription_type': 'channel.chat.message'},
+                                         'payload': {'subscription': {'type': 'channel.chat.message',
+                                                                      'status': 'authorization_revoked'}}})
+                    await until(lambda: events.phase == 'revoked')
+                    done, _ = await asyncio.wait({starting}, timeout=1)
+                    self.assertIn(starting, done, 'startup did not settle after authorization revocation')
+                    with self.assertRaises(TwitchError) as raised:
+                        await starting
+                    self.assertEqual(str(raised.exception), 'EventSub startup authorization revoked')
+                    for value in ('synthetic-access', 'synthetic-refresh'):
+                        self.assertNotIn(value, str(raised.exception))
+                    self.assertEqual(control.state, 'HOLD')
+                    self.assertTrue(all(ws.closed for ws in self.sockets))
+                finally:
+                    release.set()
+                    starting.cancel()
+                    await asyncio.gather(starting, return_exceptions=True)
+                    await client.stop()
 
     async def test_failed_resubscribe_stays_held_until_current_session_subscriptions_enabled(self):
         await self.client.start()

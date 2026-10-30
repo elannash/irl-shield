@@ -117,8 +117,12 @@ favor holding. [Chat event fields](https://dev.twitch.tv/docs/eventsub/eventsub-
 
 Authorized chat holds and Shield begins apply in every phase, even from an older
 connection generation, and are never dropped for timestamp reasons alone.
-Their ordering time clamps to receipt time; malformed or expired times use receipt
-time. Releases require the current live READY generation, aware finite timestamps,
+Holds and releases use Twitch timestamps for ordering within the skew window.
+A protective ordering timestamp clamps to the interval from policy start through
+receipt time plus 30 seconds; malformed, pre-start or expired times first fall
+back to receipt time. An extreme future hold therefore caps its ordering key at
+receipt plus 30 seconds. It still needs a legitimate newer release and does not
+expire automatically. Releases require the current live READY generation, aware finite timestamps,
 the session-start/ten-minute replay floor, and strict source ordering. Releases
 allow at most 30 seconds of forward skew. That bound is a local engineering choice;
 the inspected Twitch WebSocket references define RFC3339/nanosecond UTC timestamps
@@ -140,7 +144,10 @@ for a closed socket rather than waiting for the library's keepalive retry.
 Only definitive validation HTTP 401 latches invalid-token revocation; network,
 5xx and claim-validation failures remain held and retryable. An unreadable 401
 body cannot turn that status into a transient error. Relevant EventSub revocations
-also latch. Construct a new session after owner reauthorization. The underlying
+also latch. A revocation before startup finishes settles `start()` with
+`TwitchError('EventSub startup authorization revoked')`, closes its transport,
+and keeps HOLD latched. Transient startup faults continue held retries.
+Construct a new session after owner reauthorization. The underlying
 `Control` is unchanged.
 
 Every socket-driven policy call marshals onto the owner loop. The reader captures

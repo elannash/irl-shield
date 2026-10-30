@@ -19,10 +19,11 @@ from .events import TOPICS, websocket_url
 
 
 class _PolicySocket(EventSubWebsocket):
-    def __init__(self, twitch, session, events, owner_loop, reconcile, **kwargs):
+    def __init__(self, twitch, session, events, owner_loop, reconcile, authorization_revoked, **kwargs):
         super().__init__(twitch, **kwargs)
         self.user_session, self.events, self.owner_loop = session, events, owner_loop
         self.reconcile = reconcile
+        self.authorization_revoked = authorization_revoked
         self._connect_lock = asyncio.Lock()
         self._connection_generation = None
         self._planned_generation = None
@@ -159,7 +160,7 @@ class _PolicySocket(EventSubWebsocket):
                         self.reconcile(generation, session_id), self.owner_loop))
                     return
                 except InvalidToken:
-                    await self.owner(self.events.fault, 'authorization-invalid', revoked=True)
+                    await self.owner(self.authorization_revoked, 'authorization-invalid')
                     return
                 except asyncio.CancelledError:
                     raise
@@ -216,7 +217,7 @@ class _PolicySocket(EventSubWebsocket):
         subscription = data.get('payload', {}).get('subscription', {})
         known = data.get('_irl_subscription')
         if known is not None and subscription.get('type') in TOPICS:
-            await self.owner(self.events.fault, 'subscription-revoked', revoked=True)
+            await self.owner(self.authorization_revoked, 'subscription-revoked')
 
     async def _dispatch(self, handler, data):
         try:
@@ -326,7 +327,11 @@ class EventSubClient:
         self._socket, self._twitch = None, None
         self._validation_task = None
         self._shutdown = None
-        self._ready = asyncio.Event()
+        self._startup_settled = asyncio.Event()
+
+    def _authorization_revoked(self, reason):
+        self.events.fault(reason, revoked=True)
+        self._startup_settled.set()
 
     async def start(self):
         if self._socket is not None or self._shutdown is not None:
@@ -349,17 +354,21 @@ class EventSubClient:
         twitch.auto_refresh_auth = False
         await twitch.set_user_authentication(token.reveal(), [AuthScope(s) for s in SCOPES], validate=False)
         socket = self._socket = _PolicySocket(twitch, self.session, self.events, asyncio.get_running_loop(), self._reconcile,
+            self._authorization_revoked,
             connection_url=url, subscription_url=(self.mock_origin + '/') if self.mock_origin else None)
         try:
             await asyncio.to_thread(socket.start)
-            await self._ready.wait()
-            self._validation_task = asyncio.create_task(self._validate_idle())
+            await self._startup_settled.wait()
         except asyncio.CancelledError:
             await self.stop()
             raise
         except Exception:
             await self.stop()
             raise TwitchError('EventSub startup failed') from None
+        if self.events.phase == 'revoked':
+            await self.stop()
+            raise TwitchError('EventSub startup authorization revoked')
+        self._validation_task = asyncio.create_task(self._validate_idle())
 
     async def _reconcile(self, generation, session_id):
         snapshot = self.events.begin_reconcile(generation=generation, session_id=session_id)
@@ -377,10 +386,10 @@ class EventSubClient:
                         or not isinstance(data[0], dict) or type(data[0].get('is_active')) is not bool):
                     raise TwitchError('Shield Mode reconciliation failed')
                 if self.events.reconciled(data[0]['is_active'], snapshot):
-                    self._ready.set()
+                    self._startup_settled.set()
                 return
             except InvalidToken:
-                self.events.fault('authorization-invalid', revoked=True)
+                self._authorization_revoked('authorization-invalid')
                 return
             except asyncio.CancelledError:
                 raise
@@ -396,7 +405,7 @@ class EventSubClient:
                 await self.session.access_token()
                 delay = 1
             except InvalidToken:
-                self.events.fault('authorization-invalid', revoked=True)
+                self._authorization_revoked('authorization-invalid')
                 await self.stop()
                 return
             except asyncio.CancelledError:

@@ -167,3 +167,51 @@ TLC/Java were existing read-only tools with 1 GB heap in the 2 GB scope.
 Final artifact hashes and process-exit receipts are in the R1 hand-back and
 owned scratch. No process or listener is retained. Conductor audit, commit and
 PR #2 round 2 remain pending; no push/merge authority was assumed.
+
+## PR #2 review round 2
+
+Conductor committed R1 as `ea004ecdad9583996d4907cfb0f35ca130a227af` and
+assigned three accepted blockers: mixed timestamp domains let a stale release
+clear a clock-ahead hold; the model discharged obligations using the policy's
+own key; startup revocation left `start()` pending. The same dedicated worktree
+and branch were retained. M3 issued no staging, commit, push, PR or merge.
+
+Policy RED on unchanged `ea004ec`: two tests, six assertion/subtest failures.
+The prescribed `[started_at, receipt + 30]` clamp passes all 17 policy tests,
+including chat/Shield skew 10/29, older/equal release rejection and valid newer
+release. Existing unusable timestamp fallback and protective admission remain.
+Startup RED reproduced all three terminal routes: validation during subscribe,
+validation before reconcile and EventSub revocation while reconcile waits.
+All 13 transport tests then passed. The final startup code signals a terminal
+outcome, closes transport and raises fixed `TwitchError`, without changing the
+meaning of `InvalidToken` or transient-fault retries.
+
+Parent run 05 failed an unchanged root queue timing test; all 50 M3 passed.
+Focused run 06 also failed that root test at a different timing assertion,
+while startup/auth checks passed. Root confirmed an existing flake, supplied
+injected-delay old RED/new GREEN evidence and cherry-picked its test-only
+correction as `9c86a70791c4af5e35aab042d6f3f7c2fd114280`. M3 waited for the
+explicit pick notice before the final gate. The frozen production/test hashes
+were verified unchanged across the pick. Common files were not edited by M3.
+
+One isolated Ultra child updated `docs/model/` only, spending three of five
+authorized invocations. The parent audited models, independent obligations,
+actual state-17 counterexample, fixed output, public replay, commands, hashes,
+licenses and process cleanup before copying. Old direct TLC reached LIVE after
+hold raw20/receipt10 and stale release raw19/receipt11, with obligation still
+true. Frozen fixed policy passed the six unchanged invariants: **150,289,557
+generated / 14,747,184 distinct / 0 queued**, depth44. Actual old/fixed replay
+passed, including legitimate newer releases. All bounded assumptions and
+omissions are explicit in the report; prior R1 evidence is historical.
+
+Final parent combined gate run 07 on `9c86a70` plus uncommitted M3 fixes:
+**149 tests in 76.938s, 148 passed / 1 macOS-only skip, 50/50 M3 passed**, exit0.
+This round spent parent7 + model3 =10 invocations; prior23 makes **33/38**,
+five unused. The root's separate proof calls are not M3 calls. Exact runners,
+all failed/passing logs and cleanup live in `/tmp/agents/irl-shield/m3-r2/`.
+Every M3 suite/TLC stayed under the required 2GB scope; TLC heap1GB/workers2.
+
+No new dependency, model weights, dataset, asset, scope, live Twitch, secrets,
+personal keyring, Mac or GPU work. All owned scopes/JVMs exited, no survivors.
+Final source is frozen; files remain unstaged/uncommitted for conductor audit,
+commit and PR #2 round3. [R2-HANDBACK.md](R2-HANDBACK.md) is the current receipt.

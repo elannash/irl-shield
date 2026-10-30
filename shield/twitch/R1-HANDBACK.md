@@ -1,5 +1,9 @@
 # PR #2 R1 implementation hand-back
 
+Historical R1 receipt, committed by the conductor as `ea004ec`.
+[R2-HANDBACK.md](R2-HANDBACK.md) supersedes its timestamp-ordering and model
+release-obligation claims after round 2 review.
+
 **Ready for conductor round 2:** all nine accepted findings have regression
 receipts. The final combined functional gate exited 0: **147 tests ran, 146
 passed, one macOS-only test skipped**, including **48/48 M3 tests**. Direct TLC

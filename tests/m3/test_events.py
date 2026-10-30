@@ -266,10 +266,40 @@ class ChatControl(unittest.TestCase):
                 self.assertIn(events.accept(notification('future-hold', topic=topic, at=START + 100000),
                                             generation=events.generation), ('chat-hold', 'shield-begin'))
                 self.assertEqual(control.state, 'HOLD')
+                self.assertEqual(events.accept(notification('early-release', release, actor='1',
+                                                           topic=release_topic, at=START + 11),
+                                               generation=events.generation), 'expired')
+                self.assertEqual(control.state, 'HOLD')
+                events.clock = lambda: START + 40
+                self.assertEqual(events.accept(notification('tied-release', release, actor='1',
+                                                           topic=release_topic, at=START + 40),
+                                               generation=events.generation), 'expired')
+                self.assertEqual(control.state, 'HOLD')
                 self.assertIn(events.accept(notification('later-release', release, actor='1',
-                                                        topic=release_topic, at=START + 11),
+                                                        topic=release_topic, at=START + 41),
                                             generation=events.generation), ('chat-resume', 'shield-end'))
                 self.assertEqual(control.state, 'LIVE')
+
+    def test_forward_skew_rejects_older_and_equal_releases(self):
+        for skew in (10, 29):
+            for topic, release_topic, release in [
+                    ('channel.chat.message', 'channel.chat.message', '!shield resume'),
+                    ('channel.shield_mode.begin', 'channel.shield_mode.end', '')]:
+                with self.subTest(skew=skew, topic=topic):
+                    control, events = adapter()
+                    at = START + 10 + skew
+                    self.assertIn(events.accept(notification('new-hold', topic=topic, at=at),
+                                                generation=events.generation), ('chat-hold', 'shield-begin'))
+                    self.assertEqual(control.state, 'HOLD')
+                    for name, stamp in [('older', at - 2), ('equal', at)]:
+                        self.assertEqual(events.accept(notification(name, release, actor='1',
+                                                                   topic=release_topic, at=stamp),
+                                                       generation=events.generation), 'expired')
+                        self.assertEqual(control.state, 'HOLD')
+                    self.assertIn(events.accept(notification('newer', release, actor='1',
+                                                            topic=release_topic, at=at + 1),
+                                                generation=events.generation), ('chat-resume', 'shield-end'))
+                    self.assertEqual(control.state, 'LIVE')
 
     def test_tlc_release_clobber_shortest_path_retains_active_shield(self):
         control = Control()

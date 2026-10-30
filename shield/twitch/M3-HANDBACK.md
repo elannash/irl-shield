@@ -3,6 +3,7 @@
 Historical milestone receipt at `ec1d1f9`, committed by the conductor as
 `bb6948b`. [R1-HANDBACK.md](R1-HANDBACK.md) supersedes the implementation,
 test counts and model safety claims below after PR #2 review round 1.
+[R2-HANDBACK.md](R2-HANDBACK.md) records the subsequent round 2 corrections.
 
 **PASS for the offline milestone:** 128 executed tests passed, 1 macOS-only test
 skipped, including **30/30 M3**; current TLC baseline/restored each checked **8

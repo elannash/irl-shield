@@ -244,11 +244,12 @@ class ShieldEvents:
             if mid in self._seen:
                 return 'duplicate'
             if active:
-                # Bad/expired stamps order at receipt, and future stamps clamp
-                # to receipt, so no remote timestamp can poison future releases.
+                # Preserve Twitch ordering within the same skew bound as releases.
+                # Unusable stamps use receipt; extreme future stamps fail closed
+                # for at most the forward-skew window before a fresh release.
                 if at is None or at < self.started_at or at <= self._floor:
                     at = now
-                at = min(at, now)
+                at = max(self.started_at, min(at, now + 30))
             if len(self._seen) >= self.capacity:
                 _, evicted = self._seen.popitem(last=False)
                 self._floor = max(self._floor, evicted)

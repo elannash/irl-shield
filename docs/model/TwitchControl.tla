@@ -1,6 +1,6 @@
 --------------------------- MODULE TwitchControl ---------------------------
 EXTENDS ControlEnvironment
-\* Policy source: 907a17f8; no production mutation flags.
+\* Frozen policy source: aa359f9b; no production mutation flags.
 Init == EnvironmentInit /\ policy = InitialPolicy(1)
 NewConnection ==
   /\ execution.pc = "idle" /\ ~env.socketLive /\ ~policy.revoked
@@ -84,8 +84,9 @@ FinishCompletion ==
   /\ UNCHANGED <<env, queries, obligation, received, coverage, local>>
 
 \* Admission is independent of phase, origin generation and remote timestamp.
-\* 0 represents pre-start/expired/unparseable stamps ordered at receipt.
-OrderTime(t) == IF t = 0 THEN LocalNow ELSE Min(t, LocalNow)
+\* Missing and pre-start stamps order at receipt. Expiry is outside these bounds.
+OrderTime(t) == IF t = Missing THEN env.now
+  ELSE IF t < StartedAt THEN env.now ELSE Max(StartedAt, Min(t, env.now + 30))
 DeliverHold(s,t,g) == ProtectiveHoldReceived(s,t,g,TRUE,OrderTime(t))
 Reconnect ==
   /\ execution.pc = "idle" /\ policy.live /\ ~policy.revoked /\ policy.phase = "ready"
@@ -104,9 +105,9 @@ Next == QueueWelcome \/ (\E t \in Topics: EnableSubscription(t)) \/ NewConnectio
   \/ ApplyStatus \/ CheckStatus \/ ApplyConnectionRelease \/ CheckConnection
   \/ ApplyGuardRelease \/ FinishCompletion
   \/ (\E s \in Sources, t \in HoldStamps, g \in 1..env.generation: DeliverHold(s,t,g))
-  \/ (\E s \in Sources, t \in {LocalNow + 1, LocalNow + 30}: LegitimateRelease(s,t))
+  \/ (\E s \in Sources, t \in ReleaseStamps: ReleaseReceived(s,t))
   \/ Reconnect \/ HandedOver
   \/ (\E c \in BOOLEAN: CoverageChange(c)) \/ (\E h \in BOOLEAN: LocalHold(h))
-  \/ StatusFailure \/ Idle
+  \/ ClockAdvance \/ StatusFailure \/ Idle
 Spec == Init /\ [][Next]_vars
 =============================================================================
