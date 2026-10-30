@@ -1,0 +1,317 @@
+{
+  "format": "gst-lane-queue-handoff-v1",
+  "branch": "elannash/m1-gst",
+  "base_head": "2dd52a610eb569ac51eedc84b7840fa852da96c9",
+  "notes": [
+    "Prepared direct argv/cwd specs for the root perf-queue CLI; Linux submissions recorded in the lane ledger.",
+    "All jobs priority2; root sustained is priority1.",
+    "The wrapper passes --queued, validates the inherited canonical descriptor, and makes zero inner perf.lock acquisitions.",
+    "Use literal {attempt} expansion for every retry; existing outputs refuse overwrite.",
+    "IRL_SHIELD_PERF_QUEUE_FORCED=1 automatically marks every benchmark contended; diagnostics never qualify performance.",
+    "Mac SDK/data prerequisites remain unfinished; do not start long SH setup after timed jobs are queued."
+  ],
+  "jobs": [
+    {
+      "id": "gst-linux-gst",
+      "host": "linux",
+      "priority": 2,
+      "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/home/elan/code/irl-shield/out/offline-ppocr-v5-mobile-a30",
+        "--out",
+        "out/gst-queued-linux-gst-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "gst",
+        "--options",
+        ".tmp/gst/options-linux-gst.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-linux-gst-{attempt}/measurement-plan.json",
+        "out/gst-queued-linux-gst-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-linux-gst-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-linux-gst-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/.venv/bin/python"
+      ]
+    },
+    {
+      "id": "gst-linux-ffmpeg",
+      "host": "linux",
+      "priority": 2,
+      "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/home/elan/code/irl-shield/out/offline-ppocr-v5-mobile-a30",
+        "--out",
+        "out/gst-queued-linux-ffmpeg-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "ffmpeg",
+        "--options",
+        ".tmp/gst/options-linux-ffmpeg.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-linux-ffmpeg-{attempt}/measurement-plan.json",
+        "out/gst-queued-linux-ffmpeg-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-linux-ffmpeg-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-linux-ffmpeg-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/.venv/bin/python"
+      ]
+    },
+    {
+      "id": "gst-linux-nut",
+      "host": "linux",
+      "priority": 2,
+      "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/home/elan/code/irl-shield/out/offline-ppocr-v5-mobile-a30",
+        "--out",
+        "out/gst-queued-linux-nut-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "nut",
+        "--options",
+        ".tmp/gst/options-linux-nut.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-linux-nut-{attempt}/measurement-plan.json",
+        "out/gst-queued-linux-nut-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-linux-nut-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-linux-nut-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/.venv/bin/python"
+      ]
+    },
+    {
+      "id": "gst-linux-av",
+      "host": "linux",
+      "priority": 2,
+      "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088",
+      "argv": [
+        "./relay/gst_job",
+        "av",
+        "--out",
+        "out/gst-queued-linux-av-{attempt}"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-linux-av-{attempt}/av-receipt.json",
+        "out/gst-queued-linux-av-{attempt}/flash-beep-engine.performance.json",
+        "out/gst-queued-linux-av-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/.venv/bin/python"
+      ]
+    },
+    {
+      "id": "gst-linux-network",
+      "host": "linux",
+      "priority": 2,
+      "cwd": "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088",
+      "argv": [
+        "./relay/gst_job",
+        "network",
+        "--source",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-linux-av-v2/flash-beep.mp4",
+        "--out",
+        "out/gst-queued-linux-network-{attempt}"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-linux-network-{attempt}/network-receipt.json",
+        "out/gst-queued-linux-network-{attempt}/received.mp4",
+        "out/gst-queued-linux-network-{attempt}/relay-result.json",
+        "out/gst-queued-linux-network-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/.venv/bin/python",
+        "CC0 flash/beep control staged at /home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/out/gst-linux-av-v2/flash-beep.mp4"
+      ]
+    },
+    {
+      "id": "gst-mac-gst",
+      "host": "mac",
+      "priority": 2,
+      "cwd": "/Users/elannash/code/irl-shield-gst",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/Users/elannash/code/irl-shield-gst/out/gst-prepared-tune",
+        "--out",
+        "out/gst-queued-mac-gst-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "gst",
+        "--options",
+        ".tmp/gst/options-mac-gst.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-mac-gst-{attempt}/measurement-plan.json",
+        "out/gst-queued-mac-gst-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-mac-gst-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-mac-gst-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/Users/elannash/code/irl-shield-gst/.tmp/gst/.venv/bin/python",
+        "GStreamer brew setup completed before timed jobs are queued",
+        "Fourteen exact prepared tune input/truth pairs staged in /Users/elannash/code/irl-shield-gst/out/gst-prepared-tune"
+      ]
+    },
+    {
+      "id": "gst-mac-ffmpeg",
+      "host": "mac",
+      "priority": 2,
+      "cwd": "/Users/elannash/code/irl-shield-gst",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/Users/elannash/code/irl-shield-gst/out/gst-prepared-tune",
+        "--out",
+        "out/gst-queued-mac-ffmpeg-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "ffmpeg",
+        "--options",
+        ".tmp/gst/options-mac-ffmpeg.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-mac-ffmpeg-{attempt}/measurement-plan.json",
+        "out/gst-queued-mac-ffmpeg-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-mac-ffmpeg-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-mac-ffmpeg-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/Users/elannash/code/irl-shield-gst/.tmp/gst/.venv/bin/python",
+        "GStreamer brew setup completed before timed jobs are queued",
+        "Fourteen exact prepared tune input/truth pairs staged in /Users/elannash/code/irl-shield-gst/out/gst-prepared-tune"
+      ]
+    },
+    {
+      "id": "gst-mac-nut",
+      "host": "mac",
+      "priority": 2,
+      "cwd": "/Users/elannash/code/irl-shield-gst",
+      "argv": [
+        "./relay/gst_job",
+        "measure",
+        "--source-dir",
+        "/Users/elannash/code/irl-shield-gst/out/gst-prepared-tune",
+        "--out",
+        "out/gst-queued-mac-nut-{attempt}",
+        "--candidate",
+        "ppocr-v6-small",
+        "--transport",
+        "nut",
+        "--options",
+        ".tmp/gst/options-mac-nut.json"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-mac-nut-{attempt}/measurement-plan.json",
+        "out/gst-queued-mac-nut-{attempt}/measurement-plan.sha256",
+        "out/gst-queued-mac-nut-{attempt}/sustained-masked.performance.json",
+        "out/gst-queued-mac-nut-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/Users/elannash/code/irl-shield-gst/.tmp/gst/.venv/bin/python",
+        "GStreamer brew setup completed before timed jobs are queued",
+        "Fourteen exact prepared tune input/truth pairs staged in /Users/elannash/code/irl-shield-gst/out/gst-prepared-tune"
+      ]
+    },
+    {
+      "id": "gst-mac-av",
+      "host": "mac",
+      "priority": 2,
+      "cwd": "/Users/elannash/code/irl-shield-gst",
+      "argv": [
+        "./relay/gst_job",
+        "av",
+        "--out",
+        "out/gst-queued-mac-av-{attempt}"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-mac-av-{attempt}/av-receipt.json",
+        "out/gst-queued-mac-av-{attempt}/flash-beep-engine.performance.json",
+        "out/gst-queued-mac-av-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/Users/elannash/code/irl-shield-gst/.tmp/gst/.venv/bin/python",
+        "GStreamer brew setup completed before timed jobs are queued",
+        "Fourteen exact prepared tune input/truth pairs staged in /Users/elannash/code/irl-shield-gst/out/gst-prepared-tune"
+      ]
+    },
+    {
+      "id": "gst-mac-network",
+      "host": "mac",
+      "priority": 2,
+      "cwd": "/Users/elannash/code/irl-shield-gst",
+      "argv": [
+        "./relay/gst_job",
+        "network",
+        "--source",
+        "/Users/elannash/code/irl-shield-gst/out/gst-prepared-av.mp4",
+        "--out",
+        "out/gst-queued-mac-network-{attempt}"
+      ],
+      "timeout_seconds": 1800,
+      "expected_receipts": [
+        "out/gst-queued-mac-network-{attempt}/network-receipt.json",
+        "out/gst-queued-mac-network-{attempt}/received.mp4",
+        "out/gst-queued-mac-network-{attempt}/relay-result.json",
+        "out/gst-queued-mac-network-{attempt}/queue-context.json"
+      ],
+      "prerequisites": [
+        "Root readiness marker complete:true",
+        "External perf-queue EX lease",
+        "/Users/elannash/code/irl-shield-gst/.tmp/gst/.venv/bin/python",
+        "GStreamer brew setup completed before timed jobs are queued",
+        "Fourteen exact prepared tune input/truth pairs staged in /Users/elannash/code/irl-shield-gst/out/gst-prepared-tune",
+        "CC0 flash/beep control staged at /Users/elannash/code/irl-shield-gst/out/gst-prepared-av.mp4"
+      ]
+    }
+  ]
+}

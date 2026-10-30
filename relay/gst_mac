@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Sync only this lane's mirror, then run one bounded command in a login shell.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+rsync -az --exclude=.git --exclude=.build --exclude=out --exclude=.tmp \
+  --exclude=.venv --exclude='models/.venv*' --exclude=__pycache__ \
+  --exclude=fixtures/cache --exclude=models/cache \
+  ./ mac:code/irl-shield-gst/
+command='cd "$HOME/code/irl-shield-gst"; export OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2; '
+command+='export GST_REGISTRY="$PWD/.tmp/gst/registry.bin" XDG_CACHE_HOME="$PWD/.tmp/gst/cache"; '
+command+='exec perl -e '\''alarm 3600; exec @ARGV'\'' nice -n 10 .tmp/gst/.venv/bin/python -m relay.gst_run'
+for argument in "$@"; do
+  printf -v escaped ' %q' "$argument"
+  command+="$escaped"
+done
+printf -v remote 'bash -lc %q' "$command"
+ssh mac "$remote"

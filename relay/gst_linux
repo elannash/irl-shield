@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# One lane-owned job, capped pools, T3 memory slice, process-local CUDA libraries.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+export GST_REGISTRY="$PWD/.tmp/gst/registry.bin" XDG_CACHE_HOME="$PWD/.tmp/gst/cache"
+# Existing pinned NVIDIA wheels are read only; no system CUDA path is changed.
+runtime_libs=()
+for directory in "$PWD"/.tmp/gst/.venv/lib/python3.11/site-packages/nvidia/*/lib /home/elan/code/irl-shield/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia/*/lib; do
+  if [[ -d "$directory" ]]; then runtime_libs+=("$directory"); fi
+done
+if ((${#runtime_libs[@]})); then
+  library_path=$(IFS=:; echo "${runtime_libs[*]}")
+  export LD_LIBRARY_PATH="$library_path${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+fi
+exec systemd-run --user --scope --slice=app-t3code-agents.slice \
+  nice -n 10 perl -e 'alarm 3600; exec @ARGV' \
+  .tmp/gst/.venv/bin/python -m relay.gst_run "$@"

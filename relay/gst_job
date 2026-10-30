@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Direct perf-queue job: external runner owns EX. This wrapper never flocks.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+mkdir -p .tmp/gst/tmp .tmp/gst/cache .tmp/gst/cuda-cache
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2
+export GST_REGISTRY="$PWD/.tmp/gst/registry.bin" XDG_CACHE_HOME="$PWD/.tmp/gst/cache"
+export CUDA_CACHE_PATH="$PWD/.tmp/gst/cuda-cache" TMPDIR="$PWD/.tmp/gst/tmp"
+if [[ $(uname -s) == Linux ]]; then
+  if [[ $(cat /proc/self/cgroup) != *app-t3code-agents.slice* ]]; then
+    echo 'Queue runner must supply app-t3code-agents.slice; refusing to escape its process group' >&2
+    exit 1
+  fi
+  export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+  export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+  gst_job_libs=()
+  for directory in "$PWD"/.tmp/gst/.venv/lib/python3.11/site-packages/nvidia/*/lib \
+    /home/elan/code/irl-shield/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia/*/lib; do
+    if [[ -d "$directory" ]]; then gst_job_libs+=("$directory"); fi
+  done
+  if ((${#gst_job_libs[@]})); then
+    gst_job_library_path=$(IFS=:; echo "${gst_job_libs[*]}")
+    export LD_LIBRARY_PATH="$gst_job_library_path${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+  fi
+  exec nice -n 10 \
+    perl -e 'alarm 1800; exec @ARGV' .tmp/gst/.venv/bin/python -m relay.gst_run --queued "$@"
+fi
+exec nice -n 10 perl -e 'alarm 1800; exec @ARGV' \
+  .tmp/gst/.venv/bin/python -m relay.gst_run --queued "$@"
