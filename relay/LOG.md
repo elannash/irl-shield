@@ -106,3 +106,163 @@ Conductorreportssoakfirstexecutionfailed;closedretry,ACLkeptpending. Parentreads
 
 ACL61 completed; parent verified exact original stdout seal a5fe28931a2f0abecbfaa65eb64a32adaa9db514690cf944b501f9b6a425af8b and one-file inventory. Both hosts pass all native packet/auth/binding/credential checks, uncontended15.851%mean18.975%max, forcedfalse. Runner3442769 exited empty/sealed.
 68 fragmented RTMP control reproduces network-mux timeout after93ACKs; full control300ACKs. Historical attribution unproved.69 bridge experiment launched before new steer failed startup; raw receipts retained, production bridge/import removed. Conductor orders bounded egress-only recovery, cap76, deadline15UTC. Source staged only .tmp/m2/recovery, parent still legacy for red70. Test child allocated one red invocation70, parent green71/full72/fresh-soak73/retry74, reserves75/76. Current69 executed. No process retained; no further bridge work.
+
+
+## Recovery green and final source freeze
+
+Audited child70fulltest/fixture/handback/redlog/sourceSHA. Actualnative red70:fullPing300ACKs,fragment93/network-muxTimeout; saturatedLIVEbackpressure6s plusmoderatorhold producesTimeout; refusedportfailslegacycode. No fixtureerrors/survivors. Copied onlyowned2testfilesandhandback,trimmedonecosmeticEOFblank; childhandbackrelativereceiptlinks rewrittenabsolute. Shellhook falsely rejected a combinedcopy command asworktreeremoval; no worktreeoperationwasrequested/executed. Usedfile-specificpatches forreviewedownedfiles. No nativeinvocationspentbythatrejection or JSONreadprojectionerror.
+
+Appliedboundedrecovery tostream/live/runtime. Refinedfresh-frame startup/dropbatch/currenthold handling; accepted pending-networkrecoveryframesreturnNone, onlyreadyTrue clearsinternalegressHOLD. Recoveriespersistinnewworkerstartup, no parentcritical-path eventfilewrite; archivegenerations/rootmanifestappend. 71all3regressionsPASS38.773s:fragment2connections120ACKs,backpressure2connections309ACKs,gen2allfreshHOLD/black/protected,nofailedindexreplay,moderatorholdretainedthenreleaseswithoutinternalegressholdstuck. Rate5/60exhaustsin2.358s with exactterminalcode/persistedevents. Allworkers/PIDs/listenersgone.
+
+72fullLinux96default(1Macskip)+19M2+compilePASS. Finalone-linependingeventsdeque64cap,then73fullsamePASS(19M2in44.911s). NativeonlyCPUregressions;noindependentOCR/Qclaim. Sourcefreeze31paths fbd7909030da40858d1c83a969a2e70ccbf9491a9a8968f544569c0ac5d22aab. Follow-upsourcepatch .tmp/m2/recovery-source.patch SHA77ddc0d1edaac4de2221e5d344149299246325f9f50d3e789a973c4b3be91fc4, againstownercheckpointd4a28a9;nochildcommit/stage/push. Activecodecanonical;staged.tmp/m2/recoverycopiesSTALE.
+
+Session3rootrunner4177108providedverifiedalive. SubmittedEXACTLYONE1200sRTMPsoak job36103e2e99f24959888f2f5d2175e282 name m2-v3-rtmp-soak andSEALED. Exactdirectliteralargv+hash+HEAD .tmp/m2/session3-soak-command.json, runtime receipt .tmp/m2/gate2-v3/m2-v3-rtmp-soak/attempt-{attempt}/runtime.json. No nestedlock;existinginheritedEXvalidator/forcedsemantics. Correctedcounter73/76beforenative;74firstsoak75onlycontendedretry76spare. Rootafter-second-contended administrativecallback prevents thirdclaim;standardqueuecodeunchanged. No newmanualnativeattempts. Rootwatching;no parentobserverornewchildwaiter. SourceFROZEN,docs-onlyuntilresult/closure.
+
+
+## 2026-10-30 — session 3 attempt 2 independently audited
+
+The notified queue attempt 2 is physical execution 1; attempt 1 was a pre-exec
+readiness rejection and spent zero invocations. Native exit 0, functional
+20-minute evidence complete. Budget is now 74/76; the only authorized contended
+retry remains root-owned and would spend 75. No new producer, watcher, polling
+loop, decode, test, or native execution was started in this audit turn.
+
+Read-only audit verified original queue-stdout seal
+2948628190006f3ab35afd350e890279b2dc473f74451d64e8c2680775a9aa90,
+all 25 inventory files / 1,428,817,811 bytes / read-only modes, zero mismatches.
+All 31 frozen source paths and 61 provenance hashes match current source;
+provenance HEAD f9dc9482b0a46e4ad453c7da01835d92abc7e87c. Exact queue argv
+matches the submitted template with attempt=2. Active implementation stayed
+frozen; only the three owned documentation files changed. Audit command:
+`nice -n 10 python3 .tmp/m2/audit-v3-attempt2.py`.
+Audit result: `.tmp/m2/v3-attempt2-parent-audit.json`.
+
+Recomputed frame/protection manifests agree: 36,205 contiguous encoded rows,
+28,295 LIVE / 4,596 HOLD / 3,314 PROTECT, 6,496 slate. Manual-HOLD guard checks
+202 rows after its explicit 250 ms grace and finds zero metadata violations;
+109 accurate-stall-window rows are protected. Faults occur at 664.004 s HOLD,
+665.065 s sender kill, 668.021 s reconnect, 671.001 s release. New sender exits 0
+after 16,184 frames; zero egress interruptions or recoveries. There are 136
+accepted input sessions / 245 disconnections under queue backpressure, and
+9,329,678 discarded audio samples; do not call this lossless input/audio.
+
+RTSP native capture has 36,115 decoded frames / 1203.820 s; SRT output capture
+36,110 / 1203.633 s. Each has 822 optical/tone pairs, 105 unpaired beeps and
+22 unpaired flashes. Recomputed median / absolute p95 offset: RTSP 3.271 /
+4.770 ms, SRT 1.771 / 2.604 ms. Maximum decoded PTS gaps 55 / 34 ms, no
+non-increasing PTS. Encoded wall max 464.551 ms, 295 gaps above two 30 fps
+periods; presentation wall max 487.883 ms; max successful write/ACK 477.467 ms.
+No measured wall gap exceeds 10 s. Decoded PTS continuity is distinct from
+wall-clock cadence; no attribution to pure CPU starvation is supported.
+
+The run is contended under other-busy-v2: mean 40.189%, max 73.366%, plus
+memory_not_ok, forced=false, contamination valid=false. It proves RTMP
+functional robustness under the exercised faults; timing/cadence qualification
+is excluded. Queue bound 8/8; sampled main+MediaMTX+sender RSS peak
+1,248,472 KiB, full lifecycle threads 39–85 / FDs 64–122. Steady early/late
+medians are 66/67 threads and 112/114 FDs. Encoder worker, spawn helper,
+GPU/VRAM remain unmeasured. All four sampled PIDs are absent; runtime cleanup
+errors empty and owned sender/MediaMTX exits recorded. PID-level encoder
+cleanup is not independently covered by the soak sampler.
+
+Consolidated M2-HANDBACK.md to remove obsolete current counts, checkpoints,
+deadlines and queued status. Preserved prior full text at
+`.tmp/m2/M2-HANDBACK-before-v3-audit.md`; chronological red history remains here
+and in child hand-backs. Updated README acceptance limits. Independent privacy
+is still PENDING root corrected/all-leak OCR; Q and SRT publication remain
+unqualified. All footage/derivatives benchmark-only, no music, not demo-ready.
+Root was notified of exact audit and its limits. No staging/commit/push/PR or
+queue mutation occurred. Root's pending retry and runner are left untouched.
+
+
+## 2026-10-30 — final retry audited; M2 execution budget closed
+
+Conductor notified attempt 5 / physical execution 2, rc 2 incomplete, then closed
+all further executions at 75/76. Queue ordinals 1, 3 and 4 were pre-exec
+rejections (zero budget); 2 and 5 are the only physical session-3 executions.
+Job state independently read as closed-one-shot, runner metadata drained;
+runner 4177108 is absent. No extra native execution, test, codec decode, OCR,
+producer, polling watcher, or queue mutation occurred in this audit turn.
+
+Read-only audit command: `nice -n 10 python3 .tmp/m2/audit-v3-attempt5.py`.
+Original queue stdout seal:
+53d8c9e1a5be466fc80b4f822b7d25729cd07cb52c36ac25101f58f0ca09a8c3.
+All 29 files / 753,598,406 bytes / exact inventory / read-only modes verified,
+zero mismatches; all 31 frozen and 61 provenance source hashes and exact argv
+match. HEAD/source remain f9dc948 / fbd7909 snapshot. Result:
+`.tmp/m2/v3-attempt5-parent-audit.json`. A separate read-only FLV tag inspection
+was added to that audit result; it validates container tag sizes/counts/timestamps
+without invoking a decoder. Final cleanup:
+`.tmp/m2/v3-final-cleanup-audit.json`.
+
+Runtime stops normally after 1208.205 s. Encoded manifest 35,944 rows vs 36,205
+engine outputs: 261 skipped indices, not replayed. State totals 23,145 LIVE /
+10,004 HOLD / 2,795 PROTECT, 12,799 protected rows, 11,896 slate (33.096%).
+Manual-HOLD guard 202 rows after the explicit 250 ms grace, zero metadata
+violations; accurate-stall protection 109 rows. This is real session survival
+and writer recovery, not a second full independent-capture success.
+
+The conductor's hypothesis that both captures stopped because of egress
+reconnect is partly refuted. RTSP last packet 183.056 s, ExitError finish
+185.128 s; first egress recovery 515.608 s, 330.480 s later. RTSP's earlier
+interruption cause is unverified. SRT last packet 520.863 s / read-ended
+520.876 s occurs during recovery. Capture source retries only initial startup;
+a read failure ends the thread, so neither capture observes generation 3.
+Sealed summary errors are exactly short RTSP span, too few RTSP frames and
+incomplete SRT measurable A/V. RTSP prefix 5,292 decoded frames / 176.388 s,
+122 pairs median/absolute-p95 4.688/8.770 ms; SRT prefix 14,868 / 495.567 s,
+323 pairs 1.729/11.083 ms. No post-recovery A/V or decoded network claim.
+
+Recovery 1: write deadline, archive-mux operation, failed index 14960, 515.608 s.
+Recovery 2: generation-2 encoder-startup deadline, 521.263 s. Header-only gen2
+archive 394 bytes contains no encoded media data tags. New generation 3 starts
+writing at 522.174 s and ends LIVE at 1207.812 s, 20,984 manifest rows; archive
+has 20,984 video data tags and 32,789 audio data tags. Manifest writes follow
+encode+network-mux return, supporting successful writer/connection recovery;
+independent downstream decoding after restart remains unverified. Recovery
+JSONL has 3 rows but 2 unique events: first pending event was appended again
+by the startup that timed out. Count unique events/runtime count, not raw lines.
+
+Actual encoding wall gap reaches 22.525 s; presentation gap 22.511 s; max
+write/reply/cleanup call 15.934 s; PTS jump 8.733 s. Thus the retry FAILS the
+no-wall-gap-above-10s criterion. Algorithmic five-second timeout plus cleanup
+does not prove a hard wall deadline under OS/host pressure. Both native runs
+are contended: retry other-busy-v2 mean 38.411%/max 75.757% plus memory_not_ok,
+forced=false, valid=false. Timing and strict cadence remain NOT QUALIFIED.
+
+A second harness defect explains much of the extended slate: sender01-exit
+records status failed, BrokenPipeError/errno32/network-mux at 515.214 s after
+14,981 frames. The scheduled kill at 665.008 s finds it already exited with 2,
+but Scenario._stop marks intentional_kill=true unconditionally; summarize then
+exempts that failure. This is not a valid second deliberate-kill proof.
+No publisher exists until sender2's first generated frame at 668.552 s:
+~153.338 s outage. Generation 3 writes 4,789 HOLD/slate rows before the planned
+668.006 s reconnect; longest slate run is 4,927 rows, 522.174–672.593 s.
+First LIVE returns 672.613 s, 1.608 s after manual release / 4.061 s after new
+sender first generation stamp. This argues against a permanently latched
+egress hold; source outage and missing-ingest coverage explain the long slate.
+9,324 slate rows have ingest-gap coverage (78.38%). Before recovery, 3,362
+slate rows already exist. Remaining repeated input gaps/backpressure are not
+all caused by egress recovery. CPU versus I/O/OS starvation is not isolated;
+the observed stalled worker operation is archive-mux. Quiet/dedicated host and
+real phone publisher-reconnect qualification remain operational requirements.
+
+Input queue remains 8/8; 115 accepted sessions / 1,001 disconnections include
+failed attempts during publisher absence, not 1,001 proven queue overflows.
+Last input error input-backpressure; 8,029,392 audio samples dropped. Sampled
+RSS peak 1,298,856 KiB, threads 29–84, FDs 56–122; encoder worker, helper and
+GPU/VRAM excluded. All known retry wrapper/main/MediaMTX/sender PIDs absent;
+no tested listener on 18554 TCP / 19550 TCP / 19050 UDP; no Python/MediaMTX/
+FFmpeg candidate with this worktree cwd. Native worker identities were not
+recorded historically, so cleanup-tree coverage remains partial. No process
+retained or stopped by the audit; root runner exited naturally.
+
+Final per-criterion hand-back updated: attempt 2 PROVES RTMP functional
+robustness; retry OBSERVES real NVENC writer recovery but is incomplete; both
+runs exclude timing qualification; timeout/cadence guard fails retry; memory
+coverage partial; independent privacy PENDING root corrected OCR; Q and SRT
+publication unqualified. No overall Gate 2 pass, leak count, dedicated-host
+performance result, or public demo readiness is claimed. All frozen media
+remain BENCHMARK-ONLY / no music / not demo-ready. Only three owned tracked
+docs changed; implementation source remains frozen and no commit/stage/push
+or PR occurred. Prior red receipts and all source versions remain intact.

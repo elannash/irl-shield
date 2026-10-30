@@ -105,8 +105,8 @@ does not establish A/V sync.
 `encoded.flv`, `frames.jsonl` and `runtime.json` describe actual encoded
 packets, PTS, per-frame protection/coverage, compressed masks, pixel/PCM hashes
 and bounds. An independent native capture is needed to prove network egress.
-Root's corrected independent-family OCR grades sealed captures after PR1
-merges; this lane never grades itself with the detector's PP family alone.
+Root's corrected independent-family OCR grades the sealed captures; this lane
+never grades itself with the detector's PP family alone.
 Existing licensed footage and all its derivatives are **benchmark-only**,
 without music, and are not demo-ready.
 
@@ -144,24 +144,68 @@ Primary transport/auth references:
 
 ## Queued acceptance
 
-The original session-1 results are sealed red and retained. Session 2 is
-`/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2`; its diagnostic
-pilot exposed `network-mux` / `BrokenPipeError` and was contended. A local
-four-second publisher gap reproduced the three-second MediaMTX timeout, then
-passed with the ten-second default. The RTMP and SRT A/V requalification jobs
-are submitted; exact argv is in `.tmp/m2/session2-av-commands.json`. The queue
-remains unsealed pending their results and final soak/read-ACL submissions.
-Root owns the runner and stop command. Submission is not a native pass.
+The original failures remain sealed. A local four-second publisher gap
+reproduced the three-second MediaMTX timeout, then passed with the ten-second
+default. A real read/publish-ACL matrix passed uncontended on both allowed
+addresses. SRT phone publication remains unqualified because its earlier native
+run failed with a timestamp regression and did not resume LIVE after reconnect.
+
+Session 3's first physical RTMP soak completed 20 minutes with both native
+output captures decoded, all injected faults survived, and no egress recovery.
+That run was contended and memory-constrained: it proves functional robustness,
+while timing and strict cadence remain unqualified. Independent privacy grading
+is pending. The final contended retry survived two recovery events and resumed
+the NVENC writer, but its independent captures are incomplete and encoding had
+a 22.525-second wall-clock gap. No overall Gate 2 pass is claimed. The session
+at `/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-3` is now closed,
+sealed and drained; no further execution is authorized.
+Exact argv and source identity are in `.tmp/m2/session3-soak-command.json` and
+`.tmp/m2/source-at-recovery.json`; the hand-back links the audited results.
 
 For a fresh queue/run directory, pass the existing pinned GPU library paths
 in the queued command's scoped environment, and invoke the private Python
 interpreter directly with `-m relay.soak`. The harness validates the inherited
 canonical exclusive lease, keeps every failed run, and prints the seal digest
 for the conductor to retain outside the artifact directory. Root grades each
-sealed capture once using the corrected independent-family scorer after PR1
-merges. `python -m relay.seal DIRECTORY --expected-sha256 RETAINED_DIGEST`
+sealed capture once using the corrected independent-family scorer.
+`python -m relay.seal DIRECTORY --expected-sha256 RETAINED_DIGEST`
 verifies the frozen file inventory and bytes before grading.
 
 The direct RTMP-reader crash is preserved as a known PyAV 16.0.1 issue in
 `M2-HANDBACK.md`; the live decoder uses the one loopback RTSP/TCP path. The
 RTSP/TCP read does not expose another Tailscale-facing listener.
+
+
+## Bounded egress recovery
+
+A failed or timed-out write stops and reaps only its encoder/writer process.
+The engine, ingest object and control sources remain alive. The presenter drops
+the failed frame and remaining precomputed batch, clears old queued audio, and
+holds output protection while a fresh writer starts. It resumes from a newly
+polled engine result; a moderator hold is preserved. No timestamp is clamped or
+failed frame replayed. At most five reconnects are attempted in a 60-second
+window, with 250ms backoff; exhaustion returns `egress-recovery-limit`.
+
+Recovery events contain fixed error/operation codes and numeric timing only.
+Each writer gets its own `encoded-gNNNN.flv` after the original `encoded.flv`;
+`frames.jsonl` appends rows with `egress_generation`. The old archive is never
+overwritten. Pending and recent event rings are bounded at64. Worker readiness
+is reported separately from encoded-frame acceptance, so the internal egress
+hold clears only after a network-ready ACK. There is no production RTMP parser
+or control-message bridge.
+
+The real control-fragment/backpressure/hold/limit regressions and full Linux
+functional gate 73 pass. The first native 20-minute RTMP soak had zero
+recoveries; the final retry recorded an archive-mux timeout, a failed encoder
+startup, and successful writing through generation 3. Independent decoding
+after that restart is unverified: capture readers only retry startup and do
+not reconnect after a read failure. The retry's RTSP capture stopped before
+recovery, so that interruption has a separate unknown cause.
+
+The retry was 33.096% slate, predominantly with missing-ingest coverage. Its
+first synthetic publisher failed before the scheduled kill; the harness then
+misclassified the already-dead publisher as intentionally killed. LIVE output
+returned after the replacement publisher and manual HOLD release. Host pressure
+and source loss are evidenced; CPU starvation alone and a latched recovery hold
+are not established. `M2-HANDBACK.md` records these harness limitations, strict
+cadence and privacy limits, and the known SRT publication failure.
