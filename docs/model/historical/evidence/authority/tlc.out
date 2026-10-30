@@ -1,0 +1,133 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 0 and seed 7033534529105565152 with 1 worker on 2 cores with 910MB heap and 64MB offheap memory [pid: 3068775] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-model/TwitchControl.tla
+Parsing file /tmp/statechart-4AsqdM/statechart-JcNeFe/tmp-verdict-1/Integers.tla
+Parsing file /tmp/statechart-4AsqdM/statechart-JcNeFe/tmp-verdict-1/Sequences.tla
+Parsing file /tmp/statechart-4AsqdM/statechart-JcNeFe/tmp-verdict-1/FiniteSets.tla
+Parsing file /tmp/statechart-4AsqdM/statechart-JcNeFe/tmp-verdict-1/TLC.tla
+Parsing file /tmp/statechart-4AsqdM/statechart-JcNeFe/tmp-verdict-1/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 21:07:31)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 21:07:32.
+Error: Invariant OnlyBroadcasterResumes is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = "connecting"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 2: <Welcome line 37, col 12 to line 39, col 80 of module TwitchControl>
+/\ phase = "subscribing"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 3: <Ready line 40, col 10 to line 44, col 64 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "PROTECT"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 4: <Tick line 55, col 9 to line 57, col 77 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "PROTECT"
+/\ now = 2
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 5: <Tick line 55, col 9 to line 57, col 77 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "PROTECT"
+/\ now = 3
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 6: <Deliver line 81, col 6 to line 90, col 65 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 1
+/\ mode = "PROTECT"
+/\ now = 3
+/\ executed = {"modResume"}
+/\ shield = FALSE
+/\ resumedBy = "moderator"
+/\ replayed = FALSE
+/\ chatTime = 3
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<"modResume">>
+
+1170 states generated, 165 distinct states found, 80 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 7 and the 95th percentile is 6).
+Finished in 02s at (2026-10-29 21:07:32)
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC
+

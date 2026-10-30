@@ -1,0 +1,5 @@
+ActiveState=active
+Slice=app-t3code-agents.slice
+ControlGroup=/user.slice/user-1000.slice/user@1000.service/app.slice/app-t3code.slice/app-t3code-agents.slice/m3-r3-model-final-bootstrap-pass.scope
+CPUQuotaPerSecUSec=2s
+MemoryMax=2147483648

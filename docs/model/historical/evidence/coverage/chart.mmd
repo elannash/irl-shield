@@ -1,0 +1,21 @@
+---
+title: "Twitch protection and replay checks"
+---
+stateDiagram-v2
+  state "Legend" as legend {
+    lg0: Breaks NoLIVEWithoutCoverage
+    lg1: Path to the NoLIVEWithoutCoverage bug
+  }
+  class lg0 breaks
+  class lg1 bugPath
+  s0: connecting: HOLD
+  s1: subscribing: HOLD
+  s2: LIVE without coverage
+  [*] --> s0
+  s0 --> s1: server welcomes connection
+  s1 --> s2: subscriptions ready
+  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
+  class s0 bugPath
+  class s1 bugPath
+  class s2 breaks
+  class s2 bugPath

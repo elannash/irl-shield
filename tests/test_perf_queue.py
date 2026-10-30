@@ -412,7 +412,8 @@ class PerformanceQueue(unittest.TestCase):
 
     def test_unsealed_producer_wait_and_stop_leave_reused_metadata_and_unowned_child_untouched(self):
         queue = perf_queue.Queue(self.storage)
-        unrelated = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(5)'], start_new_session=True)
+        unrelated = subprocess.Popen([sys.executable, '-c', 'import sys; sys.stdin.buffer.read()'],
+                                     stdin=subprocess.PIPE, start_new_session=True)
         driver = None
         try:
             identity = perf_queue.process_identity(unrelated.pid)
@@ -421,17 +422,18 @@ class PerformanceQueue(unittest.TestCase):
             self.assertEqual(self.cli('stop', 'linux').returncode, 0)
             self.assertIsNone(unrelated.poll())
             self.assertFalse(queue.status('linux')['linux']['runner']['identity_matches'])
-            runner = self.runner(queue, hard_stop=time.time() + 3)
+            runner = self.runner(queue, hard_stop=time.time() + 60)
             outcomes = []
             driver = threading.Thread(target=lambda: outcomes.append(runner.run()), daemon=True)
             driver.start()
-            self.until(lambda: queue.status('linux')['linux']['runner']['state'] == 'waiting-for-producers')
+            self.until(lambda: queue.status('linux')['linux']['runner']['state'] == 'waiting-for-producers', timeout=30)
             marker = self.root / 'started'
-            queue.enqueue('linux', 'stop-me', [sys.executable, '-c', 'from pathlib import Path; import os,sys,time; Path(sys.argv[1]).write_text(str(os.getpid())); time.sleep(5)', str(marker)], cwd=self.caller)
+            queue.enqueue('linux', 'stop-me', [sys.executable, '-c', 'from pathlib import Path; import os,sys,threading; Path(sys.argv[1]).write_text(str(os.getpid())); threading.Event().wait()', str(marker)], cwd=self.caller)
             queue.seal('linux')
-            self.until(marker.exists)
+            self.until(marker.exists, timeout=30)
             self.assertEqual(self.cli('stop', 'linux').returncode, 0)
-            driver.join(2)
+            self.until(lambda: not driver.is_alive(), timeout=30)
+            driver.join()
             self.assertFalse(driver.is_alive())
             self.assertEqual(outcomes, ['stop-requested'])
             self.assertIsNone(perf_queue.process_identity(int(marker.read_text())))
@@ -439,10 +441,11 @@ class PerformanceQueue(unittest.TestCase):
         finally:
             queue.stop('linux')
             if driver is not None:
-                driver.join(4)
+                driver.join(10)
             if unrelated.poll() is None:
                 unrelated.terminate()
-            unrelated.wait(timeout=2)
+            unrelated.stdin.close()
+            unrelated.wait(timeout=5)
 
     def test_forced_jobs_receive_queue_context_and_hard_deadline_stops_only_owned_group(self):
         queue = perf_queue.Queue(self.storage)

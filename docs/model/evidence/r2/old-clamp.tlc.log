@@ -1,0 +1,625 @@
+Running as unit: m3-r2-model-old-clamp.scope; invocation ID: c6ce8b9a200c43a182c3cb31bf155fbb
+Picked up JAVA_TOOL_OPTIONS: -Xmx1g -XX:ActiveProcessorCount=2
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 0 and seed -8389494532780118833 with 2 workers on 2 cores with 1024MB heap and 64MB offheap memory [pid: 3427245] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-r2-model/old-clamp/BeforeR2Control.tla
+Parsing file /tmp/agents/irl-shield/m3-r2-model/old-clamp/ControlEnvironment.tla
+Parsing file /tmp/Integers.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Parsing file /tmp/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module ControlEnvironment
+Semantic processing of module BeforeR2Control
+Starting... (2026-10-29 22:34:27)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 22:34:27.
+Error: Invariant AuthorizedShieldBeginPersists is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 0,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 0,
+  enabled |-> {},
+  everSubscribed |-> FALSE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "connecting",
+  session |-> 0,
+  live |-> FALSE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 2: <QueueWelcome line 37, col 3 to line 40, col 84 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {},
+  queuedWelcome |-> {1},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 0,
+  enabled |-> {},
+  everSubscribed |-> FALSE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "connecting",
+  session |-> 0,
+  live |-> FALSE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 3: <EnableSubscription line 42, col 3 to line 45, col 84 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat"},
+  queuedWelcome |-> {1},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "connecting",
+  session |-> 0,
+  live |-> FALSE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 4: <EnableSubscription line 42, col 3 to line 45, col 84 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "end"},
+  queuedWelcome |-> {1},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "connecting",
+  session |-> 0,
+  live |-> FALSE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 5: <EnableSubscription line 42, col 3 to line 45, col 84 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {1},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "connecting",
+  session |-> 0,
+  live |-> FALSE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 6: <Next line 102, col 7 to line 102, col 44 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 1,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "subscribing",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 7: <BeginReconcile line 23, col 3 to line 32, col 67 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> FALSE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> FALSE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> Missing, receipt |-> 0],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 0,
+  connection |-> TRUE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> -1 ]
+/\ local = FALSE
+
+State 8: <Next line 106, col 7 to line 106, col 85 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 0]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> TRUE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 9: <Next line 103, col 25 to line 103, col 68 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "statusCallback", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> TRUE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 10: <ApplyStatus line 46, col 3 to line 50, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "statusCheck", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> TRUE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 11: <CheckStatus line 52, col 3 to line 59, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "connectionCallback", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> TRUE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 12: <ApplyConnectionRelease line 63, col 3 to line 66, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "connectionCheck", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "reconciling",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> FALSE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 13: <CheckConnection line 68, col 3 to line 72, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "guardCallback", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "ready",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> FALSE,
+  guard |-> TRUE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 14: <ApplyGuardRelease line 74, col 3 to line 77, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "finish", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "ready",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> FALSE,
+  guard |-> FALSE,
+  token |-> 1,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 15: <FinishCompletion line 79, col 3 to line 84, col 70 of module BeforeR2Control>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 10,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "ready",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> FALSE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 16: <ClockAdvance line 122, col 3 to line 123, col 84 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 11,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "ready",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 1,
+  connection |-> FALSE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> TRUE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 10 ]
+/\ local = FALSE
+
+State 17: <ReleaseReceived line 105, col 3 to line 118, col 64 of module ControlEnvironment>
+/\ coverage = TRUE
+/\ queries = <<[generation |-> 1, session |-> 1, revision |-> 0, active |-> FALSE]>>
+/\ obligation = [shield |-> TRUE, chat |-> FALSE]
+/\ execution = [pc |-> "idle", token |-> 1, applyStatus |-> FALSE]
+/\ env = [ socketLive |-> TRUE,
+  generation |-> 1,
+  registry |-> {"chat", "begin", "end"},
+  queuedWelcome |-> {},
+  callbackOrigin |-> 0,
+  session |-> 1,
+  shieldTruth |-> TRUE,
+  now |-> 11,
+  enabledGeneration |-> 1,
+  enabled |-> {"chat", "begin", "end"},
+  everSubscribed |-> TRUE,
+  holds |->
+      [ shield |-> [stamp |-> 20, receipt |-> 10],
+        chat |-> [stamp |-> Missing, receipt |-> 0] ] ]
+/\ received = {"shield"}
+/\ policy = [ revoked |-> FALSE,
+  generation |-> 1,
+  phase |-> "ready",
+  session |-> 1,
+  live |-> TRUE,
+  revision |-> 2,
+  connection |-> FALSE,
+  guard |-> FALSE,
+  token |-> 0,
+  shield |-> FALSE,
+  chat |-> FALSE,
+  chatTime |-> -1,
+  shieldTime |-> 19 ]
+/\ local = FALSE
+
+9580 states generated, 971 distinct states found, 75 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 00s at (2026-10-29 22:34:28)
+exit=12

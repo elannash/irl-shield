@@ -1,0 +1,169 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Running breadth-first search Model-Checking with fp 0 and seed 5066326425940375429 with 1 worker on 2 cores with 910MB heap and 64MB offheap memory [pid: 3074888] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-model/TwitchControl.tla
+Parsing file /tmp/statechart-YaLs7j/statechart-BTyQX2/tmp-verdict-1/Integers.tla
+Parsing file /tmp/statechart-YaLs7j/statechart-BTyQX2/tmp-verdict-1/Sequences.tla
+Parsing file /tmp/statechart-YaLs7j/statechart-BTyQX2/tmp-verdict-1/FiniteSets.tla
+Parsing file /tmp/statechart-YaLs7j/statechart-BTyQX2/tmp-verdict-1/TLC.tla
+Parsing file /tmp/statechart-YaLs7j/statechart-BTyQX2/tmp-verdict-1/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 21:08:16)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 21:08:16.
+Error: Invariant ReconnectNeverReplays is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = "connecting"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 2: <Welcome line 37, col 12 to line 39, col 80 of module TwitchControl>
+/\ phase = "subscribing"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 3: <Ready line 40, col 10 to line 44, col 64 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "PROTECT"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 4: <Deliver line 81, col 6 to line 90, col 65 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {"hold"}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 1
+/\ chat = TRUE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<"hold">>
+
+State 5: <Reconnect line 45, col 14 to line 49, col 57 of module TwitchControl>
+/\ phase = "reconnecting"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {"hold"}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 1
+/\ chat = TRUE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 6: <Welcome line 37, col 12 to line 39, col 80 of module TwitchControl>
+/\ phase = "subscribing"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {"hold"}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 1
+/\ chat = TRUE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 7: <Ready line 40, col 10 to line 44, col 64 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {"hold"}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 1
+/\ chat = TRUE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<>>
+
+State 8: <Deliver line 81, col 6 to line 90, col 65 of module TwitchControl>
+/\ phase = "ready"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {"hold"}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = TRUE
+/\ chatTime = 1
+/\ chat = TRUE
+/\ revoked = FALSE
+/\ connection = FALSE
+/\ local = FALSE
+/\ seen = <<"hold">>
+
+8102 states generated, 1006 distinct states found, 548 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 8).
+Finished in 03s at (2026-10-29 21:08:18)
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC
+

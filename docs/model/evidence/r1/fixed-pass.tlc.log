@@ -1,0 +1,34 @@
+Running as unit: m3-r1-model-fixed-pass.scope; invocation ID: 6e917d5626fc4083a17103fa6f447a9b
+Picked up JAVA_TOOL_OPTIONS: -Xmx1g -XX:ActiveProcessorCount=2
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 0 and seed 7002289928087461155 with 1 worker on 2 cores with 1024MB heap and 64MB offheap memory [pid: 3291108] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-r1-model/TwitchControl.tla
+Parsing file /tmp/agents/irl-shield/m3-r1-model/ControlEnvironment.tla
+Parsing file /tmp/Integers.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Parsing file /tmp/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module ControlEnvironment
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 22:04:33)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 22:04:33.
+Progress(20) at 2026-10-29 22:04:36: 645,873 states generated (645,873 s/min), 57,245 distinct states found (57,245 ds/min), 13,657 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.1E-7
+  based on the actual fingerprints:  val = 1.1E-8
+5618817 states generated, 399992 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 39.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 21s at (2026-10-29 22:04:54)
+exit=0

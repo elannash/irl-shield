@@ -1,0 +1,8 @@
+ M docs/model/ControlEnvironment.tla
+ M docs/model/REPORT.md
+ M docs/model/TwitchControl.cfg
+ M docs/model/TwitchControl.tla
+ M docs/model/view.mjs
+?? docs/model/BeforeR2Control.tla
+?? docs/model/evidence/r1/README.md
+?? docs/model/evidence/r2/

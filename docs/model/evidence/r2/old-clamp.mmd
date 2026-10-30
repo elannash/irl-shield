@@ -1,0 +1,38 @@
+stateDiagram-v2
+  direction LR
+  state "1 Awaiting welcome · HOLD" as s1
+  state "2 Welcome queued · HOLD" as s2
+  state "3 Chat enabled · HOLD" as s3
+  state "4 Shield end enabled · HOLD" as s4
+  state "5 Shield begin enabled · HOLD" as s5
+  state "6 Subscribing · HOLD" as s6
+  state "7 Inactive status read · HOLD" as s7
+  state "8 Begin: Twitch 20, receipt 10 · HOLD" as s8
+  state "9 Completion starts · HOLD" as s9
+  state "10 Older inactive result skipped · HOLD" as s10
+  state "11 Status rechecked · HOLD" as s11
+  state "12 Connection hold cleared · HOLD" as s12
+  state "13 Ready; guard held · HOLD" as s13
+  state "14 Guard cleared · HOLD" as s14
+  state "15 Completion returns · HOLD" as s15
+  state "16 Local receipt clock 11 · HOLD" as s16
+  state "17 Older end: Twitch 19 · LIVE with obligation" as s17
+  [*] --> s1
+  s1 --> s2: welcome queues
+  s2 --> s3: chat enables
+  s3 --> s4: end enables
+  s4 --> s5: begin enables
+  s5 --> s6: queued callback delivered
+  s6 --> s7: status read begins
+  s7 --> s8: authorized begin arrives
+  s8 --> s9: changed revision observed
+  s9 --> s10: inactive status skipped
+  s10 --> s11: current token checked
+  s11 --> s12: connection callback applies
+  s12 --> s13: generation checked
+  s13 --> s14: guard callback applies
+  s14 --> s15: final token checked
+  s15 --> s16: local clock advances
+  s16 --> s17: older end arrives later
+  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class s17 breaks

@@ -1,0 +1,32 @@
+Running as unit: run-p3082131-i7287124.scope; invocation ID: 742572cc082d4578b306e9daec39b860
+Imported parent public interfaces: /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac
+SHA256 shield/control.py 806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d
+SHA256 shield/twitch/events.py 12331861c469d9f9e3cb5c8a1acb2cfa2b7a6f7ddfddf302a5e1983f1d696c29
+
+CASE authority steps 5
+{"step": 0, "action": "Init", "phase": "connecting", "mode": "HOLD"}
+{"step": 1, "action": "Welcome", "id": null, "return": null, "phase": "subscribing", "mode": "HOLD", "remembered": 0, "new_callbacks": []}
+{"step": 2, "action": "Ready", "id": null, "return": null, "phase": "ready", "mode": "PROTECT", "remembered": 0, "new_callbacks": [{"active": false, "source": "twitch-connection", "reason": "twitch-ready", "at": 1793232000.0}]}
+{"step": 3, "action": "Tick", "id": null, "return": null, "phase": "ready", "mode": "PROTECT", "remembered": 0, "new_callbacks": []}
+{"step": 4, "action": "Tick", "id": null, "return": null, "phase": "ready", "mode": "PROTECT", "remembered": 0, "new_callbacks": []}
+{"step": 5, "action": "Deliver", "id": "modResume", "return": "ignored", "phase": "ready", "mode": "PROTECT", "remembered": 1, "new_callbacks": []}
+PASS: restored Python correctly rejects moderator resume; no release callback.
+
+CASE replay steps 7
+{"step": 0, "action": "Init", "phase": "connecting", "mode": "HOLD"}
+{"step": 1, "action": "Welcome", "id": null, "return": null, "phase": "subscribing", "mode": "HOLD", "remembered": 0, "new_callbacks": []}
+{"step": 2, "action": "Ready", "id": null, "return": null, "phase": "ready", "mode": "PROTECT", "remembered": 0, "new_callbacks": [{"active": false, "source": "twitch-connection", "reason": "twitch-ready", "at": 1793232000.0}]}
+{"step": 3, "action": "Deliver", "id": "hold", "return": "chat-hold", "phase": "ready", "mode": "HOLD", "remembered": 1, "new_callbacks": [{"active": true, "source": "chat", "reason": "twitch-chat-hold", "at": 1793232000.0}]}
+{"step": 4, "action": "Reconnect", "id": null, "return": true, "phase": "reconnecting", "mode": "HOLD", "remembered": 1, "new_callbacks": [{"active": true, "source": "twitch-connection", "reason": "twitch-reconnecting", "at": 1793232000.0}]}
+{"step": 5, "action": "Welcome", "id": null, "return": null, "phase": "subscribing", "mode": "HOLD", "remembered": 1, "new_callbacks": []}
+{"step": 6, "action": "Ready", "id": null, "return": null, "phase": "ready", "mode": "HOLD", "remembered": 1, "new_callbacks": [{"active": false, "source": "twitch-connection", "reason": "twitch-ready", "at": 1793232000.0}]}
+{"step": 7, "action": "Deliver", "id": "hold", "return": "duplicate", "phase": "ready", "mode": "HOLD", "remembered": 1, "new_callbacks": []}
+PASS: restored Python correctly rejects repeated command after reconnect: duplicate
+
+CASE coverage steps 2
+{"step": 0, "action": "Init", "phase": "connecting", "mode": "HOLD"}
+{"step": 1, "action": "Welcome", "id": null, "return": null, "phase": "subscribing", "mode": "HOLD", "remembered": 0, "new_callbacks": []}
+{"step": 2, "action": "Ready", "id": null, "return": null, "phase": "ready", "mode": "PROTECT", "remembered": 0, "new_callbacks": [{"active": false, "source": "twitch-connection", "reason": "twitch-ready", "at": 1793232000.0}]}
+PASS: restored Python correctly retains PROTECT with coverage missing.
+
+RESULT: 3/3 mutation-counterexample replays rejected correctly by restored Python.

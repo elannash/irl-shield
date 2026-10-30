@@ -1,0 +1,38 @@
+stateDiagram-v2
+  direction LR
+  state "1 Awaiting welcome · HOLD" as s1
+  state "2 Welcome queued · HOLD" as s2
+  state "3 Begin enabled · HOLD" as s3
+  state "4 Chat enabled · HOLD" as s4
+  state "5 Welcome accepted · HOLD" as s5
+  state "6 Raw begin 41 at receipt 10 · HOLD" as s6
+  state "7 End enabled · HOLD" as s7
+  state "8 Active status read starts · HOLD" as s8
+  state "9 Completion starts · HOLD" as s9
+  state "10 Active status applied · HOLD" as s10
+  state "11 Status checked · HOLD" as s11
+  state "12 Connection hold cleared · HOLD" as s12
+  state "13 Ready; guard held · HOLD" as s13
+  state "14 Guard cleared · HOLD" as s14
+  state "15 Completion returns · HOLD" as s15
+  state "16 Local receipt 11 · HOLD" as s16
+  state "17 Older raw end 40.5 · LIVE with obligation" as s17
+  [*] --> s1
+  s1 --> s2: welcome queues
+  s2 --> s3: begin enables
+  s3 --> s4: chat enables
+  s4 --> s5: welcome callback arrives
+  s5 --> s6: authorized begin arrives
+  s6 --> s7: end enables
+  s7 --> s8: truthful status read starts
+  s8 --> s9: completion begins
+  s9 --> s10: active status callback applies
+  s10 --> s11: token and revision checked
+  s11 --> s12: connection callback applies
+  s12 --> s13: current token checked
+  s13 --> s14: guard callback applies
+  s14 --> s15: final token checked
+  s15 --> s16: local clock advances
+  s16 --> s17: older end arrives later
+  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class s17 breaks

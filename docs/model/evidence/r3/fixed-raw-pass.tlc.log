@@ -1,0 +1,34 @@
+Running as unit: m3-r3-model-fixed-raw-pass.scope; invocation ID: 6e447a482c7a400dad2e6fe8d15e045a
+Picked up JAVA_TOOL_OPTIONS: -Xmx1g -XX:ActiveProcessorCount=2
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 0 and seed -4603083787393664868 with 2 workers on 2 cores with 1024MB heap and 64MB offheap memory [pid: 3544738] (Linux 7.0.0-38-generic amd64, Eclipse Adoptium 25.0.5 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /tmp/agents/irl-shield/m3-r3-model/fixed-raw-pass/TwitchControl.tla
+Parsing file /tmp/agents/irl-shield/m3-r3-model/fixed-raw-pass/ControlEnvironment.tla
+Parsing file /tmp/Integers.tla
+Parsing file /tmp/Sequences.tla
+Parsing file /tmp/FiniteSets.tla
+Parsing file /tmp/TLC.tla
+Parsing file /tmp/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module ControlEnvironment
+Semantic processing of module TwitchControl
+Starting... (2026-10-29 23:10:13)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-29 23:10:13.
+Progress(16) at 2026-10-29 23:10:16: 568,930 states generated (568,930 s/min), 68,068 distinct states found (68,068 ds/min), 12,528 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.5E-7
+  based on the actual fingerprints:  val = 6.1E-7
+13022861 states generated, 1348728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 41.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 17 and the 95th percentile is 3).
+Finished in 37s at (2026-10-29 23:10:50)
+exit=0

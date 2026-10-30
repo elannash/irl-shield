@@ -1,0 +1,36 @@
+Running as unit: run-p3062954-i7266875.scope; invocation ID: 9277a227251549399297e10461eb3727
+TLC could not check /tmp/agents/irl-shield/m3-model/TwitchControl.tla (exit 75):
+Error: TLC threw an unexpected exception.
+This was probably caused by an error in the spec or model.
+See the User Output or TLC Console for clues to what happened.
+The exception was a java.lang.RuntimeException
+: In evaluation, the identifier revoked is either undefined or not an operator.
+line 51, col 28 to line 51, col 34 of module TwitchControl
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ phase = "connecting"
+/\ coverage = FALSE
+/\ shieldTime = 0
+/\ floor = 0
+/\ mode = "HOLD"
+/\ now = 1
+/\ executed = {}
+/\ shield = FALSE
+/\ resumedBy = "none"
+/\ replayed = FALSE
+/\ chatTime = 0
+/\ chat = FALSE
+/\ revoked = FALSE
+/\ connection = TRUE
+/\ local = FALSE
+/\ seen = <<>>
+
+Error: The error occurred when TLC was evaluating the nested
+expressions at the following positions:
+0. Line 50, column 13 to line 54, column 56 in TwitchControl
+1. Line 50, column 16 to line 50, column 38 in TwitchControl
+2. Line 50, column 38 to line 50, column 38 in TwitchControl
+3. Line 51, column 16 to line 51, column 70 in TwitchControl
+4. Line 51, column 25 to line 51, column 70 in TwitchControl
+5. Line 51, column 28 to line 51, column 35 in TwitchControl
+6. Line 51, column 28 to line 51, column 34 in TwitchControl

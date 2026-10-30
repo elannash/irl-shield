@@ -1,0 +1,22 @@
+stateDiagram-v2
+  direction LR
+  state "1 Awaiting welcome · HOLD" as s1
+  state "2 Welcome queued · HOLD" as s2
+  state "3 Chat enabled · HOLD" as s3
+  state "4 Shield begin enabled · HOLD" as s4
+  state "5 Shield end enabled · HOLD" as s5
+  state "6 Subscribing · HOLD" as s6
+  state "7 Socket dead · HOLD" as s7
+  state "8 Reconcile after fault · HOLD" as s8
+  state "9 Socket dead · LIVE" as s9
+  [*] --> s1
+  s1 --> s2: welcome queues
+  s2 --> s3: chat enables
+  s3 --> s4: begin enables
+  s4 --> s5: end enables
+  s5 --> s6: callback reaches policy
+  s6 --> s7: socket faults
+  s7 --> s8: stale callback starts read
+  s8 --> s9: inactive status returns
+  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class s9 breaks
