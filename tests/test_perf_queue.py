@@ -312,6 +312,38 @@ class PerformanceQueue(unittest.TestCase):
             with self.assertRaises(BlockingIOError):
                 self.runner(queue).run()
 
+    def test_two_real_runners_cannot_enter_one_host_loop(self):
+        queue = perf_queue.Queue(self.storage)
+        queue.enqueue('linux', 'singleton', [sys.executable, '-c', 'print("one")'], cwd=self.caller)
+        entered, release = threading.Event(), threading.Event()
+        class HeldReadiness(QuietHealth):
+            def sample(inner, **options):
+                entered.set()
+                if not release.wait(30):
+                    raise RuntimeError('Runner readiness release fuse')
+                return super().sample(**options)
+        class MustNotSample(QuietHealth):
+            def sample(inner, **options):
+                raise AssertionError('Second runner entered the host loop')
+        first = self.runner(queue, sensor=HeldReadiness())
+        alternate = perf_queue.Queue(self.root / 'alternate-queue')
+        alternate.enqueue('linux', 'second', [sys.executable, '-c', 'print("two")'], cwd=self.caller)
+        second = self.runner(alternate, sensor=MustNotSample())
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            running = pool.submit(first.run)
+            try:
+                self.assertTrue(entered.wait(30), 'First real runner must own the host loop')
+                with self.assertRaises(BlockingIOError):
+                    second.run()
+            finally:
+                first.control.set()
+                release.set()
+            self.assertEqual(running.result(timeout=30), 'stopped')
+        alternate.seal('linux')
+        second.sensor = QuietHealth()
+        self.assertEqual(second.run(), 'drained')
+        self.assertEqual(alternate.jobs('linux')[0]['state'], 'completed')
+
     def test_contention_retries_at_back_of_priority_and_stops_after_three_attempts(self):
         queue = perf_queue.Queue(self.storage)
         order = self.root / 'order'
