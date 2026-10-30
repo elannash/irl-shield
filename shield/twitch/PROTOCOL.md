@@ -35,17 +35,20 @@ client. No scope is added to resolve this inconsistency.
 
 `UserSession` validates identity, client, scopes and lifetime at first use,
 after refresh, and after an elapsed hour. `EventSubClient` checks the session
-every minute even when no event arrives; invalid authorization asserts a
-latched connection hold and closes the socket. Startup/hourly validation is
+every minute even when no event arrives; validation HTTP 401 asserts a
+latched connection hold and closes the socket. Temporary validation failures
+hold and retry through normal reconciliation. Startup/hourly validation is
 required by Twitch. [Validation requirement](https://dev.twitch.tv/docs/authentication/validate-tokens/#who-must-validate-tokens).
 
 The official endpoint is `wss://eventsub.wss.twitch.tv/ws`. Real reconnects
 must retain this exact hostname over WSS; userinfo, explicit ports, fragments
 and other hosts are refused. URLs are passed unchanged after validation.
-HTTP and WebSocket redirects are refused. pyTwitchAPI handles network I/O,
-ping/pong, keepalive reconnects, welcome migration and resubscription. The
-owned hooks keep raw message IDs and enforce policy before library object
-conversion. [WebSocket contract](https://dev.twitch.tv/docs/eventsub/handling-websocket-events/).
+HTTP and WebSocket redirects are refused. pyTwitchAPI supplies socket I/O,
+ping/pong, the keepalive watchdog and planned welcome migration. Owned hooks
+retain receive provenance, bound and retry connection attempts, and recreate
+subscriptions from verified current-session responses. They keep raw message
+IDs and enforce policy before library object conversion.
+[WebSocket contract](https://dev.twitch.tv/docs/eventsub/handling-websocket-events/).
 
 ## Interfaces for root integration
 
@@ -106,18 +109,26 @@ in this milestone. Windows needs a root presenter for its owner console.
 Only a matching broadcaster ID or a Twitch-provided moderator badge can
 assert chat hold. Display names and broadcaster badge text grant no authority.
 Only the matching broadcaster ID may resume, and resume clears `chat` only.
-`shield_mode`, `local` and `twitch-connection` remain independent named holds.
+`shield_mode`, `local`, `twitch-connection`, and the internal `twitch-reconcile`
+guard remain independent named holds.
 Shared-chat origin messages are ignored. Commands are exact after trimming
 and lowercasing. A stale resume cannot clear a newer hold; tied timestamps
 favor holding. [Chat event fields](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage).
 
-UTC envelope timestamps enforce session start and a ten-minute age window;
-engine hold times use monotonic time. The default ID capacity is 4,096.
-Eviction advances a permanent timestamp floor rather than permitting an
-expired ID to execute again. This deliberately rejects unseen late events
-at/below the floor too. A future timestamp is rejected. This is bounded
-in-memory protection for one adapter lifetime, not durable replay storage.
-The server must preserve an ID's timestamp/content on redelivery. Never
+Authorized chat holds and Shield begins apply in every phase, even from an older
+connection generation, and are never dropped for timestamp reasons alone.
+Their ordering time clamps to receipt time; malformed or expired times use receipt
+time. Releases require the current live READY generation, aware finite timestamps,
+the session-start/ten-minute replay floor, and strict source ordering. Releases
+allow at most 30 seconds of forward skew. That bound is a local engineering choice;
+the inspected Twitch WebSocket references define RFC3339/nanosecond UTC timestamps
+but give no host-clock tolerance. [Timestamp and redelivery fields](https://dev.twitch.tv/docs/eventsub/websocket-reference/).
+
+Engine hold times use monotonic time. The ID cache defaults to 4,096 entries.
+An ID still remembered is deduplicated. An evicted protective ID may conservatively
+reassert a hold; an expired release cannot replay through the permanent timestamp
+floor. This is bounded in-memory protection for one adapter lifetime, not durable
+replay storage. It assumes redelivery preserves content and timestamp. Never
 recreate `ShieldEvents` just because a transport reconnects.
 
 Startup, unexpected disconnect and shutdown assert a connection hold. A
@@ -126,14 +137,30 @@ An approved planned handover keeps accepting notifications on the existing
 connection, adds no hold, and preserves the cache. The 30-second handover bound
 or a failed handover faults into held unplanned recovery. The transport watches
 for a closed socket rather than waiting for the library's keepalive retry.
-Revocation latches for the adapter lifetime. Construct a new session after
-owner reauthorization. The underlying `Control` is unchanged.
+Only definitive validation HTTP 401 latches invalid-token revocation; network,
+5xx and claim-validation failures remain held and retryable. An unreadable 401
+body cannot turn that status into a transient error. Relevant EventSub revocations
+also latch. Construct a new session after owner reauthorization. The underlying
+`Control` is unchanged.
+
+Every socket-driven policy call marshals onto the owner loop. The reader captures
+the generation of the socket it read before dispatch, rather than looking up the
+latest generation when an old callback runs. Public policy methods additionally
+serialize under an RLock. Welcome/query/release require the matching live session
+and generation; each reconciliation also has unique immutable token identity.
+No connection hold releases until all three subscription responses confirm enabled
+status, distinct IDs, matching conditions and the current session ID. Failed or
+partial subscriptions retry missing topics under HOLD. An expired 20-second dial
+attempt stays inside the retry boundary, leaving watchdog and reader tasks alive.
 
 Startup and every unplanned recovery query Helix Get Shield Mode Status after
 subscribing. An active result sets `shield_mode`; an inactive result updates that
 source only if no newer Shield Mode event arrived while the request was in
-flight. Only the connection hold is then released. A generation token prevents
-an old request from releasing a later outage's hold. Requests fail closed and
+flight. A second internal guard remains held while the connection source releases,
+so callback-reentrant faults cannot expose a transient LIVE state. Reentrant Shield
+begin during status application is reasserted before either guard releases. The
+generation/session/query identity prevents old results releasing a later outage.
+Requests fail closed and
 retry after 1, 2, 4, 8, 16, then 30 seconds (bounded backoff); HTTP itself has a
 20-second timeout. The existing approved `moderator:read:shield_mode` scope covers
 the query, with broadcaster ID used for both broadcaster and moderator parameters.

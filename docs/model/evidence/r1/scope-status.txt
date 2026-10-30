@@ -1,0 +1,21 @@
+/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3
+t3/verify-control-channel-model
+bb6948b9793e1bbb505e84e8042357818ddb9608
+ M docs/model/REPORT.md
+ M docs/model/SHA256SUMS
+ M docs/model/TwitchControl.cfg
+ M docs/model/TwitchControl.tla
+ M docs/model/view.mjs
+?? docs/model/ControlEnvironment.tla
+?? docs/model/PreFixControl.tla
+?? docs/model/evidence/r1/
+?? docs/model/evidence/reconciliation/README.md
+?? docs/model/evidence/reconciliation/REPORT-before-r1.md
+?? docs/model/evidence/reconciliation/SHA256SUMS-before-r1.txt
+?? docs/model/evidence/reconciliation/TwitchControl-before-r1.cfg.txt
+?? docs/model/evidence/reconciliation/TwitchControl-before-r1.tla.txt
+docs/model/REPORT.md
+docs/model/SHA256SUMS
+docs/model/TwitchControl.cfg
+docs/model/TwitchControl.tla
+docs/model/view.mjs

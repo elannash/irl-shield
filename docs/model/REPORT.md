@@ -1,323 +1,285 @@
-# M3 reconciliation model hand-back
+# R1 control model: counterexamples before the fix, bounded safety after it
 
-The current finite model passed all eight invariants in both the baseline and restored
-runs: **1,139,021 generated states, 50,920 distinct states, zero queued states**, graph
-depth 18 in each. The deliberate release-clobber config failed
-`ReconcileReleaseIsolated` on a shortest **two-transition** trace. This continuation
-ran exactly **three TLC invocations and no Python/test harness invocation**. Concrete
-Python replay and the production mutation remain the conductor's final-test work;
-this report does not claim they passed.
+The replacement model catches real defects in **unmodified `bb6948b` policy
+behavior**. Direct TLC found two eight-transition counterexamples, each ending at
+state 9. A single public-API replay reproduced both failures on code extracted by
+`git show`, and the same inputs remained HOLD on the frozen fixed policy. The
+fixed finite model exhausted **399,992 distinct states**, with **5,618,817 generated
+states**, **zero queued states**, depth **39**, and no violation of its six listed
+invariants. [Raw fixed TLC receipt](evidence/r1/fixed-pass.tlc.log).
 
-Prepared worktree: `/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca`, branch
-`t3/m3-shield-reconciliation-model`, HEAD
-`ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. The first tool command checked pwd,
-branch, HEAD, and status, and found a clean checkout at that exact HEAD. All lasting
-edits are under this checkout's `docs/model/`. No staging, commits, pushes, PRs,
-worktree creation/removal, children, production edits, network/Twitch/Mac/GPU jobs,
-installs, accounts, secrets, or machine configuration were used. The original M3
-deadline was not reset.
+This is evidence for the bounded policy/environment model described below. It is
+**not a proof of the complete transport, watchdog, Twitch service, or video path**.
+Three invariants compare output against independent environment facts; the other
+three are structural sanity checks, not independent transport safety evidence.
 
-## Current model and historical evidence
+## Source and model identity
 
-[TwitchControl.tla](TwitchControl.tla) is the checked model, SHA-256
-`4ceb8066e37dd3e9bb3162f123d9e3c29bf0d5688e6c5aa23727a330cb5c5c50`.
-[TwitchControl.cfg](TwitchControl.cfg) is the default/restored config, SHA-256
-`f7a4bd4e10b1cb7bcb9f8b49c94135943e90e9390370b753776be4b3088cf178`.
-All four mutation flags are FALSE there. [view.mjs](view.mjs) supplies the helper's
-reader-facing labels; its hash is in [tool-and-model-hashes.txt](evidence/reconciliation/tool-and-model-hashes.txt).
-The exact same model/config bytes were used for both passing runs. Only
-`ClobberReconcileRelease` changes for the failure; see [mutation.diff](evidence/reconciliation/mutation.diff).
+Prepared checkout: `/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3`, branch
+`t3/verify-control-channel-model`, clean starting HEAD
+`bb6948b9793e1bbb505e84e8042357818ddb9608`. The first command verified all four.
+Only `docs/model/` and `/tmp/agents/irl-shield/m3-r1-model/` were written. Nothing
+was staged, committed, pushed, published, or changed in production code.
 
-The complete previous child's `docs/model/` was copied from
-`/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/docs/model/` and retained unchanged
-under [historical/](historical/README.md), with a new README identifying its scope.
-Its model hash is `4cc9837d4b14f22763659edff396b69eb9560f74896a8ea3e029ba1d446bfc7c`.
-Its report, logs, earlier Python replays, old `ready()` action and connection-held
-planned reconnect describe an earlier baseline. They are historical receipts and
-are **not** evidence about the current reconciliation code. No docs were copied
-from the parent's outdated `docs/model/`.
-
-## Runs and budget
-
-| Run | Tool / exit | Generated / distinct / queued | Result |
-| --- | --- | --- | --- |
-| Baseline | statechart helper / 0 | 1,139,021 / 50,920 / 0 | All eight invariants hold; depth 18 |
-| Release clobber | direct `tlc2.TLC` / 12 | 88 / 31 / 23 | `ReconcileReleaseIsolated` violated; two transitions |
-| Restored | statechart helper / 0 | 1,139,021 / 50,920 / 0 | All eight invariants hold again; depth 18 |
-
-Raw receipts: [baseline TLC](evidence/reconciliation/baseline/tlc.out),
-[direct failure](evidence/reconciliation/release-clobber.command.log),
-[restored TLC](evidence/reconciliation/restored/tlc.out). The helper's
-[baseline report](evidence/reconciliation/baseline/report.md) and
-[restored report](evidence/reconciliation/restored/report.md) list every invariant
-and `NoDeadlock`. Counts include every model variable, with no VIEW, SYMMETRY,
-CONSTRAINT, or action constraint. Generated states include duplicates; distinct
-states are TLC fingerprints. The failure stops at the first violation, so its
-23 queued states are unexamined; no other mutation-run invariants are claimed
-to hold beyond that point. The passing runs exhausted the finite graph. TLC's
-optimistic fingerprint-collision estimate is `3.0E-9`, not a probability that
-the implementation is correct.
-
-The budget supplied by the conductor was **43 already spent**: previous model child
-11 (9 TLC + 2 Python), parent 20, auth child 12. This child adds 3 TLC: **46 total**.
-Exactly **2 remain reserved for the parent**: one production mutation run and one full
-functional gate, within the total ceiling of 48. No budget was reset. The explicit
-SANY parse and two helper XML/SANY exports are three static parsing invocations,
-enumerated separately, not model checks or Python tests. All six Java invocations
-appear in [java-invocations.log](evidence/reconciliation/java-invocations.log);
-the three TLC-only entries appear in [tlc-invocations.log](evidence/reconciliation/tlc-invocations.log).
-
-[commands.sh](evidence/reconciliation/commands.sh) records the exact commands run.
-Each used `systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200%`
-and `nice -n 10`. `JAVA_TOOL_OPTIONS` supplied `-XX:ActiveProcessorCount=2 -Xmx1g
--XX:+UseParallelGC`; TLC used one worker, `-fp 0 -lncheck final`. The existing Java
-and TLC were reused read-only. The [Java wrapper](evidence/reconciliation/java-wrapper.sh)
-records argv and refuses a fourth TLC invocation. The failing run deliberately used
-direct TLC, so no helper invariant-removal continuation spent an extra invocation.
-
-## Rules retained and added
-
-The four original invariants are unchanged, including their formulas. The other
-four are new. The `releaseClobbered` ghost records whether any successful release
-changed chat/local or produced a Shield hold different from the required revision
-rule; it remains latched after that action so later events cannot hide the violation.
-
-| Invariant | Contract checked |
+| Artifact | SHA-256 |
 | --- | --- |
-| `NoLIVEWithoutCoverage` | LIVE requires coverage and no chat, Shield Mode, local, or connection hold. |
-| `OnlyBroadcasterResumes` | Every executed chat resume is attributed to the broadcaster. |
-| `ReconnectNeverReplays` | A command envelope never executes a second time, across planned handover, faults, reconciliation, eviction, and expiry. |
-| `BoundedMemory` | The retained replay cache never exceeds Capacity. |
-| `ReconcileReleaseIsolated` | A successful reconciliation preserves chat and local. With no newer accepted Shield event it applies the returned active boolean; with a newer event it preserves that event's Shield state. |
-| `ReconcileWaitHolds` | While reconciling, the connection source is held and output mode is HOLD, including during status failures/retries. |
-| `ReadyAndHandoverHaveNoConnectionHold` | Ready and planned handover have no connection hold. Independent sources can still keep overall mode HOLD. |
-| `RevokedStaysHeld` | A revoked session remains connection-held in HOLD. |
+| [Shared environment](ControlEnvironment.tla) | `7f5a54653c1e8836920fb8558853aedc2836931abb4e0a507a02979da80a2e6d` |
+| [Pre-fix policy projection](PreFixControl.tla) | `5e44fc206007b03d0d97e4fc4a708aadf7ff6850d32d7a248eb02ba1fe108097` |
+| [Fixed policy projection](TwitchControl.tla) | `16aab26592e1e6a318cc689ce840d2a48439a264209d9e44fadd7ec52fa90e3f` |
+| [Fixed config](TwitchControl.cfg) | `c315764a6e1da99fab5cc53262e5786cfc553abb86ac2b52e7e02f1910db2f53` |
+| Pre-fix `shield/twitch/events.py` at `bb6948b` | `c632045a328442afd25ac4103878d1bd067cf0f3d19bb8641eb9e0ee0280c40f` |
+| Frozen fixed `shield/twitch/events.py` | `907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd` |
+| `shield/control.py`, identical old/fixed | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
 
-`Idle`, failed-status retries, and rejected completions stutter. Therefore the helper's
-`NoDeadlock` result is not a claim of progress. No fairness or eventual success is checked.
+The fixed source was confirmed in the parent's integrated checkout
+`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac` and copied to owned scratch before
+the fixed check. The replay refuses any source with a different hash.
+[Pre-fix source hashes](evidence/r1/source-pre.sha256),
+[fixed source/read-context hashes](evidence/r1/source-fixed.sha256), and
+[model/tool hashes](evidence/r1/model-and-tool.sha256) identify the exact inputs.
+The transport hash records the read context, not a frozen transport proof.
 
-## Source mapping and freeze receipt
+## What makes the safety checks independent
 
-Read-only source checkout: `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`.
-The parent removed obsolete `ShieldEvents.ready()` while this model was being prepared.
-The checked model contains **no Ready action** and no arbitrary status-free connection
-release. [initial hashes](evidence/reconciliation/source-hashes.initial.txt) preserve
-the earlier read; [checked hashes](evidence/reconciliation/source-hashes.checked.txt)
-and [final hashes](evidence/reconciliation/source-hashes.final.txt) match byte for byte
-after that removal. All mapping below refers to those final hashes.
+[ControlEnvironment.tla:12](ControlEnvironment.tla#L12) owns `env.socketLive`,
+`env.session`, `env.generation`, `env.enabledGeneration`, and the enabled topic
+set. They do not come from `Output` or the implementation's connection hold.
+A fault independently kills the actual socket/subscriptions and asserts the
+policy hold. A welcome keeps its origin generation while its callback queues;
+subscription enabling, callback delivery, fault, begin-reconcile, and status
+completion are separate actions.
 
-| Source | SHA-256 |
+`obligation.chat` and `obligation.shield` record an authorized protective delivery
+before considering policy admission. They are not aliases for `policy.chat` or
+`policy.shield`. A policy that discards the envelope can therefore go LIVE while
+an obligation remains. Only a modeled fresh current-session release discharges an
+obligation. Chat releases represent fresh broadcaster resumes; Shield releases
+represent valid Shield ends. Release authorization, parsing, deduplication and
+freshness are assumptions of that action, not properties proved by this model.
+
+| Invariant | Evidence provided |
 | --- | --- |
-| `shield/control.py` | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
-| `shield/twitch/events.py` | `c632045a328442afd25ac4103878d1bd067cf0f3d19bb8641eb9e0ee0280c40f` |
-| `shield/twitch/transport.py` | `514356e5c0434f5066d1df42a4eb70f85944533d525331f8329cbea4269bccea` |
-| `shield/twitch/http.py` | `485fb7b019a10a7cd159d847e6af028f07495265b7f7f5d2910f4f868c535bc4` |
-| `tests/m3/test_events.py` | `867b5e2ab15535e15e29b76ef6556927eb5bbd118ed113772b8e94c2f07be4a1` |
-| `tests/m3/test_transport.py` | `2fdb4cca2274c77a92582f56880137d8ecc678512fdc60c36239f99686bbfd6a` |
+| `NoLIVEWithoutCurrentChannel` | LIVE requires the environment's live socket, current welcomed session and all three enabled subscriptions for its generation. The pre-fix trace violates this even though its connection hold has been cleared. |
+| `AuthorizedChatHoldPersists` | A delivered authorized chat hold requires output HOLD until a legitimate fresh broadcaster release. The old implementation's phase/time gates can drop it. |
+| `AuthorizedShieldBeginPersists` | A delivered Shield begin requires HOLD until a valid end, under the status-truth assumption below. The skew counterexample violates this on old code. |
+| `RevokedStaysHeld` | Structural safety check across generation changes and release callback steps. |
+| `LocalHoldPersists` | Structural Control hold precedence check. |
+| `NoLIVEWithoutCoverage` | Structural Control coverage check. It alone does not validate the Twitch path. |
 
-| Model | Concrete public policy / transport mapping |
-| --- | --- |
-| `Init`, `Settle`, `Coverage`, `LocalHold` | Construction asserts `twitch-connection`; any named hold dominates coverage. `Control.set_hold` changes only its named source. [control.py:31](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:31), [events.py:33](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:33). |
-| `chat`, `shield`, `local`, `connection` | Boolean presence of sources `chat`, `shield_mode`, `local`, `twitch-connection`. The current Shield source spelling is `shield_mode`. [events.py:55](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:55), [events.py:92](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:92), [events.py:165](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:165). |
-| `Welcome` | Valid `welcome(session_id)` updates the session and enters subscribing unless revoked. It does not release a hold. Session-ID values are abstracted. [events.py:58](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:58). |
-| `BeginReconcile(save)` | `begin_reconcile()` asserts connection HOLD, enters reconciling, and returns `(generation, shield_revision)`. `save` is an environment choice to retain that token or an older returned token, not another production flag. [events.py:81](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:81). |
-| `ReconciliationCurrent`, `RejectedCompletion` | Reject absent token, revoked session, phase other than reconciling, or stale generation. An old Shield revision does not reject completion; it blocks the status write to Shield only. [events.py:97](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:97). |
-| `Reconciled(active)` | Valid boolean status applies only when revision matches, then sets ready and clears only connection. Chat/local are untouched; a newer accepted Shield event wins. [events.py:88](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:88). |
-| `Fault(r)` | `fault(..., revoked=r)` increments generation, latches revocation, and asserts connection HOLD. It covers unplanned close, failed/timeout planned handover, refused URLs, invalid welcomes, and invalid authorization. [events.py:101](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:101). |
-| `Reconnect`, `HandedOver` | Approved `reconnect(url)` changes ready to handover without a hold callback; `handed_over(session_id)` changes handover to ready, also without a hold callback. [events.py:66](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:66). |
-| `StatusFailure` | The transport resubscribes then queries Shield status, starting at startup or unplanned recovery. It retries failed HTTP/status parsing after 1,2,4,8,16,30,30,... seconds under HOLD. Only a successful 200 response with one valid boolean reaches `reconciled`. Delays and invalid boolean calls are stuttering in this safety projection. [transport.py:75](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:75), [transport.py:178](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:178), [transport.py:191](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:191). |
-| Planned migration failure | Transport allows 30 seconds for migration, completes `handed_over` only on a new session, otherwise faults and closes for unplanned recovery. [transport.py:85](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:85). |
-| `Deliver` | `accept()` runs while ready, handover, or reconciling. Purge, validity, deduplication, FIFO eviction, floor, shared-chat origin, actor checks, command timestamp ordering, and Shield revision increments follow source order. [events.py:107](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:107). |
-| `seen`, `floor`, `chatTime`, `shieldTime` | Existing bounded cache and conservative eviction/age floor; strictly newer broadcaster resume; Shield end cannot undo newer/equal begin. These are retained, rather than bypassing admission for Shield events. [events.py:119](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:119), [events.py:147](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:147). |
+Fixed reconciliation uses object identity as well as generation, session and
+revision. Two query slots can have equal snapshot fields but different identities;
+only the most recent token is current. Output includes the fifth internal source
+`twitch-reconcile`. Status callback, revalidation/Shield repair, connection callback,
+revalidation, guard callback and final return are separate states. A reentrant
+fault can run before a callback applies its argument. Thus connection FALSE may
+really overwrite a fault's connection TRUE; the guard must still prevent LIVE.
+A Shield begin can reenter before stale status FALSE applies; the revision recheck
+restores protection before either guard is released.
 
-`TwitchHTTP` permits the fixed Shield status GET and refuses redirects/oversized
-responses. This is read as transport context, not model-verified HTTP behavior:
-[http.py:27](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/http.py:27).
-The model checks atomic public policy calls, not socket scheduling or private upstream
-hooks. Live startup's `_connect` fault and a subsequent outage fit the two modeled
-generation increments; it does not prove transport always makes the required calls.
+## Counterexamples and concrete replay
 
-## Deliberate violation and executable public replay
+Both failure configs use the separate [PreFixControl.tla](PreFixControl.tla),
+with **no defect flags or planted mutation**. They retain the old unguarded
+welcome/begin behavior and old phase/timestamp protective admission. They are
+projections of the source, not full emulators of it.
 
-Only `ClobberReconcileRelease = TRUE` is enabled in
-[release-clobber.cfg](evidence/reconciliation/release-clobber.cfg). The mutation
-clears chat, local, and Shield holds when releasing the connection, even when the
-status or a newer event requires Shield HOLD. The shortest failure chooses active
-status and has no chat/local source. The source action is parameterized; TLC does
-not print `active`, but its only violating valuation on this exact pre-state is TRUE.
+1. **`NoLIVEWithoutCurrentChannel`: states 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.**
+   Welcome queues, three subscriptions enable, welcome reaches policy, socket
+   faults, the queued callback begins a new status read, inactive status returns.
+   At state 9, `env.socketLive=FALSE`, enabled topics are empty, policy is ready,
+   and output is LIVE. [Config](evidence/r1/stale-welcome.cfg),
+   [raw trace](evidence/r1/stale-welcome.tlc.log),
+   [Mermaid](evidence/r1/stale-welcome.mmd).
+   TLC's shortest trace delivers welcome before the fault; the additional public
+   replay also covers fault before delivery of that welcome.
+2. **`AuthorizedShieldBeginPersists`: states 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.**
+   After normal reconciliation reaches LIVE, an authorized Shield begin stamped
+   Twitch time 11 arrives while local time is 10. The old policy rejects it;
+   obligation becomes TRUE but output remains LIVE. [Config](evidence/r1/dropped-hold.cfg),
+   [raw trace](evidence/r1/dropped-hold.tlc.log),
+   [Mermaid](evidence/r1/dropped-hold.mmd).
+   TLC stops at the Shield violation; this is not a separate TLC counterexample
+   receipt for the chat property. Concrete replay covers both topics.
 
-| Transition / TLC state | Action | State relevant to the failure |
+[public_replay.py](evidence/r1/public_replay.py) replays each numbered trace action
+through public constructors/methods and caller-owned synthetic environment facts.
+Queue/subscription actions only update those external facts because this is a
+policy replay, not a socket test. The old and fixed interfaces receive the same
+sequence, with required generation/session arguments added for the fixed API.
+No private policy fields, network, test helpers, source edits or model mutants
+are used. It verifies the old bad outcome as well as the fixed good outcome.
+
+[public-replay.log](evidence/r1/public-replay.log) also records old RED/fixed GREEN
+for: welcome delivered after fault; chat skew; chat hold during subscribing then
+inactive reconciliation; callback faults before status and connection effects;
+and Shield begin reentry during the inactive-status callback. It checks no
+intermediate LIVE transition after a fault on the fixed code, including the new
+guard-release callback. A fixed fresh broadcaster resume demonstrates that chat
+HOLD persists and can legitimately release. The run ended with `PASS`, exit 0.
+
+Test-gate rationale: the behavior is output state/transition history through the
+public policy and Control interfaces; the realistic defects are exactly the old
+phase/time/generation guards and callback ordering. Policy owns this boundary.
+Existing `tests/m3/test_events.py` is outside this child's write fence, so the
+closest executable check is this replay, alongside the sibling's regression tests.
+The replay needs no production-only export, reset hook, private-state injection or
+manufactured pre-fix mutant. The sibling's full tests were read, not run here.
+
+## Exact scope and omissions
+
+- Fixed bounds: generation 1..3, at most two query objects, one unique authorized
+  chat hold and one Shield begin, three topic bits, local wall time fixed at 10.
+  Remote stamps are separate inputs: 9 (past), 11 (ahead), 41 (far ahead), and 0
+  (the invalid/pre-start/expired class). Protective stamps clamp/order at receipt.
+  Fresh releases use 11 or 40 (the local 30-second forward limit). This does not
+  enumerate changing local clocks, arbitrary timestamps or unbounded lifetimes.
+- `Fault` is an **observed** loss/revocation and updates environment and policy
+  together. Silent half-open sockets, watchdog scheduling/death, time-to-detect,
+  connect timeouts and availability/progress are not proved. No fairness is used.
+  `Idle`/status failure stutter, so deadlock checking is not a progress receipt.
+- Starting reconciliation after all enabled subscription responses match the
+  actual current session is a **transport assumption**, mapped to the parent's
+  `_api_post_request`, `_subscriptions_enabled`, and `_handle_welcome`. The old
+  registry persists across faults; the fixed transport clears it and validates
+  fresh IDs/session/status. The model does not execute HTTP, resubscribe failures,
+  unique ID parsing, owner-loop dispatch, reader generation stamps or Twitch.
+- Shield status is truthful at the modeled begin/read point, then may return late.
+  A newer delivered begin changes revision/truth and must win over that old
+  response. External Shield state changes with no delivered notification, status
+  caches/server inconsistency and independent status sampling times are omitted.
+  A fresh authoritative inactive status may legitimately clear a prior Shield
+  hold in production; the model only clears truth via a valid end action.
+- RLock/owner-loop serialization is source-mapped, not a Python memory-model
+  proof. Callback microsteps overapproximate interleavings with faults and
+  protective deliveries; arbitrary recursive lifecycle calls, callback exceptions,
+  and concurrent rendering internals are omitted. Begin's two hold assertions
+  are atomic in the model; completion release callbacks are split.
+- Planned migration assumes Twitch carries all current subscriptions atomically.
+  It does not prove that remote contract, URL authorization, token authorization,
+  release replay prevention, ID eviction/memory bounds, payload validation,
+  rendering/coverage accuracy, OCR privacy, media transport or live Twitch behavior.
+  The old `ReconnectNeverReplays` claim is not carried forward: fixed policy can
+  conservatively reassert an evicted protective ID. Concrete tests own releases.
+- Enabling subscriptions and queued protective deliveries deliberately
+  overapproximate scheduling: a protective event may arrive in any phase after
+  some subscription has enabled. No claim is made that every explored callback
+  ordering is produced by the concrete transport.
+
+## Runs, commands, budget and cleanup
+
+| Invocation | Result | Generated / distinct / queued |
 | --- | --- | --- |
-| 0 / 1 | Init | connecting, coverage FALSE, all nonconnection holds FALSE, generation/revision 0, connection TRUE, HOLD |
-| 1 / 2 | `BeginReconcile(TRUE)` | reconciling, snapshot `<<0,0>>`, connection TRUE, HOLD |
-| 2 / 3 | `Reconciled(TRUE)` | mutant sets ready, connection FALSE, Shield FALSE, **PROTECT**; expected Shield TRUE and HOLD; `releaseClobbered = TRUE` |
+| 1. Old stale callback, direct TLC | Exit 12, `NoLIVEWithoutCurrentChannel` violation, depth 9 | 1,886 / 272 / 28 |
+| 2. Old skew, direct TLC | Exit 12, `AuthorizedShieldBeginPersists` violation, depth 9 | 2,121 / 235 / 33 |
+| 3. First fixed config | Exit 255, cfg rejected negative literal; no graph checked | Not applicable |
+| 4. Corrected fixed config, direct TLC | Exit 0, six invariants, depth 39 | 5,618,817 / 399,992 / 0 |
+| 5. Combined old/fixed public Python replay | Exit 0, expected old failures and fixed safety | Not a TLC graph |
 
-This is a model mutation counterexample, not a demonstrated production defect.
-The raw direct-TLC output reports BFS and the named invariant before printing these
-three states. Two transitions are minimal: Init cannot call a successful reconciled
-without a returned token, and no other action sets the isolation ghost.
+Exactly **5/5 invocations spent**, including the rejected config. No helper,
+automatic continuation, SANY-only run, additional Python invocation or test suite
+was run. The parent owns the full gate and overall budget; this report adds five
+to that ledger, and makes no claim about later parent/sibling consumption.
+[Invocation ledger](evidence/r1/invocations.log),
+[exact command record](evidence/r1/commands.sh),
+[rejected config](evidence/r1/fixed-configuration-error.cfg.txt),
+[rejected run](evidence/r1/fixed-configuration-error.tlc.log).
 
-The exact public Python calls for that path are below, also preserved as
-`shortest_counterexample()` in [public_replay.py](evidence/reconciliation/public_replay.py).
-They require only the parent's existing Python package, not transport or network:
+Every Java/Python invocation used `systemd-run --user --scope`, slice
+`app-t3code-agents.slice`, `MemoryMax=2G`, `CPUQuota=200%`, `nice -n 10`,
+`JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2'`,
+`XDG_RUNTIME_DIR=/run/user/1000`, and
+`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus`.
+Existing Java/TLC were read-only. TLC used one worker, `-fp 0 -lncheck final`.
+The reused TLC distribution is MIT; its extracted notice remains in
+[TLC-LICENSE.txt](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2
+with Classpath Exception, recorded in the installed
+`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
+Exact Java/JAR hashes are in [model-and-tool.sha256](evidence/r1/model-and-tool.sha256).
+Neither tool is redistributed or newly installed by this round. The statechart
+helper was not executed in R1; these are direct TLC runs.
+No VIEW/SYMMETRY/CONSTRAINT/ACTION_CONSTRAINT quotient or pruning was applied.
+Generated states include duplicates; distinct states use TLC fingerprints.
+Failure queues remain unexamined. Fixed success exhausted the finite graph;
+its optimistic fingerprint-collision estimate is `1.1E-7`, not a probability of
+implementation correctness. Raw logs include tool version and JVM PID.
 
-```python
-from shield.control import Control
-from shield.twitch.events import ShieldEvents
+For a future authorized rerun, `bash evidence/r1/run-tlc.sh NAME PreFixControl
+ABS_CONFIG_PATH` or `bash evidence/r1/run-tlc.sh NAME TwitchControl
+ABS_CONFIG_PATH` gives each run a new scratch/metadir `NAME`. The Python replay
+requires the three source snapshots at the paths/hashes above; the command record
+shows their creation and the exact runner. No further rerun is authorized by this
+child's exhausted budget. Charts preserve all nine states of each bug path and
+hide every off-path transition; they are manually transcribed from direct TLC,
+not helper-generated full graphs. [view.mjs](view.mjs) supports optional future
+helper labeling but was not executed during R1.
 
-control = Control()
-def hold(active, source, reason, now):
-    return control.set_hold(active, source, reason, now)
-events = ShieldEvents('1', hold, started_at=0, clock=lambda: 0,
-                      capacity=1, max_age=2, control_clock=lambda: 0)
-assert control.state == 'HOLD'                    # Init, TLC state 1
-snapshot = events.begin_reconcile()               # Transition 1, TLC state 2
-assert snapshot == (0, 0)
-assert events.reconciled(True, snapshot) is True   # Transition 2, TLC state 3
-assert events.phase == 'ready'
-assert control.state == 'HOLD'  # Expected Python; mutant gives PROTECT.
-```
+[Cleanup receipt](evidence/r1/process-cleanup.txt) records exited owned scopes and
+JVM PIDs. Scratch retains source copies and TLC metadirs for audit; no owned
+background process is handed off. No HTTP, Twitch, secrets, Mac, GPU, accounts,
+installs, global config, git mutations or child agents were used.
 
-These steps were authored but **not executed here**, preserving the packet's zero
-additional Python-harness budget. The conductor must replay them in its final tests.
-`public_replay.py` also gives independent chat-only/local-only checks, a combined
-inactive-status/new-Shield race, stale-generation completion after a fresh begin,
-invalid-boolean completion, revocation, and a planned handover with zero callbacks
-and zero state transitions. Its longer scenarios include additional timestamp/ID
-values beyond the model's six representatives; they are proposed concrete checks,
-not additional measured model traces.
+## Historical receipts
 
-The modeled race is explicitly reachable: BeginReconcile retains revision 0;
-Deliver(hold) at clock 1 sets chat; LocalHold(TRUE); Tick to 2;
-Deliver(shieldBegin) sets Shield TRUE and revision 1; Reconciled(FALSE) with the
-retained revision-0 snapshot leaves chat/local/Shield TRUE and clears only connection.
-The eight invariants were checked over all states reached by this and every other
-allowed ordering. This illustrative race path is derived from the action definitions,
-not a separately requested TLC trace or Python execution.
+`historical/` is unchanged earlier evidence. `evidence/reconciliation/` is also
+**historical**, including its planted release-clobber mutation and passing counts.
+The prior top-level model/config/report are preserved as
+`evidence/reconciliation/{TwitchControl-before-r1.tla.txt,TwitchControl-before-r1.cfg.txt,REPORT-before-r1.md}`.
+They do not establish current policy/transport safety. This report supersedes the
+prior top-level claim that the eight by-construction invariants verified the path.
 
-The parent already owns the public interface regression at
-[test_events.py:35](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py:35).
-Its follow-up local clear and broadcaster resume require Shield to stay held until
-Shield end. Parent localhost transport cases cover preexisting active status and
-failed reconciliation ([test_transport.py:251](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:251)),
-outage with chat/local preservation ([test_transport.py:268](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:268)),
-and planned migration without HOLD ([test_transport.py:92](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:92)).
-Those tests were read, not run by this child; passing logs remain the parent's receipt.
+## Mermaid paths from the two direct TLC traces
 
-For the test gate: the public seam is ShieldEvents plus Control observations/callbacks;
-the realistic failure is a source-clearing reconciliation release; the parent policy
-regression owns it, with transport tests owning actual socket/retry wiring. No new
-production export, reset hook, flag, or shared/root test was introduced. The mutation
-flag and history ghosts exist only in this TLA+ artifact.
+The red terminal state in the first path breaks `NoLIVEWithoutCurrentChannel`.
+The red terminal state in the second breaks `AuthorizedShieldBeginPersists`.
+Only these paths are drawn; all off-path actions are omitted.
 
-## Mermaid
-
-Both passing graphs exceed the helper's 500-state chart limit, so neither helper
-call wrote `chart.mmd`. The direct mutation run intentionally did not call the helper.
-The following **hand-authored projection of its exact shortest trace** is saved as
-[release-clobber.mmd](evidence/reconciliation/release-clobber.mmd); it is not helper
-output. It shows all steps on that trace and omits every off-path transition.
-The final state breaks only the named `ReconcileReleaseIsolated` rule on this path.
 
 ```mermaid
----
-title: "Shortest deliberate reconciliation violation (direct TLC)"
----
 stateDiagram-v2
-  state "Connecting: HOLD" as s0
-  state "Reconciling: HOLD, snapshot (0, 0)" as s1
-  state "Ready: PROTECT, required Shield hold erased" as s2
-  [*] --> s0
-  s0 --> s1: begin reconciliation
-  s1 --> s2: active status returns; mutant clears holds
-  classDef breaks fill:#ffecee,stroke:#e72e3b,stroke-width:2.5px,color:#cd2834
-  class s2 breaks
+  direction LR
+  state "1 Awaiting welcome · HOLD" as s1
+  state "2 Welcome queued · HOLD" as s2
+  state "3 Chat enabled · HOLD" as s3
+  state "4 Shield begin enabled · HOLD" as s4
+  state "5 Shield end enabled · HOLD" as s5
+  state "6 Subscribing · HOLD" as s6
+  state "7 Socket dead · HOLD" as s7
+  state "8 Reconcile after fault · HOLD" as s8
+  state "9 Socket dead · LIVE" as s9
+  [*] --> s1
+  s1 --> s2: welcome queues
+  s2 --> s3: chat enables
+  s3 --> s4: begin enables
+  s4 --> s5: end enables
+  s5 --> s6: callback reaches policy
+  s6 --> s7: socket faults
+  s7 --> s8: stale callback starts read
+  s8 --> s9: inactive status returns
+  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class s9 breaks
 ```
 
-## Bounds and limits
-
-- Constants: Capacity 1, MaxAge 2, LastClock 5, MaxGeneration 2. Fault is enabled only
-  while generation is below 2. Reconciliation, welcomes, planned handovers and local/
-  coverage changes can repeat; retained envelope identities are immutable. One returned
-  token is retained at a time, including the choice to keep it across a later begin.
-  All snapshots ever outstanding together and outages beyond two generation increments
-  are outside this graph. This finite bound limits exploration, not an invariant.
-- Six envelopes retain the previous baseline timestamps/actors: moderator hold at 1,
-  broadcaster resume at 2, moderator resume at 3, Shield begin at 2, Shield end at 3,
-  viewer hold at 3. Model time 1 maps to Python started_at; zero abstracts its initial
-  epsilon floor. Clock runs 1..5; purge occurs only on delivery. Default maximum Shield
-  revision is 2 because each of its two immutable event IDs executes at most once.
-- Capacity one exercises eviction and expiry, but not multiple retained-ID ordering or
-  the production 4096/600 settings. Fixed representative times do not enumerate every
-  timestamp/actor/topic combination or equal-time begin/end delivery. Counterexamples
-  for old mutation flags were not re-run here; their only live receipts are historical.
-- HTTP retry delays, response parsing/size, approved URL parsing, subscription completion,
-  session IDs, reasons, callbacks throwing, effect delivery, async/thread interleavings,
-  OAuth/refresh, upstream internals, video coverage computation, and ingest are outside
-  this atomic policy projection. A failed status is stuttering and cannot release HOLD;
-  this does not prove the real scheduler waits the correct delay or recovers eventually.
-- The cache invariant bounds only cached IDs, not process memory or Control's unbounded
-  transition ledger. Only four named hold sources are modeled; arbitrary source strings
-  are not enumerated. No media/bench job ran: this child edited docs/model only and was
-  explicitly excluded from stream, Mac and GPU execution.
-
-## Reproduction and tools
-
-These are future reproduction instructions, **not further runs performed here**.
-Create a new scratch folder and fresh output directories; do not reuse this child's
-budget-guarded wrapper/ledger. Use the pinned existing tools and the required systemd
-limits. The helper should only be used on passing configs; use direct TLC for the
-deliberate violation to avoid its invariant-removal rerun.
-
-```sh
-work=/tmp/agents/irl-shield/m3-reconcile-model/reproduction-new
-mkdir -p "$work"
-cp docs/model/TwitchControl.tla docs/model/TwitchControl.cfg docs/model/view.mjs "$work/"
-cp docs/model/evidence/reconciliation/release-clobber.cfg "$work/"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
-  systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
-  env TMPDIR="$work" JAVA=/home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  TLA2TOOLS=/home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
-  JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
-  /home/elan/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
-  --config "$work/TwitchControl.cfg" --view "$work/view.mjs" --out "$work/pass-new"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
-  systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
-  env JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
-  /home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  -cp /home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
-  tlc2.TLC -workers 1 -fp 0 -lncheck final -metadir "$work/failure-states" \
-  -config "$work/release-clobber.cfg" "$work/TwitchControl.tla"
+```mermaid
+stateDiagram-v2
+  direction LR
+  state "1 Awaiting welcome · HOLD" as s1
+  state "2 Welcome queued · HOLD" as s2
+  state "3 Chat enabled · HOLD" as s3
+  state "4 Shield begin enabled · HOLD" as s4
+  state "5 Shield end enabled · HOLD" as s5
+  state "6 Subscribing · HOLD" as s6
+  state "7 Reconciling · HOLD" as s7
+  state "8 Ready · LIVE" as s8
+  state "9 Authorized Shield begin discarded · LIVE" as s9
+  [*] --> s1
+  s1 --> s2: welcome queues
+  s2 --> s3: chat enables
+  s3 --> s4: begin enables
+  s4 --> s5: end enables
+  s5 --> s6: callback reaches policy
+  s6 --> s7: status read starts
+  s7 --> s8: inactive status returns
+  s8 --> s9: Twitch stamp 11; local time 10
+  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  class s9 breaks
 ```
-
-For a restored pass, repeat the helper command on the all-FALSE default config with
-a fresh `--out` directory. `commands.sh` above preserves the actual prior commands.
-Python replay is intentionally left to the parent's reserved final tests; the
-executable steps in `public_replay.py` import only Control/ShieldEvents.
-
-The tool hashes match the historical installations. TLC header: version 2.19,
-2024-08-08, revision `5a47802`; distribution: v1.7.4. TLC JAR hash:
-`936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88`, MIT license
-preserved in [TLC-LICENSE.txt](historical/evidence/TLC-LICENSE.txt). Java hash:
-`1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25`, existing
-Temurin 25, GPLv2 with Classpath Exception. Java/helper are reused, not redistributed.
-No SDK, model weights, dataset or media asset was introduced. The model, view, wrapper
-and replay instructions are original project work. Skills read: full statechart,
-research, codebase-design, tdd, test-review gate, and diagnosing-bugs source/hypothesis
-guidance. No independent review or merge authority is claimed.
-
-## Cleanup and delivery
-
-At `2026-10-30T04:23:49Z`, all four owned scopes (SANY, baseline, clobber, restored)
-reported not-found/inactive/dead; see [process-cleanup.txt](evidence/reconciliation/process-cleanup.txt).
-All tool commands exited (0, 0, 12, 0), and both exec sessions were reaped with final
-exit 0. No owned worker survives; none was requested to remain. Scratch is retained
-at `/tmp/agents/irl-shield/m3-reconcile-model/` for receipt inspection. Helper internal
-temporary directories were tool-managed; their paths are visible in the Java ledger.
-
-`git status --short` contains only `?? docs/model/`; staged diff is empty. The model,
-config, view and report are new/untracked, so `git ls-files --error-unmatch` exits 1,
-as expected for this unstaged hand-back. The conductor must copy/review/stage them.
-[SHA256SUMS](SHA256SUMS) covers all delivered files except itself and this report;
-the report hash is supplied separately in the hand-back. Remaining work is the
-parent's concrete Python replay, production mutation, functional gate, and review.

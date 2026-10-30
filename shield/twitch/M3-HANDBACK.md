@@ -1,5 +1,9 @@
 # M3 Twitch offline implementation hand-back
 
+Historical milestone receipt at `ec1d1f9`, committed by the conductor as
+`bb6948b`. [R1-HANDBACK.md](R1-HANDBACK.md) supersedes the implementation,
+test counts and model safety claims below after PR #2 review round 1.
+
 **PASS for the offline milestone:** 128 executed tests passed, 1 macOS-only test
 skipped, including **30/30 M3**; current TLC baseline/restored each checked **8
 invariants, 50,920 distinct states**, with no violation. All **48/48** permitted

@@ -1,20 +1,20 @@
-"""pyTwitchAPI owns WebSocket I/O; these pinned hooks enforce control policy.
+"""Pinned pyTwitchAPI I/O with owner-loop policy and verified subscriptions.
 
-Private hooks are necessary for raw envelope IDs, reconnect-host validation and
-fail-closed lifecycle. Remove them when upstream offers equivalent public hooks.
+Private hooks retain connection provenance and validate subscription responses.
+Remove them when upstream exposes equivalent lifecycle and readiness hooks.
 """
 import asyncio
+import json
 import logging
 from functools import partial
 
 import aiohttp
-
 from twitchAPI.eventsub.websocket import EventSubWebsocket
+from twitchAPI.helper import done_task_callback
 from twitchAPI.twitch import Twitch
 from twitchAPI.type import AuthScope
-from twitchAPI.helper import done_task_callback
 
-from .auth import SCOPES, TwitchError
+from .auth import SCOPES, TwitchError, InvalidToken
 from .events import TOPICS, websocket_url
 
 
@@ -23,12 +23,23 @@ class _PolicySocket(EventSubWebsocket):
         super().__init__(twitch, **kwargs)
         self.user_session, self.events, self.owner_loop = session, events, owner_loop
         self.reconcile = reconcile
-        self._connecting = False
-        # Upstream debug/error paths interpolate URLs and raw remote payloads.
-        # Use an instance logger so other sessions' logging stays unchanged.
+        self._connect_lock = asyncio.Lock()
+        self._connection_generation = None
+        self._planned_generation = None
+        self._confirmed = {}
+        self._connection_provenance = {}
+        self._dial_task = None
+        self._handlers = set()
         self.logger = logging.Logger('irl-shield.twitch.private')
         self.logger.disabled = True
         self._task_callback = partial(done_task_callback, self.logger)
+
+    async def owner(self, call, *args, **kwargs):
+        async def invoke():
+            return call(*args, **kwargs)
+        if asyncio.get_running_loop() is self.owner_loop:
+            return await invoke()
+        return await asyncio.wrap_future(asyncio.run_coroutine_threadsafe(invoke(), self.owner_loop))
 
     async def _build_request_header(self):
         if asyncio.get_running_loop() is self.owner_loop:
@@ -40,89 +51,259 @@ class _PolicySocket(EventSubWebsocket):
                 'Authorization': 'Bearer ' + token.reveal()}
 
     async def _api_post_request(self, session, url, data=None):
-        # The base implementation follows redirects, which could disclose auth.
-        return await session.post(url, headers=await self._build_request_header(), json=data,
-                                  allow_redirects=False)
+        generation = self._connection_generation
+        response = await session.post(url, headers=await self._build_request_header(), json=data,
+                                      allow_redirects=False)
+        try:
+            body = await response.json()
+            records = body.get('data') if isinstance(body, dict) else None
+            record = records[0] if isinstance(records, list) and len(records) == 1 else None
+            if (response.status != 202 or not isinstance(record, dict)
+                    or not isinstance(record.get('id'), str) or not record['id']
+                    or record.get('status') != 'enabled' or record.get('type') != data['type']
+                    or record.get('version') != '1' or record.get('condition') != data['condition']
+                    or record.get('transport', {}).get('method') != 'websocket'
+                    or record.get('transport', {}).get('session_id') != data['transport']['session_id']):
+                raise TwitchError('EventSub subscription not enabled for this session')
+            if (generation != self._connection_generation or self.active_session is None
+                    or self.active_session.id != data['transport']['session_id']):
+                raise TwitchError('stale EventSub subscription response')
+            self._confirmed[data['type']] = dict(record)
+            return response
+        except BaseException:
+            response.release()
+            raise
 
     async def _connect(self, is_startup=False):
-        self.events.fault('connecting')
-        if self._session is None:
-            trace = aiohttp.TraceConfig()
-            async def refuse_redirect(session, context, params):
-                raise TwitchError('WebSocket redirect refused')
-            trace.on_request_redirect.append(refuse_redirect)
-            self._session = aiohttp.ClientSession(timeout=self._twitch.session_timeout, trace_configs=[trace])
-        self._connecting = True
-        try:
-            await asyncio.wait_for(super()._connect(is_startup), 20)
-        finally:
-            self._connecting = False
-
-    async def _keep_loop_alive(self):
-        # Upstream can leave a closed connection waiting for its keepalive
-        # timeout. Detect that condition immediately and reuse its connect path.
-        while not self._closing:
-            if (self._running and not self._connecting and self._connection is not None
-                    and self._connection.closed and self.events.phase != 'handover'
-                    and self._reconnect is None):
+        observed = self._connection
+        async with self._connect_lock:
+            if self._connection is not observed and self._connection is not None and not self._connection.closed:
+                return
+            if self._session is None:
+                trace = aiohttp.TraceConfig()
+                async def refuse_redirect(session, context, params):
+                    raise TwitchError('WebSocket redirect refused')
+                trace.on_request_redirect.append(refuse_redirect)
+                self._session = aiohttp.ClientSession(timeout=self._twitch.session_timeout, trace_configs=[trace])
+            delay = 1
+            while self._running and not self._closing:
+                generation = await self.owner(self.events.connection_started)
+                self._confirmed = {}
+                self._active_subscriptions.clear()
+                self._callbacks.clear()
                 try:
-                    await self._connect(False)
+                    self._dial_task = asyncio.create_task(super()._connect(is_startup))
+                    await asyncio.wait_for(self._dial_task, 20)
+                    self._connection_generation = generation
+                    self._remember_connection(self._connection, generation, self._confirmed)
+                    return
+                except asyncio.CancelledError:
+                    if self._closing or not self._running:
+                        return
+                    raise
                 except Exception:
-                    self.events.fault('connect-failed')
-                    await asyncio.sleep(1)
-            await asyncio.sleep(.01)
+                    # Upstream watchdog and reader callers cannot catch TimeoutError.
+                    # Recovery stays inside this boundary; those tasks remain alive.
+                    await self.owner(self.events.fault, 'connect-failed')
+                    await asyncio.sleep(delay)
+                    delay = min(30, delay * 2)
+                finally:
+                    self._dial_task = None
+
+    async def _resubscribe(self):
+        # Upstream restores stale entries after failed POSTs. Readiness and retry
+        # instead use only enabled responses verified against this welcome.
+        return
+
+    def _remember_connection(self, connection, generation, subscriptions):
+        self._connection_provenance[connection] = generation, subscriptions
+        while len(self._connection_provenance) > 2:
+            self._connection_provenance.pop(next(iter(self._connection_provenance)))
+
+    def _current(self, generation, session_id):
+        return (self.events.generation == generation and self.events.session_id == session_id
+                and self.events.phase not in ('disconnected', 'connecting', 'revoked'))
+
+    def _subscriptions_enabled(self, session_id):
+        return len({record['id'] for record in self._confirmed.values()}) == len(TOPICS) and all(topic in self._confirmed
+                   and self._confirmed[topic]['status'] == 'enabled'
+                   and self._confirmed[topic]['transport']['session_id'] == session_id for topic in TOPICS)
 
     async def _handle_welcome(self, data):
+        generation = data['_irl_generation']
+        session_id = data.get('payload', {}).get('session', {}).get('id')
+        if not await self.owner(self.events.welcome, session_id, generation=generation):
+            return
         try:
             await super()._handle_welcome(data)
-            self.events.welcome(self.active_session.id)
-            if {s['sub_type'] for s in self._active_subscriptions.values()} == set(TOPICS):
-                await asyncio.wrap_future(asyncio.run_coroutine_threadsafe(self.reconcile(), self.owner_loop))
+            user = self.user_session.broadcaster_id
+            async def unused(event):
+                pass
+            listeners = {
+                TOPICS[0]: self.listen_channel_chat_message,
+                TOPICS[1]: self.listen_channel_shield_mode_begin,
+                TOPICS[2]: self.listen_channel_shield_mode_end,
+            }
+            delay = 1
+            while await self.owner(self._current, generation, session_id):
+                try:
+                    for topic in TOPICS:
+                        if (topic not in self._confirmed
+                                or self._confirmed[topic]['transport']['session_id'] != session_id):
+                            await listeners[topic](user, user, unused)
+                        if not await self.owner(self._current, generation, session_id):
+                            return
+                    if not self._subscriptions_enabled(session_id):
+                        raise TwitchError('EventSub subscriptions incomplete')
+                    await asyncio.wrap_future(asyncio.run_coroutine_threadsafe(
+                        self.reconcile(generation, session_id), self.owner_loop))
+                    return
+                except InvalidToken:
+                    await self.owner(self.events.fault, 'authorization-invalid', revoked=True)
+                    return
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    await asyncio.sleep(delay)
+                    delay = min(30, delay * 2)
+        except asyncio.CancelledError:
+            raise
         except Exception:
-            self.events.fault('invalid-welcome')
+            await self.owner(self.events.fault, 'invalid-welcome')
             self._startup_complete = True
 
     async def _handle_reconnect(self, data):
+        generation = data['_irl_generation']
         url = data.get('payload', {}).get('session', {}).get('reconnect_url')
-        if not self.events.reconnect(url):
+        if not await self.owner(self.events.reconnect, url, generation=generation):
             return
+        self._planned_generation = generation
         previous_id = self.events.session_id
         try:
             await asyncio.wait_for(super()._handle_reconnect(data), 30)
-            # The receive task can consume _reconnect while close() yields.
             migrated = self._reconnect.session if self._reconnect else self.active_session
-            if migrated is not None and migrated.id != previous_id:
-                self.events.handed_over(migrated.id)
-            else:
-                self.events.fault('reconnect-failed')
-                await self._connection.close()
+            if migrated is None or migrated.id == previous_id:
+                raise TwitchError('EventSub handover incomplete')
+            if not await self.owner(self.events.handed_over, migrated.id, generation=generation):
+                if self._reconnect:
+                    await self._reconnect.connection.close()
+                    self._reconnect = None
+                return
+            # Twitch's reconnect welcome carries the old subscriptions to this
+            # session; unlike unplanned connects, it requires no new POSTs.
+            for record in self._confirmed.values():
+                record['transport'] = {**record['transport'], 'session_id': migrated.id}
+        except asyncio.CancelledError:
+            raise
         except Exception:
-            self.events.fault('reconnect-failed')
-            await self._connection.close()
+            await self.owner(self.events.fault, 'reconnect-failed')
+            if self._connection is not None:
+                await self._connection.close()
 
     async def _handle_notification(self, data):
-        self._reset_timeout()
+        if data['_irl_generation'] == self.events.generation and self.active_session is not None:
+            self._reset_timeout()
+        known = data.get('_irl_subscription')
         subscription = data.get('payload', {}).get('subscription', {})
-        known = self._active_subscriptions.get(subscription.get('id'))
-        if known is not None and known['sub_type'] == subscription.get('type'):
-            self.events.accept(data)
+        if known is not None and known['id'] == subscription.get('id') and known['type'] == subscription.get('type'):
+            await self.owner(self.events.accept, data, generation=data['_irl_generation'])
+
+    async def _handle_keepalive(self, data):
+        if data['_irl_generation'] == self.events.generation and self.active_session is not None:
+            await super()._handle_keepalive(data)
 
     async def _handle_revocation(self, data):
-        if data.get('payload', {}).get('subscription', {}).get('type') in TOPICS:
-            self.events.fault('subscription-revoked', revoked=True)
-        await super()._handle_revocation(data)
+        subscription = data.get('payload', {}).get('subscription', {})
+        known = data.get('_irl_subscription')
+        if known is not None and subscription.get('type') in TOPICS:
+            await self.owner(self.events.fault, 'subscription-revoked', revoked=True)
+
+    async def _dispatch(self, handler, data):
+        try:
+            await handler(data)
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            await self.owner(self.events.fault, 'invalid-message')
 
     async def _task_receive(self):
-        try:
-            await super()._task_receive()
-        finally:
-            self.events.fault('disconnected')
+        handlers = {'session_welcome': self._handle_welcome, 'session_keepalive': self._handle_keepalive,
+                    'notification': self._handle_notification, 'session_reconnect': self._handle_reconnect,
+                    'revocation': self._handle_revocation}
+        while not self._closing:
+            try:
+                if not self._running:
+                    return
+                connection = self._connection
+                if connection is None:
+                    await asyncio.sleep(.01)
+                    continue
+                if self._reconnect and self.events.generation == self._planned_generation:
+                    self._connection = self._reconnect.connection
+                    self.active_session = self._reconnect.session
+                    self._remember_connection(self._connection, self._planned_generation, self._confirmed)
+                    self._reconnect = None
+                    continue
+                if connection.closed:
+                    await self._connect(False)
+                    continue
+                provenance = self._connection_provenance.get(connection)
+                if provenance is None:
+                    await asyncio.sleep(.01)
+                    continue
+                generation, subscriptions = provenance
+                message = await connection.receive()
+                if message.type == aiohttp.WSMsgType.TEXT:
+                    data = json.loads(message.data)
+                    data['_irl_generation'] = generation
+                    subscription_id = data.get('payload', {}).get('subscription', {}).get('id')
+                    data['_irl_subscription'] = next((dict(record) for record in subscriptions.values()
+                                                      if record['id'] == subscription_id), None)
+                    handler = handlers.get(data.get('metadata', {}).get('message_type'))
+                    if handler is not None:
+                        task = asyncio.create_task(self._dispatch(handler, data))
+                        self._handlers.add(task)
+                        task.add_done_callback(self._handlers.discard)
+                elif message.type in (aiohttp.WSMsgType.CLOSE, aiohttp.WSMsgType.CLOSING,
+                                       aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
+                    if self._closing or not self._running:
+                        return
+                    if self._reconnect and self.events.generation == self._planned_generation:
+                        continue
+                    # A watchdog-initiated connect already invalidated this
+                    # reader's generation before closing the old socket.
+                    if generation == self.events.generation:
+                        await self.owner(self.events.fault, 'disconnected')
+                    await self._connect(False)
+            except asyncio.CancelledError:
+                return
+            except Exception:
+                await self.owner(self.events.fault, 'receive-failed')
+                await asyncio.sleep(1)
+                await self._connect(False)
+
+    async def _keep_loop_alive(self):
+        while not self._closing:
+            await asyncio.sleep(.01)
+
+    async def _stop(self):
+        if self._dial_task is not None:
+            self._dial_task.cancel()
+        if self._connection is not None:
+            await self._connection.close()
+        if self._reconnect is not None:
+            await self._reconnect.connection.close()
+        if self._session is not None:
+            await self._session.close()
+        self._closing = True
 
     def _run_socket(self):
         try:
             super()._run_socket()
+        except asyncio.CancelledError:
+            pass
         except Exception:
-            self.events.fault('transport-failed')
+            asyncio.run_coroutine_threadsafe(self.owner(self.events.fault, 'transport-failed'), self.owner_loop)
         finally:
             self._startup_complete = True
             loop = self._socket_loop
@@ -145,6 +326,7 @@ class EventSubClient:
         self._socket, self._twitch = None, None
         self._validation_task = None
         self._shutdown = None
+        self._ready = asyncio.Event()
 
     async def start(self):
         if self._socket is not None or self._shutdown is not None:
@@ -166,20 +348,11 @@ class EventSubClient:
         twitch = self._twitch = await Twitch(self.session.auth.client_id, authenticate_app=False)
         twitch.auto_refresh_auth = False
         await twitch.set_user_authentication(token.reveal(), [AuthScope(s) for s in SCOPES], validate=False)
-        socket = self._socket = _PolicySocket(twitch, self.session, self.events, asyncio.get_running_loop(),
-            self._reconcile,
+        socket = self._socket = _PolicySocket(twitch, self.session, self.events, asyncio.get_running_loop(), self._reconcile,
             connection_url=url, subscription_url=(self.mock_origin + '/') if self.mock_origin else None)
         try:
-            await asyncio.wait_for(asyncio.to_thread(socket.start), 25)
-            if self.events.phase != 'subscribing':
-                raise TwitchError('EventSub startup failed')
-            async def unused(event):
-                pass  # The raw-envelope hook applies policy before object conversion.
-            user = self.session.broadcaster_id
-            await socket.listen_channel_chat_message(user, user, unused)
-            await socket.listen_channel_shield_mode_begin(user, user, unused)
-            await socket.listen_channel_shield_mode_end(user, user, unused)
-            await self._reconcile()
+            await asyncio.to_thread(socket.start)
+            await self._ready.wait()
             self._validation_task = asyncio.create_task(self._validate_idle())
         except asyncio.CancelledError:
             await self.stop()
@@ -188,8 +361,8 @@ class EventSubClient:
             await self.stop()
             raise TwitchError('EventSub startup failed') from None
 
-    async def _reconcile(self):
-        snapshot = self.events.begin_reconcile()
+    async def _reconcile(self, generation, session_id):
+        snapshot = self.events.begin_reconcile(generation=generation, session_id=session_id)
         if snapshot is None:
             return
         delay = 1
@@ -203,7 +376,11 @@ class EventSubClient:
                 if (status != 200 or not isinstance(data, list) or len(data) != 1
                         or not isinstance(data[0], dict) or type(data[0].get('is_active')) is not bool):
                     raise TwitchError('Shield Mode reconciliation failed')
-                self.events.reconciled(data[0]['is_active'], snapshot)
+                if self.events.reconciled(data[0]['is_active'], snapshot):
+                    self._ready.set()
+                return
+            except InvalidToken:
+                self.events.fault('authorization-invalid', revoked=True)
                 return
             except asyncio.CancelledError:
                 raise
@@ -212,17 +389,28 @@ class EventSubClient:
                 delay = min(30, delay * 2)
 
     async def _validate_idle(self):
-        try:
-            while True:
+        delay = 1
+        while True:
+            try:
                 await asyncio.sleep(60)
                 await self.session.access_token()
-        except asyncio.CancelledError:
-            raise
-        except Exception:
-            self.events.fault('authorization-invalid', revoked=True)
-            await self.stop()
+                delay = 1
+            except InvalidToken:
+                self.events.fault('authorization-invalid', revoked=True)
+                await self.stop()
+                return
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                self.events.fault('authorization-unavailable')
+                await asyncio.sleep(delay)
+                delay = min(30, delay * 2)
+                socket = self._socket
+                if socket is not None:
+                    asyncio.run_coroutine_threadsafe(socket._connect(False), socket._socket_loop)
 
     async def stop(self):
+        self.events.fault('stopping')
         validation, self._validation_task = self._validation_task, None
         if validation is not None and validation is not asyncio.current_task():
             validation.cancel()
@@ -244,4 +432,3 @@ class EventSubClient:
         if self._twitch is not None:
             await self._twitch.close()
             self._twitch = None
-        self.events.fault('stopped')

@@ -126,3 +126,44 @@ Final status, commands, source hashes, combined gate and model receipts are
 recorded in M3-HANDBACK.md when available. OCR/bench scores are not claimed:
 M3 changes no detector, rendering, engine scheduling, scorer, common cache or
 media egress. Corrected independent OCR grading remains root's responsibility.
+
+## PR #2 review round 1
+
+Conductor committed the milestone as `bb6948b9793e1bbb505e84e8042357818ddb9608`
+on `elannash/m3-twitch`, then assigned nine accepted blockers from
+`/tmp/claude-1000/agents/twitchcon-hackathon/conductor/pr2-triage-r1.json`.
+This round uses the same dedicated worktree and leaves changes unstaged and
+uncommitted. New budget: 30 test/TLC invocations; deadline Fri Oct 30 03:00 PT.
+
+Disjoint Ultra children supplied auth classification, policy generation/hold
+safety and a nonvacuous model. Parent read the changed code, regression receipts,
+raw model failures/pass/replay and manifests before integration. Auth used two
+invocations, policy six, model five. Parent used ten, for **23/30 total**.
+One model config parse rejection is included. Parent's first full gate failed
+with an idle-validation cleanup cancellation; focused red regressions exposed
+that shutdown race and an in-flight old-socket hold losing its routing registry.
+Both were fixed before the final gate. Intermediate failures remain in the
+ledger and are not represented as passing runs.
+
+Final combined gate command and all nine red/green rows are recorded in
+[R1-HANDBACK.md](R1-HANDBACK.md). Raw parent receipts:
+`/tmp/agents/irl-shield/m3-r1/01-transport-red.log` through
+`10-combined-gate-final.log`. Final result: **147 tests ran in 75.852 seconds,
+146 passed, one macOS-only VideoToolbox skip; 48/48 M3 passed**, exit 0.
+Runs were constrained to 2 GB, 200% CPU, niceness 10 and native workers two.
+No common engine/control/bench/root requirements/README edit, new dependency,
+new scope, live service request, credentials, keyring, Mac or GPU work occurred.
+
+The replacement model's real pre-fix traces end at state 9 with (a) LIVE after
+socket loss and stale reconciliation, and (b) LIVE after discarding an authorized
+clock-ahead Shield begin. Actual public Python replay reproduces old RED/fixed
+GREEN. Fixed direct TLC exhausts **5,618,817 generated / 399,992 distinct /
+0 queued** states, depth 39, six invariants. The report explicitly omits a full
+transport/watchdog/progress proof. Historical by-construction evidence remains
+labeled historical. Checked policy SHA-256:
+`907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd`.
+TLC/Java were existing read-only tools with 1 GB heap in the 2 GB scope.
+
+Final artifact hashes and process-exit receipts are in the R1 hand-back and
+owned scratch. No process or listener is retained. Conductor audit, commit and
+PR #2 round 2 remain pending; no push/merge authority was assumed.

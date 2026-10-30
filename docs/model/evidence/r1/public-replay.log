@@ -1,0 +1,93 @@
+Running as unit: m3-r1-model-public-replay.scope; invocation ID: 751d025e4f0b481b81f64aff01f55521
+{"source": "control", "sha256": "806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d", "path": "/tmp/agents/irl-shield/m3-r1-model/source-pre/control.py"}
+{"source": "old", "sha256": "c632045a328442afd25ac4103878d1bd067cf0f3d19bb8641eb9e0ee0280c40f", "path": "/tmp/agents/irl-shield/m3-r1-model/source-pre/events.py"}
+{"source": "fixed", "sha256": "907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd", "path": "/tmp/agents/irl-shield/m3-r1-model/events-fixed.py"}
+{"version": "old", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "old", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "old", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 7: observe socket fault; subscriptions die", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "old", "step": "TLC state 8: callback begins reconciliation after fault", "phase": "reconciling", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "old", "step": "TLC state 9: inactive status completes", "phase": "ready", "output": "LIVE", "socket_live": false, "enabled_topics": []}
+{"case": "stale callback", "fault_before_welcome": false, "fixed": false, "expected_counterexample": true, "observed": "LIVE"}
+{"version": "old", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "old", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "old", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 8: callback begins reconciliation after fault", "phase": "reconciling", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "old", "step": "TLC state 9: inactive status completes", "phase": "ready", "output": "LIVE", "socket_live": false, "enabled_topics": []}
+{"case": "stale callback", "fault_before_welcome": true, "fixed": false, "expected_counterexample": true, "observed": "LIVE"}
+{"version": "old", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "old", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "old", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 7: begin reconciliation", "phase": "reconciling", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 8: inactive status completes; LIVE", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 9: authorized protective event delivered", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "clock skew", "source": "shield", "fixed": false, "admission": "invalid", "contract": "HOLD after delivery"}
+{"version": "old", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "old", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "old", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "old", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 7: begin reconciliation", "phase": "reconciling", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 8: inactive status completes; LIVE", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "old", "step": "TLC state 9: authorized protective event delivered", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "clock skew", "source": "chat", "fixed": false, "admission": "invalid", "contract": "HOLD after delivery"}
+{"version": "old", "step": "TLC state 9: authorized protective event delivered", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "phase", "source": "chat", "fixed": false, "admission": "inactive", "contract": "HOLD after delivery"}
+{"case": "fault before callback effect", "reason": "twitch-shield-status", "fixed": false, "output_after_fault": "LIVE", "transitions_after_fault": ["LIVE"]}
+{"case": "fault before callback effect", "reason": "twitch-reconciled", "fixed": false, "output_after_fault": "LIVE", "transitions_after_fault": ["LIVE"]}
+{"case": "Shield begin during inactive-status callback", "fixed": false, "output": "LIVE"}
+{"version": "fixed", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "fixed", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "fixed", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 7: observe socket fault; subscriptions die", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 8: callback begins reconciliation after fault", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 9: inactive status completes", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"case": "stale callback", "fault_before_welcome": false, "fixed": true, "expected_counterexample": false, "observed": "HOLD"}
+{"version": "fixed", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "fixed", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "fixed", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 8: callback begins reconciliation after fault", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 9: inactive status completes", "phase": "disconnected", "output": "HOLD", "socket_live": false, "enabled_topics": []}
+{"case": "stale callback", "fault_before_welcome": true, "fixed": true, "expected_counterexample": false, "observed": "HOLD"}
+{"version": "fixed", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "fixed", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "fixed", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 7: begin reconciliation", "phase": "reconciling", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 8: inactive status completes; LIVE", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 9: authorized protective event delivered", "phase": "ready", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "clock skew", "source": "shield", "fixed": true, "admission": "shield-begin", "contract": "HOLD after delivery"}
+{"version": "fixed", "step": "TLC state 1: opened socket; awaiting welcome", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 2: queue welcome from origin 1", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": []}
+{"version": "fixed", "step": "TLC state 3: enable chat on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["chat"]}
+{"version": "fixed", "step": "TLC state 4: enable begin on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat"]}
+{"version": "fixed", "step": "TLC state 5: enable end on actual session", "phase": "connecting", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 6: deliver welcome to policy", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 7: begin reconciliation", "phase": "reconciling", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 8: inactive status completes; LIVE", "phase": "ready", "output": "LIVE", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"version": "fixed", "step": "TLC state 9: authorized protective event delivered", "phase": "ready", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "clock skew", "source": "chat", "fixed": true, "admission": "chat-hold", "contract": "HOLD after delivery"}
+{"version": "fixed", "step": "TLC state 9: authorized protective event delivered", "phase": "subscribing", "output": "HOLD", "socket_live": true, "enabled_topics": ["begin", "chat", "end"]}
+{"case": "phase", "source": "chat", "fixed": true, "admission": "chat-hold", "contract": "HOLD after delivery"}
+{"case": "fault before callback effect", "reason": "twitch-shield-status", "fixed": true, "output_after_fault": "HOLD", "transitions_after_fault": []}
+{"case": "fault before callback effect", "reason": "twitch-reconciled", "fixed": true, "output_after_fault": "HOLD", "transitions_after_fault": []}
+{"case": "Shield begin during inactive-status callback", "fixed": true, "output": "HOLD"}
+{"case": "fault before callback effect", "reason": "twitch-reconciliation-complete", "fixed": true, "output_after_fault": "HOLD", "transitions_after_fault": []}
+PASS: both TLC paths replayed old RED/fixed GREEN; phase, callback fault and Shield reentry controls passed
+exit=0

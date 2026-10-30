@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from aiohttp import ClientSession, web
 
-from shield.twitch.auth import DeviceAuth, Secret, SCOPES, Tokens, UserSession, TwitchError
+from shield.twitch.auth import DeviceAuth, InvalidToken, Secret, SCOPES, Tokens, UserSession, TwitchError
 from shield.twitch.http import TwitchHTTP
 from shield.twitch.keys import HelixKeyProvider
 from shield.twitch.storage import TokenStore
@@ -81,6 +81,43 @@ class HelixIntegration(unittest.IsolatedAsyncioTestCase):
         await self.session.access_token()
         self.assertEqual(self.requests.count(('POST', '/oauth2/token')), 1)
         self.assertEqual(self.validate_count, 3)
+
+    async def test_validation_distinguishes_invalid_token_from_transient_and_claim_errors(self):
+        valid = dict(client_id='synthetic-client', user_id='1', scopes=list(SCOPES), expires_in=14400)
+        cases = (
+            ('unauthorized', 401, {'message': 'SYNTHETIC-SECRET'},
+             InvalidToken, 'authorization validation failed'),
+            ('unreadable-unauthorized', 401, None,
+             InvalidToken, 'authorization validation failed'),
+            ('unavailable', 503, {'message': 'SYNTHETIC-SECRET'},
+             TwitchError, 'authorization validation failed'),
+            ('disconnect', None, {}, TwitchError, 'Twitch HTTP request failed'),
+            ('wrong-identity', 200, dict(valid, user_id='2'),
+             TwitchError, 'authorization validation failed'),
+        )
+        for label, status, body, expected_type, expected_message in cases:
+            with self.subTest(response=label):
+                self.requests.clear()
+
+                async def reply(request):
+                    self.assertEqual((request.method, request.path), ('GET', '/oauth2/validate'))
+                    if status is None:
+                        request.transport.close()
+                        return web.Response()
+                    if body is None:
+                        return web.Response(status=status, text='SYNTHETIC-SECRET')
+                    return web.json_response(body, status=status)
+
+                self.reply = reply
+                session = UserSession(self.auth, Tokens(Secret('synthetic-access'),
+                                      Secret('synthetic-refresh'), 14400), '1')
+                with self.assertRaises(TwitchError) as caught:
+                    await HelixKeyProvider(session, self.http).get_key()
+                self.assertIs(type(caught.exception), expected_type)
+                self.assertEqual(str(caught.exception), expected_message)
+                self.assertNotIn('SYNTHETIC-SECRET', repr(caught.exception))
+                self.assertTrue(self.requests, 'validation never reached the local wire')
+                self.assertEqual(set(self.requests), {('GET', '/oauth2/validate')})
 
     async def test_keyring_is_explicit_and_mock_only(self):
         backend = Mock()

@@ -36,6 +36,10 @@ class TwitchHTTP:
                                             timeout=aiohttp.ClientTimeout(total=20), **kwargs) as response:
                 if response.status // 100 == 3:
                     raise TwitchError('HTTP redirect refused')
+                # Validation's 401 is definitive even if its body is malformed.
+                # Do not let JSON decoding relabel it as a transport failure.
+                if path == '/oauth2/validate' and response.status == 401:
+                    return 401, {}
                 if response.content_length and response.content_length > 65536:
                     raise TwitchError('oversized Twitch response')
                 try:

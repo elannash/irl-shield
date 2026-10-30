@@ -1,7 +1,7 @@
 # M3 dependency and tool record
 
 All code added under `shield/twitch/` and `tests/m3/` is original work written in
-this authorized Codex thread or its Codex auth child on 2026-10-29 PT. No other
+this authorized Codex thread or its authorized Codex children on 2026-10-29 PT. No other
 project code, footage, music, model weights or dataset was imported. Every fixture
 is synthetic Python/JSON. No detector, scorer or media bench was changed.
 
