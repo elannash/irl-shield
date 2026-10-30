@@ -69,3 +69,28 @@ Bold fonts come from [DejaVu Fonts](https://dejavu-fonts.github.io/). Bitstream
 Vera portions carry the Bitstream Vera font license; DejaVu changes are public
 domain. The full notice is in [fonts/LICENSE-DejaVu.txt](fonts/LICENSE-DejaVu.txt).
 These fonts are fixture rendering assets, separate from the video licenses.
+
+
+## Mask skins
+
+Petals, Ripple, Confetti and Cloud were generated in this submitted Codex
+thread's W5 child on 2026-10-30, without reference images. The project distributes
+these original pattern assets under CC0-1.0. Exact prompts, output hashes and
+provenance are recorded in [the skin asset manifest](skins/attribution.json).
+The image-generation tool did not expose a model identifier; the manifest
+records `model: "not exposed"` rather than inventing one. No text, logos, brands
+or real people were requested. Visual acceptance remains a separate check.
+
+| Asset | Origin | License |
+| --- | --- | --- |
+| [Petals](skins/petals.png) | Project image-generation output | CC0-1.0 |
+| [Ripple](skins/ripple.png) | Project image-generation output | CC0-1.0 |
+| [Confetti](skins/confetti.png) | Project image-generation output | CC0-1.0 |
+| [Cloud](skins/cloud.png) | Project image-generation output | CC0-1.0 |
+
+The unmodified Atkinson Hyperlegible Next variable font used by the presentation
+renderer is Copyright 2020–2024 The Atkinson Hyperlegible Next Project Authors,
+licensed under SIL Open Font License 1.1. Its [full notice](../shield/presentation/assets/OFL.txt)
+is bundled; [presentation attribution](presentation/ATTRIBUTION.json) records
+upstream provenance and exact font/license hashes. It is separate from the
+footage licenses above.
