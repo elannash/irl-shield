@@ -1,0 +1,194 @@
+{
+  "checked_utc": "2026-10-30T12:10:05.797487+00:00",
+  "evaluation_status": "complete",
+  "policy_commit": "26c8db18624731eaf92168e69aa97ddad31abd17",
+  "policy_sha256": "dcbc96c88b0a3c1545a5a04c668446eee1afeb730e901179ffc78063cb91ad5f",
+  "dataset_sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad",
+  "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+  "orchestrator_sha256": "846ad6dfa282eef71a6ee28a9f79cc00f39c167df6b6881d87fbef73096ef5ae",
+  "heldout_orchestrator_sha256": "e4bf32deb65f48a7bd8323678b2b55ed129635afc0e39e1c04c5340e450f8276",
+  "render_marker_sha256": "f046df644143971814b16c54bb38487dc65334119e06758bf23abaf3ef30eed2",
+  "judging_marker_sha256": "3b0afe66284f8d329e8ae0465f0716d072ed67d94569beec3eee4c98ef977673",
+  "scorecard_sha256": "7865083bba59da5c25954b4db97fa27487b3f082355ff15485137f5d61c55272",
+  "source_pairs": 6,
+  "frames": 900,
+  "bundle_grade_seals_verified": 6,
+  "artifact_files_verified": 66,
+  "cache_schema": 3,
+  "cache_signatures": [
+    "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94"
+  ],
+  "natural": {
+    "hidden": 106,
+    "total": 126,
+    "hidden_fraction": 0.8412698412698413
+  },
+  "synthetic": {
+    "hidden": 14,
+    "total": 22,
+    "hidden_fraction": 0.6363636363636364
+  },
+  "synthetic_controls": {
+    "total": 22,
+    "unreadable": 0
+  },
+  "raw_ocr_leaked_intervals_diagnostic_only": {
+    "natural": 14,
+    "synthetic": 0
+  },
+  "unleaked_intervals_zeroed_by_real_video_guard": {
+    "natural": 6,
+    "synthetic": 8
+  },
+  "quality_checks": {
+    "independent_judges": true,
+    "judge_discrimination": true,
+    "natural": false,
+    "synthetic": false,
+    "protected": false,
+    "protected_aggregate": true,
+    "protected_each_clip": false,
+    "real_video": false,
+    "masked_area": true
+  },
+  "masked_area_fraction": {
+    "p50": 0.13596679687500002,
+    "p95": 0.5039444444444443
+  },
+  "protected_fraction": 0.006666666666666667,
+  "per_clip": [
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": false,
+      "natural": {
+        "total": 30,
+        "hidden": 30,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "real_video_pass": true,
+      "protected_fraction": 0.02,
+      "masked_area_fraction": {
+        "p50": 0.01997341579861111,
+        "p95": 0.19114865451388888
+      },
+      "failed_live_guards": 0
+    },
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": true,
+      "natural": {
+        "total": 48,
+        "hidden": 48,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 6,
+        "hidden": 6,
+        "hidden_fraction": 1.0
+      },
+      "real_video_pass": true,
+      "protected_fraction": 0.013333333333333334,
+      "masked_area_fraction": {
+        "p50": 0.09711534288194446,
+        "p95": 0.35912185329861107
+      },
+      "failed_live_guards": 0
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": false,
+      "natural": {
+        "total": 21,
+        "hidden": 13,
+        "hidden_fraction": 0.6190476190476191
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "real_video_pass": true,
+      "protected_fraction": 0.0,
+      "masked_area_fraction": {
+        "p50": 0.036674262152777776,
+        "p95": 0.3235581597222222
+      },
+      "failed_live_guards": 0
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": true,
+      "natural": {
+        "total": 21,
+        "hidden": 15,
+        "hidden_fraction": 0.7142857142857143
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "real_video_pass": true,
+      "protected_fraction": 0.0,
+      "masked_area_fraction": {
+        "p50": 0.14802408854166665,
+        "p95": 0.39345594618055546
+      },
+      "failed_live_guards": 0
+    },
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": false,
+      "natural": {
+        "total": 1,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "real_video_pass": false,
+      "protected_fraction": 0.006666666666666667,
+      "masked_area_fraction": {
+        "p50": 0.11001085069444444,
+        "p95": 0.7534335394965274
+      },
+      "failed_live_guards": 31
+    },
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": true,
+      "natural": {
+        "total": 5,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "real_video_pass": false,
+      "protected_fraction": 0.0,
+      "masked_area_fraction": {
+        "p50": 0.16707465277777778,
+        "p95": 0.5060082465277778
+      },
+      "failed_live_guards": 9
+    }
+  ],
+  "real_time_verified": false,
+  "gate_1": {
+    "eligible": false,
+    "pass": false
+  },
+  "repeated_evaluation": false,
+  "scope": "Primary truth/input controls exclude detector families ['paddleocr']; truth judges ['tesseract', 'vision-accurate']; output leaks use ALL judges ['tesseract', 'vision-accurate', 'ppocr-independent']. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio."
+}
