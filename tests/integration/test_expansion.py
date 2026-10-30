@@ -91,6 +91,35 @@ class Expansion(unittest.TestCase):
             engine.close()
 
 
+    def test_slate_distinguishes_operator_holds_from_automatic_transport(self):
+        from shield.presentation import PresentationRenderer, PresentationSnapshot
+        raw = np.full((180, 320, 3), 211, np.uint8)
+        cases = [
+            ([('transport', 'ingest-drop')], 'FAILURE'),
+            ([('chat', 'moderator'), ('transport', 'ingest-drop')], 'HOLD'),
+            ([('shield_mode', 'shield-mode'), ('transport', 'ingest-drop')], 'SHIELD_MODE'),
+        ]
+        for sources, shown_state in cases:
+            with self.subTest(sources=sources):
+                appearance = Appearance(width=320, height=180)
+                engine = engine_for(appearance)
+                try:
+                    for source, reason in sources:
+                        engine.hold(True, source=source, reason=reason)
+                    frame = PresentedFrame(5, 5/30, raw.copy(), np.zeros((180,320), np.uint8), [],
+                        Coverage(0,0,True,'covered'), 'HOLD', 0., 0., True, True)
+                    actual = appearance.present(frame, capture_highwater=10)
+                    expected = PresentationRenderer(320,180,badge=False).render(raw,
+                        np.zeros((180,320),np.uint8), PresentationSnapshot(shown_state),
+                        source_sequence=10)
+                    np.testing.assert_array_equal(actual.pixels, expected.pixels,
+                        'Automatic recovery must not claim operator resume; operator holds retain their slate')
+                    self.assertEqual(actual.state, 'HOLD', 'Visual copy must not relabel the control HOLD')
+                    self.assertTrue(actual.slate and np.all(actual.mask==255))
+                finally:
+                    engine.close()
+
+
 class Terminal(StringIO):
     def __exit__(self, *args):
         pass

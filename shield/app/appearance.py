@@ -7,6 +7,9 @@ from shield.render import Renderer
 from shield.skins import ChatEvent, MaskRegion, SkinPainter, SkinVotes
 
 
+_OPERATOR_HOLDS = frozenset(('local', 'chat', 'shield_mode', 'twitch-chat', 'eventsub'))
+
+
 class Appearance:
     """Keep private pairing separate from all render inputs.
 
@@ -49,6 +52,14 @@ class Appearance:
         else:
             with engine.lock:
                 state, reason = engine.control.state, engine.control.reason
+                holds = dict(engine.control._holds)
+                if state == 'HOLD':
+                    if 'shield_mode' in holds:
+                        reason = 'shield-mode'
+                    elif 'chat' in holds or 'twitch-chat' in holds or 'eventsub' in holds:
+                        reason = 'moderator'
+                    elif 'local' in holds:
+                        reason = 'manual'
         reason = ('clear' if state == 'LIVE' else
                   'shield_mode' if reason == 'shield-mode' else
                   'chat' if reason == 'moderator' else
@@ -67,22 +78,31 @@ class Appearance:
         if engine is None:
             raise RuntimeError('Presentation requires its session engine')
         with engine.lock:
-            current_state, current_reason = engine.control.state, engine.control.reason
+            current_state = engine.control.state
+            holds = frozenset(engine.control._holds)
         state = 'HOLD' if current_state == 'HOLD' else frame.state
-        reason = ('shield_mode' if state == 'HOLD' and current_reason == 'shield-mode'
-                  else 'moderator' if state == 'HOLD' else 'safety_check' if state != 'LIVE' else 'none')
+        if state == 'HOLD':
+            if 'shield_mode' in holds:
+                shown_state, reason = 'SHIELD_MODE', 'shield_mode'
+            elif holds & _OPERATOR_HOLDS:
+                shown_state, reason = 'HOLD', 'moderator'
+            else:
+                # Transport/reconciliation safety holds recover automatically.
+                shown_state, reason = 'FAILURE', 'transport'
+        else:
+            shown_state, reason = state, 'none' if state == 'LIVE' else 'safety_check'
         # A hold fences the ingress high-water mark, including frames buffered
         # ahead of this delayed output. LIVE must cross that mark after release.
         sequence = capture_highwater if state != 'LIVE' else frame.index
         with self._lock:
             skin = self._painted_skin or self._votes.snapshot(time.monotonic())['skin']
         shown = self._presentation.render(frame.pixels, frame.mask,
-            PresentationSnapshot(state, reason_code=reason, skin_name=skin),
+            PresentationSnapshot(shown_state, reason_code=reason, skin_name=skin),
             source_sequence=sequence)
         frame.pixels, frame.mask = shown.pixels, shown.mask
         frame.slate = shown.slate
         if shown.slate:
             frame.quads = []
             frame.protected = True
-            frame.state = 'HOLD' if shown.state in ('HOLD', 'SHIELD_MODE') else 'PROTECT'
+            frame.state = 'HOLD' if state == 'HOLD' or shown.state in ('HOLD', 'SHIELD_MODE') else 'PROTECT'
         return frame
