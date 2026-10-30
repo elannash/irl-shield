@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "workstream": "W10",
+  "media_assets_created": [],
+  "imagegen_calls": [],
+  "dependencies_added": [],
+  "real_build_footage": null,
+  "assets": [
+    {
+      "path": "tools/session_replay/example-session.jsonl",
+      "sha256": "9d6425de965ea0b6db4c4ff29e93f24674384dbf58b57cb93e4f933f45dc12d2",
+      "kind": "original synthetic JSONL test fixture; not video footage",
+      "origin": "newly authored in the hackathon submitted Codex thread child W10",
+      "license": "owner-authored project test data; no third-party material or new license grant",
+      "imagegen_prompt": null,
+      "imagegen_model_id": "not applicable; no imagegen call",
+      "real_people": false,
+      "music": false,
+      "third_party_brands": false
+    }
+  ],
+  "pending_external_media": [
+    "approved W5/W8 synthetic assets and exact hashes not supplied to W10"
+  ]
+}
