@@ -50,6 +50,17 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
     session = None
     summary = {'status': 'failed'}
     started = time.monotonic()
+
+    def record_failure(error):
+        summary['status'] = 'failed'
+        summary['failure'] = {'error_class': type(error).__name__,
+                              'message': 'Relay transport failed; upstream text suppressed',
+                              'output_code': output.error_code if output is not None else None,
+                              'encoder': output.error_details if output is not None else None,
+                              'at_monotonic': time.monotonic(),
+                              'input_code': source.error_code if source is not None else None,
+                              'input_failure': source.last_failure if source is not None else None}
+
     try:
         control = RelayControl(engine)
         if control_ready:
@@ -83,14 +94,7 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
             stopped.wait(.005)
         summary['status'] = 'stopped'
     except Exception as error:
-        summary['failure'] = {'error_class': type(error).__name__,
-                              'message': 'Relay transport failed; upstream text suppressed',
-                              'output_code': output.error_code if output is not None else None,
-                              'encoder': output.error_details if output is not None else None,
-                              'at_monotonic': time.monotonic(),
-                              'input_code': source.error_code if source is not None else None,
-                              'input_failure': source.last_failure if source is not None else None}
-        raise RuntimeError('Relay transport failed (upstream diagnostics suppressed)') from None
+        record_failure(error)
     finally:
         cleanup = []
         for resource in (source, writer if writer is not None else output, engine):
@@ -99,6 +103,12 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                     resource.close()
                 except Exception:
                     cleanup.append(type(resource).__name__)
+        if writer is not None:
+            try:
+                writer.raise_if_failed()
+            except Exception as error:
+                if 'failure' not in summary:
+                    record_failure(error)
         summary.update(seconds=time.monotonic() - started, cleanup_errors=cleanup,
                        session=session.stats if session else None,
                        egress_queue_capacity=1, egress_dropped=writer.dropped if writer else 0,
@@ -117,6 +127,8 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                                          'timestamp_issues': source.timestamp_issues}
                                         if source else None)
         Archive(directory).text('runtime.json', json.dumps(summary, indent=2) + '\n', 'w')
+        if 'failure' in summary:
+            raise RuntimeError('Relay transport failed (upstream diagnostics suppressed)') from None
         if cleanup:
             raise RuntimeError('Relay cleanup failed: ' + ','.join(cleanup)) from None
     return summary

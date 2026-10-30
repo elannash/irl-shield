@@ -11,6 +11,14 @@ memory-only Twitch authorization, EventSub controls and optional bandwidth-test
 egress. Native Twitch publishing is not part of local verification. SRT and
 walking use remain unqualified; this is not a production relay.
 
+**Active MITM/key-capture risk:** the pinned Linux PyAV 16.0.1 RTMPS output
+encrypts traffic but does not verify the server certificate or hostname.
+An attacker who redirects the connection can impersonate Twitch and receive
+the stream key. Memory-only storage and `?bandwidthtest=true` do not prevent
+this theft or subsequent misuse of the key. Twitch egress stays off by default;
+use local-only operation while peer verification remains unresolved. See the
+[TLS investigation and loopback reproducer](docs/PR5-TLS-FOLLOWUP.md).
+
 For a local attended terminal after setup:
 
 ```sh

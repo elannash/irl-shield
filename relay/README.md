@@ -90,6 +90,15 @@ a Twitch destination. The route is RTMPS on port 443 with mandatory
 authorization. No live-publish override exists. Keys never enter argv, logs,
 archives or the OS keyring; removal is explicit. No Twitch request was run here.
 
+The pinned Linux RTMPS output does **not** verify the peer certificate or
+hostname. An active MITM can impersonate Twitch and capture the stream key;
+memory-only storage and bandwidth-test mode do not prevent that attack.
+PyAV 16.0.1's primary output open bypasses the protocol options needed to
+enable verification in its bundled FFmpeg/GnuTLS backend. Keep Twitch egress
+off and use local-only operation while this remains unresolved. The
+[TLS follow-up](../docs/PR5-TLS-FOLLOWUP.md) contains the source receipts and
+loopback publication/control results. No transport security fix is claimed.
+
 ## Evidence and limits
 
 Cold startup seeds the shared engine with a black frame at the configured

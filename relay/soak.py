@@ -655,7 +655,7 @@ def main(argv=None):
     parser.add_argument('--fixture-root', type=Path, default=ROOT,
                         help='Repository root containing the licensed fixtures directory')
     parser.add_argument('--fixture-id', default='sf-market')
-    parser.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'))
+    parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--publish-protocol', choices=('rtmp', 'srt'), default='rtmp')
     parser.add_argument('--srt-capture', action='store_true', help='Also independently read SRT egress')
     parser.add_argument('--functional', action='store_true',

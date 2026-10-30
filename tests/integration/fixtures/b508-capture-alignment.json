@@ -1,0 +1,5231 @@
+{
+  "license": "CC0-1.0",
+  "author": "IRL Shield project synthetic test generator",
+  "description": "Timestamp-only rows from a generated native RTMP fixture; no street footage, brands, music or credentials. Raw failed receipt remains unchanged.",
+  "source_commit": "b508d462eb16ae7665d61c30cd3c15da6c3fae34",
+  "raw_verdict": "FAILED",
+  "original_archive_suffix_offset": 60,
+  "evidence_sha256": {
+    "receipt.json": "2dabfc66116ad5216edb9fafbd12dda6bbe60058cb5bed367efcc04346358512",
+    "obs/network.mkv": "653abd84495c3f9389405b36c5a6770b888bd79eee5d521c54cbb3c6ca0c4765",
+    "relay/frames.jsonl": "42b681fb8c3371fd5b596ac964beb01cfedd4288e8285861da91e86fdd840d9a"
+  },
+  "capture_pts": [
+    0.167,
+    0.214,
+    0.247,
+    0.281,
+    0.314,
+    0.347,
+    0.381,
+    0.414,
+    0.447,
+    0.481,
+    0.514,
+    0.547,
+    0.581,
+    0.614,
+    0.647,
+    0.681,
+    0.714,
+    0.747,
+    0.781,
+    0.814,
+    0.847,
+    0.881,
+    0.914,
+    0.947,
+    0.981,
+    1.014,
+    1.047,
+    1.081,
+    1.114,
+    1.147,
+    1.181,
+    1.214,
+    1.247,
+    1.281,
+    1.314,
+    1.347,
+    1.381,
+    1.414,
+    1.447,
+    1.481,
+    1.514,
+    1.547,
+    1.581,
+    1.614,
+    1.647,
+    1.681,
+    1.714,
+    1.747,
+    1.781,
+    1.814,
+    1.847,
+    1.881,
+    1.914,
+    1.947,
+    1.981,
+    2.014,
+    2.047,
+    2.081,
+    2.114,
+    2.147,
+    2.181,
+    2.214,
+    2.247,
+    2.281,
+    2.314,
+    2.347,
+    2.381,
+    2.414,
+    2.447,
+    2.481,
+    2.514,
+    2.547,
+    2.581,
+    2.614,
+    2.647,
+    2.681,
+    2.714,
+    2.747,
+    2.781,
+    2.814,
+    2.847,
+    2.881,
+    2.914,
+    2.947,
+    2.981,
+    3.014,
+    3.047,
+    3.081,
+    3.114,
+    3.147,
+    3.181,
+    3.214,
+    3.247,
+    3.281,
+    3.314,
+    3.347,
+    3.381,
+    3.414,
+    3.447,
+    3.481,
+    3.514,
+    3.547,
+    3.581,
+    3.614,
+    3.647,
+    3.681,
+    3.714,
+    3.747,
+    3.781,
+    3.814,
+    3.847,
+    3.881,
+    3.914,
+    3.947,
+    3.981,
+    4.014,
+    4.047,
+    4.081,
+    4.114,
+    4.147,
+    4.181,
+    4.214,
+    4.247,
+    4.281,
+    4.314,
+    4.347,
+    4.381,
+    4.414,
+    4.447,
+    4.481,
+    4.514,
+    4.547,
+    4.581,
+    4.614,
+    4.647,
+    4.681,
+    4.714,
+    4.747,
+    4.781,
+    4.814,
+    4.847,
+    4.881,
+    4.914,
+    4.947,
+    4.981,
+    5.014,
+    5.047,
+    5.081,
+    5.114,
+    5.147,
+    5.181,
+    5.214,
+    5.247,
+    5.281,
+    5.314,
+    5.347,
+    5.381,
+    5.414,
+    5.447,
+    5.481,
+    5.514,
+    5.547,
+    5.581,
+    5.614,
+    5.647,
+    5.681,
+    5.714,
+    5.747,
+    5.781,
+    5.814,
+    5.847,
+    5.881,
+    5.914,
+    5.947,
+    5.981,
+    6.014,
+    6.047,
+    6.081,
+    6.114,
+    6.147,
+    6.181,
+    6.214,
+    6.247,
+    6.281,
+    6.314,
+    6.347,
+    6.381,
+    6.414,
+    6.447,
+    6.481,
+    6.514,
+    6.547,
+    6.581,
+    6.614,
+    6.647,
+    6.681,
+    6.714,
+    6.747,
+    6.781,
+    6.814,
+    6.847,
+    6.881,
+    6.914,
+    6.947,
+    6.981,
+    7.014,
+    7.047,
+    7.081,
+    7.114,
+    7.147,
+    7.181,
+    7.214,
+    7.247,
+    7.281,
+    7.314,
+    7.347,
+    7.381,
+    7.414,
+    7.447,
+    7.481,
+    7.514,
+    7.547,
+    7.581,
+    7.614,
+    7.647,
+    7.681,
+    7.714,
+    7.747,
+    7.781,
+    7.814,
+    7.847,
+    7.881,
+    7.914,
+    7.947,
+    7.981,
+    8.014,
+    8.047,
+    8.081,
+    8.114,
+    8.147,
+    8.181,
+    8.214,
+    8.247,
+    8.281,
+    8.314,
+    8.347,
+    8.381,
+    8.414,
+    8.447,
+    8.481,
+    8.514,
+    8.547,
+    8.581,
+    8.614,
+    8.647,
+    8.681,
+    8.714,
+    8.747,
+    8.781,
+    8.814,
+    8.847,
+    8.881,
+    8.914,
+    8.947,
+    8.981,
+    9.014,
+    9.047,
+    9.081,
+    9.114,
+    9.147,
+    9.181,
+    9.214,
+    9.247,
+    9.281,
+    9.314,
+    9.347,
+    9.381,
+    9.414,
+    9.447,
+    9.481,
+    9.514,
+    9.547,
+    9.581,
+    9.614,
+    9.647,
+    9.681,
+    9.714,
+    9.747,
+    9.781,
+    9.814,
+    9.847,
+    9.881,
+    9.914,
+    9.947,
+    9.981,
+    10.014,
+    10.047,
+    10.081,
+    10.114,
+    10.147,
+    10.181,
+    10.213,
+    10.246,
+    10.28,
+    10.313,
+    10.346,
+    10.38,
+    10.413,
+    10.446,
+    10.48,
+    10.513,
+    10.546,
+    10.58,
+    10.613,
+    10.646,
+    10.68,
+    10.713,
+    10.746,
+    10.78,
+    10.813,
+    10.846,
+    10.88,
+    10.913,
+    10.946,
+    10.98,
+    11.013,
+    11.046,
+    11.08,
+    11.113,
+    11.146,
+    11.18,
+    11.213,
+    11.246,
+    11.28,
+    11.313,
+    11.346,
+    11.38,
+    11.413,
+    11.446,
+    11.48,
+    11.513,
+    11.546,
+    11.58,
+    11.613,
+    11.646,
+    11.68,
+    11.713,
+    11.746,
+    11.78,
+    11.813,
+    11.846,
+    11.88,
+    11.913,
+    11.946,
+    11.98,
+    12.013,
+    12.046,
+    12.08,
+    12.113,
+    12.146,
+    12.18,
+    12.213,
+    12.246,
+    12.28,
+    12.313,
+    12.346,
+    12.38,
+    12.413,
+    12.446,
+    12.48,
+    12.513,
+    12.546,
+    12.58,
+    12.613,
+    12.646,
+    12.68,
+    12.713,
+    12.746,
+    12.78,
+    12.813,
+    12.846,
+    12.88,
+    12.913,
+    12.946,
+    12.98,
+    13.013,
+    13.046,
+    13.08,
+    13.113,
+    13.146,
+    13.18,
+    13.213,
+    13.246,
+    13.28,
+    13.313,
+    13.346,
+    13.38,
+    13.413,
+    13.446,
+    13.48,
+    13.513,
+    13.546,
+    13.58,
+    13.613,
+    13.646,
+    13.68,
+    13.713,
+    13.746,
+    13.78,
+    13.813,
+    13.846,
+    13.88,
+    13.913,
+    13.946,
+    13.98,
+    14.013,
+    14.046,
+    14.08,
+    14.113,
+    14.146,
+    14.18,
+    14.213,
+    14.246,
+    14.28,
+    14.313,
+    14.346,
+    14.38,
+    14.413,
+    14.446,
+    14.48,
+    14.513,
+    14.546,
+    14.58,
+    14.613,
+    14.646,
+    14.68,
+    14.713,
+    14.746,
+    14.78,
+    14.813,
+    14.846,
+    14.88,
+    14.913,
+    14.946,
+    14.98,
+    15.013,
+    15.046,
+    15.08,
+    15.113,
+    15.146,
+    15.18,
+    15.213,
+    15.246,
+    15.28,
+    15.313,
+    15.346,
+    15.38,
+    15.413,
+    15.446,
+    15.48,
+    15.513,
+    15.546,
+    15.58,
+    15.613,
+    15.646,
+    15.68,
+    15.713,
+    15.746,
+    15.78,
+    15.813,
+    15.846,
+    15.88,
+    15.913,
+    15.946,
+    15.98,
+    16.013,
+    16.046,
+    16.08,
+    16.113,
+    16.146,
+    16.18,
+    16.213,
+    16.246,
+    16.28,
+    16.313,
+    16.346,
+    16.38,
+    16.413,
+    16.446,
+    16.48,
+    16.513,
+    16.546,
+    16.58,
+    16.613,
+    16.646,
+    16.68,
+    16.713,
+    16.746,
+    16.78,
+    16.813,
+    16.846,
+    16.88,
+    16.913,
+    16.946,
+    16.98,
+    17.013,
+    17.046,
+    17.08,
+    17.113,
+    17.146,
+    17.18,
+    17.213,
+    17.246,
+    17.28,
+    17.313,
+    17.346,
+    17.38,
+    17.413,
+    17.446,
+    17.48,
+    17.513,
+    17.546,
+    17.58,
+    17.613,
+    17.646,
+    17.68,
+    17.713,
+    17.746,
+    17.78,
+    17.813,
+    17.846,
+    17.88,
+    17.913,
+    17.946,
+    17.98,
+    18.013,
+    18.046,
+    18.08,
+    18.113,
+    18.146,
+    18.18,
+    18.213,
+    18.246,
+    18.28,
+    18.313,
+    18.346,
+    18.38,
+    18.413,
+    18.446,
+    18.48,
+    18.513,
+    18.546,
+    18.58,
+    18.613,
+    18.646,
+    18.68,
+    18.713,
+    18.746,
+    18.78,
+    18.813,
+    18.846,
+    18.88,
+    18.913,
+    18.946,
+    18.98,
+    19.013,
+    19.046,
+    19.08,
+    19.113,
+    19.146,
+    19.18,
+    19.213,
+    19.246,
+    19.28,
+    19.313,
+    19.346,
+    19.38,
+    19.413,
+    19.446,
+    19.48,
+    19.513,
+    19.546,
+    19.58,
+    19.613,
+    19.646,
+    19.68,
+    19.713,
+    19.746,
+    19.78,
+    19.813,
+    19.846,
+    19.88,
+    19.913,
+    19.946,
+    19.98,
+    20.013,
+    20.046,
+    20.08,
+    20.113,
+    20.146,
+    20.18,
+    20.213,
+    20.246,
+    20.28,
+    20.313,
+    20.346,
+    20.38,
+    20.413,
+    20.446,
+    20.48,
+    20.513,
+    20.546,
+    20.58,
+    20.613,
+    20.646,
+    20.68,
+    20.713,
+    20.746,
+    20.78,
+    20.813,
+    20.846,
+    20.88,
+    20.913,
+    20.946,
+    20.98,
+    21.013,
+    21.046,
+    21.08,
+    21.113,
+    21.146,
+    21.18,
+    21.213,
+    21.246,
+    21.28,
+    21.313,
+    21.346,
+    21.38,
+    21.413,
+    21.446,
+    21.48,
+    21.513,
+    21.546,
+    21.58,
+    21.613,
+    21.646,
+    21.68,
+    21.713,
+    21.746,
+    21.78,
+    21.813,
+    21.846,
+    21.88,
+    21.913,
+    21.946,
+    21.98,
+    22.013,
+    22.046,
+    22.08,
+    22.113,
+    22.146,
+    22.18,
+    22.213,
+    22.246,
+    22.28,
+    22.313,
+    22.346,
+    22.38,
+    22.413,
+    22.446,
+    22.48,
+    22.513,
+    22.546,
+    22.58,
+    22.613,
+    22.646,
+    22.68,
+    22.713,
+    22.746,
+    22.78,
+    22.813,
+    22.846,
+    22.88,
+    22.913,
+    22.946,
+    22.98,
+    23.013,
+    23.046,
+    23.08,
+    23.113,
+    23.146,
+    23.18,
+    23.213,
+    23.246,
+    23.28,
+    23.313,
+    23.346,
+    23.38,
+    23.413,
+    23.446,
+    23.48,
+    23.513,
+    23.546,
+    23.58,
+    23.613,
+    23.646,
+    23.68,
+    23.713,
+    23.746,
+    23.78,
+    23.813,
+    23.846,
+    23.88,
+    23.913,
+    23.946,
+    23.98,
+    24.013,
+    24.046,
+    24.08,
+    24.113,
+    24.146,
+    24.18,
+    24.213,
+    24.246,
+    24.28,
+    24.313,
+    24.346,
+    24.38,
+    24.413,
+    24.446,
+    24.48,
+    24.513,
+    24.546,
+    24.58,
+    24.613,
+    24.646,
+    24.68,
+    24.713,
+    24.746,
+    24.78,
+    24.813,
+    24.846,
+    24.88,
+    24.913,
+    24.946,
+    24.98,
+    25.013,
+    25.046,
+    25.08,
+    25.113,
+    25.146,
+    25.18,
+    25.213,
+    25.246,
+    25.28,
+    25.313,
+    25.346,
+    25.38,
+    25.413,
+    25.446,
+    25.48,
+    25.513,
+    25.546,
+    25.58,
+    25.613,
+    25.646,
+    25.68,
+    25.713,
+    25.746,
+    25.78,
+    25.813,
+    25.846,
+    25.88,
+    25.913,
+    25.946,
+    25.98,
+    26.013,
+    26.046,
+    26.08,
+    26.113,
+    26.146,
+    26.18,
+    26.213,
+    26.246,
+    26.28,
+    26.313,
+    26.346,
+    26.38,
+    26.413,
+    26.446,
+    26.48,
+    26.513,
+    26.546,
+    26.58,
+    26.613,
+    26.646,
+    26.68,
+    26.713,
+    26.746,
+    26.78,
+    26.813,
+    26.846,
+    26.88,
+    26.913,
+    26.946,
+    26.98,
+    27.013,
+    27.046,
+    27.08,
+    27.113,
+    27.146,
+    27.18,
+    27.213,
+    27.246,
+    27.28,
+    27.313,
+    27.346,
+    27.38,
+    27.413,
+    27.446,
+    27.48,
+    27.513,
+    27.546,
+    27.58,
+    27.613,
+    27.646,
+    27.68,
+    27.713,
+    27.746,
+    27.78,
+    27.813,
+    27.846,
+    27.88,
+    27.913,
+    27.946,
+    27.98,
+    28.013,
+    28.046,
+    28.08,
+    28.113,
+    28.146,
+    28.18,
+    28.213,
+    28.246,
+    28.28,
+    28.313,
+    28.346,
+    28.38,
+    28.413,
+    28.446,
+    28.48,
+    28.513,
+    28.546,
+    28.58,
+    28.613,
+    28.646,
+    28.68,
+    28.713,
+    28.746,
+    28.78,
+    28.813,
+    28.846,
+    28.88,
+    28.913,
+    28.946,
+    28.98,
+    29.013,
+    29.046,
+    29.08,
+    29.113
+  ],
+  "matched_manifest": [
+    {
+      "index": 68,
+      "egress_generation": 1,
+      "pts": 2.2666666666666666
+    },
+    {
+      "index": 69,
+      "egress_generation": 1,
+      "pts": 2.3
+    },
+    {
+      "index": 70,
+      "egress_generation": 1,
+      "pts": 2.3333333333333335
+    },
+    {
+      "index": 71,
+      "egress_generation": 1,
+      "pts": 2.3666666666666667
+    },
+    {
+      "index": 72,
+      "egress_generation": 1,
+      "pts": 2.4
+    },
+    {
+      "index": 73,
+      "egress_generation": 1,
+      "pts": 2.433333333333333
+    },
+    {
+      "index": 74,
+      "egress_generation": 1,
+      "pts": 2.466666666666667
+    },
+    {
+      "index": 75,
+      "egress_generation": 1,
+      "pts": 2.5
+    },
+    {
+      "index": 76,
+      "egress_generation": 1,
+      "pts": 2.533333333333333
+    },
+    {
+      "index": 77,
+      "egress_generation": 1,
+      "pts": 2.566666666666667
+    },
+    {
+      "index": 78,
+      "egress_generation": 1,
+      "pts": 2.6
+    },
+    {
+      "index": 79,
+      "egress_generation": 1,
+      "pts": 2.6333333333333333
+    },
+    {
+      "index": 80,
+      "egress_generation": 1,
+      "pts": 2.6666666666666665
+    },
+    {
+      "index": 81,
+      "egress_generation": 1,
+      "pts": 2.7
+    },
+    {
+      "index": 82,
+      "egress_generation": 1,
+      "pts": 2.7333333333333334
+    },
+    {
+      "index": 83,
+      "egress_generation": 1,
+      "pts": 2.7666666666666666
+    },
+    {
+      "index": 84,
+      "egress_generation": 1,
+      "pts": 2.8
+    },
+    {
+      "index": 85,
+      "egress_generation": 1,
+      "pts": 2.8333333333333335
+    },
+    {
+      "index": 86,
+      "egress_generation": 1,
+      "pts": 2.8666666666666667
+    },
+    {
+      "index": 87,
+      "egress_generation": 1,
+      "pts": 2.9
+    },
+    {
+      "index": 88,
+      "egress_generation": 1,
+      "pts": 2.933333333333333
+    },
+    {
+      "index": 89,
+      "egress_generation": 1,
+      "pts": 2.966666666666667
+    },
+    {
+      "index": 90,
+      "egress_generation": 1,
+      "pts": 3.0
+    },
+    {
+      "index": 91,
+      "egress_generation": 1,
+      "pts": 3.033333333333333
+    },
+    {
+      "index": 92,
+      "egress_generation": 1,
+      "pts": 3.066666666666667
+    },
+    {
+      "index": 93,
+      "egress_generation": 1,
+      "pts": 3.1
+    },
+    {
+      "index": 94,
+      "egress_generation": 1,
+      "pts": 3.1333333333333333
+    },
+    {
+      "index": 95,
+      "egress_generation": 1,
+      "pts": 3.1666666666666665
+    },
+    {
+      "index": 96,
+      "egress_generation": 1,
+      "pts": 3.2
+    },
+    {
+      "index": 97,
+      "egress_generation": 1,
+      "pts": 3.2333333333333334
+    },
+    {
+      "index": 98,
+      "egress_generation": 1,
+      "pts": 3.2666666666666666
+    },
+    {
+      "index": 99,
+      "egress_generation": 1,
+      "pts": 3.3
+    },
+    {
+      "index": 100,
+      "egress_generation": 1,
+      "pts": 3.3333333333333335
+    },
+    {
+      "index": 101,
+      "egress_generation": 1,
+      "pts": 3.3666666666666667
+    },
+    {
+      "index": 102,
+      "egress_generation": 1,
+      "pts": 3.4
+    },
+    {
+      "index": 103,
+      "egress_generation": 1,
+      "pts": 3.433333333333333
+    },
+    {
+      "index": 104,
+      "egress_generation": 1,
+      "pts": 3.466666666666667
+    },
+    {
+      "index": 105,
+      "egress_generation": 1,
+      "pts": 3.5
+    },
+    {
+      "index": 106,
+      "egress_generation": 1,
+      "pts": 3.533333333333333
+    },
+    {
+      "index": 107,
+      "egress_generation": 1,
+      "pts": 3.566666666666667
+    },
+    {
+      "index": 108,
+      "egress_generation": 1,
+      "pts": 3.6
+    },
+    {
+      "index": 109,
+      "egress_generation": 1,
+      "pts": 3.6333333333333333
+    },
+    {
+      "index": 110,
+      "egress_generation": 1,
+      "pts": 3.6666666666666665
+    },
+    {
+      "index": 111,
+      "egress_generation": 1,
+      "pts": 3.7
+    },
+    {
+      "index": 112,
+      "egress_generation": 1,
+      "pts": 3.7333333333333334
+    },
+    {
+      "index": 113,
+      "egress_generation": 1,
+      "pts": 3.7666666666666666
+    },
+    {
+      "index": 114,
+      "egress_generation": 1,
+      "pts": 3.8
+    },
+    {
+      "index": 115,
+      "egress_generation": 1,
+      "pts": 3.8333333333333335
+    },
+    {
+      "index": 116,
+      "egress_generation": 1,
+      "pts": 3.8666666666666667
+    },
+    {
+      "index": 117,
+      "egress_generation": 1,
+      "pts": 3.9
+    },
+    {
+      "index": 118,
+      "egress_generation": 1,
+      "pts": 3.933333333333333
+    },
+    {
+      "index": 119,
+      "egress_generation": 1,
+      "pts": 3.966666666666667
+    },
+    {
+      "index": 120,
+      "egress_generation": 1,
+      "pts": 4.0
+    },
+    {
+      "index": 121,
+      "egress_generation": 1,
+      "pts": 4.033333333333333
+    },
+    {
+      "index": 122,
+      "egress_generation": 1,
+      "pts": 4.066666666666666
+    },
+    {
+      "index": 123,
+      "egress_generation": 1,
+      "pts": 4.1
+    },
+    {
+      "index": 124,
+      "egress_generation": 1,
+      "pts": 4.133333333333334
+    },
+    {
+      "index": 125,
+      "egress_generation": 1,
+      "pts": 4.166666666666667
+    },
+    {
+      "index": 126,
+      "egress_generation": 1,
+      "pts": 4.2
+    },
+    {
+      "index": 127,
+      "egress_generation": 1,
+      "pts": 4.233333333333333
+    },
+    {
+      "index": 128,
+      "egress_generation": 1,
+      "pts": 4.266666666666667
+    },
+    {
+      "index": 129,
+      "egress_generation": 1,
+      "pts": 4.3
+    },
+    {
+      "index": 130,
+      "egress_generation": 1,
+      "pts": 4.333333333333333
+    },
+    {
+      "index": 131,
+      "egress_generation": 1,
+      "pts": 4.366666666666666
+    },
+    {
+      "index": 132,
+      "egress_generation": 1,
+      "pts": 4.4
+    },
+    {
+      "index": 133,
+      "egress_generation": 1,
+      "pts": 4.433333333333334
+    },
+    {
+      "index": 134,
+      "egress_generation": 1,
+      "pts": 4.466666666666667
+    },
+    {
+      "index": 135,
+      "egress_generation": 1,
+      "pts": 4.5
+    },
+    {
+      "index": 136,
+      "egress_generation": 1,
+      "pts": 4.533333333333333
+    },
+    {
+      "index": 137,
+      "egress_generation": 1,
+      "pts": 4.566666666666666
+    },
+    {
+      "index": 138,
+      "egress_generation": 1,
+      "pts": 4.6
+    },
+    {
+      "index": 139,
+      "egress_generation": 1,
+      "pts": 4.633333333333334
+    },
+    {
+      "index": 140,
+      "egress_generation": 1,
+      "pts": 4.666666666666667
+    },
+    {
+      "index": 141,
+      "egress_generation": 1,
+      "pts": 4.7
+    },
+    {
+      "index": 142,
+      "egress_generation": 1,
+      "pts": 4.733333333333333
+    },
+    {
+      "index": 143,
+      "egress_generation": 1,
+      "pts": 4.766666666666667
+    },
+    {
+      "index": 144,
+      "egress_generation": 1,
+      "pts": 4.8
+    },
+    {
+      "index": 145,
+      "egress_generation": 1,
+      "pts": 4.833333333333333
+    },
+    {
+      "index": 146,
+      "egress_generation": 1,
+      "pts": 4.866666666666666
+    },
+    {
+      "index": 147,
+      "egress_generation": 1,
+      "pts": 4.9
+    },
+    {
+      "index": 148,
+      "egress_generation": 1,
+      "pts": 4.933333333333334
+    },
+    {
+      "index": 149,
+      "egress_generation": 1,
+      "pts": 4.966666666666667
+    },
+    {
+      "index": 150,
+      "egress_generation": 1,
+      "pts": 5.0
+    },
+    {
+      "index": 151,
+      "egress_generation": 1,
+      "pts": 5.033333333333333
+    },
+    {
+      "index": 152,
+      "egress_generation": 1,
+      "pts": 5.066666666666666
+    },
+    {
+      "index": 153,
+      "egress_generation": 1,
+      "pts": 5.1
+    },
+    {
+      "index": 154,
+      "egress_generation": 1,
+      "pts": 5.133333333333334
+    },
+    {
+      "index": 155,
+      "egress_generation": 1,
+      "pts": 5.166666666666667
+    },
+    {
+      "index": 156,
+      "egress_generation": 1,
+      "pts": 5.2
+    },
+    {
+      "index": 157,
+      "egress_generation": 1,
+      "pts": 5.233333333333333
+    },
+    {
+      "index": 158,
+      "egress_generation": 1,
+      "pts": 5.266666666666667
+    },
+    {
+      "index": 159,
+      "egress_generation": 1,
+      "pts": 5.3
+    },
+    {
+      "index": 160,
+      "egress_generation": 1,
+      "pts": 5.333333333333333
+    },
+    {
+      "index": 161,
+      "egress_generation": 1,
+      "pts": 5.366666666666666
+    },
+    {
+      "index": 162,
+      "egress_generation": 1,
+      "pts": 5.4
+    },
+    {
+      "index": 163,
+      "egress_generation": 1,
+      "pts": 5.433333333333334
+    },
+    {
+      "index": 164,
+      "egress_generation": 1,
+      "pts": 5.466666666666667
+    },
+    {
+      "index": 165,
+      "egress_generation": 1,
+      "pts": 5.5
+    },
+    {
+      "index": 166,
+      "egress_generation": 1,
+      "pts": 5.533333333333333
+    },
+    {
+      "index": 167,
+      "egress_generation": 1,
+      "pts": 5.566666666666666
+    },
+    {
+      "index": 168,
+      "egress_generation": 1,
+      "pts": 5.6
+    },
+    {
+      "index": 169,
+      "egress_generation": 1,
+      "pts": 5.633333333333334
+    },
+    {
+      "index": 170,
+      "egress_generation": 1,
+      "pts": 5.666666666666667
+    },
+    {
+      "index": 171,
+      "egress_generation": 1,
+      "pts": 5.7
+    },
+    {
+      "index": 172,
+      "egress_generation": 1,
+      "pts": 5.733333333333333
+    },
+    {
+      "index": 173,
+      "egress_generation": 1,
+      "pts": 5.766666666666667
+    },
+    {
+      "index": 174,
+      "egress_generation": 1,
+      "pts": 5.8
+    },
+    {
+      "index": 175,
+      "egress_generation": 1,
+      "pts": 5.833333333333333
+    },
+    {
+      "index": 176,
+      "egress_generation": 1,
+      "pts": 5.866666666666666
+    },
+    {
+      "index": 177,
+      "egress_generation": 1,
+      "pts": 5.9
+    },
+    {
+      "index": 178,
+      "egress_generation": 1,
+      "pts": 5.933333333333334
+    },
+    {
+      "index": 179,
+      "egress_generation": 1,
+      "pts": 5.966666666666667
+    },
+    {
+      "index": 180,
+      "egress_generation": 1,
+      "pts": 6.0
+    },
+    {
+      "index": 181,
+      "egress_generation": 1,
+      "pts": 6.033333333333333
+    },
+    {
+      "index": 182,
+      "egress_generation": 1,
+      "pts": 6.066666666666666
+    },
+    {
+      "index": 183,
+      "egress_generation": 1,
+      "pts": 6.1
+    },
+    {
+      "index": 184,
+      "egress_generation": 1,
+      "pts": 6.133333333333334
+    },
+    {
+      "index": 185,
+      "egress_generation": 1,
+      "pts": 6.166666666666667
+    },
+    {
+      "index": 186,
+      "egress_generation": 1,
+      "pts": 6.2
+    },
+    {
+      "index": 187,
+      "egress_generation": 1,
+      "pts": 6.233333333333333
+    },
+    {
+      "index": 188,
+      "egress_generation": 1,
+      "pts": 6.266666666666667
+    },
+    {
+      "index": 189,
+      "egress_generation": 1,
+      "pts": 6.3
+    },
+    {
+      "index": 190,
+      "egress_generation": 1,
+      "pts": 6.333333333333333
+    },
+    {
+      "index": 191,
+      "egress_generation": 1,
+      "pts": 6.366666666666666
+    },
+    {
+      "index": 192,
+      "egress_generation": 1,
+      "pts": 6.4
+    },
+    {
+      "index": 193,
+      "egress_generation": 1,
+      "pts": 6.433333333333334
+    },
+    {
+      "index": 194,
+      "egress_generation": 1,
+      "pts": 6.466666666666667
+    },
+    {
+      "index": 195,
+      "egress_generation": 1,
+      "pts": 6.5
+    },
+    {
+      "index": 196,
+      "egress_generation": 1,
+      "pts": 6.533333333333333
+    },
+    {
+      "index": 197,
+      "egress_generation": 1,
+      "pts": 6.566666666666666
+    },
+    {
+      "index": 198,
+      "egress_generation": 1,
+      "pts": 6.6
+    },
+    {
+      "index": 199,
+      "egress_generation": 1,
+      "pts": 6.633333333333334
+    },
+    {
+      "index": 200,
+      "egress_generation": 1,
+      "pts": 6.666666666666667
+    },
+    {
+      "index": 201,
+      "egress_generation": 1,
+      "pts": 6.7
+    },
+    {
+      "index": 202,
+      "egress_generation": 1,
+      "pts": 6.733333333333333
+    },
+    {
+      "index": 203,
+      "egress_generation": 1,
+      "pts": 6.766666666666667
+    },
+    {
+      "index": 204,
+      "egress_generation": 1,
+      "pts": 6.8
+    },
+    {
+      "index": 205,
+      "egress_generation": 1,
+      "pts": 6.833333333333333
+    },
+    {
+      "index": 206,
+      "egress_generation": 1,
+      "pts": 6.866666666666666
+    },
+    {
+      "index": 207,
+      "egress_generation": 1,
+      "pts": 6.9
+    },
+    {
+      "index": 208,
+      "egress_generation": 1,
+      "pts": 6.933333333333334
+    },
+    {
+      "index": 209,
+      "egress_generation": 1,
+      "pts": 6.966666666666667
+    },
+    {
+      "index": 210,
+      "egress_generation": 1,
+      "pts": 7.0
+    },
+    {
+      "index": 211,
+      "egress_generation": 1,
+      "pts": 7.033333333333333
+    },
+    {
+      "index": 212,
+      "egress_generation": 1,
+      "pts": 7.066666666666666
+    },
+    {
+      "index": 213,
+      "egress_generation": 1,
+      "pts": 7.1
+    },
+    {
+      "index": 214,
+      "egress_generation": 1,
+      "pts": 7.133333333333334
+    },
+    {
+      "index": 215,
+      "egress_generation": 1,
+      "pts": 7.166666666666667
+    },
+    {
+      "index": 216,
+      "egress_generation": 1,
+      "pts": 7.2
+    },
+    {
+      "index": 217,
+      "egress_generation": 1,
+      "pts": 7.233333333333333
+    },
+    {
+      "index": 218,
+      "egress_generation": 1,
+      "pts": 7.266666666666667
+    },
+    {
+      "index": 219,
+      "egress_generation": 1,
+      "pts": 7.3
+    },
+    {
+      "index": 220,
+      "egress_generation": 1,
+      "pts": 7.333333333333333
+    },
+    {
+      "index": 221,
+      "egress_generation": 1,
+      "pts": 7.366666666666666
+    },
+    {
+      "index": 222,
+      "egress_generation": 1,
+      "pts": 7.4
+    },
+    {
+      "index": 223,
+      "egress_generation": 1,
+      "pts": 7.433333333333334
+    },
+    {
+      "index": 224,
+      "egress_generation": 1,
+      "pts": 7.466666666666667
+    },
+    {
+      "index": 225,
+      "egress_generation": 1,
+      "pts": 7.5
+    },
+    {
+      "index": 226,
+      "egress_generation": 1,
+      "pts": 7.533333333333333
+    },
+    {
+      "index": 227,
+      "egress_generation": 1,
+      "pts": 7.566666666666666
+    },
+    {
+      "index": 228,
+      "egress_generation": 1,
+      "pts": 7.6
+    },
+    {
+      "index": 229,
+      "egress_generation": 1,
+      "pts": 7.633333333333334
+    },
+    {
+      "index": 230,
+      "egress_generation": 1,
+      "pts": 7.666666666666667
+    },
+    {
+      "index": 231,
+      "egress_generation": 1,
+      "pts": 7.7
+    },
+    {
+      "index": 232,
+      "egress_generation": 1,
+      "pts": 7.733333333333333
+    },
+    {
+      "index": 233,
+      "egress_generation": 1,
+      "pts": 7.766666666666667
+    },
+    {
+      "index": 234,
+      "egress_generation": 1,
+      "pts": 7.8
+    },
+    {
+      "index": 235,
+      "egress_generation": 1,
+      "pts": 7.833333333333333
+    },
+    {
+      "index": 236,
+      "egress_generation": 1,
+      "pts": 7.866666666666666
+    },
+    {
+      "index": 237,
+      "egress_generation": 1,
+      "pts": 7.9
+    },
+    {
+      "index": 238,
+      "egress_generation": 1,
+      "pts": 7.933333333333334
+    },
+    {
+      "index": 239,
+      "egress_generation": 1,
+      "pts": 7.966666666666667
+    },
+    {
+      "index": 240,
+      "egress_generation": 1,
+      "pts": 8.0
+    },
+    {
+      "index": 241,
+      "egress_generation": 1,
+      "pts": 8.033333333333333
+    },
+    {
+      "index": 242,
+      "egress_generation": 1,
+      "pts": 8.066666666666666
+    },
+    {
+      "index": 243,
+      "egress_generation": 1,
+      "pts": 8.1
+    },
+    {
+      "index": 244,
+      "egress_generation": 1,
+      "pts": 8.133333333333333
+    },
+    {
+      "index": 245,
+      "egress_generation": 1,
+      "pts": 8.166666666666666
+    },
+    {
+      "index": 246,
+      "egress_generation": 1,
+      "pts": 8.2
+    },
+    {
+      "index": 247,
+      "egress_generation": 1,
+      "pts": 8.233333333333333
+    },
+    {
+      "index": 248,
+      "egress_generation": 1,
+      "pts": 8.266666666666667
+    },
+    {
+      "index": 249,
+      "egress_generation": 1,
+      "pts": 8.3
+    },
+    {
+      "index": 250,
+      "egress_generation": 1,
+      "pts": 8.333333333333334
+    },
+    {
+      "index": 251,
+      "egress_generation": 1,
+      "pts": 8.366666666666667
+    },
+    {
+      "index": 252,
+      "egress_generation": 1,
+      "pts": 8.4
+    },
+    {
+      "index": 253,
+      "egress_generation": 1,
+      "pts": 8.433333333333334
+    },
+    {
+      "index": 254,
+      "egress_generation": 1,
+      "pts": 8.466666666666667
+    },
+    {
+      "index": 255,
+      "egress_generation": 1,
+      "pts": 8.5
+    },
+    {
+      "index": 256,
+      "egress_generation": 1,
+      "pts": 8.533333333333333
+    },
+    {
+      "index": 257,
+      "egress_generation": 1,
+      "pts": 8.566666666666666
+    },
+    {
+      "index": 258,
+      "egress_generation": 1,
+      "pts": 8.6
+    },
+    {
+      "index": 259,
+      "egress_generation": 1,
+      "pts": 8.633333333333333
+    },
+    {
+      "index": 260,
+      "egress_generation": 1,
+      "pts": 8.666666666666666
+    },
+    {
+      "index": 261,
+      "egress_generation": 1,
+      "pts": 8.7
+    },
+    {
+      "index": 262,
+      "egress_generation": 1,
+      "pts": 8.733333333333333
+    },
+    {
+      "index": 263,
+      "egress_generation": 1,
+      "pts": 8.766666666666667
+    },
+    {
+      "index": 264,
+      "egress_generation": 1,
+      "pts": 8.8
+    },
+    {
+      "index": 265,
+      "egress_generation": 1,
+      "pts": 8.833333333333334
+    },
+    {
+      "index": 266,
+      "egress_generation": 1,
+      "pts": 8.866666666666667
+    },
+    {
+      "index": 267,
+      "egress_generation": 1,
+      "pts": 8.9
+    },
+    {
+      "index": 268,
+      "egress_generation": 1,
+      "pts": 8.933333333333334
+    },
+    {
+      "index": 269,
+      "egress_generation": 1,
+      "pts": 8.966666666666667
+    },
+    {
+      "index": 270,
+      "egress_generation": 1,
+      "pts": 9.0
+    },
+    {
+      "index": 271,
+      "egress_generation": 1,
+      "pts": 9.033333333333333
+    },
+    {
+      "index": 272,
+      "egress_generation": 1,
+      "pts": 9.066666666666666
+    },
+    {
+      "index": 273,
+      "egress_generation": 1,
+      "pts": 9.1
+    },
+    {
+      "index": 274,
+      "egress_generation": 1,
+      "pts": 9.133333333333333
+    },
+    {
+      "index": 275,
+      "egress_generation": 1,
+      "pts": 9.166666666666666
+    },
+    {
+      "index": 276,
+      "egress_generation": 1,
+      "pts": 9.2
+    },
+    {
+      "index": 277,
+      "egress_generation": 1,
+      "pts": 9.233333333333333
+    },
+    {
+      "index": 278,
+      "egress_generation": 1,
+      "pts": 9.266666666666667
+    },
+    {
+      "index": 279,
+      "egress_generation": 1,
+      "pts": 9.3
+    },
+    {
+      "index": 280,
+      "egress_generation": 1,
+      "pts": 9.333333333333334
+    },
+    {
+      "index": 281,
+      "egress_generation": 1,
+      "pts": 9.366666666666667
+    },
+    {
+      "index": 282,
+      "egress_generation": 1,
+      "pts": 9.4
+    },
+    {
+      "index": 283,
+      "egress_generation": 1,
+      "pts": 9.433333333333334
+    },
+    {
+      "index": 284,
+      "egress_generation": 1,
+      "pts": 9.466666666666667
+    },
+    {
+      "index": 285,
+      "egress_generation": 1,
+      "pts": 9.5
+    },
+    {
+      "index": 286,
+      "egress_generation": 1,
+      "pts": 9.533333333333333
+    },
+    {
+      "index": 287,
+      "egress_generation": 1,
+      "pts": 9.566666666666666
+    },
+    {
+      "index": 288,
+      "egress_generation": 1,
+      "pts": 9.6
+    },
+    {
+      "index": 289,
+      "egress_generation": 1,
+      "pts": 9.633333333333333
+    },
+    {
+      "index": 290,
+      "egress_generation": 1,
+      "pts": 9.666666666666666
+    },
+    {
+      "index": 291,
+      "egress_generation": 1,
+      "pts": 9.7
+    },
+    {
+      "index": 292,
+      "egress_generation": 1,
+      "pts": 9.733333333333333
+    },
+    {
+      "index": 293,
+      "egress_generation": 1,
+      "pts": 9.766666666666667
+    },
+    {
+      "index": 294,
+      "egress_generation": 1,
+      "pts": 9.8
+    },
+    {
+      "index": 295,
+      "egress_generation": 1,
+      "pts": 9.833333333333334
+    },
+    {
+      "index": 296,
+      "egress_generation": 1,
+      "pts": 9.866666666666667
+    },
+    {
+      "index": 297,
+      "egress_generation": 1,
+      "pts": 9.9
+    },
+    {
+      "index": 298,
+      "egress_generation": 1,
+      "pts": 9.933333333333334
+    },
+    {
+      "index": 299,
+      "egress_generation": 1,
+      "pts": 9.966666666666667
+    },
+    {
+      "index": 300,
+      "egress_generation": 1,
+      "pts": 10.0
+    },
+    {
+      "index": 301,
+      "egress_generation": 1,
+      "pts": 10.033333333333333
+    },
+    {
+      "index": 302,
+      "egress_generation": 1,
+      "pts": 10.066666666666666
+    },
+    {
+      "index": 303,
+      "egress_generation": 1,
+      "pts": 10.1
+    },
+    {
+      "index": 304,
+      "egress_generation": 1,
+      "pts": 10.133333333333333
+    },
+    {
+      "index": 305,
+      "egress_generation": 1,
+      "pts": 10.166666666666666
+    },
+    {
+      "index": 306,
+      "egress_generation": 1,
+      "pts": 10.2
+    },
+    {
+      "index": 307,
+      "egress_generation": 1,
+      "pts": 10.233333333333333
+    },
+    {
+      "index": 308,
+      "egress_generation": 1,
+      "pts": 10.266666666666667
+    },
+    {
+      "index": 309,
+      "egress_generation": 1,
+      "pts": 10.3
+    },
+    {
+      "index": 310,
+      "egress_generation": 1,
+      "pts": 10.333333333333334
+    },
+    {
+      "index": 311,
+      "egress_generation": 1,
+      "pts": 10.366666666666667
+    },
+    {
+      "index": 312,
+      "egress_generation": 1,
+      "pts": 10.4
+    },
+    {
+      "index": 313,
+      "egress_generation": 1,
+      "pts": 10.433333333333334
+    },
+    {
+      "index": 314,
+      "egress_generation": 1,
+      "pts": 10.466666666666667
+    },
+    {
+      "index": 315,
+      "egress_generation": 1,
+      "pts": 10.5
+    },
+    {
+      "index": 316,
+      "egress_generation": 1,
+      "pts": 10.533333333333333
+    },
+    {
+      "index": 317,
+      "egress_generation": 1,
+      "pts": 10.566666666666666
+    },
+    {
+      "index": 318,
+      "egress_generation": 1,
+      "pts": 10.6
+    },
+    {
+      "index": 319,
+      "egress_generation": 1,
+      "pts": 10.633333333333333
+    },
+    {
+      "index": 320,
+      "egress_generation": 1,
+      "pts": 10.666666666666666
+    },
+    {
+      "index": 321,
+      "egress_generation": 1,
+      "pts": 10.7
+    },
+    {
+      "index": 322,
+      "egress_generation": 1,
+      "pts": 10.733333333333333
+    },
+    {
+      "index": 323,
+      "egress_generation": 1,
+      "pts": 10.766666666666667
+    },
+    {
+      "index": 324,
+      "egress_generation": 1,
+      "pts": 10.8
+    },
+    {
+      "index": 325,
+      "egress_generation": 1,
+      "pts": 10.833333333333334
+    },
+    {
+      "index": 326,
+      "egress_generation": 1,
+      "pts": 10.866666666666667
+    },
+    {
+      "index": 327,
+      "egress_generation": 1,
+      "pts": 10.9
+    },
+    {
+      "index": 328,
+      "egress_generation": 1,
+      "pts": 10.933333333333334
+    },
+    {
+      "index": 329,
+      "egress_generation": 1,
+      "pts": 10.966666666666667
+    },
+    {
+      "index": 330,
+      "egress_generation": 1,
+      "pts": 11.0
+    },
+    {
+      "index": 331,
+      "egress_generation": 1,
+      "pts": 11.033333333333333
+    },
+    {
+      "index": 332,
+      "egress_generation": 1,
+      "pts": 11.066666666666666
+    },
+    {
+      "index": 333,
+      "egress_generation": 1,
+      "pts": 11.1
+    },
+    {
+      "index": 334,
+      "egress_generation": 1,
+      "pts": 11.133333333333333
+    },
+    {
+      "index": 335,
+      "egress_generation": 1,
+      "pts": 11.166666666666666
+    },
+    {
+      "index": 336,
+      "egress_generation": 1,
+      "pts": 11.2
+    },
+    {
+      "index": 337,
+      "egress_generation": 1,
+      "pts": 11.233333333333333
+    },
+    {
+      "index": 338,
+      "egress_generation": 1,
+      "pts": 11.266666666666667
+    },
+    {
+      "index": 339,
+      "egress_generation": 1,
+      "pts": 11.3
+    },
+    {
+      "index": 340,
+      "egress_generation": 1,
+      "pts": 11.333333333333334
+    },
+    {
+      "index": 341,
+      "egress_generation": 1,
+      "pts": 11.366666666666667
+    },
+    {
+      "index": 342,
+      "egress_generation": 1,
+      "pts": 11.4
+    },
+    {
+      "index": 343,
+      "egress_generation": 1,
+      "pts": 11.433333333333334
+    },
+    {
+      "index": 344,
+      "egress_generation": 1,
+      "pts": 11.466666666666667
+    },
+    {
+      "index": 345,
+      "egress_generation": 1,
+      "pts": 11.5
+    },
+    {
+      "index": 346,
+      "egress_generation": 1,
+      "pts": 11.533333333333333
+    },
+    {
+      "index": 347,
+      "egress_generation": 1,
+      "pts": 11.566666666666666
+    },
+    {
+      "index": 348,
+      "egress_generation": 1,
+      "pts": 11.6
+    },
+    {
+      "index": 349,
+      "egress_generation": 1,
+      "pts": 11.633333333333333
+    },
+    {
+      "index": 350,
+      "egress_generation": 1,
+      "pts": 11.666666666666666
+    },
+    {
+      "index": 351,
+      "egress_generation": 1,
+      "pts": 11.7
+    },
+    {
+      "index": 352,
+      "egress_generation": 1,
+      "pts": 11.733333333333333
+    },
+    {
+      "index": 353,
+      "egress_generation": 1,
+      "pts": 11.766666666666667
+    },
+    {
+      "index": 354,
+      "egress_generation": 1,
+      "pts": 11.8
+    },
+    {
+      "index": 355,
+      "egress_generation": 1,
+      "pts": 11.833333333333334
+    },
+    {
+      "index": 356,
+      "egress_generation": 1,
+      "pts": 11.866666666666667
+    },
+    {
+      "index": 357,
+      "egress_generation": 1,
+      "pts": 11.9
+    },
+    {
+      "index": 358,
+      "egress_generation": 1,
+      "pts": 11.933333333333334
+    },
+    {
+      "index": 359,
+      "egress_generation": 1,
+      "pts": 11.966666666666667
+    },
+    {
+      "index": 360,
+      "egress_generation": 1,
+      "pts": 12.0
+    },
+    {
+      "index": 361,
+      "egress_generation": 1,
+      "pts": 12.033333333333333
+    },
+    {
+      "index": 362,
+      "egress_generation": 1,
+      "pts": 12.066666666666666
+    },
+    {
+      "index": 363,
+      "egress_generation": 1,
+      "pts": 12.1
+    },
+    {
+      "index": 364,
+      "egress_generation": 1,
+      "pts": 12.133333333333333
+    },
+    {
+      "index": 365,
+      "egress_generation": 1,
+      "pts": 12.166666666666666
+    },
+    {
+      "index": 366,
+      "egress_generation": 1,
+      "pts": 12.2
+    },
+    {
+      "index": 367,
+      "egress_generation": 1,
+      "pts": 12.233333333333333
+    },
+    {
+      "index": 368,
+      "egress_generation": 1,
+      "pts": 12.266666666666667
+    },
+    {
+      "index": 369,
+      "egress_generation": 1,
+      "pts": 12.3
+    },
+    {
+      "index": 370,
+      "egress_generation": 1,
+      "pts": 12.333333333333334
+    },
+    {
+      "index": 371,
+      "egress_generation": 1,
+      "pts": 12.366666666666667
+    },
+    {
+      "index": 372,
+      "egress_generation": 1,
+      "pts": 12.4
+    },
+    {
+      "index": 373,
+      "egress_generation": 1,
+      "pts": 12.433333333333334
+    },
+    {
+      "index": 374,
+      "egress_generation": 1,
+      "pts": 12.466666666666667
+    },
+    {
+      "index": 375,
+      "egress_generation": 1,
+      "pts": 12.5
+    },
+    {
+      "index": 376,
+      "egress_generation": 1,
+      "pts": 12.533333333333333
+    },
+    {
+      "index": 377,
+      "egress_generation": 1,
+      "pts": 12.566666666666666
+    },
+    {
+      "index": 378,
+      "egress_generation": 1,
+      "pts": 12.6
+    },
+    {
+      "index": 379,
+      "egress_generation": 1,
+      "pts": 12.633333333333333
+    },
+    {
+      "index": 380,
+      "egress_generation": 1,
+      "pts": 12.666666666666666
+    },
+    {
+      "index": 381,
+      "egress_generation": 1,
+      "pts": 12.7
+    },
+    {
+      "index": 382,
+      "egress_generation": 1,
+      "pts": 12.733333333333333
+    },
+    {
+      "index": 383,
+      "egress_generation": 1,
+      "pts": 12.766666666666667
+    },
+    {
+      "index": 384,
+      "egress_generation": 1,
+      "pts": 12.8
+    },
+    {
+      "index": 385,
+      "egress_generation": 1,
+      "pts": 12.833333333333334
+    },
+    {
+      "index": 386,
+      "egress_generation": 1,
+      "pts": 12.866666666666667
+    },
+    {
+      "index": 387,
+      "egress_generation": 1,
+      "pts": 12.9
+    },
+    {
+      "index": 388,
+      "egress_generation": 1,
+      "pts": 12.933333333333334
+    },
+    {
+      "index": 389,
+      "egress_generation": 1,
+      "pts": 12.966666666666667
+    },
+    {
+      "index": 390,
+      "egress_generation": 1,
+      "pts": 13.0
+    },
+    {
+      "index": 391,
+      "egress_generation": 1,
+      "pts": 13.033333333333333
+    },
+    {
+      "index": 392,
+      "egress_generation": 1,
+      "pts": 13.066666666666666
+    },
+    {
+      "index": 393,
+      "egress_generation": 1,
+      "pts": 13.1
+    },
+    {
+      "index": 394,
+      "egress_generation": 1,
+      "pts": 13.133333333333333
+    },
+    {
+      "index": 395,
+      "egress_generation": 1,
+      "pts": 13.166666666666666
+    },
+    {
+      "index": 396,
+      "egress_generation": 1,
+      "pts": 13.2
+    },
+    {
+      "index": 397,
+      "egress_generation": 1,
+      "pts": 13.233333333333333
+    },
+    {
+      "index": 398,
+      "egress_generation": 1,
+      "pts": 13.266666666666667
+    },
+    {
+      "index": 399,
+      "egress_generation": 1,
+      "pts": 13.3
+    },
+    {
+      "index": 400,
+      "egress_generation": 1,
+      "pts": 13.333333333333334
+    },
+    {
+      "index": 401,
+      "egress_generation": 1,
+      "pts": 13.366666666666667
+    },
+    {
+      "index": 402,
+      "egress_generation": 1,
+      "pts": 13.4
+    },
+    {
+      "index": 403,
+      "egress_generation": 1,
+      "pts": 13.433333333333334
+    },
+    {
+      "index": 404,
+      "egress_generation": 1,
+      "pts": 13.466666666666667
+    },
+    {
+      "index": 405,
+      "egress_generation": 1,
+      "pts": 13.5
+    },
+    {
+      "index": 406,
+      "egress_generation": 1,
+      "pts": 13.533333333333333
+    },
+    {
+      "index": 407,
+      "egress_generation": 1,
+      "pts": 13.566666666666666
+    },
+    {
+      "index": 408,
+      "egress_generation": 1,
+      "pts": 13.6
+    },
+    {
+      "index": 409,
+      "egress_generation": 1,
+      "pts": 13.633333333333333
+    },
+    {
+      "index": 410,
+      "egress_generation": 1,
+      "pts": 13.666666666666666
+    },
+    {
+      "index": 411,
+      "egress_generation": 1,
+      "pts": 13.7
+    },
+    {
+      "index": 412,
+      "egress_generation": 1,
+      "pts": 13.733333333333333
+    },
+    {
+      "index": 413,
+      "egress_generation": 1,
+      "pts": 13.766666666666667
+    },
+    {
+      "index": 414,
+      "egress_generation": 1,
+      "pts": 13.8
+    },
+    {
+      "index": 415,
+      "egress_generation": 1,
+      "pts": 13.833333333333334
+    },
+    {
+      "index": 416,
+      "egress_generation": 1,
+      "pts": 13.866666666666667
+    },
+    {
+      "index": 417,
+      "egress_generation": 1,
+      "pts": 13.9
+    },
+    {
+      "index": 418,
+      "egress_generation": 1,
+      "pts": 13.933333333333334
+    },
+    {
+      "index": 419,
+      "egress_generation": 1,
+      "pts": 13.966666666666667
+    },
+    {
+      "index": 420,
+      "egress_generation": 1,
+      "pts": 14.0
+    },
+    {
+      "index": 421,
+      "egress_generation": 1,
+      "pts": 14.033333333333333
+    },
+    {
+      "index": 422,
+      "egress_generation": 1,
+      "pts": 14.066666666666666
+    },
+    {
+      "index": 423,
+      "egress_generation": 1,
+      "pts": 14.1
+    },
+    {
+      "index": 424,
+      "egress_generation": 1,
+      "pts": 14.133333333333333
+    },
+    {
+      "index": 425,
+      "egress_generation": 1,
+      "pts": 14.166666666666666
+    },
+    {
+      "index": 426,
+      "egress_generation": 1,
+      "pts": 14.2
+    },
+    {
+      "index": 427,
+      "egress_generation": 1,
+      "pts": 14.233333333333333
+    },
+    {
+      "index": 428,
+      "egress_generation": 1,
+      "pts": 14.266666666666667
+    },
+    {
+      "index": 429,
+      "egress_generation": 1,
+      "pts": 14.3
+    },
+    {
+      "index": 430,
+      "egress_generation": 1,
+      "pts": 14.333333333333334
+    },
+    {
+      "index": 431,
+      "egress_generation": 1,
+      "pts": 14.366666666666667
+    },
+    {
+      "index": 432,
+      "egress_generation": 1,
+      "pts": 14.4
+    },
+    {
+      "index": 433,
+      "egress_generation": 1,
+      "pts": 14.433333333333334
+    },
+    {
+      "index": 434,
+      "egress_generation": 1,
+      "pts": 14.466666666666667
+    },
+    {
+      "index": 435,
+      "egress_generation": 1,
+      "pts": 14.5
+    },
+    {
+      "index": 436,
+      "egress_generation": 1,
+      "pts": 14.533333333333333
+    },
+    {
+      "index": 437,
+      "egress_generation": 1,
+      "pts": 14.566666666666666
+    },
+    {
+      "index": 438,
+      "egress_generation": 1,
+      "pts": 14.6
+    },
+    {
+      "index": 439,
+      "egress_generation": 1,
+      "pts": 14.633333333333333
+    },
+    {
+      "index": 440,
+      "egress_generation": 1,
+      "pts": 14.666666666666666
+    },
+    {
+      "index": 441,
+      "egress_generation": 1,
+      "pts": 14.7
+    },
+    {
+      "index": 442,
+      "egress_generation": 1,
+      "pts": 14.733333333333333
+    },
+    {
+      "index": 443,
+      "egress_generation": 1,
+      "pts": 14.766666666666667
+    },
+    {
+      "index": 444,
+      "egress_generation": 1,
+      "pts": 14.8
+    },
+    {
+      "index": 445,
+      "egress_generation": 1,
+      "pts": 14.833333333333334
+    },
+    {
+      "index": 446,
+      "egress_generation": 1,
+      "pts": 14.866666666666667
+    },
+    {
+      "index": 447,
+      "egress_generation": 1,
+      "pts": 14.9
+    },
+    {
+      "index": 448,
+      "egress_generation": 1,
+      "pts": 14.933333333333334
+    },
+    {
+      "index": 449,
+      "egress_generation": 1,
+      "pts": 14.966666666666667
+    },
+    {
+      "index": 450,
+      "egress_generation": 1,
+      "pts": 15.0
+    },
+    {
+      "index": 451,
+      "egress_generation": 1,
+      "pts": 15.033333333333333
+    },
+    {
+      "index": 452,
+      "egress_generation": 1,
+      "pts": 15.066666666666666
+    },
+    {
+      "index": 453,
+      "egress_generation": 1,
+      "pts": 15.1
+    },
+    {
+      "index": 454,
+      "egress_generation": 1,
+      "pts": 15.133333333333333
+    },
+    {
+      "index": 455,
+      "egress_generation": 1,
+      "pts": 15.166666666666666
+    },
+    {
+      "index": 456,
+      "egress_generation": 1,
+      "pts": 15.2
+    },
+    {
+      "index": 457,
+      "egress_generation": 1,
+      "pts": 15.233333333333333
+    },
+    {
+      "index": 458,
+      "egress_generation": 1,
+      "pts": 15.266666666666667
+    },
+    {
+      "index": 459,
+      "egress_generation": 1,
+      "pts": 15.3
+    },
+    {
+      "index": 460,
+      "egress_generation": 1,
+      "pts": 15.333333333333334
+    },
+    {
+      "index": 461,
+      "egress_generation": 1,
+      "pts": 15.366666666666667
+    },
+    {
+      "index": 462,
+      "egress_generation": 1,
+      "pts": 15.4
+    },
+    {
+      "index": 463,
+      "egress_generation": 1,
+      "pts": 15.433333333333334
+    },
+    {
+      "index": 464,
+      "egress_generation": 1,
+      "pts": 15.466666666666667
+    },
+    {
+      "index": 465,
+      "egress_generation": 1,
+      "pts": 15.5
+    },
+    {
+      "index": 466,
+      "egress_generation": 1,
+      "pts": 15.533333333333333
+    },
+    {
+      "index": 467,
+      "egress_generation": 1,
+      "pts": 15.566666666666666
+    },
+    {
+      "index": 468,
+      "egress_generation": 1,
+      "pts": 15.6
+    },
+    {
+      "index": 469,
+      "egress_generation": 1,
+      "pts": 15.633333333333333
+    },
+    {
+      "index": 470,
+      "egress_generation": 1,
+      "pts": 15.666666666666666
+    },
+    {
+      "index": 471,
+      "egress_generation": 1,
+      "pts": 15.7
+    },
+    {
+      "index": 472,
+      "egress_generation": 1,
+      "pts": 15.733333333333333
+    },
+    {
+      "index": 473,
+      "egress_generation": 1,
+      "pts": 15.766666666666667
+    },
+    {
+      "index": 474,
+      "egress_generation": 1,
+      "pts": 15.8
+    },
+    {
+      "index": 475,
+      "egress_generation": 1,
+      "pts": 15.833333333333334
+    },
+    {
+      "index": 476,
+      "egress_generation": 1,
+      "pts": 15.866666666666667
+    },
+    {
+      "index": 477,
+      "egress_generation": 1,
+      "pts": 15.9
+    },
+    {
+      "index": 478,
+      "egress_generation": 1,
+      "pts": 15.933333333333334
+    },
+    {
+      "index": 479,
+      "egress_generation": 1,
+      "pts": 15.966666666666667
+    },
+    {
+      "index": 480,
+      "egress_generation": 1,
+      "pts": 16.0
+    },
+    {
+      "index": 481,
+      "egress_generation": 1,
+      "pts": 16.033333333333335
+    },
+    {
+      "index": 482,
+      "egress_generation": 1,
+      "pts": 16.066666666666666
+    },
+    {
+      "index": 483,
+      "egress_generation": 1,
+      "pts": 16.1
+    },
+    {
+      "index": 484,
+      "egress_generation": 1,
+      "pts": 16.133333333333333
+    },
+    {
+      "index": 485,
+      "egress_generation": 1,
+      "pts": 16.166666666666668
+    },
+    {
+      "index": 486,
+      "egress_generation": 1,
+      "pts": 16.2
+    },
+    {
+      "index": 487,
+      "egress_generation": 1,
+      "pts": 16.233333333333334
+    },
+    {
+      "index": 488,
+      "egress_generation": 1,
+      "pts": 16.266666666666666
+    },
+    {
+      "index": 489,
+      "egress_generation": 1,
+      "pts": 16.3
+    },
+    {
+      "index": 490,
+      "egress_generation": 1,
+      "pts": 16.333333333333332
+    },
+    {
+      "index": 491,
+      "egress_generation": 1,
+      "pts": 16.366666666666667
+    },
+    {
+      "index": 492,
+      "egress_generation": 1,
+      "pts": 16.4
+    },
+    {
+      "index": 493,
+      "egress_generation": 1,
+      "pts": 16.433333333333334
+    },
+    {
+      "index": 494,
+      "egress_generation": 1,
+      "pts": 16.466666666666665
+    },
+    {
+      "index": 495,
+      "egress_generation": 1,
+      "pts": 16.5
+    },
+    {
+      "index": 496,
+      "egress_generation": 1,
+      "pts": 16.533333333333335
+    },
+    {
+      "index": 497,
+      "egress_generation": 1,
+      "pts": 16.566666666666666
+    },
+    {
+      "index": 498,
+      "egress_generation": 1,
+      "pts": 16.6
+    },
+    {
+      "index": 499,
+      "egress_generation": 1,
+      "pts": 16.633333333333333
+    },
+    {
+      "index": 500,
+      "egress_generation": 1,
+      "pts": 16.666666666666668
+    },
+    {
+      "index": 501,
+      "egress_generation": 1,
+      "pts": 16.7
+    },
+    {
+      "index": 502,
+      "egress_generation": 1,
+      "pts": 16.733333333333334
+    },
+    {
+      "index": 503,
+      "egress_generation": 1,
+      "pts": 16.766666666666666
+    },
+    {
+      "index": 504,
+      "egress_generation": 1,
+      "pts": 16.8
+    },
+    {
+      "index": 505,
+      "egress_generation": 1,
+      "pts": 16.833333333333332
+    },
+    {
+      "index": 506,
+      "egress_generation": 1,
+      "pts": 16.866666666666667
+    },
+    {
+      "index": 507,
+      "egress_generation": 1,
+      "pts": 16.9
+    },
+    {
+      "index": 508,
+      "egress_generation": 1,
+      "pts": 16.933333333333334
+    },
+    {
+      "index": 509,
+      "egress_generation": 1,
+      "pts": 16.966666666666665
+    },
+    {
+      "index": 510,
+      "egress_generation": 1,
+      "pts": 17.0
+    },
+    {
+      "index": 511,
+      "egress_generation": 1,
+      "pts": 17.033333333333335
+    },
+    {
+      "index": 512,
+      "egress_generation": 1,
+      "pts": 17.066666666666666
+    },
+    {
+      "index": 513,
+      "egress_generation": 1,
+      "pts": 17.1
+    },
+    {
+      "index": 514,
+      "egress_generation": 1,
+      "pts": 17.133333333333333
+    },
+    {
+      "index": 515,
+      "egress_generation": 1,
+      "pts": 17.166666666666668
+    },
+    {
+      "index": 516,
+      "egress_generation": 1,
+      "pts": 17.2
+    },
+    {
+      "index": 517,
+      "egress_generation": 1,
+      "pts": 17.233333333333334
+    },
+    {
+      "index": 518,
+      "egress_generation": 1,
+      "pts": 17.266666666666666
+    },
+    {
+      "index": 519,
+      "egress_generation": 1,
+      "pts": 17.3
+    },
+    {
+      "index": 520,
+      "egress_generation": 1,
+      "pts": 17.333333333333332
+    },
+    {
+      "index": 521,
+      "egress_generation": 1,
+      "pts": 17.366666666666667
+    },
+    {
+      "index": 522,
+      "egress_generation": 1,
+      "pts": 17.4
+    },
+    {
+      "index": 523,
+      "egress_generation": 1,
+      "pts": 17.433333333333334
+    },
+    {
+      "index": 524,
+      "egress_generation": 1,
+      "pts": 17.466666666666665
+    },
+    {
+      "index": 525,
+      "egress_generation": 1,
+      "pts": 17.5
+    },
+    {
+      "index": 526,
+      "egress_generation": 1,
+      "pts": 17.533333333333335
+    },
+    {
+      "index": 527,
+      "egress_generation": 1,
+      "pts": 17.566666666666666
+    },
+    {
+      "index": 528,
+      "egress_generation": 1,
+      "pts": 17.6
+    },
+    {
+      "index": 529,
+      "egress_generation": 1,
+      "pts": 17.633333333333333
+    },
+    {
+      "index": 530,
+      "egress_generation": 1,
+      "pts": 17.666666666666668
+    },
+    {
+      "index": 531,
+      "egress_generation": 1,
+      "pts": 17.7
+    },
+    {
+      "index": 532,
+      "egress_generation": 1,
+      "pts": 17.733333333333334
+    },
+    {
+      "index": 533,
+      "egress_generation": 1,
+      "pts": 17.766666666666666
+    },
+    {
+      "index": 534,
+      "egress_generation": 1,
+      "pts": 17.8
+    },
+    {
+      "index": 535,
+      "egress_generation": 1,
+      "pts": 17.833333333333332
+    },
+    {
+      "index": 536,
+      "egress_generation": 1,
+      "pts": 17.866666666666667
+    },
+    {
+      "index": 537,
+      "egress_generation": 1,
+      "pts": 17.9
+    },
+    {
+      "index": 538,
+      "egress_generation": 1,
+      "pts": 17.933333333333334
+    },
+    {
+      "index": 539,
+      "egress_generation": 1,
+      "pts": 17.966666666666665
+    },
+    {
+      "index": 540,
+      "egress_generation": 1,
+      "pts": 18.0
+    },
+    {
+      "index": 541,
+      "egress_generation": 1,
+      "pts": 18.033333333333335
+    },
+    {
+      "index": 542,
+      "egress_generation": 1,
+      "pts": 18.066666666666666
+    },
+    {
+      "index": 543,
+      "egress_generation": 1,
+      "pts": 18.1
+    },
+    {
+      "index": 544,
+      "egress_generation": 1,
+      "pts": 18.133333333333333
+    },
+    {
+      "index": 545,
+      "egress_generation": 1,
+      "pts": 18.166666666666668
+    },
+    {
+      "index": 546,
+      "egress_generation": 1,
+      "pts": 18.2
+    },
+    {
+      "index": 547,
+      "egress_generation": 1,
+      "pts": 18.233333333333334
+    },
+    {
+      "index": 548,
+      "egress_generation": 1,
+      "pts": 18.266666666666666
+    },
+    {
+      "index": 549,
+      "egress_generation": 1,
+      "pts": 18.3
+    },
+    {
+      "index": 550,
+      "egress_generation": 1,
+      "pts": 18.333333333333332
+    },
+    {
+      "index": 551,
+      "egress_generation": 1,
+      "pts": 18.366666666666667
+    },
+    {
+      "index": 552,
+      "egress_generation": 1,
+      "pts": 18.4
+    },
+    {
+      "index": 553,
+      "egress_generation": 1,
+      "pts": 18.433333333333334
+    },
+    {
+      "index": 554,
+      "egress_generation": 1,
+      "pts": 18.466666666666665
+    },
+    {
+      "index": 555,
+      "egress_generation": 1,
+      "pts": 18.5
+    },
+    {
+      "index": 556,
+      "egress_generation": 1,
+      "pts": 18.533333333333335
+    },
+    {
+      "index": 557,
+      "egress_generation": 1,
+      "pts": 18.566666666666666
+    },
+    {
+      "index": 558,
+      "egress_generation": 1,
+      "pts": 18.6
+    },
+    {
+      "index": 559,
+      "egress_generation": 1,
+      "pts": 18.633333333333333
+    },
+    {
+      "index": 560,
+      "egress_generation": 1,
+      "pts": 18.666666666666668
+    },
+    {
+      "index": 561,
+      "egress_generation": 1,
+      "pts": 18.7
+    },
+    {
+      "index": 562,
+      "egress_generation": 1,
+      "pts": 18.733333333333334
+    },
+    {
+      "index": 563,
+      "egress_generation": 1,
+      "pts": 18.766666666666666
+    },
+    {
+      "index": 564,
+      "egress_generation": 1,
+      "pts": 18.8
+    },
+    {
+      "index": 565,
+      "egress_generation": 1,
+      "pts": 18.833333333333332
+    },
+    {
+      "index": 566,
+      "egress_generation": 1,
+      "pts": 18.866666666666667
+    },
+    {
+      "index": 567,
+      "egress_generation": 1,
+      "pts": 18.9
+    },
+    {
+      "index": 568,
+      "egress_generation": 1,
+      "pts": 18.933333333333334
+    },
+    {
+      "index": 569,
+      "egress_generation": 1,
+      "pts": 18.966666666666665
+    },
+    {
+      "index": 570,
+      "egress_generation": 1,
+      "pts": 19.0
+    },
+    {
+      "index": 571,
+      "egress_generation": 1,
+      "pts": 19.033333333333335
+    },
+    {
+      "index": 572,
+      "egress_generation": 1,
+      "pts": 19.066666666666666
+    },
+    {
+      "index": 573,
+      "egress_generation": 1,
+      "pts": 19.1
+    },
+    {
+      "index": 574,
+      "egress_generation": 1,
+      "pts": 19.133333333333333
+    },
+    {
+      "index": 575,
+      "egress_generation": 1,
+      "pts": 19.166666666666668
+    },
+    {
+      "index": 576,
+      "egress_generation": 1,
+      "pts": 19.2
+    },
+    {
+      "index": 577,
+      "egress_generation": 1,
+      "pts": 19.233333333333334
+    },
+    {
+      "index": 578,
+      "egress_generation": 1,
+      "pts": 19.266666666666666
+    },
+    {
+      "index": 579,
+      "egress_generation": 1,
+      "pts": 19.3
+    },
+    {
+      "index": 580,
+      "egress_generation": 1,
+      "pts": 19.333333333333332
+    },
+    {
+      "index": 581,
+      "egress_generation": 1,
+      "pts": 19.366666666666667
+    },
+    {
+      "index": 582,
+      "egress_generation": 1,
+      "pts": 19.4
+    },
+    {
+      "index": 583,
+      "egress_generation": 1,
+      "pts": 19.433333333333334
+    },
+    {
+      "index": 584,
+      "egress_generation": 1,
+      "pts": 19.466666666666665
+    },
+    {
+      "index": 585,
+      "egress_generation": 1,
+      "pts": 19.5
+    },
+    {
+      "index": 586,
+      "egress_generation": 1,
+      "pts": 19.533333333333335
+    },
+    {
+      "index": 587,
+      "egress_generation": 1,
+      "pts": 19.566666666666666
+    },
+    {
+      "index": 588,
+      "egress_generation": 1,
+      "pts": 19.6
+    },
+    {
+      "index": 589,
+      "egress_generation": 1,
+      "pts": 19.633333333333333
+    },
+    {
+      "index": 590,
+      "egress_generation": 1,
+      "pts": 19.666666666666668
+    },
+    {
+      "index": 591,
+      "egress_generation": 1,
+      "pts": 19.7
+    },
+    {
+      "index": 592,
+      "egress_generation": 1,
+      "pts": 19.733333333333334
+    },
+    {
+      "index": 593,
+      "egress_generation": 1,
+      "pts": 19.766666666666666
+    },
+    {
+      "index": 594,
+      "egress_generation": 1,
+      "pts": 19.8
+    },
+    {
+      "index": 595,
+      "egress_generation": 1,
+      "pts": 19.833333333333332
+    },
+    {
+      "index": 596,
+      "egress_generation": 1,
+      "pts": 19.866666666666667
+    },
+    {
+      "index": 597,
+      "egress_generation": 1,
+      "pts": 19.9
+    },
+    {
+      "index": 598,
+      "egress_generation": 1,
+      "pts": 19.933333333333334
+    },
+    {
+      "index": 599,
+      "egress_generation": 1,
+      "pts": 19.966666666666665
+    },
+    {
+      "index": 600,
+      "egress_generation": 1,
+      "pts": 20.0
+    },
+    {
+      "index": 601,
+      "egress_generation": 1,
+      "pts": 20.033333333333335
+    },
+    {
+      "index": 602,
+      "egress_generation": 1,
+      "pts": 20.066666666666666
+    },
+    {
+      "index": 603,
+      "egress_generation": 1,
+      "pts": 20.1
+    },
+    {
+      "index": 604,
+      "egress_generation": 1,
+      "pts": 20.133333333333333
+    },
+    {
+      "index": 605,
+      "egress_generation": 1,
+      "pts": 20.166666666666668
+    },
+    {
+      "index": 606,
+      "egress_generation": 1,
+      "pts": 20.2
+    },
+    {
+      "index": 607,
+      "egress_generation": 1,
+      "pts": 20.233333333333334
+    },
+    {
+      "index": 608,
+      "egress_generation": 1,
+      "pts": 20.266666666666666
+    },
+    {
+      "index": 609,
+      "egress_generation": 1,
+      "pts": 20.3
+    },
+    {
+      "index": 610,
+      "egress_generation": 1,
+      "pts": 20.333333333333332
+    },
+    {
+      "index": 611,
+      "egress_generation": 1,
+      "pts": 20.366666666666667
+    },
+    {
+      "index": 612,
+      "egress_generation": 1,
+      "pts": 20.4
+    },
+    {
+      "index": 613,
+      "egress_generation": 1,
+      "pts": 20.433333333333334
+    },
+    {
+      "index": 614,
+      "egress_generation": 1,
+      "pts": 20.466666666666665
+    },
+    {
+      "index": 615,
+      "egress_generation": 1,
+      "pts": 20.5
+    },
+    {
+      "index": 616,
+      "egress_generation": 1,
+      "pts": 20.533333333333335
+    },
+    {
+      "index": 617,
+      "egress_generation": 1,
+      "pts": 20.566666666666666
+    },
+    {
+      "index": 618,
+      "egress_generation": 1,
+      "pts": 20.6
+    },
+    {
+      "index": 619,
+      "egress_generation": 1,
+      "pts": 20.633333333333333
+    },
+    {
+      "index": 620,
+      "egress_generation": 1,
+      "pts": 20.666666666666668
+    },
+    {
+      "index": 621,
+      "egress_generation": 1,
+      "pts": 20.7
+    },
+    {
+      "index": 622,
+      "egress_generation": 1,
+      "pts": 20.733333333333334
+    },
+    {
+      "index": 623,
+      "egress_generation": 1,
+      "pts": 20.766666666666666
+    },
+    {
+      "index": 624,
+      "egress_generation": 1,
+      "pts": 20.8
+    },
+    {
+      "index": 625,
+      "egress_generation": 1,
+      "pts": 20.833333333333332
+    },
+    {
+      "index": 626,
+      "egress_generation": 1,
+      "pts": 20.866666666666667
+    },
+    {
+      "index": 627,
+      "egress_generation": 1,
+      "pts": 20.9
+    },
+    {
+      "index": 628,
+      "egress_generation": 1,
+      "pts": 20.933333333333334
+    },
+    {
+      "index": 629,
+      "egress_generation": 1,
+      "pts": 20.966666666666665
+    },
+    {
+      "index": 630,
+      "egress_generation": 1,
+      "pts": 21.0
+    },
+    {
+      "index": 631,
+      "egress_generation": 1,
+      "pts": 21.033333333333335
+    },
+    {
+      "index": 632,
+      "egress_generation": 1,
+      "pts": 21.066666666666666
+    },
+    {
+      "index": 633,
+      "egress_generation": 1,
+      "pts": 21.1
+    },
+    {
+      "index": 634,
+      "egress_generation": 1,
+      "pts": 21.133333333333333
+    },
+    {
+      "index": 635,
+      "egress_generation": 1,
+      "pts": 21.166666666666668
+    },
+    {
+      "index": 636,
+      "egress_generation": 1,
+      "pts": 21.2
+    },
+    {
+      "index": 637,
+      "egress_generation": 1,
+      "pts": 21.233333333333334
+    },
+    {
+      "index": 638,
+      "egress_generation": 1,
+      "pts": 21.266666666666666
+    },
+    {
+      "index": 639,
+      "egress_generation": 1,
+      "pts": 21.3
+    },
+    {
+      "index": 640,
+      "egress_generation": 1,
+      "pts": 21.333333333333332
+    },
+    {
+      "index": 641,
+      "egress_generation": 1,
+      "pts": 21.366666666666667
+    },
+    {
+      "index": 642,
+      "egress_generation": 1,
+      "pts": 21.4
+    },
+    {
+      "index": 643,
+      "egress_generation": 1,
+      "pts": 21.433333333333334
+    },
+    {
+      "index": 644,
+      "egress_generation": 1,
+      "pts": 21.466666666666665
+    },
+    {
+      "index": 645,
+      "egress_generation": 1,
+      "pts": 21.5
+    },
+    {
+      "index": 646,
+      "egress_generation": 1,
+      "pts": 21.533333333333335
+    },
+    {
+      "index": 647,
+      "egress_generation": 1,
+      "pts": 21.566666666666666
+    },
+    {
+      "index": 648,
+      "egress_generation": 1,
+      "pts": 21.6
+    },
+    {
+      "index": 649,
+      "egress_generation": 1,
+      "pts": 21.633333333333333
+    },
+    {
+      "index": 650,
+      "egress_generation": 1,
+      "pts": 21.666666666666668
+    },
+    {
+      "index": 651,
+      "egress_generation": 1,
+      "pts": 21.7
+    },
+    {
+      "index": 652,
+      "egress_generation": 1,
+      "pts": 21.733333333333334
+    },
+    {
+      "index": 653,
+      "egress_generation": 1,
+      "pts": 21.766666666666666
+    },
+    {
+      "index": 654,
+      "egress_generation": 1,
+      "pts": 21.8
+    },
+    {
+      "index": 655,
+      "egress_generation": 1,
+      "pts": 21.833333333333332
+    },
+    {
+      "index": 656,
+      "egress_generation": 1,
+      "pts": 21.866666666666667
+    },
+    {
+      "index": 657,
+      "egress_generation": 1,
+      "pts": 21.9
+    },
+    {
+      "index": 658,
+      "egress_generation": 1,
+      "pts": 21.933333333333334
+    },
+    {
+      "index": 659,
+      "egress_generation": 1,
+      "pts": 21.966666666666665
+    },
+    {
+      "index": 660,
+      "egress_generation": 1,
+      "pts": 22.0
+    },
+    {
+      "index": 661,
+      "egress_generation": 1,
+      "pts": 22.033333333333335
+    },
+    {
+      "index": 662,
+      "egress_generation": 1,
+      "pts": 22.066666666666666
+    },
+    {
+      "index": 663,
+      "egress_generation": 1,
+      "pts": 22.1
+    },
+    {
+      "index": 664,
+      "egress_generation": 1,
+      "pts": 22.133333333333333
+    },
+    {
+      "index": 665,
+      "egress_generation": 1,
+      "pts": 22.166666666666668
+    },
+    {
+      "index": 666,
+      "egress_generation": 1,
+      "pts": 22.2
+    },
+    {
+      "index": 667,
+      "egress_generation": 1,
+      "pts": 22.233333333333334
+    },
+    {
+      "index": 668,
+      "egress_generation": 1,
+      "pts": 22.266666666666666
+    },
+    {
+      "index": 669,
+      "egress_generation": 1,
+      "pts": 22.3
+    },
+    {
+      "index": 670,
+      "egress_generation": 1,
+      "pts": 22.333333333333332
+    },
+    {
+      "index": 671,
+      "egress_generation": 1,
+      "pts": 22.366666666666667
+    },
+    {
+      "index": 672,
+      "egress_generation": 1,
+      "pts": 22.4
+    },
+    {
+      "index": 673,
+      "egress_generation": 1,
+      "pts": 22.433333333333334
+    },
+    {
+      "index": 674,
+      "egress_generation": 1,
+      "pts": 22.466666666666665
+    },
+    {
+      "index": 675,
+      "egress_generation": 1,
+      "pts": 22.5
+    },
+    {
+      "index": 676,
+      "egress_generation": 1,
+      "pts": 22.533333333333335
+    },
+    {
+      "index": 677,
+      "egress_generation": 1,
+      "pts": 22.566666666666666
+    },
+    {
+      "index": 678,
+      "egress_generation": 1,
+      "pts": 22.6
+    },
+    {
+      "index": 679,
+      "egress_generation": 1,
+      "pts": 22.633333333333333
+    },
+    {
+      "index": 680,
+      "egress_generation": 1,
+      "pts": 22.666666666666668
+    },
+    {
+      "index": 681,
+      "egress_generation": 1,
+      "pts": 22.7
+    },
+    {
+      "index": 682,
+      "egress_generation": 1,
+      "pts": 22.733333333333334
+    },
+    {
+      "index": 683,
+      "egress_generation": 1,
+      "pts": 22.766666666666666
+    },
+    {
+      "index": 684,
+      "egress_generation": 1,
+      "pts": 22.8
+    },
+    {
+      "index": 685,
+      "egress_generation": 1,
+      "pts": 22.833333333333332
+    },
+    {
+      "index": 686,
+      "egress_generation": 1,
+      "pts": 22.866666666666667
+    },
+    {
+      "index": 687,
+      "egress_generation": 1,
+      "pts": 22.9
+    },
+    {
+      "index": 688,
+      "egress_generation": 1,
+      "pts": 22.933333333333334
+    },
+    {
+      "index": 689,
+      "egress_generation": 1,
+      "pts": 22.966666666666665
+    },
+    {
+      "index": 690,
+      "egress_generation": 1,
+      "pts": 23.0
+    },
+    {
+      "index": 691,
+      "egress_generation": 1,
+      "pts": 23.033333333333335
+    },
+    {
+      "index": 692,
+      "egress_generation": 1,
+      "pts": 23.066666666666666
+    },
+    {
+      "index": 693,
+      "egress_generation": 1,
+      "pts": 23.1
+    },
+    {
+      "index": 694,
+      "egress_generation": 1,
+      "pts": 23.133333333333333
+    },
+    {
+      "index": 695,
+      "egress_generation": 1,
+      "pts": 23.166666666666668
+    },
+    {
+      "index": 696,
+      "egress_generation": 1,
+      "pts": 23.2
+    },
+    {
+      "index": 697,
+      "egress_generation": 1,
+      "pts": 23.233333333333334
+    },
+    {
+      "index": 698,
+      "egress_generation": 1,
+      "pts": 23.266666666666666
+    },
+    {
+      "index": 699,
+      "egress_generation": 1,
+      "pts": 23.3
+    },
+    {
+      "index": 700,
+      "egress_generation": 1,
+      "pts": 23.333333333333332
+    },
+    {
+      "index": 701,
+      "egress_generation": 1,
+      "pts": 23.366666666666667
+    },
+    {
+      "index": 702,
+      "egress_generation": 1,
+      "pts": 23.4
+    },
+    {
+      "index": 703,
+      "egress_generation": 1,
+      "pts": 23.433333333333334
+    },
+    {
+      "index": 704,
+      "egress_generation": 1,
+      "pts": 23.466666666666665
+    },
+    {
+      "index": 705,
+      "egress_generation": 1,
+      "pts": 23.5
+    },
+    {
+      "index": 706,
+      "egress_generation": 1,
+      "pts": 23.533333333333335
+    },
+    {
+      "index": 707,
+      "egress_generation": 1,
+      "pts": 23.566666666666666
+    },
+    {
+      "index": 708,
+      "egress_generation": 1,
+      "pts": 23.6
+    },
+    {
+      "index": 709,
+      "egress_generation": 1,
+      "pts": 23.633333333333333
+    },
+    {
+      "index": 710,
+      "egress_generation": 1,
+      "pts": 23.666666666666668
+    },
+    {
+      "index": 711,
+      "egress_generation": 1,
+      "pts": 23.7
+    },
+    {
+      "index": 712,
+      "egress_generation": 1,
+      "pts": 23.733333333333334
+    },
+    {
+      "index": 713,
+      "egress_generation": 1,
+      "pts": 23.766666666666666
+    },
+    {
+      "index": 714,
+      "egress_generation": 1,
+      "pts": 23.8
+    },
+    {
+      "index": 715,
+      "egress_generation": 1,
+      "pts": 23.833333333333332
+    },
+    {
+      "index": 716,
+      "egress_generation": 1,
+      "pts": 23.866666666666667
+    },
+    {
+      "index": 717,
+      "egress_generation": 1,
+      "pts": 23.9
+    },
+    {
+      "index": 718,
+      "egress_generation": 1,
+      "pts": 23.933333333333334
+    },
+    {
+      "index": 719,
+      "egress_generation": 1,
+      "pts": 23.966666666666665
+    },
+    {
+      "index": 720,
+      "egress_generation": 1,
+      "pts": 24.0
+    },
+    {
+      "index": 721,
+      "egress_generation": 1,
+      "pts": 24.033333333333335
+    },
+    {
+      "index": 722,
+      "egress_generation": 1,
+      "pts": 24.066666666666666
+    },
+    {
+      "index": 723,
+      "egress_generation": 1,
+      "pts": 24.1
+    },
+    {
+      "index": 724,
+      "egress_generation": 1,
+      "pts": 24.133333333333333
+    },
+    {
+      "index": 725,
+      "egress_generation": 1,
+      "pts": 24.166666666666668
+    },
+    {
+      "index": 726,
+      "egress_generation": 1,
+      "pts": 24.2
+    },
+    {
+      "index": 727,
+      "egress_generation": 1,
+      "pts": 24.233333333333334
+    },
+    {
+      "index": 728,
+      "egress_generation": 1,
+      "pts": 24.266666666666666
+    },
+    {
+      "index": 729,
+      "egress_generation": 1,
+      "pts": 24.3
+    },
+    {
+      "index": 730,
+      "egress_generation": 1,
+      "pts": 24.333333333333332
+    },
+    {
+      "index": 731,
+      "egress_generation": 1,
+      "pts": 24.366666666666667
+    },
+    {
+      "index": 732,
+      "egress_generation": 1,
+      "pts": 24.4
+    },
+    {
+      "index": 733,
+      "egress_generation": 1,
+      "pts": 24.433333333333334
+    },
+    {
+      "index": 734,
+      "egress_generation": 1,
+      "pts": 24.466666666666665
+    },
+    {
+      "index": 735,
+      "egress_generation": 1,
+      "pts": 24.5
+    },
+    {
+      "index": 736,
+      "egress_generation": 1,
+      "pts": 24.533333333333335
+    },
+    {
+      "index": 737,
+      "egress_generation": 1,
+      "pts": 24.566666666666666
+    },
+    {
+      "index": 738,
+      "egress_generation": 1,
+      "pts": 24.6
+    },
+    {
+      "index": 739,
+      "egress_generation": 1,
+      "pts": 24.633333333333333
+    },
+    {
+      "index": 740,
+      "egress_generation": 1,
+      "pts": 24.666666666666668
+    },
+    {
+      "index": 741,
+      "egress_generation": 1,
+      "pts": 24.7
+    },
+    {
+      "index": 742,
+      "egress_generation": 1,
+      "pts": 24.733333333333334
+    },
+    {
+      "index": 743,
+      "egress_generation": 1,
+      "pts": 24.766666666666666
+    },
+    {
+      "index": 744,
+      "egress_generation": 1,
+      "pts": 24.8
+    },
+    {
+      "index": 745,
+      "egress_generation": 1,
+      "pts": 24.833333333333332
+    },
+    {
+      "index": 746,
+      "egress_generation": 1,
+      "pts": 24.866666666666667
+    },
+    {
+      "index": 747,
+      "egress_generation": 1,
+      "pts": 24.9
+    },
+    {
+      "index": 748,
+      "egress_generation": 1,
+      "pts": 24.933333333333334
+    },
+    {
+      "index": 749,
+      "egress_generation": 1,
+      "pts": 24.966666666666665
+    },
+    {
+      "index": 750,
+      "egress_generation": 1,
+      "pts": 25.0
+    },
+    {
+      "index": 751,
+      "egress_generation": 1,
+      "pts": 25.033333333333335
+    },
+    {
+      "index": 752,
+      "egress_generation": 1,
+      "pts": 25.066666666666666
+    },
+    {
+      "index": 753,
+      "egress_generation": 1,
+      "pts": 25.1
+    },
+    {
+      "index": 754,
+      "egress_generation": 1,
+      "pts": 25.133333333333333
+    },
+    {
+      "index": 755,
+      "egress_generation": 1,
+      "pts": 25.166666666666668
+    },
+    {
+      "index": 756,
+      "egress_generation": 1,
+      "pts": 25.2
+    },
+    {
+      "index": 757,
+      "egress_generation": 1,
+      "pts": 25.233333333333334
+    },
+    {
+      "index": 758,
+      "egress_generation": 1,
+      "pts": 25.266666666666666
+    },
+    {
+      "index": 759,
+      "egress_generation": 1,
+      "pts": 25.3
+    },
+    {
+      "index": 760,
+      "egress_generation": 1,
+      "pts": 25.333333333333332
+    },
+    {
+      "index": 761,
+      "egress_generation": 1,
+      "pts": 25.366666666666667
+    },
+    {
+      "index": 762,
+      "egress_generation": 1,
+      "pts": 25.4
+    },
+    {
+      "index": 763,
+      "egress_generation": 1,
+      "pts": 25.433333333333334
+    },
+    {
+      "index": 764,
+      "egress_generation": 1,
+      "pts": 25.466666666666665
+    },
+    {
+      "index": 765,
+      "egress_generation": 1,
+      "pts": 25.5
+    },
+    {
+      "index": 766,
+      "egress_generation": 1,
+      "pts": 25.533333333333335
+    },
+    {
+      "index": 767,
+      "egress_generation": 1,
+      "pts": 25.566666666666666
+    },
+    {
+      "index": 768,
+      "egress_generation": 1,
+      "pts": 25.6
+    },
+    {
+      "index": 769,
+      "egress_generation": 1,
+      "pts": 25.633333333333333
+    },
+    {
+      "index": 770,
+      "egress_generation": 1,
+      "pts": 25.666666666666668
+    },
+    {
+      "index": 771,
+      "egress_generation": 1,
+      "pts": 25.7
+    },
+    {
+      "index": 772,
+      "egress_generation": 1,
+      "pts": 25.733333333333334
+    },
+    {
+      "index": 773,
+      "egress_generation": 1,
+      "pts": 25.766666666666666
+    },
+    {
+      "index": 774,
+      "egress_generation": 1,
+      "pts": 25.8
+    },
+    {
+      "index": 775,
+      "egress_generation": 1,
+      "pts": 25.833333333333332
+    },
+    {
+      "index": 776,
+      "egress_generation": 1,
+      "pts": 25.866666666666667
+    },
+    {
+      "index": 777,
+      "egress_generation": 1,
+      "pts": 25.9
+    },
+    {
+      "index": 778,
+      "egress_generation": 1,
+      "pts": 25.933333333333334
+    },
+    {
+      "index": 779,
+      "egress_generation": 1,
+      "pts": 25.966666666666665
+    },
+    {
+      "index": 780,
+      "egress_generation": 1,
+      "pts": 26.0
+    },
+    {
+      "index": 781,
+      "egress_generation": 1,
+      "pts": 26.033333333333335
+    },
+    {
+      "index": 782,
+      "egress_generation": 1,
+      "pts": 26.066666666666666
+    },
+    {
+      "index": 783,
+      "egress_generation": 1,
+      "pts": 26.1
+    },
+    {
+      "index": 784,
+      "egress_generation": 1,
+      "pts": 26.133333333333333
+    },
+    {
+      "index": 785,
+      "egress_generation": 1,
+      "pts": 26.166666666666668
+    },
+    {
+      "index": 786,
+      "egress_generation": 1,
+      "pts": 26.2
+    },
+    {
+      "index": 787,
+      "egress_generation": 1,
+      "pts": 26.233333333333334
+    },
+    {
+      "index": 788,
+      "egress_generation": 1,
+      "pts": 26.266666666666666
+    },
+    {
+      "index": 789,
+      "egress_generation": 1,
+      "pts": 26.3
+    },
+    {
+      "index": 790,
+      "egress_generation": 1,
+      "pts": 26.333333333333332
+    },
+    {
+      "index": 791,
+      "egress_generation": 1,
+      "pts": 26.366666666666667
+    },
+    {
+      "index": 792,
+      "egress_generation": 1,
+      "pts": 26.4
+    },
+    {
+      "index": 793,
+      "egress_generation": 1,
+      "pts": 26.433333333333334
+    },
+    {
+      "index": 794,
+      "egress_generation": 1,
+      "pts": 26.466666666666665
+    },
+    {
+      "index": 795,
+      "egress_generation": 1,
+      "pts": 26.5
+    },
+    {
+      "index": 796,
+      "egress_generation": 1,
+      "pts": 26.533333333333335
+    },
+    {
+      "index": 797,
+      "egress_generation": 1,
+      "pts": 26.566666666666666
+    },
+    {
+      "index": 798,
+      "egress_generation": 1,
+      "pts": 26.6
+    },
+    {
+      "index": 799,
+      "egress_generation": 1,
+      "pts": 26.633333333333333
+    },
+    {
+      "index": 800,
+      "egress_generation": 1,
+      "pts": 26.666666666666668
+    },
+    {
+      "index": 801,
+      "egress_generation": 1,
+      "pts": 26.7
+    },
+    {
+      "index": 802,
+      "egress_generation": 1,
+      "pts": 26.733333333333334
+    },
+    {
+      "index": 803,
+      "egress_generation": 1,
+      "pts": 26.766666666666666
+    },
+    {
+      "index": 804,
+      "egress_generation": 1,
+      "pts": 26.8
+    },
+    {
+      "index": 805,
+      "egress_generation": 1,
+      "pts": 26.833333333333332
+    },
+    {
+      "index": 806,
+      "egress_generation": 1,
+      "pts": 26.866666666666667
+    },
+    {
+      "index": 807,
+      "egress_generation": 1,
+      "pts": 26.9
+    },
+    {
+      "index": 808,
+      "egress_generation": 1,
+      "pts": 26.933333333333334
+    },
+    {
+      "index": 809,
+      "egress_generation": 1,
+      "pts": 26.966666666666665
+    },
+    {
+      "index": 810,
+      "egress_generation": 1,
+      "pts": 27.0
+    },
+    {
+      "index": 811,
+      "egress_generation": 1,
+      "pts": 27.033333333333335
+    },
+    {
+      "index": 812,
+      "egress_generation": 1,
+      "pts": 27.066666666666666
+    },
+    {
+      "index": 813,
+      "egress_generation": 1,
+      "pts": 27.1
+    },
+    {
+      "index": 814,
+      "egress_generation": 1,
+      "pts": 27.133333333333333
+    },
+    {
+      "index": 815,
+      "egress_generation": 1,
+      "pts": 27.166666666666668
+    },
+    {
+      "index": 816,
+      "egress_generation": 1,
+      "pts": 27.2
+    },
+    {
+      "index": 817,
+      "egress_generation": 1,
+      "pts": 27.233333333333334
+    },
+    {
+      "index": 818,
+      "egress_generation": 1,
+      "pts": 27.266666666666666
+    },
+    {
+      "index": 819,
+      "egress_generation": 1,
+      "pts": 27.3
+    },
+    {
+      "index": 820,
+      "egress_generation": 1,
+      "pts": 27.333333333333332
+    },
+    {
+      "index": 821,
+      "egress_generation": 1,
+      "pts": 27.366666666666667
+    },
+    {
+      "index": 822,
+      "egress_generation": 1,
+      "pts": 27.4
+    },
+    {
+      "index": 823,
+      "egress_generation": 1,
+      "pts": 27.433333333333334
+    },
+    {
+      "index": 824,
+      "egress_generation": 1,
+      "pts": 27.466666666666665
+    },
+    {
+      "index": 825,
+      "egress_generation": 1,
+      "pts": 27.5
+    },
+    {
+      "index": 826,
+      "egress_generation": 1,
+      "pts": 27.533333333333335
+    },
+    {
+      "index": 827,
+      "egress_generation": 1,
+      "pts": 27.566666666666666
+    },
+    {
+      "index": 828,
+      "egress_generation": 1,
+      "pts": 27.6
+    },
+    {
+      "index": 829,
+      "egress_generation": 1,
+      "pts": 27.633333333333333
+    },
+    {
+      "index": 830,
+      "egress_generation": 1,
+      "pts": 27.666666666666668
+    },
+    {
+      "index": 831,
+      "egress_generation": 1,
+      "pts": 27.7
+    },
+    {
+      "index": 832,
+      "egress_generation": 1,
+      "pts": 27.733333333333334
+    },
+    {
+      "index": 833,
+      "egress_generation": 1,
+      "pts": 27.766666666666666
+    },
+    {
+      "index": 834,
+      "egress_generation": 1,
+      "pts": 27.8
+    },
+    {
+      "index": 835,
+      "egress_generation": 1,
+      "pts": 27.833333333333332
+    },
+    {
+      "index": 836,
+      "egress_generation": 1,
+      "pts": 27.866666666666667
+    },
+    {
+      "index": 837,
+      "egress_generation": 1,
+      "pts": 27.9
+    },
+    {
+      "index": 838,
+      "egress_generation": 1,
+      "pts": 27.933333333333334
+    },
+    {
+      "index": 839,
+      "egress_generation": 1,
+      "pts": 27.966666666666665
+    },
+    {
+      "index": 840,
+      "egress_generation": 1,
+      "pts": 28.0
+    },
+    {
+      "index": 841,
+      "egress_generation": 1,
+      "pts": 28.033333333333335
+    },
+    {
+      "index": 842,
+      "egress_generation": 1,
+      "pts": 28.066666666666666
+    },
+    {
+      "index": 843,
+      "egress_generation": 1,
+      "pts": 28.1
+    },
+    {
+      "index": 844,
+      "egress_generation": 1,
+      "pts": 28.133333333333333
+    },
+    {
+      "index": 845,
+      "egress_generation": 1,
+      "pts": 28.166666666666668
+    },
+    {
+      "index": 846,
+      "egress_generation": 1,
+      "pts": 28.2
+    },
+    {
+      "index": 847,
+      "egress_generation": 1,
+      "pts": 28.233333333333334
+    },
+    {
+      "index": 848,
+      "egress_generation": 1,
+      "pts": 28.266666666666666
+    },
+    {
+      "index": 849,
+      "egress_generation": 1,
+      "pts": 28.3
+    },
+    {
+      "index": 850,
+      "egress_generation": 1,
+      "pts": 28.333333333333332
+    },
+    {
+      "index": 851,
+      "egress_generation": 1,
+      "pts": 28.366666666666667
+    },
+    {
+      "index": 852,
+      "egress_generation": 1,
+      "pts": 28.4
+    },
+    {
+      "index": 853,
+      "egress_generation": 1,
+      "pts": 28.433333333333334
+    },
+    {
+      "index": 854,
+      "egress_generation": 1,
+      "pts": 28.466666666666665
+    },
+    {
+      "index": 855,
+      "egress_generation": 1,
+      "pts": 28.5
+    },
+    {
+      "index": 856,
+      "egress_generation": 1,
+      "pts": 28.533333333333335
+    },
+    {
+      "index": 857,
+      "egress_generation": 1,
+      "pts": 28.566666666666666
+    },
+    {
+      "index": 858,
+      "egress_generation": 1,
+      "pts": 28.6
+    },
+    {
+      "index": 859,
+      "egress_generation": 1,
+      "pts": 28.633333333333333
+    },
+    {
+      "index": 860,
+      "egress_generation": 1,
+      "pts": 28.666666666666668
+    },
+    {
+      "index": 861,
+      "egress_generation": 1,
+      "pts": 28.7
+    },
+    {
+      "index": 862,
+      "egress_generation": 1,
+      "pts": 28.733333333333334
+    },
+    {
+      "index": 863,
+      "egress_generation": 1,
+      "pts": 28.766666666666666
+    },
+    {
+      "index": 864,
+      "egress_generation": 1,
+      "pts": 28.8
+    },
+    {
+      "index": 865,
+      "egress_generation": 1,
+      "pts": 28.833333333333332
+    },
+    {
+      "index": 866,
+      "egress_generation": 1,
+      "pts": 28.866666666666667
+    },
+    {
+      "index": 867,
+      "egress_generation": 1,
+      "pts": 28.9
+    },
+    {
+      "index": 868,
+      "egress_generation": 1,
+      "pts": 28.933333333333334
+    },
+    {
+      "index": 869,
+      "egress_generation": 1,
+      "pts": 28.966666666666665
+    },
+    {
+      "index": 870,
+      "egress_generation": 1,
+      "pts": 29.0
+    },
+    {
+      "index": 871,
+      "egress_generation": 1,
+      "pts": 29.033333333333335
+    },
+    {
+      "index": 872,
+      "egress_generation": 1,
+      "pts": 29.066666666666666
+    },
+    {
+      "index": 873,
+      "egress_generation": 1,
+      "pts": 29.1
+    },
+    {
+      "index": 874,
+      "egress_generation": 1,
+      "pts": 29.133333333333333
+    },
+    {
+      "index": 875,
+      "egress_generation": 1,
+      "pts": 29.166666666666668
+    },
+    {
+      "index": 876,
+      "egress_generation": 1,
+      "pts": 29.2
+    },
+    {
+      "index": 877,
+      "egress_generation": 1,
+      "pts": 29.233333333333334
+    },
+    {
+      "index": 878,
+      "egress_generation": 1,
+      "pts": 29.266666666666666
+    },
+    {
+      "index": 879,
+      "egress_generation": 1,
+      "pts": 29.3
+    },
+    {
+      "index": 880,
+      "egress_generation": 1,
+      "pts": 29.333333333333332
+    },
+    {
+      "index": 881,
+      "egress_generation": 1,
+      "pts": 29.366666666666667
+    },
+    {
+      "index": 882,
+      "egress_generation": 1,
+      "pts": 29.4
+    },
+    {
+      "index": 883,
+      "egress_generation": 1,
+      "pts": 29.433333333333334
+    },
+    {
+      "index": 884,
+      "egress_generation": 1,
+      "pts": 29.466666666666665
+    },
+    {
+      "index": 885,
+      "egress_generation": 1,
+      "pts": 29.5
+    },
+    {
+      "index": 886,
+      "egress_generation": 1,
+      "pts": 29.533333333333335
+    },
+    {
+      "index": 887,
+      "egress_generation": 1,
+      "pts": 29.566666666666666
+    },
+    {
+      "index": 888,
+      "egress_generation": 1,
+      "pts": 29.6
+    },
+    {
+      "index": 889,
+      "egress_generation": 1,
+      "pts": 29.633333333333333
+    },
+    {
+      "index": 890,
+      "egress_generation": 1,
+      "pts": 29.666666666666668
+    },
+    {
+      "index": 891,
+      "egress_generation": 1,
+      "pts": 29.7
+    },
+    {
+      "index": 892,
+      "egress_generation": 1,
+      "pts": 29.733333333333334
+    },
+    {
+      "index": 893,
+      "egress_generation": 1,
+      "pts": 29.766666666666666
+    },
+    {
+      "index": 894,
+      "egress_generation": 1,
+      "pts": 29.8
+    },
+    {
+      "index": 895,
+      "egress_generation": 1,
+      "pts": 29.833333333333332
+    },
+    {
+      "index": 896,
+      "egress_generation": 1,
+      "pts": 29.866666666666667
+    },
+    {
+      "index": 897,
+      "egress_generation": 1,
+      "pts": 29.9
+    },
+    {
+      "index": 898,
+      "egress_generation": 1,
+      "pts": 29.933333333333334
+    },
+    {
+      "index": 899,
+      "egress_generation": 1,
+      "pts": 29.966666666666665
+    },
+    {
+      "index": 900,
+      "egress_generation": 1,
+      "pts": 30.0
+    },
+    {
+      "index": 901,
+      "egress_generation": 1,
+      "pts": 30.033333333333335
+    },
+    {
+      "index": 902,
+      "egress_generation": 1,
+      "pts": 30.066666666666666
+    },
+    {
+      "index": 903,
+      "egress_generation": 1,
+      "pts": 30.1
+    },
+    {
+      "index": 904,
+      "egress_generation": 1,
+      "pts": 30.133333333333333
+    },
+    {
+      "index": 905,
+      "egress_generation": 1,
+      "pts": 30.166666666666668
+    },
+    {
+      "index": 906,
+      "egress_generation": 1,
+      "pts": 30.2
+    },
+    {
+      "index": 907,
+      "egress_generation": 1,
+      "pts": 30.233333333333334
+    },
+    {
+      "index": 908,
+      "egress_generation": 1,
+      "pts": 30.266666666666666
+    },
+    {
+      "index": 909,
+      "egress_generation": 1,
+      "pts": 30.3
+    },
+    {
+      "index": 910,
+      "egress_generation": 1,
+      "pts": 30.333333333333332
+    },
+    {
+      "index": 911,
+      "egress_generation": 1,
+      "pts": 30.366666666666667
+    },
+    {
+      "index": 912,
+      "egress_generation": 1,
+      "pts": 30.4
+    },
+    {
+      "index": 913,
+      "egress_generation": 1,
+      "pts": 30.433333333333334
+    },
+    {
+      "index": 914,
+      "egress_generation": 1,
+      "pts": 30.466666666666665
+    },
+    {
+      "index": 915,
+      "egress_generation": 1,
+      "pts": 30.5
+    },
+    {
+      "index": 916,
+      "egress_generation": 1,
+      "pts": 30.533333333333335
+    },
+    {
+      "index": 917,
+      "egress_generation": 1,
+      "pts": 30.566666666666666
+    },
+    {
+      "index": 918,
+      "egress_generation": 1,
+      "pts": 30.6
+    },
+    {
+      "index": 919,
+      "egress_generation": 1,
+      "pts": 30.633333333333333
+    },
+    {
+      "index": 920,
+      "egress_generation": 1,
+      "pts": 30.666666666666668
+    },
+    {
+      "index": 921,
+      "egress_generation": 1,
+      "pts": 30.7
+    },
+    {
+      "index": 922,
+      "egress_generation": 1,
+      "pts": 30.733333333333334
+    },
+    {
+      "index": 923,
+      "egress_generation": 1,
+      "pts": 30.766666666666666
+    },
+    {
+      "index": 924,
+      "egress_generation": 1,
+      "pts": 30.8
+    },
+    {
+      "index": 925,
+      "egress_generation": 1,
+      "pts": 30.833333333333332
+    },
+    {
+      "index": 926,
+      "egress_generation": 1,
+      "pts": 30.866666666666667
+    },
+    {
+      "index": 927,
+      "egress_generation": 1,
+      "pts": 30.9
+    },
+    {
+      "index": 928,
+      "egress_generation": 1,
+      "pts": 30.933333333333334
+    },
+    {
+      "index": 929,
+      "egress_generation": 1,
+      "pts": 30.966666666666665
+    },
+    {
+      "index": 930,
+      "egress_generation": 1,
+      "pts": 31.0
+    },
+    {
+      "index": 931,
+      "egress_generation": 1,
+      "pts": 31.033333333333335
+    },
+    {
+      "index": 932,
+      "egress_generation": 1,
+      "pts": 31.066666666666666
+    },
+    {
+      "index": 933,
+      "egress_generation": 1,
+      "pts": 31.1
+    },
+    {
+      "index": 934,
+      "egress_generation": 1,
+      "pts": 31.133333333333333
+    },
+    {
+      "index": 935,
+      "egress_generation": 1,
+      "pts": 31.166666666666668
+    },
+    {
+      "index": 936,
+      "egress_generation": 1,
+      "pts": 31.2
+    }
+  ]
+}

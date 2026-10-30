@@ -13,7 +13,7 @@ import numpy as np
 from relay.runtime import run
 from relay.security import Credentials, RelayAddress
 from relay.stream import NetworkInput
-from recovery_fixture import engine
+from recovery_fixture import engine, record
 
 
 class IngestDuringStall(unittest.TestCase):
@@ -83,8 +83,16 @@ class IngestDuringStall(unittest.TestCase):
         publisher.start()
         moderator.start()
         source_engine = engine(delay=.05)
+        submissions = []
+        submit = source_engine.submit
+
+        def observe_submit(frame, now=None):
+            submit(frame, now=now)
+            submissions.append((frame.index, frame.pts, now, time.monotonic(), source_engine.outputs))
+
         try:
-            with tempfile.TemporaryDirectory() as directory, patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', incoming):
+            with tempfile.TemporaryDirectory() as directory, patch('relay.runtime.Egress', Output), \
+                    patch('relay.runtime.NetworkInput', incoming), patch.object(source_engine, 'submit', observe_submit):
                 summary = run(source_engine, RelayAddress('127.0.0.1'), Credentials.generate(), Credentials.generate(),
                               directory, stopped, seconds=9, width=64, height=32, encoder='libx264',
                               control_ready=controls.append)
@@ -101,11 +109,23 @@ class IngestDuringStall(unittest.TestCase):
         self.assertEqual(inputs[0].active_generation, 1, 'ingest must stay connected')
         self.assertEqual(summary['session']['disconnections'], 0)
         self.assertLessEqual(summary['input_queue_high_water'], 8)
+        during = [row for row in submissions if times['blocked'] + .25 < row[3] < times['resumed'] - .25]
+        self.assertGreaterEqual(len(during), 30, 'the relay loop must submit fresh real ingest DURING the blocked write')
+        self.assertGreaterEqual(during[-1][0] - during[0][0], 30, 'input frame indices must advance during the stall')
+        self.assertGreaterEqual(during[-1][4] - during[0][4], 30, 'the actual engine must keep presenting during the stall')
+        self.assertLess(max(row[3] - row[2] for row in during), 1., 'queued old ingest must not substitute for current frames')
         self.assertTrue(any(row[2] == 'LIVE' and row[3] for row in writes[:10]), 'fixture must exercise actual LIVE pixels before HOLD')
         fresh = [row for row in writes if row[4] > times['resumed'] + .05]
         self.assertGreater(len(fresh), 5)
         self.assertTrue(all(row[1] >= times['resumed'] and row[2] == 'HOLD' and not row[3] for row in fresh), fresh)
         self.assertEqual([row[0] for row in writes], sorted(set(row[0] for row in writes)))
+        record(self, {'during_block': {'submissions': len(during),
+                                      'input_index_advance': during[-1][0] - during[0][0],
+                                      'engine_output_advance': during[-1][4] - during[0][4],
+                                      'max_ingest_age_seconds': max(row[3] - row[2] for row in during)},
+                      'stall_seconds': times['resumed'] - times['blocked'],
+                      'fresh_hold_outputs': len(fresh), 'session': summary['session'],
+                      'input_failures': inputs[0].failures, 'generation': inputs[0].active_generation})
 
     def test_real_reader_drops_oldest_burst_without_reconnecting(self):
         stopped = threading.Event()

@@ -9,6 +9,7 @@ from contextlib import ExitStack
 from fractions import Fraction
 import hashlib
 import json
+import math
 import multiprocessing as mp
 import os
 from pathlib import Path
@@ -116,6 +117,40 @@ def label_edges(pixels):
     return int((cv2.Canny(pixels[y0:y1, x0:x1], 80, 180) > 0).sum())
 
 
+def capture_alignment(rows, matched):
+    """Associate matched pixels with time, reporting one startup frame separately.
+
+    The startup-to-steady step is reported, not folded into steady-state
+    intervals. No pixels, holds or LIVE-share observations are excluded.
+    """
+    if len(rows) < 2 or len(rows) != len(matched):
+        raise RuntimeError('Capture alignment requires two or more matched frames')
+    origin = rows[1]['pts'] - matched[1]['pts']
+    startup_error = rows[0]['pts'] - origin - matched[0]['pts']
+    # Subtracting origins can round an exact frame-period error just below
+    # its boundary. Do not admit that boundary as a shorter startup error.
+    if abs(startup_error) >= 1 / 30 or math.isclose(abs(startup_error), 1 / 30, rel_tol=0., abs_tol=1e-12):
+        raise RuntimeError('Startup timestamp error reaches one frame period')
+    absolute = [abs(row['pts'] - origin - frame['pts']) for row, frame in zip(rows[1:], matched[1:])]
+    if any(error > .002 for error in absolute):
+        raise RuntimeError('Steady capture timestamps disagree with manifest mapping')
+    intervals = [abs((rows[i]['pts'] - rows[i - 1]['pts']) - (matched[i]['pts'] - matched[i - 1]['pts']))
+                 for i in range(2, len(rows))]
+    if any(error > .002 for error in intervals):
+        raise RuntimeError('Steady capture intervals disagree with manifest mapping')
+    identity = lambda row: [row.get('egress_generation', 1), row['index']]
+    return {'origin_pts': origin,
+        'startup_alignment': {'excluded_leading_frames': 1, 'capture_index': 0,
+            'manifest_identity': identity(matched[0]), 'error_seconds': startup_error,
+            'frame_period_seconds': 1 / 30,
+            'step_to_next_seconds': rows[1]['pts'] - rows[0]['pts'],
+            'manifest_step_to_next_seconds': matched[1]['pts'] - matched[0]['pts'],
+            'anchor_capture_index': 1, 'anchor_manifest_identity': identity(matched[1])},
+        'steady_alignment': {'frames': len(rows) - 1, 'intervals': len(intervals),
+            'absolute_tolerance_seconds': .002, 'interval_tolerance_seconds': .002,
+            'max_absolute_error_seconds': max(absolute), 'max_interval_error_seconds': max(intervals, default=0.)}}
+
+
 def decode(directory, actions, manifest, archive):
     rows = []
     with av.open(str(directory / 'network.mkv')) as clip:
@@ -137,10 +172,7 @@ def decode(directory, actions, manifest, archive):
            (f.get('egress_generation', 1), f['index'])
            for f, picture in zip(manifest, archive, strict=True)):
         raise RuntimeError('Archive generation/frame mapping disagrees')
-    origin_pts = rows[0]['pts'] - manifest[offset]['pts']
-    if any(abs(row['pts'] - origin_pts - manifest[i+offset]['pts']) > .002
-           for i, row in enumerate(rows)):
-        raise RuntimeError('Network frame timestamps disagree with manifest mapping')
+    alignment = capture_alignment(rows, manifest[offset:])
     for i, row in enumerate(rows):
         row['engine_index'] = manifest[i + offset]['index']
         row['egress_generation'] = manifest[i + offset].get('egress_generation', 1)
@@ -177,13 +209,14 @@ def decode(directory, actions, manifest, archive):
         holds.append(entry)
     gaps = np.diff([r['pts'] for r in rows])
     write(directory / 'pixel-evidence.json', {'frames': rows, 'holds': holds,
-          'archive_suffix_offset': offset, 'exact_pixel_suffix_match': matched})
+          'archive_suffix_offset': offset, 'exact_pixel_suffix_match': matched, **alignment})
     return {'decoded_frames': len(rows), 'spatial_frames': sum(r['spatial'] for r in rows),
             'black_frames': sum(r['black'] for r in rows), 'holds': holds,
             'max_label_edges': max(r['label_edges'] for r in rows),
             'label_edge_guard': all(r['label_edges'] < 60 for r in rows),
             'max_pts_gap_seconds': float(gaps.max()) if len(gaps) else None,
             'archive_suffix_offset': offset, 'exact_pixel_suffix_match': matched,
+            **alignment,
             'hold_latency_scope': 'control receipt to encoder completion + independently decoded pixel suffix',
             'no_all_slate_pass': any(r['spatial'] for r in rows)}
 
