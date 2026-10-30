@@ -1,10 +1,12 @@
 # M2 relay hand-back
 
-**Interim verdict: Linux functional gate 56 passes; Gate 2 is not qualified.
-RTMP's 60-second functional transport run completes under contention. SRT A/V
-is red. The RTMP 20-minute soak and real read-ACL matrix are submitted in the
-sealed second queue; their results remain pending. Independent privacy and Q
-remain pending.**
+**Interim verdict: the new RTMP soak is red after 1,007.492 seconds and
+30,001 encoded frames. Reconnect happened about 339 seconds earlier; generation 2
+continued cleanly, so an immediate fatal reconnect regression is not established.
+The long-origin and high-output-PTS local probes pass. The current patch improves
+blocked-worker/input diagnostics only; it is not a claimed runtime fix. Full
+Linux functional gate 67 passes. Gate2, SRT, independent privacy and Q remain
+unqualified.**
 
 ## Checkout, ownership and deadline
 
@@ -269,3 +271,77 @@ Outstanding: audit final queued receipts and processes; corrected independent
 privacy grading/Q; RTMP cadence qualification and complete resource coverage;
 SRT timestamp/reconnect limitations; Mac gate; live phone and Twitch integration
 outside tonight's authorized scope. No final Gate2 pass is claimed.
+
+
+## Continuation after the first new soak (current)
+
+Opus committed and pushed the frozen source checkpoint as
+`d4a28a99bdda0bc44a685f31cd971babf1263781` on this branch. This was the
+conductor's action, not a commit/stage/push by this implementation lane. Further
+source changes are uncommitted diffs against that checkpoint; the original
+project base remains ec1d1f96a1c29ab82109c66f27064f3fd6cb326d.
+
+Conductor raised the test ceiling to72, unchanged original timebox. Current
+executed count is66 before the still-pending ACL job: prior59 + first soak1 +
+six local invocations whose receipt numbers are62–67. Number61 is reserved for
+the asynchronous ACL invocation and was not charged before execution. The new
+soak producer is closed-one-shot; no blind native retry was submitted.
+
+The soak ran1,007.492s, not20min, and produced30,001 manifest frames before
+`egress-write-timeout`. Maximum write/ACK time6.217s includes worker cleanup;
+old timeout receipts do not identify the active native operation. `input-timestamp`
+is a last input code with no error timestamp in that source version. Hold/kill/
+reconnect/release occurred664.167/665.060/668.019/671.015s. Failure followed
+reconnect by~339.2s; final frame index30000/PTS1000 was LIVE, and generation2
+sender stopped cleanly after10,033 frames. A direct causal link to reconnect is
+not proved. Main106sessions/242disconnects/13video drops show input instability;
+the originating encoder stall remains unidentified. Root closed the retry.
+
+62: short real MediaMTX RTMP→RTSP→sharedengine→CPUegress test with generation1
+originPTS600s, kill, and generation2origin0. Runtime12s completed,347frames,
+2sessions, but the helper's cleanup attempted Event.set on the already-SIGKILLed
+sender and blocked. All four owned process identities were matched and stopped;
+no survivor remained. This is a failed helper invocation, not reproduction of
+the original encoder timeout. 63 fixes only helper cleanup and passes350
+contiguous output frames/2sessions/0video drops, max encoded gap164ms, all
+processes/threads stopped. It tests high source timestamp origin, not600s wall
+endurance. 64 tests actual engine-produced HOLD frames across outputPTS999.867
+through1002.033: libx264 and NVENC each encode and decode66frames successfully.
+Both simple timestamp hypotheses are therefore insufficient to reproduce the
+native stall. Neither synthetic test qualifies privacy or source-rate cadence.
+
+Current source patch (`relay/stream.py`, `relay/runtime.py`, existing
+`tests/m2/test_stream.py`) retains only numeric worker progress in shared memory:
+active encode/mux operation, operation start time, active/completed frame index.
+A timeout now reports that operation even when the worker cannot reply. Input
+failures include generation and monotonic time; missing/nonincreasing input PTS
+are counted with their exact numeric values and generation, without clamping or
+changing timestamp mapping. The public Egress/RelaySession/callback interfaces
+remain compatible. No engine/scorer/cache change or underlying cause fix occurs.
+
+65 extends the real stalled-RTMP handshake regression: red because timeout lacks
+`operation`. 66 passes all4stream tests, with operation `network-startup` surfaced
+safely. 67 fullLinuxfunctional passes96defaulttests(oneMacskip),16M2tests and
+compileall. Receipts62–67 and commands are in the parent receipt directory;
+helpers are `.tmp/m2/repro-long-reconnect.py`, `repro-high-egress-pts.py`, and
+`full-gate-67.py`. Source hashes are recorded in each local reproduction. Mac
+Swift/VideoToolbox remain unrun; no cadence or native Gate2 pass is asserted.
+
+A zero-test-budget read-only Ultra child is inspecting the sealed native timeout
+and checkpoint source for a falsifiable next probe. No new20min producer will
+be called a fix until the actual failure is reproduced or otherwise identified.
+The existing read-ACL matrix remains root-owned queued work. Original deadline
+~11:55UTC remains unchanged, earlier than07AMPT.
+
+
+## Current recovery order and ACL audit
+
+Conductor extended this fix to Friday08:00PT (2026-10-30T15:00Z) and raised the ceiling to76. Current actual count is69, with one red test invocation70 reserved for the test child.
+
+Parent verified the ACL job against original stdout seal a5fe28931a2f0abecbfaa65eb64a32adaa9db514690cf944b501f9b6a425af8b and its exact one-file inventory/hash/size. Both allowed hosts pass real RTMP/SRT publication and authenticated RTSP three-packet reads, denied anonymous/bad/phone camera reads, denied wrong-role/path publishers, exact bindings, credential-absence checks, and server exit0. Accounting is valid, uncontended, forced=false; other-busy mean15.851132%/max18.974756%. This is a socket ACL/binding pass, not privacy or endurance. Audit: .tmp/m2/acl-parent-audit.json. Root runner3442769 exited empty/sealed.
+
+Probe68 reproduced steady-state network-mux blocking after a fragmented valid RTMP control message (90 warm-up ACKs, then93 versus300 for the full-control condition). Historical attribution remains unproved. A bridge experiment69 was already running when conductor directed otherwise; it failed startup and its red receipts remain. The production bridge and import have been REMOVED. Candidate parser code is retained only as a test fault fixture in ignored scratch; no production RTMP parser is proposed.
+
+Bounded recovery is staged ONLY in .tmp/m2/recovery/{stream,live,runtime}.py, not active. Only the writer restarts after its old process is reaped. Failed/precomputed frames are discarded; the next fresh engine result follows current control/HOLD state. Five reconnects per60s,250ms backoff, separate archive generations, appended mask/PTS rows, fixed-code operation-aware recovery events. No timestamp clamp or engine/ingest restart. Public entry points remain; write returns False to signal batch discard.
+
+The Ultra test child owns tests/m2/test_recovery.py/helper and RECOVERY-TESTS-HANDBACK.md. It has ONE red invocation70 against current pre-recovery parent source. Same68 fault bytes/six-second delay; a six-second backpressure fault after actual buffer saturation; HOLD applied while blocked; real recovery limit if feasible. The fixture must accept reconnections, while injecting each fault only once. Parent audits/copies, applies staged recovery, greens71, fullgate72, then requests a fresh root queue for one20min RTMP soak and one retry. No recovery or Gate2 pass is claimed yet.

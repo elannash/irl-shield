@@ -69,7 +69,8 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                               'output_code': output.error_code if output is not None else None,
                               'encoder': output.error_details if output is not None else None,
                               'at_monotonic': time.monotonic(),
-                              'input_code': source.error_code if source is not None else None}
+                              'input_code': source.error_code if source is not None else None,
+                              'input_failure': source.last_failure if source is not None else None}
         raise RuntimeError('Relay transport failed (upstream diagnostics suppressed)') from None
     finally:
         cleanup = []
@@ -83,7 +84,15 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                        session=session.stats if session else None,
                        input_queue_capacity=8, input_queue_high_water=source.high_water if source else None,
                        engine=engine.stats, output_frames=output.count if output else 0,
-                       max_egress_write_seconds=output.max_write_seconds if output else None)
+                       max_egress_write_seconds=output.max_write_seconds if output else None,
+                       egress_recoveries=({'count': output.recovery_count,
+                                           'recent_events': list(output.recovery_events),
+                                           'max_reconnects': 5, 'window_seconds': 60}
+                                          if output else None))
+        summary['input_diagnostics'] = ({'active_generation': source.active_generation,
+                                         'last_failure': source.last_failure,
+                                         'timestamp_issues': source.timestamp_issues}
+                                        if source else None)
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)
         (directory / 'runtime.json').write_text(json.dumps(summary, indent=2) + '\n')

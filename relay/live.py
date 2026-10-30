@@ -46,6 +46,8 @@ class RelaySession:
         self.samples = np.zeros(self.audio_capacity, np.int16)
         self.tags = np.full(self.audio_capacity, -1, np.int64)
         self.audio_cursor = 0
+        self.egress_interruptions = 0
+        self._egress_holding = False
         self.engine.hold(True, source='transport', reason='startup')
         self.engine.submit(Frame(0, 0., np.zeros((height, width, 3), np.uint8)), now=self.start)
 
@@ -95,11 +97,22 @@ class RelaySession:
             pcm = np.where(self.tags[slots] == indices, self.samples[slots], 0).astype(np.int16)
             self.tags[slots] = -1
             self.audio_cursor = first + 1600
-            self.sink(result, pcm)
+            accepted = self.sink(result, pcm)
+            if accepted is False:
+                self.egress_interruptions += 1
+                self.engine.hold(True, source='egress', reason='egress-reconnect')
+                self._egress_holding = True
+                self.audio_drops += int((self.tags >= self.audio_cursor).sum())
+                self.tags.fill(-1)
+                return
+            if self._egress_holding and accepted is True:
+                self.engine.hold(False, source='egress')
+                self._egress_holding = False
 
     @property
     def stats(self):
         return {'sessions': self.sessions, 'disconnections': self.disconnections,
+                'egress_interruptions': self.egress_interruptions,
                 'video_drops': self.video_drops, 'audio_dropped_samples': self.audio_drops,
                 'audio_buffer_samples': int((self.tags >= self.audio_cursor).sum()),
                 'audio_capacity_samples': self.audio_capacity}

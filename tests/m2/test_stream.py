@@ -135,6 +135,7 @@ class EgressMedia(unittest.TestCase):
                     self.fail('a stalled native RTMP handshake was reported as success')
                 self.assertTrue(accepted.is_set())
                 self.assertEqual(output.error_code, 'egress-cleanup-timeout')
+                self.assertEqual(output.error_details['operation'], 'network-startup')
                 self.assertEqual(set(multiprocessing.active_children()), before)
                 output.close()
         finally:
