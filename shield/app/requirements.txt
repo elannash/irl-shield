@@ -22,6 +22,7 @@ multidict==7.2.1
 propcache==0.5.4
 pycparser==3.12
 Pygments==2.21.0
+qrcode==8.2
 python-dateutil==3.0.0
 SecretStorage==3.5.0
 six==1.17.0

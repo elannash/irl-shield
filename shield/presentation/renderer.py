@@ -8,12 +8,12 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+from shield.skins.paint import SKINS
 
 
 STATES = frozenset(('LIVE', 'HOLD', 'SHIELD_MODE', 'PROTECT', 'FAILURE'))
 REASONS = frozenset(('none', 'moderator', 'shield_mode', 'safety_check',
                      'transport', 'starting'))
-SKINS = frozenset(('opaque', 'frosted', 'bar', 'patch', 'signed'))
 MAX_COUNT = 999_999_999
 FONT = Path(__file__).with_name('assets') / 'AtkinsonHyperlegibleNext-wght.ttf'
 

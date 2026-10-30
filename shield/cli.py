@@ -41,6 +41,10 @@ def parser():
         command.add_argument('--mediamtx-dir', type=Path, help='Directory with the hash-pinned MediaMTX binary')
         command.add_argument('--seconds', type=float)
         command.add_argument('--phone-setup', action='store_true', help='Show runtime phone credentials on /dev/tty')
+        command.add_argument('--dashboard', action='store_true', help='Serve private phone controls; also enabled by --phone-setup')
+        command.add_argument('--dashboard-port', type=int, default=0, help='Private dashboard port; default chooses a free port')
+        command.add_argument('--skin', default='frosted', choices=('frosted', 'bar', 'patch', 'signed', 'petals', 'ripple', 'confetti', 'cloud'))
+        command.add_argument('--frosted-desaturation', type=float, default=0.0, help='Optional coarse-color desaturation, 0 to 1')
         command.add_argument('--hold', action='store_true', help='Start with an independent manual HOLD')
     return root
 
@@ -53,6 +57,9 @@ def validate(args):
         raise ValueError('Login requires Twitch authorization')
     if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
         raise ValueError('Run duration must be positive and finite')
+    if (not math.isfinite(args.frosted_desaturation) or not 0 <= args.frosted_desaturation <= 1
+            or not 0 <= args.dashboard_port <= 65535):
+        raise ValueError('Invalid dashboard port or frosted desaturation')
     if args.mock_origin:
         from shield.twitch.http import TwitchHTTP
         TwitchHTTP(None, mock_origin=args.mock_origin)
@@ -146,7 +153,10 @@ async def execute(args):
             from relay.security import Credentials, RelayAddress
             address = RelayAddress(args.host, args.rtmp_port, args.srt_port, args.rtsp_port)
             phone, internal = Credentials.generate(), Credentials.generate()
-            controls = TwitchControls(session, http, stopped, mock_origin=args.mock_origin) if session else None
+            from shield.app.appearance import Appearance
+            appearance = Appearance(skin=args.skin, desaturation=args.frosted_desaturation)
+            controls = TwitchControls(session, http, stopped, mock_origin=args.mock_origin,
+                                      skin_chat=appearance.chat) if session else None
             if controls:
                 await controls.prepare()
             current = None
@@ -160,6 +170,10 @@ async def execute(args):
             def manual(active):
                 if current is not None:
                     current.hold(active)
+            def dashboard_manual(active):
+                if current is None:
+                    raise RuntimeError('Relay control is not ready')
+                current.hold(active)
             for signum, active in ((signal.SIGUSR1, True), (signal.SIGUSR2, False)):
                 loop.add_signal_handler(signum, manual, active)
             try:
@@ -167,16 +181,31 @@ async def execute(args):
                 with MediaMTX(address, phone, internal, binary=binary):
                     if args.phone_setup:
                         terminal_setup(address, phone)
-                    engine = await asyncio.to_thread(make_engine, args.model_cache)
-                    work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
-                        args.archive, stopped, args.seconds, control_ready=register,
-                        publish_twitch=(args.twitch_bandwidth_test or args.twitch_live),
-                        twitch_live=args.twitch_live, live_approval=approval, local_sink=args.local_sink))
+                    engine = await asyncio.to_thread(make_engine, args.model_cache, appearance=appearance)
+                    appearance.engine = engine
+                    work = dashboard = None
                     try:
+                        if args.dashboard or args.phone_setup:
+                            from shield.dashboard import DashboardServer, PairingData
+                            dashboard = DashboardServer(host=args.host, port=args.dashboard_port,
+                                get_public_snapshot=appearance.snapshot, set_manual_hold=dashboard_manual,
+                                pairing=PairingData(address.rtmp('camera', phone),
+                                                    address.srt('publish', 'camera', phone)))
+                            await dashboard.start()
+                        work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
+                            args.archive, stopped, args.seconds, control_ready=register,
+                            publish_twitch=(args.twitch_bandwidth_test or args.twitch_live),
+                            twitch_live=args.twitch_live, live_approval=approval,
+                            local_sink=args.local_sink, appearance=appearance))
                         await asyncio.shield(work)
                     finally:
                         stopped.set()
-                        await work
+                        if dashboard is not None:
+                            await dashboard.close()
+                        if work is not None:
+                            await work
+                        else:
+                            await asyncio.to_thread(engine.close)
                 if controls and controls.failure:
                     raise RuntimeError('EventSub startup failed')
             finally:

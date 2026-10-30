@@ -26,9 +26,10 @@ async def login(http, client_id, broadcaster_id, cancel, *, remember=False,
 
 class TwitchControls:
     """Register once through runtime.control_ready; retain policy across reconnects."""
-    def __init__(self, session, http, stopped, *, mock_origin=None):
+    def __init__(self, session, http, stopped, *, mock_origin=None, skin_chat=None):
         self.session, self.http, self.stopped = session, http, stopped
         self.mock_origin = mock_origin
+        self.skin_chat = skin_chat
         self.loop = asyncio.get_running_loop()
         self.client = self.events = self.task = self.key = None
         self.failure = False
@@ -39,7 +40,7 @@ class TwitchControls:
     def register(self, control):
         # The synchronous constructor asserts connection HOLD before any poll.
         self.events = ShieldEvents(self.session.broadcaster_id, control.hold,
-                                   mock=self.mock_origin is not None)
+                                   mock=self.mock_origin is not None, on_chat=self.skin_chat)
         control.set_stream_key(self.key.reveal())
         self.key = None
         self.loop.call_soon_threadsafe(self._start)
