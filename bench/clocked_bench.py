@@ -20,7 +20,7 @@ import numpy as np
 
 from bench.metrics import fidelity, quantiles
 from bench.scoring import score_records
-from bench.independence import policy_metadata, annotate_card
+from bench.independence import policy_metadata, resolve_fast_candidate, annotate_card
 from bench.clocked_pipeline import performance_trust, coverage_distribution
 
 
@@ -71,11 +71,38 @@ def quality_window(records, performance, synthetic_truth):
     return selected, truth
 
 
+def recorded_policy_metadata(performance):
+    """Require retained lanes to agree with the policy before any OCR credit.
+
+    Old options may omit a resolved default. A changed default must reject that
+    receipt rather than silently changing its denominator or aggregate scope.
+    """
+    candidate, options = performance['candidate'], performance['options']
+    declared_fast = resolve_fast_candidate(candidate, options)
+    if declared_fast is None:
+        return policy_metadata(candidate, options)
+    loading = performance.get('loading', {})
+    recorded_fast = loading.get('fast', {}).get('candidate')
+    if recorded_fast is None:
+        raise ValueError('Retained performance is missing its recorded fast lane candidate')
+    recorded = policy_metadata(candidate, {**options, 'fast_candidate': recorded_fast})
+    if declared_fast != recorded_fast:
+        raise ValueError('Current policy differs from the recorded fast lane; use the frozen recorded policy')
+    for lane, model in (('accurate', candidate), ('fast', recorded_fast)):
+        receipt = loading.get(lane, {})
+        families = receipt.get('metadata', {}).get('detector_families')
+        if (receipt.get('candidate') != model or
+                (families is not None and families != recorded['lanes'][lane]['detector_families'])):
+            raise ValueError(f'Retained performance has inconsistent recorded {lane} lane provenance')
+    return recorded
+
+
 def score_video(input_path, output_path, judge, synthetic_truth):
     """Decode and judge after timing, using saved actual mask pixels, never rebuilt quads."""
     input_path, output_path = Path(input_path), Path(output_path)
     full_records = json.loads(output_path.with_suffix('.masks.json').read_text())
     performance = json.loads(output_path.with_suffix('.performance.json').read_text())
+    detector_metadata = recorded_policy_metadata(performance)
     records, selected_truth = quality_window(full_records, performance, synthetic_truth)
     before_capture = cv2.VideoCapture(str(input_path), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 2])
     after_capture = cv2.VideoCapture(str(output_path), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 2])
@@ -119,7 +146,7 @@ def score_video(input_path, output_path, judge, synthetic_truth):
         before_capture.release()
         after_capture.release()
     quality, details = score_observations(inputs, outputs, selected_truth, guards, records,
-        detector_families=policy_metadata(performance["candidate"],performance["options"])["detector_families"])
+        detector_families=detector_metadata['detector_families'])
     quality['judging']=details['judging']=getattr(judge,'metadata',None)
     window = {'judged_frames': len(records), 'original_start_frame': records[0]['original_frame'],
               'original_stop_frame_exclusive': records[-1]['original_frame'] + 1,
