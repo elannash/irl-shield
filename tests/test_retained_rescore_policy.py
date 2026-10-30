@@ -215,13 +215,20 @@ class RetainedRescorePolicy(unittest.TestCase):
 
     def test_only_an_explicit_masked_area_pass_allows_comparison(self):
         for entrypoint in (regrade, rescore_independent):
-            for label, area_pass, expected in (('missing', ABSENT, False), ('unknown', None, False),
-                                               ('failed', False, False), ('passed', True, True)):
+            for label, area_pass, basis, median, expected in (
+                    ('missing', ABSENT, 'unit:known-raster-area', .1, False),
+                    ('unknown', None, 'unit:known-raster-area', .1, False),
+                    ('failed', False, 'unit:known-raster-area', .1, False),
+                    ('passed', True, 'unit:known-raster-area', .1, True),
+                    ('unbacked', True, None, .1, False),
+                    ('over-ceiling', True, 'unit:known-raster-area', .57, False)):
                 with self.subTest(entrypoint=entrypoint.__name__, masked_area=label):
                     source = self.write_source(name=entrypoint.__name__.split('.')[-1] + '-' + label,
-                                               candidate='unmasked', natural_total=3)
+                                               candidate='unmasked', natural_total=3,
+                                               options={'area_ceiling_basis': basis})
                     card_path = source[0] / 'scorecard.json'
                     original = json.loads(card_path.read_text())
+                    original['masked_area_fraction']['p50'] = median
                     if area_pass is ABSENT:
                         del original['quality_checks']['masked_area']
                     else:
@@ -230,6 +237,7 @@ class RetainedRescorePolicy(unittest.TestCase):
                     card = self.invoke(entrypoint, [source])
                     for key in ('judge_discrimination', 'independent_judges', 'protected', 'real_video'):
                         self.assertIs(card['quality_checks'][key], True)
+                    self.assertIs(card['quality_checks']['masked_area'], expected)
                     self.assertIs(card['comparison_valid'], expected)
 
 

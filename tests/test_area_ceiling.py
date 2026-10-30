@@ -95,13 +95,15 @@ class AreaCeiling(unittest.TestCase):
                 (root / 'fixtures').mkdir()
                 (root / 'fixtures/manifest.json').write_text(json.dumps({'clips': [
                     {'id': 'unit', 'split': 'tune', 'path': 'fixture.mp4'}]}))
+                diagnostic = io.StringIO()
                 with patch.object(cli, 'ROOT', root), \
                      patch('fixtures.prepare.verify_cached', side_effect=AssertionError('Unexpected fixture access')), \
                      patch.object(offline_quality, '_fingerprint', side_effect=AssertionError('Unexpected source access')), \
-                     contextlib.redirect_stderr(io.StringIO()):
+                     contextlib.redirect_stderr(diagnostic):
                     with self.assertRaises(SystemExit) as error:
                         cli.main(['--area-ceiling', '.15'], judge=object())
                 self.assertEqual(error.exception.code, 2)
+                self.assertIn('basis receipt', diagnostic.getvalue())
                 self.assertFalse((root / 'out').exists())
 
 
