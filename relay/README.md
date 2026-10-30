@@ -93,7 +93,8 @@ The sole Twitch route is plain RTMP over `127.0.0.1` to a runtime-owned TLS
 forwarder, then verified TLS to `live.twitch.tv:443`. The forwarder uses
 Python's standard-library `ssl.create_default_context()` with system CAs,
 certificate/hostname verification and the ingest hostname as `server_hostname`.
-No bytes leave this host before TLS verification succeeds. Failure closes the
+No RTMP bytes, and therefore no stream key, are forwarded before TLS verification
+succeeds. The TLS ClientHello necessarily leaves first. Failure closes the
 local socket; the existing encoder recovery protects output and reconnects
 through the same listener. There is no direct PyAV RTMPS output or fallback.
 The forwarder owns at most two connections, transfers chunks of at most 64 KiB,

@@ -31,6 +31,37 @@ No music is included in prepared clips.
 source resolution, excerpt position, output dimensions, frame rate and duration.
 Originals and prepared clips are generated cache files, excluded from Git.
 
+## Fresh heldout sources
+
+These three sources and all derived clips are **benchmark-only**, with audio
+removed and no music. None is demo-ready; they must not appear in the submission
+video. Full revisions, attribution requirements and modifications are recorded
+in [fresh-heldout attribution](fresh-heldout/ATTRIBUTION.md) and its frozen
+[manifest](fresh-heldout/manifest.json).
+
+| ID / split | Original and author | License |
+| --- | --- | --- |
+| `zurich-spiegelgasse` / fresh heldout | [Spiegelgasse.ogv](https://commons.wikimedia.org/wiki/File:Spiegelgasse.ogv), [Albinfo](https://commons.wikimedia.org/wiki/User:Albinfo), own work | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| `chicago-wells` / fresh heldout | [New Wells Street bridge.webm](https://commons.wikimedia.org/wiki/File:New_Wells_Street_bridge.webm), [Steven Vance](https://vimeo.com/stevevance), from [Vimeo 80050981](https://vimeo.com/80050981) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `manchester-portland` / fresh heldout | [Portland Street, Manchester, May 2017.webm](https://commons.wikimedia.org/wiki/File:Portland_Street,_Manchester,_May_2017.webm), [Anders Hansson](https://vimeo.com/nders), from [Vimeo 216535229](https://vimeo.com/216535229) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+
+
+## Fresh heldout v2 sources
+
+Checked on **2026-10-30 UTC** against Commons file-page revisions. These are
+benchmark-only sources, never demo-ready; no logo/brand clearance is claimed.
+Modifications: fixed 2–7s excerpt, 1280×720 crop/scale, zero-origin CFR30,
+150 frames, complete audio/subtitle/data removal and deterministic synthetic
+sign overlays. No music is included in the derived clips. Full license/revision
+snapshots and recipes are in [v2 preparation](../docs/FRESH-HELDOUT-V2.md) and
+[sealed selection](fresh-heldout-v2/selection.json).
+
+| ID / split | Original and author | License |
+| --- | --- | --- |
+| `london-westminster` / fresh v2 heldout | [Walking in London](https://commons.wikimedia.org/w/index.php?oldid=1157657701), [POPtravel](https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA), [YouTube BgMKsDwIDgQ](https://www.youtube.com/watch?v=BgMKsDwIDgQ) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `paris-walk` / fresh v2 heldout | [Paris walking travel tour](https://commons.wikimedia.org/w/index.php?oldid=1031020312), [Le Monde en Vidéo](https://www.youtube.com/user/allairej1957), [YouTube O4W4X_UBRkg](https://www.youtube.com/watch?v=O4W4X_UBRkg) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `liverpool-walk` / fresh v2 heldout | [Walking in Liverpool](https://commons.wikimedia.org/w/index.php?oldid=1053656681), [POPtravel](https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA), [YouTube jKJ2zDSYns8](https://www.youtube.com/watch?v=jKJ2zDSYns8) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+
 ## Fonts
 
 The bundled, unmodified DejaVu Sans Bold, DejaVu Sans Mono Bold and DejaVu Serif

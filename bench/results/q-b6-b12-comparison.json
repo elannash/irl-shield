@@ -1,0 +1,841 @@
+{
+  "schema_version": 1,
+  "source_commit": "a8a06e30c2e5bdd8be054bbddf3c69169fe64e39",
+  "scope": "Primary truth/input controls exclude detector families ['paddleocr']; truth judges ['tesseract', 'vision-accurate']; output leaks use ALL judges ['tesseract', 'vision-accurate', 'ppocr-independent']. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+  "mode": "offline_quality",
+  "real_time_verified": false,
+  "only_change": {
+    "before": [
+      6,
+      12
+    ]
+  },
+  "source_and_input_identity": {
+    "input_manifest_sha256": "4db58cb96244791874447951b893af48f99b6bd165a59c46884a40a3c5226972",
+    "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+    "orchestrator_sha256": "d0351d3dc708222862c11f70a02e0ae002df0ded39ba5dbd50cbfd60faad6036"
+  },
+  "arms": [
+    {
+      "rank": 1,
+      "role": "diagnostic baseline; no guard-valid policy",
+      "run_id": "q-base-a8a06e3-cache3-v3",
+      "receipt": "out/q-base-a8a06e3-cache3-v3/scorecard.json",
+      "sha256": "6d2fd085331950a618fac550918618b1196bbb1641069e39d219f1bc4ef8a010",
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "natural": {
+        "hidden": 298,
+        "total": 343,
+        "hidden_fraction": 0.8688046647230321
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "synthetic_input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "masked_area_fraction": {
+        "p50": 0.12694064670138888,
+        "p95": 0.550451443142361
+      },
+      "protected_fraction": 0.002857142857142857,
+      "quality_checks": {
+        "independent_judges": true,
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": true
+      },
+      "comparison_valid": false
+    },
+    {
+      "rank": 2,
+      "role": "REJECT; no aggregate privacy gain and larger median area",
+      "run_id": "q-b12-a8a06e3-cache3-v3",
+      "receipt": "out/q-b12-a8a06e3-cache3-v3/scorecard.json",
+      "sha256": "20fcf04d20b754d84738321c0e4d10a4a1242871ddd9e7eb3f64ffb166be69e5",
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 12,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "natural": {
+        "hidden": 298,
+        "total": 343,
+        "hidden_fraction": 0.8688046647230321
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "synthetic_input_control": {
+        "total": 54,
+        "unreadable": 0
+      },
+      "masked_area_fraction": {
+        "p50": 0.1383572048611111,
+        "p95": 0.5507692057291665
+      },
+      "protected_fraction": 0.002857142857142857,
+      "quality_checks": {
+        "independent_judges": true,
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": true
+      },
+      "comparison_valid": false
+    }
+  ],
+  "deltas": {
+    "natural_hidden_intervals": 0,
+    "synthetic_hidden_intervals": 0,
+    "median_area_percentage_points": 1.1416558159722228,
+    "aggregate_protection_percentage_points": 0
+  },
+  "per_clip": [
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 2,
+          "hidden": 2,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.012329644097222222,
+          "p95": 0.015475911458333333
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 2,
+          "hidden": 2,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.013067491319444444,
+          "p95": 0.015736328124999997
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "illinois-night",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 13,
+          "hidden": 13,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.148232421875,
+          "p95": 0.16829389105902778
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 13,
+          "hidden": 13,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.15428548177083334,
+          "p95": 0.1780142144097222
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 12,
+          "hidden": 11,
+          "hidden_fraction": 0.9166666666666666
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.018921440972222224,
+          "p95": 0.30674815538194444
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 12,
+          "hidden": 11,
+          "hidden_fraction": 0.9166666666666666
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.024033203125,
+          "p95": 0.31556331380208336
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "ljubljana-traffic",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 31,
+          "hidden": 27,
+          "hidden_fraction": 0.8709677419354839
+        },
+        "synthetic": {
+          "total": 7,
+          "hidden": 7,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.14359863281250002,
+          "p95": 0.3800830620659722
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 31,
+          "hidden": 27,
+          "hidden_fraction": 0.8709677419354839
+        },
+        "synthetic": {
+          "total": 7,
+          "hidden": 7,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.15798231336805557,
+          "p95": 0.39310698784722226
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 27,
+          "hidden": 24,
+          "hidden_fraction": 0.8888888888888888
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.059345703124999996,
+          "p95": 0.06684396701388888
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 27,
+          "hidden": 26,
+          "hidden_fraction": 0.9629629629629629
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.06107476128472222,
+          "p95": 0.0687541232638889
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 32,
+          "hidden": 31,
+          "hidden_fraction": 0.96875
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.19181423611111112,
+          "p95": 0.20894325086805557
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 32,
+          "hidden": 31,
+          "hidden_fraction": 0.96875
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.2009271918402778,
+          "p95": 0.21957411024305554
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 39,
+          "hidden": 30,
+          "hidden_fraction": 0.7692307692307693
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.06610894097222222,
+          "p95": 0.09694542100694442
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 39,
+          "hidden": 30,
+          "hidden_fraction": 0.7692307692307693
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.07064670138888889,
+          "p95": 0.1045234375
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 40,
+          "hidden": 31,
+          "hidden_fraction": 0.775
+        },
+        "synthetic": {
+          "total": 7,
+          "hidden": 5,
+          "hidden_fraction": 0.7142857142857143
+        },
+        "masked_area_fraction": {
+          "p50": 0.16171929253472223,
+          "p95": 0.22109461805555555
+        },
+        "protected_fraction": 0.013333333333333334,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 40,
+          "hidden": 30,
+          "hidden_fraction": 0.75
+        },
+        "synthetic": {
+          "total": 7,
+          "hidden": 5,
+          "hidden_fraction": 0.7142857142857143
+        },
+        "masked_area_fraction": {
+          "p50": 0.16952962239583333,
+          "p95": 0.22366357421875
+        },
+        "protected_fraction": 0.013333333333333334,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 13,
+          "hidden": 11,
+          "hidden_fraction": 0.8461538461538461
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.026148003472222223,
+          "p95": 0.03133436414930556
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 13,
+          "hidden": 11,
+          "hidden_fraction": 0.8461538461538461
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.02672905815972222,
+          "p95": 0.03211176215277778
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "london-croydon",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 16,
+          "hidden": 16,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.17564615885416668,
+          "p95": 0.19380208333333335
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 16,
+          "hidden": 16,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.18610188802083333,
+          "p95": 0.2042810329861111
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 2,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.5745681423611111,
+          "p95": 1.0
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": false
+      },
+      "b12": {
+        "natural": {
+          "total": 2,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.5745681423611111,
+          "p95": 1.0
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": false
+      }
+    },
+    {
+      "clip": "mazatlan-aquiles",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 4,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.15974229600694445,
+          "p95": 0.6359956054687499
+        },
+        "protected_fraction": 0.02666666666666667,
+        "real_video_pass": false
+      },
+      "b12": {
+        "natural": {
+          "total": 4,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.19356119791666665,
+          "p95": 0.6577232530381942
+        },
+        "protected_fraction": 0.02666666666666667,
+        "real_video_pass": false
+      }
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "baseline": {
+        "natural": {
+          "total": 51,
+          "hidden": 47,
+          "hidden_fraction": 0.9215686274509803
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.11168782552083334,
+          "p95": 0.14944205729166665
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 51,
+          "hidden": 46,
+          "hidden_fraction": 0.9019607843137255
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "masked_area_fraction": {
+          "p50": 0.12162868923611111,
+          "p95": 0.16331467013888887
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "baseline": {
+        "natural": {
+          "total": 61,
+          "hidden": 55,
+          "hidden_fraction": 0.9016393442622951
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.24588921440972222,
+          "p95": 0.30982703993055555
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      },
+      "b12": {
+        "natural": {
+          "total": 61,
+          "hidden": 55,
+          "hidden_fraction": 0.9016393442622951
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "masked_area_fraction": {
+          "p50": 0.27049696180555555,
+          "p95": 0.3290731336805555
+        },
+        "protected_fraction": 0.0,
+        "real_video_pass": true
+      }
+    }
+  ],
+  "raw_leak_interval_changes": [
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": false,
+      "kind": "natural",
+      "id": "20",
+      "text": "\u2022 40 \u00b0:",
+      "baseline_leaked": true,
+      "b12_leaked": false,
+      "baseline_leak_frames": [
+        144
+      ],
+      "b12_leak_frames": []
+    },
+    {
+      "clip": "ljubljana-walk",
+      "synthetic_variant": false,
+      "kind": "natural",
+      "id": "26",
+      "text": "Oo",
+      "baseline_leaked": true,
+      "b12_leaked": false,
+      "baseline_leak_frames": [
+        146
+      ],
+      "b12_leak_frames": []
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "kind": "natural",
+      "id": "12",
+      "text": "Restaurant & Bar",
+      "baseline_leaked": false,
+      "b12_leaked": true,
+      "baseline_leak_frames": [],
+      "b12_leak_frames": [
+        71
+      ]
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "kind": "natural",
+      "id": "16",
+      "text": "REPAIRS",
+      "baseline_leaked": true,
+      "b12_leaked": false,
+      "baseline_leak_frames": [
+        91
+      ],
+      "b12_leak_frames": []
+    },
+    {
+      "clip": "london-bus-pov",
+      "synthetic_variant": true,
+      "kind": "natural",
+      "id": "22",
+      "text": "ant",
+      "baseline_leaked": false,
+      "b12_leaked": true,
+      "baseline_leak_frames": [],
+      "b12_leak_frames": [
+        71
+      ]
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": false,
+      "kind": "natural",
+      "id": "16",
+      "text": "SPlain + Hission",
+      "baseline_leaked": false,
+      "b12_leaked": true,
+      "baseline_leak_frames": [],
+      "b12_leak_frames": [
+        10
+      ]
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "kind": "natural",
+      "id": "17",
+      "text": "SAN BRUNU LIU",
+      "baseline_leaked": false,
+      "b12_leaked": true,
+      "baseline_leak_frames": [],
+      "b12_leak_frames": [
+        10
+      ]
+    },
+    {
+      "clip": "sf-market",
+      "synthetic_variant": true,
+      "kind": "natural",
+      "id": "26",
+      "text": "WALKEHOPE :",
+      "baseline_leaked": true,
+      "b12_leaked": false,
+      "baseline_leak_frames": [
+        55
+      ],
+      "b12_leak_frames": []
+    }
+  ],
+  "audit": {
+    "source_files_per_arm": 64,
+    "verified_bundle_grade_seals_per_arm": 14,
+    "verified_artifacts_per_arm": 140,
+    "identical_detector_geometry": true,
+    "identical_motion": true,
+    "identical_input_readings_and_truth_intervals": true,
+    "cache_schema": 3,
+    "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94"
+  },
+  "decision": "Reject B12. No guard-valid tune configuration exists in this comparison. Keep B6 as the diagnostic baseline; never promote it as privacy-qualified."
+}

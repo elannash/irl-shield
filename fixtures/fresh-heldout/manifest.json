@@ -1,0 +1,1151 @@
+{
+  "schema_version": 1,
+  "dataset_id": "fresh-heldout-v1",
+  "split": "heldout",
+  "status": "frozen-ungraded",
+  "benchmark_only": true,
+  "demo_ready": false,
+  "evaluation_marker": "fixtures/cache/fresh-heldout/EVALUATION.started.json",
+  "selection": "Preferred three; fixed 2.000\u20137.000s from metadata before pixels/scores. No substitution.",
+  "seed_recipe": "big-endian uint32 of first four SHA256 bytes of UTF8(fresh-heldout-v1: + clip ID)",
+  "recipe": "NVENC p4 10M yuv420p; 1280x720 crop/scale, CFR30 start_time=0 with a 150-frame cap; no audio/source metadata; bench.synthetic.overlay with tune camera tracking",
+  "natural_truth": "Empty per-frame synthetic truth; natural truth must come from independent judges later.",
+  "clips": [
+    {
+      "id": "zurich-spiegelgasse",
+      "source_path": "fixtures/cache/fresh-heldout/zurich-spiegelgasse.ogv",
+      "source_sha256": "db2d5ac45b7ecadb99dd3e84366817dca7c56ee30968b31aece7d8c3740d04d0",
+      "source_sha1": "b2336d66df6947e452a5289dfa0d36d6937b5e7c",
+      "source_size_bytes": 77497684,
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Spiegelgasse.ogv",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Spiegelgasse.ogv",
+      "revision_id": 950417958,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=950417958",
+      "author": "<a href=\"//commons.wikimedia.org/wiki/User:Albinfo\" title=\"User:Albinfo\">Albinfo</a>",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 863287663,
+      "split": "heldout"
+    },
+    {
+      "id": "chicago-wells",
+      "source_path": "fixtures/cache/fresh-heldout/chicago-wells.webm",
+      "source_sha256": "088364651dd0ecf84a0e9ea71b8575e5c2aace256cbbe5094ea1e30eb194501c",
+      "source_sha1": "f0391066bec82f53e7ceedba757563b93aa6966c",
+      "source_size_bytes": 28086878,
+      "source_width": 1280,
+      "source_height": 720,
+      "source_url": "https://commons.wikimedia.org/wiki/File:New_Wells_Street_bridge.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/New_Wells_Street_bridge.webm",
+      "revision_id": 1138938708,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1138938708",
+      "author": "<a rel=\"nofollow\" class=\"external text\" href=\"https://vimeo.com/stevevance\">Steven Vance</a>",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 3291828478,
+      "split": "heldout"
+    },
+    {
+      "id": "manchester-portland",
+      "source_path": "fixtures/cache/fresh-heldout/manchester-portland.webm",
+      "source_sha256": "987f3bff9e3b1f4b605083a099281065682dc5e6bd1d602df8ca4b3c62308ab7",
+      "source_sha1": "d5c4042f900a765ec87d4c66a14747a9d36faaaf",
+      "source_size_bytes": 20955496,
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Portland_Street,_Manchester,_May_2017.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Portland_Street%2C_Manchester%2C_May_2017.webm",
+      "revision_id": 1029110982,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1029110982",
+      "author": "<a rel=\"nofollow\" class=\"external text\" href=\"https://vimeo.com/nders\">Anders Hansson</a>",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 1582902036,
+      "split": "heldout"
+    }
+  ],
+  "inputs": [
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout/zurich-spiegelgasse-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout/zurich-spiegelgasse-natural.truth.json",
+      "source_sha256": "d09f4f5af37d671b195efff3e773ccde72d3b47707e7ebae4caf90e4fce28529",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout/zurich-spiegelgasse-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout/zurich-spiegelgasse-synthetic.truth.json",
+      "source_sha256": "8d1c9083143a4ba7995c55794614b1d7d46e3026a0e9b2d4ef2060740eaa0228",
+      "truth_sha256": "df860378ee84b6d4b38f84ee8bd309a427fa80de499de1400d443d365d0ecbab"
+    },
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout/chicago-wells-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout/chicago-wells-natural.truth.json",
+      "source_sha256": "884ea8347379336a02cb7be14ff889f97a55fb27de8c607d106e9d0834cbdb37",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout/chicago-wells-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout/chicago-wells-synthetic.truth.json",
+      "source_sha256": "f65541e35b4d6f80839758269d84ba9a54e3085ac50b695c7cce43027ec72508",
+      "truth_sha256": "77cbbca7c6b4c12bb641bd8b84697e62ef6db91be6d0c2c76ee018952844ff6c"
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout/manchester-portland-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout/manchester-portland-natural.truth.json",
+      "source_sha256": "b235d8dd5a77d3b1875e42ab2fed27e0ab3316971ceec30b17a3933d92205fa2",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout/manchester-portland-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout/manchester-portland-synthetic.truth.json",
+      "source_sha256": "65d612b60d1f1c16fb7670076304a605cab3d277f6bc2a769a07784a2fbf225a",
+      "truth_sha256": "d1d2bba4c7b79cf6560a1e4f02c41fc1a5a7a543e4c7f446df0624ba27da5a70"
+    }
+  ],
+  "receipts": {
+    "fixtures/cache/fresh-heldout/zurich-spiegelgasse.prepared.json": "a4634d86aedc371f27f661adcf79d17ed83166cdb834a086ea00ecd6ae87d951",
+    "fixtures/cache/fresh-heldout/zurich-spiegelgasse.commons.json": "323496434594b59911f1eafa910686ef462c4b14f31ae16c6321124b556b0eb6",
+    "fixtures/cache/fresh-heldout/chicago-wells.prepared.json": "f2ffe615265c893b81bea91756a548159565f3a9ecd16c4d8c69797b6772d48a",
+    "fixtures/cache/fresh-heldout/chicago-wells.commons.json": "b7d0ebf0ac8f50eeea5b6d87f6409d22703dbbb979bf93dff887d4534da09b92",
+    "fixtures/cache/fresh-heldout/manchester-portland.prepared.json": "76100b5b4ffecca713388f2c7c30767a80808792c2bdb57159cb330f6093c260",
+    "fixtures/cache/fresh-heldout/manchester-portland.commons.json": "e894bf801fc845265a111a5b08fd7e2606ed97859b551cdb6c43e2aaff1fe9e0"
+  },
+  "commons_metadata": {
+    "zurich-spiegelgasse": {
+      "request_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3ASpiegelgasse.ogv%7CFile%3ANew+Wells+Street+bridge.webm%7CFile%3APortland+Street%2C+Manchester%2C+May+2017.webm%7CFile%3AAlaskan+Way+Viaduct+timelapse.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "accessed_at_utc": "2026-10-30T06:44:52.592258+00:00",
+      "page": {
+        "pageid": 41105192,
+        "ns": 6,
+        "title": "File:Spiegelgasse.ogv",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "timestamp": "2015-06-21T12:29:56Z",
+            "user": "Albinfo",
+            "size": 77497684,
+            "width": 1920,
+            "height": 1080,
+            "duration": 120.30494341870161,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Spiegelgasse.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Spiegelgasse.ogv",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=41105192",
+            "sha1": "b2336d66df6947e452a5289dfa0d36d6937b5e7c",
+            "metadata": [
+              {
+                "name": "version",
+                "value": 2
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": 1655768442,
+                    "value": [
+                      {
+                        "name": "serial",
+                        "value": 1655768442
+                      },
+                      {
+                        "name": "group",
+                        "value": 0
+                      },
+                      {
+                        "name": "type",
+                        "value": "Theora"
+                      },
+                      {
+                        "name": "vendor",
+                        "value": "Xiph.Org libtheora 1.1 20090822 (Thusnelda)"
+                      },
+                      {
+                        "name": "length",
+                        "value": 120.30494341870161
+                      },
+                      {
+                        "name": "size",
+                        "value": 76192925
+                      },
+                      {
+                        "name": "header",
+                        "value": [
+                          {
+                            "name": "VMAJ",
+                            "value": 3
+                          },
+                          {
+                            "name": "VMIN",
+                            "value": 2
+                          },
+                          {
+                            "name": "VREV",
+                            "value": 1
+                          },
+                          {
+                            "name": "FMBW",
+                            "value": 120
+                          },
+                          {
+                            "name": "FMBH",
+                            "value": 68
+                          },
+                          {
+                            "name": "PICW",
+                            "value": 1920
+                          },
+                          {
+                            "name": "PICH",
+                            "value": 1080
+                          },
+                          {
+                            "name": "PICX",
+                            "value": 0
+                          },
+                          {
+                            "name": "PICY",
+                            "value": 8
+                          },
+                          {
+                            "name": "FRN",
+                            "value": 1679
+                          },
+                          {
+                            "name": "FRD",
+                            "value": 56
+                          },
+                          {
+                            "name": "PARN",
+                            "value": 1
+                          },
+                          {
+                            "name": "PARD",
+                            "value": 1
+                          },
+                          {
+                            "name": "CS",
+                            "value": 0
+                          },
+                          {
+                            "name": "NOMBR",
+                            "value": 1024000
+                          },
+                          {
+                            "name": "QUAL",
+                            "value": 12
+                          },
+                          {
+                            "name": "KFGSHIFT",
+                            "value": 6
+                          },
+                          {
+                            "name": "PF",
+                            "value": 0
+                          },
+                          {
+                            "name": "NSBS",
+                            "value": 3060
+                          },
+                          {
+                            "name": "NBS",
+                            "value": 48960
+                          },
+                          {
+                            "name": "NMBS",
+                            "value": 8160
+                          }
+                        ]
+                      },
+                      {
+                        "name": "comments",
+                        "value": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "length",
+                "value": 120.30494341870161
+              },
+              {
+                "name": "offset",
+                "value": 0
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2015-06-21 12:29:56",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Spiegelgasse",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "CC-Zero|Self-published work|Videos without audio|Spiegelgasse (Z\u00fcrich)|First-person videos on foot|Files by User:Albinfo|Videos from Z\u00fcrich",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Walking through Spiegelgasse in Zurich's old town",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2015-06",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Albinfo\" title=\"User:Albinfo\">Albinfo</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Zero, Public Domain Dedication",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "false",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "application/ogg"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 950417958,
+            "parentid": 901262902,
+            "timestamp": "2024-10-28T22:29:50Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "== {{int:filedesc}} ==\n{{Information\n|Description    ={{en|1=Walking through Spiegelgasse in Zurich's old town}}\n|Source         ={{own}}\n|Author         =[[User:Albinfo|Albinfo]]\n|Date           =2015-06\n|Permission     =\n|other_versions =\n}}\n== {{int:license-header}} ==\n{{self|Cc-zero}}\n\n[[Category:Spiegelgasse (Z\u00fcrich)]]\n[[Category:Files by User:Albinfo]]\n[[Category:Videos from Z\u00fcrich]]\n[[Category:Videos without audio]]\n[[Category:First-person videos on foot]]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "chicago-wells": {
+      "request_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3ASpiegelgasse.ogv%7CFile%3ANew+Wells+Street+bridge.webm%7CFile%3APortland+Street%2C+Manchester%2C+May+2017.webm%7CFile%3AAlaskan+Way+Viaduct+timelapse.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "accessed_at_utc": "2026-10-30T06:44:52.592258+00:00",
+      "page": {
+        "pageid": 79076443,
+        "ns": 6,
+        "title": "File:New Wells Street bridge.webm",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "timestamp": "2019-05-20T06:19:36Z",
+            "user": "Victorgrigas",
+            "size": 28086878,
+            "width": 1280,
+            "height": 720,
+            "duration": 53.987,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/New_Wells_Street_bridge.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:New_Wells_Street_bridge.webm",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=79076443",
+            "sha1": "f0391066bec82f53e7ceedba757563b93aa6966c",
+            "metadata": [
+              {
+                "name": "GETID3_VERSION",
+                "value": "1.9.17-201902071234"
+              },
+              {
+                "name": "filesize",
+                "value": 28086878
+              },
+              {
+                "name": "avdataoffset",
+                "value": 0
+              },
+              {
+                "name": "avdataend",
+                "value": 28086878
+              },
+              {
+                "name": "fileformat",
+                "value": "webm"
+              },
+              {
+                "name": "video",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "V_VP9"
+                  },
+                  {
+                    "name": "resolution_x",
+                    "value": 1280
+                  },
+                  {
+                    "name": "resolution_y",
+                    "value": 720
+                  },
+                  {
+                    "name": "display_unit",
+                    "value": "pixels"
+                  },
+                  {
+                    "name": "display_x",
+                    "value": 1280
+                  },
+                  {
+                    "name": "display_y",
+                    "value": 720
+                  },
+                  {
+                    "name": "frame_rate",
+                    "value": 29.97
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "V_VP9"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "resolution_x",
+                            "value": 1280
+                          },
+                          {
+                            "name": "resolution_y",
+                            "value": 720
+                          },
+                          {
+                            "name": "display_unit",
+                            "value": "pixels"
+                          },
+                          {
+                            "name": "display_x",
+                            "value": 1280
+                          },
+                          {
+                            "name": "display_y",
+                            "value": 720
+                          },
+                          {
+                            "name": "frame_rate",
+                            "value": 29.97
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "bitrate",
+                    "value": 4162020.930964862
+                  }
+                ]
+              },
+              {
+                "name": "warning",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [1 bytes]) at 71"
+                  },
+                  {
+                    "name": 1,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [2 bytes]) at 85"
+                  },
+                  {
+                    "name": 2,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [2 bytes]) at 100"
+                  },
+                  {
+                    "name": 3,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [4 bytes]) at 115"
+                  },
+                  {
+                    "name": 4,
+                    "value": "Unhandled track.video element [module.audio-video.matroska.php:683] (5552::15b0 [8 bytes]) at 419"
+                  }
+                ]
+              },
+              {
+                "name": "encoding",
+                "value": "UTF-8"
+              },
+              {
+                "name": "mime_type",
+                "value": "video/webm"
+              },
+              {
+                "name": "matroska",
+                "value": [
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "muxingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.20.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "writingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.20.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "major_brand",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "mp42"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "compatible_brands",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "mp42mp41isomavc1"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "encoder",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.20.100"
+                          },
+                          {
+                            "name": 1,
+                            "value": "Lavc58.35.100 libvpx-vp9"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "handler_name",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "L-SMASH Video Handler"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "duration",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "00:00:53.987000000\ufffd\ufffd"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "playtime_seconds",
+                "value": 53.987
+              },
+              {
+                "name": "bitrate",
+                "value": 4162020.930964862
+              },
+              {
+                "name": "playtime_string",
+                "value": "0:54"
+              },
+              {
+                "name": "version",
+                "value": 2
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2019-05-20 06:19:36",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "New Wells Street bridge",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Wells Street Bridge (Chicago, 1922 bascule)|Videos of 2013|Uploaded with video2commons|November 2013 in Chicago|Videos from Vimeo|License reviewed by YouTubeReviewBot",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "The Chicago Department of Transportation opened the replacement Wells Street bridge 9 days earlier than promised. Here's a view from the handlebars.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2013-11-22",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/Category:Vimeo\" title=\"Category:Vimeo\">Vimeo</a>: <a rel=\"nofollow\" class=\"external text\" data-mw-original-href=\"//vimeo.com/80050981\" href=\"https://vimeo.com/80050981\">New Wells Street bridge</a> (<a rel=\"nofollow\" class=\"external text\" href=\"//web.archive.org/web/*/https://vimeo.com/80050981\"><span style=\"color:#9602fc\">view archived source</span></a>)",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://vimeo.com/stevevance\">Steven Vance</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Attribution": {
+                "value": "Steven Vance",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "video/webm"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 1138938708,
+            "parentid": 781086944,
+            "timestamp": "2025-12-30T03:17:31Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "=={{int:filedesc}}==\n{{Information\n|description={{en|1=The Chicago Department of Transportation opened the replacement Wells Street bridge 9 days earlier than promised. Here's a view from the handlebars.}}\n|date=2013-11-22\n|source={{From Vimeo|1=80050981|2=New Wells Street bridge}}\n|author=[https://vimeo.com/stevevance Steven Vance]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{cc-by-3.0|Steven Vance}}\n{{VimeoReview|id=80050981|license=by-3.0|date=2019-12-09}}\n[[Category:November 2013 in Chicago]]\n[[Category:Uploaded with video2commons]]\n[[Category:Videos of 2013|1122]]\n[[Category:Wells Street Bridge (Chicago, 1922 bascule)]]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "manchester-portland": {
+      "request_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3ASpiegelgasse.ogv%7CFile%3ANew+Wells+Street+bridge.webm%7CFile%3APortland+Street%2C+Manchester%2C+May+2017.webm%7CFile%3AAlaskan+Way+Viaduct+timelapse.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "accessed_at_utc": "2026-10-30T06:44:52.592258+00:00",
+      "page": {
+        "pageid": 63411445,
+        "ns": 6,
+        "title": "File:Portland Street, Manchester, May 2017.webm",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "timestamp": "2017-10-16T17:39:51Z",
+            "user": "Davey2010",
+            "size": 20955496,
+            "width": 1920,
+            "height": 1080,
+            "duration": 12.44,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Portland_Street%2C_Manchester%2C_May_2017.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Portland_Street,_Manchester,_May_2017.webm",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=63411445",
+            "sha1": "d5c4042f900a765ec87d4c66a14747a9d36faaaf",
+            "metadata": [
+              {
+                "name": "GETID3_VERSION",
+                "value": "1.9.14-201703261440"
+              },
+              {
+                "name": "filesize",
+                "value": 20955496
+              },
+              {
+                "name": "avdataoffset",
+                "value": 0
+              },
+              {
+                "name": "avdataend",
+                "value": 20955496
+              },
+              {
+                "name": "fileformat",
+                "value": "webm"
+              },
+              {
+                "name": "audio",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "vorbis"
+                  },
+                  {
+                    "name": "sample_rate",
+                    "value": 44100
+                  },
+                  {
+                    "name": "channels",
+                    "value": 2
+                  },
+                  {
+                    "name": "language",
+                    "value": "und"
+                  },
+                  {
+                    "name": "bits_per_sample",
+                    "value": 32
+                  },
+                  {
+                    "name": "lossless",
+                    "value": false
+                  },
+                  {
+                    "name": "bitrate_mode",
+                    "value": "vbr"
+                  },
+                  {
+                    "name": "bitrate",
+                    "value": 192000
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "vorbis"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "sample_rate",
+                            "value": 44100
+                          },
+                          {
+                            "name": "channels",
+                            "value": 2
+                          },
+                          {
+                            "name": "language",
+                            "value": "und"
+                          },
+                          {
+                            "name": "bits_per_sample",
+                            "value": 32
+                          },
+                          {
+                            "name": "lossless",
+                            "value": false
+                          },
+                          {
+                            "name": "bitrate_mode",
+                            "value": "vbr"
+                          },
+                          {
+                            "name": "bitrate",
+                            "value": 192000
+                          },
+                          {
+                            "name": "compression_ratio",
+                            "value": 0.06802721088435375
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "channelmode",
+                    "value": "stereo"
+                  },
+                  {
+                    "name": "compression_ratio",
+                    "value": 0.06802721088435375
+                  }
+                ]
+              },
+              {
+                "name": "video",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "vp8"
+                  },
+                  {
+                    "name": "resolution_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "resolution_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "display_unit",
+                    "value": "pixels"
+                  },
+                  {
+                    "name": "display_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "display_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "frame_rate",
+                    "value": 25
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "vp8"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "resolution_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "resolution_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "display_unit",
+                            "value": "pixels"
+                          },
+                          {
+                            "name": "display_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "display_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "frame_rate",
+                            "value": 25
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "bitrate",
+                    "value": 13284203
+                  }
+                ]
+              },
+              {
+                "name": "warning",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [1 bytes]) at 71"
+                  },
+                  {
+                    "name": 1,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [2 bytes]) at 85"
+                  },
+                  {
+                    "name": 2,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [4 bytes]) at 100"
+                  }
+                ]
+              },
+              {
+                "name": "encoding",
+                "value": "UTF-8"
+              },
+              {
+                "name": "mime_type",
+                "value": "video/webm"
+              },
+              {
+                "name": "matroska",
+                "value": [
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "title",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "youtube vid 1"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "muxingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf57.25.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "writingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf57.25.100"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "playtime_seconds",
+                "value": 12.44
+              },
+              {
+                "name": "bitrate",
+                "value": 13476203
+              },
+              {
+                "name": "playtime_string",
+                "value": "0:12"
+              },
+              {
+                "name": "version",
+                "value": 2
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2017-10-16 17:39:51",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Portland Street, Manchester, May 2017",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "WebM videos|Files from external sources with reviewed licenses|Portland Street, Manchester|Uploaded with video2commons|Videos from Vimeo|Files with coordinates missing SDC location of creation (53\u00b0 N, 3\u00b0 W)",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "GPSLatitude": {
+                "value": "53.476694",
+                "source": "commons-desc-page"
+              },
+              "GPSLongitude": {
+                "value": "-2.241499",
+                "source": "commons-desc-page"
+              },
+              "GPSMapDatum": {
+                "value": "WGS-84",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Portland Street, Manchester",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2017-05-08 13:05:00",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://vimeo.com/216535229\">https://vimeo.com/216535229</a>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://vimeo.com/nders\">Anders Hansson</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Attribution": {
+                "value": "Anders Hansson",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "video/webm"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 1029110982,
+            "parentid": 473917993,
+            "timestamp": "2025-05-07T07:30:54Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "=={{int:filedesc}}==\n{{Information\n|description=Portland Street, Manchester\n|date=2017-05-08 13:05:00\n|source=https://vimeo.com/216535229\n|author= [https://vimeo.com/nders Anders Hansson]\n|permission=\n|other_versions=\n|other_fields={{Information field |name= 2nd file|value= [[:File:Stagecoach Alexander Dennis Enviro400MMC, Manchester.webm]]}}\n}}\n{{location|53.4766935|-2.24149904}}\n\n=={{int:license-header}}==\n{{Cc-by-3.0|Anders Hansson}}\n{{LicenseReview|site=https://vimeo.com/216535229|user=Explicit|date=2017-12-11}}\n\n[[Category:Uploaded with video2commons]]\n[[Category:Portland Street, Manchester]]\n[[Category:WebM videos]]\n[[Category:Videos from Vimeo]]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

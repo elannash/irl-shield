@@ -1,0 +1,1107 @@
+{
+  "schema_version": 1,
+  "mode": "offline_quality",
+  "real_time_verified": false,
+  "benchmark_only": true,
+  "demo_ready": false,
+  "run_id": "fresh-heldout-once",
+  "split": "heldout",
+  "candidate": "ppocr-v6-small",
+  "scope": "Primary truth/input controls exclude detector families ['paddleocr']; truth judges ['tesseract', 'vision-accurate']; output leaks use ALL judges ['tesseract', 'vision-accurate', 'ppocr-independent']. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+  "options": {
+    "delay_seconds": 1.0,
+    "before": 6,
+    "after": 30,
+    "fast_max_age": 6,
+    "accurate_max_age": 12,
+    "fast_rate_hz": 8.0,
+    "accurate_rate_hz": 4.0,
+    "fast_width": 640,
+    "accurate_width": 1280,
+    "fast_provider": "cuda",
+    "provider": "cuda",
+    "limit_side_len": 960,
+    "fast_limit_side_len": 640,
+    "thresh": 0.3,
+    "box_thresh": 0.5,
+    "unclip_ratio": 1.6,
+    "static_model": true,
+    "encoder": "h264_nvenc",
+    "padding": 0.3,
+    "badge": false,
+    "style": "opaque",
+    "motion_width": 320,
+    "motion_mode": "phase",
+    "motion_min_response": 0.05,
+    "fast_candidate": "ppocr-v6-tiny",
+    "area_ceiling": 0.15,
+    "area_ceiling_basis": "bench/gate-1-policy.json"
+  },
+  "clips": [
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": false,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/chicago-wells-natural/input.mp4",
+      "output": "out/q-fresh-heldout-once/chicago-wells-natural/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "00c60037f0d28808789055389e29dbb452541fb6393a262bfd5d3903e9ecca42",
+      "evidence_sha256": "62e526e502dbc94ccee67ea36f7a833b39932bdb46aa5b61e9f7e6a1c01194e1",
+      "excluded_unstable_natural_intervals": 28,
+      "natural": {
+        "total": 30,
+        "hidden": 30,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 29,
+        "natural": {
+          "total": 30,
+          "hidden": 30,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "synthetic_input_control": {
+          "total": 0,
+          "unreadable": 0
+        },
+        "real_video_pass": true
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 147,
+      "protected_frames": 3,
+      "protected_fraction": 0.02,
+      "protected_guard": false,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.01997341579861111,
+        "p95": 0.19114865451388888
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.019899088541666665,
+        "p95": 0.19046495225694443
+      }
+    },
+    {
+      "clip": "chicago-wells",
+      "synthetic_variant": true,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/chicago-wells-synthetic/input.mp4",
+      "output": "out/q-fresh-heldout-once/chicago-wells-synthetic/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "38febd7e18b50a4d0572c2ee040798f664cc3893048279797fa208682b9c22c6",
+      "evidence_sha256": "1afefb1e01ebd6045ee007c42ac93df62dd8b18dea3e1e0a0a2c61605a01920c",
+      "excluded_unstable_natural_intervals": 32,
+      "natural": {
+        "total": 48,
+        "hidden": 48,
+        "hidden_fraction": 1.0
+      },
+      "synthetic": {
+        "total": 6,
+        "hidden": 6,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 6,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 33,
+        "natural": {
+          "total": 52,
+          "hidden": 52,
+          "hidden_fraction": 1.0
+        },
+        "synthetic": {
+          "total": 6,
+          "hidden": 6,
+          "hidden_fraction": 1.0
+        },
+        "synthetic_input_control": {
+          "total": 6,
+          "unreadable": 0
+        },
+        "real_video_pass": true
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 148,
+      "protected_frames": 2,
+      "protected_fraction": 0.013333333333333334,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.09711534288194446,
+        "p95": 0.35912185329861107
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.09710720486111112,
+        "p95": 0.32437494574652775
+      }
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": false,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/manchester-portland-natural/input.mp4",
+      "output": "out/q-fresh-heldout-once/manchester-portland-natural/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "beceebdd53d2b42e8fcdf2938db50c1bb0678f9666b49cd02316767ea186e325",
+      "evidence_sha256": "fe3908b7e15fc985fb0519e638707d6529c7a4c689f8a6b9b40662c2629e065c",
+      "excluded_unstable_natural_intervals": 9,
+      "natural": {
+        "total": 21,
+        "hidden": 13,
+        "hidden_fraction": 0.6190476190476191
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 6,
+        "natural": {
+          "total": 19,
+          "hidden": 10,
+          "hidden_fraction": 0.5263157894736842
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "synthetic_input_control": {
+          "total": 0,
+          "unreadable": 0
+        },
+        "real_video_pass": true
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.036674262152777776,
+        "p95": 0.3235581597222222
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.036674262152777776,
+        "p95": 0.3235581597222222
+      }
+    },
+    {
+      "clip": "manchester-portland",
+      "synthetic_variant": true,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/manchester-portland-synthetic/input.mp4",
+      "output": "out/q-fresh-heldout-once/manchester-portland-synthetic/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "a4593e8b74156075b819885f289277b2d9b750e1434b82b44133fb8378123560",
+      "evidence_sha256": "db1b8cfa94262081f9515298111024654181952156c48b6f79b79f1e669ae86d",
+      "excluded_unstable_natural_intervals": 21,
+      "natural": {
+        "total": 21,
+        "hidden": 15,
+        "hidden_fraction": 0.7142857142857143
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 8,
+        "hidden_fraction": 1.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": true,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 23,
+        "natural": {
+          "total": 25,
+          "hidden": 17,
+          "hidden_fraction": 0.68
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 8,
+          "hidden_fraction": 1.0
+        },
+        "synthetic_input_control": {
+          "total": 8,
+          "unreadable": 0
+        },
+        "real_video_pass": true
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.14802408854166665,
+        "p95": 0.39345594618055546
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.14802408854166665,
+        "p95": 0.39345594618055546
+      }
+    },
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": false,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/zurich-spiegelgasse-natural/input.mp4",
+      "output": "out/q-fresh-heldout-once/zurich-spiegelgasse-natural/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "d6faadf49f125e98288b26da612ba90bd047361b155aefde106fd42390b2ebde",
+      "evidence_sha256": "395503dc093089831a579edcfd484aee78d67f44affa02c6f26f572ca523e3ce",
+      "excluded_unstable_natural_intervals": 4,
+      "natural": {
+        "total": 1,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 0,
+        "hidden": 0,
+        "hidden_fraction": null
+      },
+      "synthetic_input_control": {
+        "total": 0,
+        "unreadable": 0
+      },
+      "real_video_pass": false,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 5,
+        "natural": {
+          "total": 2,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 0,
+          "hidden": 0,
+          "hidden_fraction": null
+        },
+        "synthetic_input_control": {
+          "total": 0,
+          "unreadable": 0
+        },
+        "real_video_pass": false
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 149,
+      "protected_frames": 1,
+      "protected_fraction": 0.006666666666666667,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.11001085069444444,
+        "p95": 0.7534335394965274
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.10733506944444444,
+        "p95": 0.7275279947916664
+      }
+    },
+    {
+      "clip": "zurich-spiegelgasse",
+      "synthetic_variant": true,
+      "candidate": "ppocr-v6-small",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "fast_candidate": "ppocr-v6-tiny",
+        "area_ceiling": 0.15,
+        "area_ceiling_basis": "bench/gate-1-policy.json"
+      },
+      "frames": 150,
+      "source_fps": 30.0,
+      "mode": "offline_quality",
+      "real_time_verified": false,
+      "benchmark_only": true,
+      "demo_ready": false,
+      "source": "out/q-fresh-heldout-once/zurich-spiegelgasse-synthetic/input.mp4",
+      "output": "out/q-fresh-heldout-once/zurich-spiegelgasse-synthetic/masked.mp4",
+      "judges": [
+        "tesseract-5-psm11",
+        "vision-accurate",
+        "ppocr-independent"
+      ],
+      "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+      "bundle_sha256": "72af10b04a10a43856e1d1b58fdf7044ab2f8169840b16a2d6c0bf23c5d6e821",
+      "evidence_sha256": "7f259ed02994905314799292913751e838f8894532ab71e901ca9ac6e696d2e2",
+      "excluded_unstable_natural_intervals": 24,
+      "natural": {
+        "total": 5,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic": {
+        "total": 8,
+        "hidden": 0,
+        "hidden_fraction": 0.0
+      },
+      "synthetic_input_control": {
+        "total": 8,
+        "unreadable": 0
+      },
+      "real_video_pass": false,
+      "judge_independence": {
+        "detector_families": [
+          "paddleocr"
+        ],
+        "included_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "truth_judges": [
+          "tesseract",
+          "vision-accurate"
+        ],
+        "output_leak_judges": [
+          "tesseract",
+          "vision-accurate",
+          "ppocr-independent"
+        ],
+        "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+        "excluded_judges": [
+          "ppocr-independent"
+        ],
+        "sufficient_independent_engines": true,
+        "warning": null
+      },
+      "pooled_not_independent": {
+        "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+        "excluded_unstable_natural_intervals": 23,
+        "natural": {
+          "total": 8,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic": {
+          "total": 8,
+          "hidden": 0,
+          "hidden_fraction": 0.0
+        },
+        "synthetic_input_control": {
+          "total": 8,
+          "unreadable": 0
+        },
+        "real_video_pass": false
+      },
+      "judging": {
+        "cache_signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+        "cache_identity": {
+          "schema_version": 3,
+          "runtime": {
+            "tesseract_binary": "5.5.4",
+            "tesseract_data": {
+              "language": "eng",
+              "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+              "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+            },
+            "pytesseract": "0.3.13",
+            "onnxruntime": "1.31.1",
+            "rapidocr": "3.10.0",
+            "opencv": {
+              "opencv-python-headless": "4.11.0.86"
+            },
+            "macos_product_version": "27.0.1"
+          },
+          "source_sha256": {
+            "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+            "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+            "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+            "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+            "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+          }
+        }
+      },
+      "live_frames": 150,
+      "protected_frames": 0,
+      "protected_fraction": 0.0,
+      "protected_guard": true,
+      "slate_frames": 0,
+      "masked_area_fraction": {
+        "p50": 0.16707465277777778,
+        "p95": 0.5060082465277778
+      },
+      "live_masked_area_fraction": {
+        "p50": 0.16707465277777778,
+        "p95": 0.5060082465277778
+      }
+    }
+  ],
+  "gate_1": {
+    "eligible": false,
+    "pass": false
+  },
+  "frames": 900,
+  "protected_fraction": 0.006666666666666667,
+  "protected_frames": 6,
+  "per_clip_protected": [
+    {
+      "output": "out/q-fresh-heldout-once/chicago-wells-natural/masked.mp4",
+      "protected_fraction": 0.02,
+      "pass": false
+    },
+    {
+      "output": "out/q-fresh-heldout-once/chicago-wells-synthetic/masked.mp4",
+      "protected_fraction": 0.013333333333333334,
+      "pass": true
+    },
+    {
+      "output": "out/q-fresh-heldout-once/manchester-portland-natural/masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "out/q-fresh-heldout-once/manchester-portland-synthetic/masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    },
+    {
+      "output": "out/q-fresh-heldout-once/zurich-spiegelgasse-natural/masked.mp4",
+      "protected_fraction": 0.006666666666666667,
+      "pass": true
+    },
+    {
+      "output": "out/q-fresh-heldout-once/zurich-spiegelgasse-synthetic/masked.mp4",
+      "protected_fraction": 0.0,
+      "pass": true
+    }
+  ],
+  "live_frames": 894,
+  "slate_frames": 0,
+  "masked_area_fraction": {
+    "p50": 0.13596679687500002,
+    "p95": 0.5039444444444443
+  },
+  "live_masked_area_fraction": {
+    "p50": 0.1355495876736111,
+    "p95": 0.40132921006944444
+  },
+  "real_video_pass": false,
+  "performance_ignored_for_quality": true,
+  "diagnostic_timing_scope": "Per-call wall and caller-thread CPU observations only; native worker CPU is not summed.",
+  "licenses": [
+    "fixtures/ATTRIBUTION.md",
+    "models/manifest.json",
+    "models/licenses/dependencies.json",
+    "https://ffmpeg.org/legal.html",
+    "fixtures/fresh-heldout/ATTRIBUTION.md"
+  ],
+  "natural": {
+    "hidden": 106,
+    "total": 126,
+    "hidden_fraction": 0.8412698412698413
+  },
+  "synthetic": {
+    "hidden": 14,
+    "total": 22,
+    "hidden_fraction": 0.6363636363636364
+  },
+  "detector_metadata": {
+    "lanes": {
+      "accurate": {
+        "detector_families": [
+          "paddleocr"
+        ]
+      },
+      "fast": {
+        "detector_families": [
+          "paddleocr"
+        ]
+      }
+    },
+    "detector_families": [
+      "paddleocr"
+    ]
+  },
+  "judge_independence": {
+    "detector_families": [
+      "paddleocr"
+    ],
+    "included_judges": [
+      "tesseract",
+      "vision-accurate"
+    ],
+    "truth_judges": [
+      "tesseract",
+      "vision-accurate"
+    ],
+    "output_leak_judges": [
+      "tesseract",
+      "vision-accurate",
+      "ppocr-independent"
+    ],
+    "scope": "Family independence applies to natural truth and synthetic input controls only; every credible output judge counts as a leak.",
+    "excluded_judges": [
+      "ppocr-independent"
+    ],
+    "sufficient_independent_engines": true,
+    "warning": null
+  },
+  "pooled_not_independent": {
+    "scope": "Secondary all-judge pooled diagnostic; NOT independent and ineligible for privacy gates.",
+    "natural": {
+      "hidden": 109,
+      "total": 136,
+      "hidden_fraction": 0.8014705882352942
+    },
+    "synthetic": {
+      "hidden": 14,
+      "total": 22,
+      "hidden_fraction": 0.6363636363636364
+    }
+  },
+  "synthetic_input_control": {
+    "total": 22,
+    "unreadable": 0
+  },
+  "area_ceiling": 0.15,
+  "area_ceiling_basis": "bench/gate-1-policy.json",
+  "quality_checks": {
+    "independent_judges": true,
+    "judge_discrimination": true,
+    "natural": false,
+    "synthetic": false,
+    "protected": false,
+    "protected_aggregate": true,
+    "protected_each_clip": false,
+    "real_video": false,
+    "masked_area": true
+  },
+  "comparison_valid": false,
+  "comparison_notes": "Protected frames must remain below2% both per clip and in aggregate; a protected/slate-heavy result cannot win. Area is reported over ALL raster masks; no tune-derived ceiling is invented.",
+  "baseline_deltas_pp": {
+    "natural": 84.12698412698413,
+    "synthetic": 63.63636363636363
+  },
+  "baseline_comparison": "Descriptive interval-fraction deltas only; the baseline may use another corpus/mode.",
+  "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+  "quality_run_identity": {
+    "input_manifest_sha256": "1cc169f7202c11e9ca1c2282d29c3d2dc57dd231f6ccd3356703f47a4a05f4f2",
+    "pipeline_sha256": "11af5d7146601537c87a5f5224a2f13bfb0ba5a7dbba7c992a3c99647a000c7e",
+    "orchestrator_sha256": "846ad6dfa282eef71a6ee28a9f79cc00f39c167df6b6881d87fbef73096ef5ae",
+    "dataset_identity": {
+      "dataset_id": "fresh-heldout-v1",
+      "split": "heldout",
+      "manifest_sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad"
+    }
+  },
+  "grading_scope": "Independent truth/input controls, ALL output judges, exact sealed CUDA/NVENC frames; ideal/offline, never a performance gate.",
+  "heldout_freeze": {
+    "dataset_sha256": "46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad",
+    "policy_sha256": "dcbc96c88b0a3c1545a5a04c668446eee1afeb730e901179ffc78063cb91ad5f",
+    "policy_commit": "26c8db18624731eaf92168e69aa97ddad31abd17",
+    "heldout_orchestrator_sha256": "e4bf32deb65f48a7bd8323678b2b55ed129635afc0e39e1c04c5340e450f8276"
+  }
+}

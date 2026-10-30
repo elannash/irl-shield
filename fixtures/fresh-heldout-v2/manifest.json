@@ -1,0 +1,1338 @@
+{
+  "schema_version": 1,
+  "dataset_id": "fresh-heldout-v2",
+  "split": "heldout",
+  "status": "frozen-ungraded",
+  "benchmark_only": true,
+  "demo_ready": false,
+  "evaluation_marker": "fixtures/cache/fresh-heldout-v2/EVALUATION.started.json",
+  "evaluation_reservation": {
+    "maximum_evaluations": 1,
+    "policy": "Final policy after Sunday 06:00 PT freeze; never Saturday v1 walk policy",
+    "not_before_utc": "2026-11-01T14:00:00Z",
+    "evaluation_started": false
+  },
+  "selection_sha256": "8d70354743f64dcbfb5305c67c8a4b1ab4a98f12d456dc773e2b64178d81cb0e",
+  "plan_sha256": "17f0a9bcb78442f2ca99d354a7736a7c701f592fd32f544ba4e375df932ca66d",
+  "selection": "Metadata only: walking street scenes in three European cities, CC BY 3.0, original dimensions 1920x1080 and duration >=7s; fixed 2.000\u20137.000s before pixel decode. No substitutions. No claim of native capture resolution or visible text. London and Liverpool share POPtravel author.",
+  "seed_recipe": "big-endian uint32 of first four SHA256 bytes of UTF8(fresh-heldout-v2: + clip ID)",
+  "recipe": "NVENC p4 10M yuv420p; 1280x720 crop/scale, CFR30 start_time=0 with a 150-frame cap; no audio/source metadata; bench.synthetic.overlay with tune camera tracking",
+  "natural_truth": "150 empty arrays of synthetic truth only; no natural OCR truth generated during preparation",
+  "clips": [
+    {
+      "id": "london-westminster",
+      "title": "File:Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD).webm",
+      "source_path": "fixtures/cache/fresh-heldout-v2/london-westminster.webm",
+      "source_sha1": "e1d64199f8cdfb11bdd5a188cecf0493c546746a",
+      "source_size_bytes": 1900657185,
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_duration_seconds": 3300.381,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_in_LONDON_-_England_(UK)_-_Westminster_to_Piccadilly_Circus_(2019)_-_4K_60fps_(UHD).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Walking_in_LONDON_-_England_%28UK%29_-_Westminster_to_Piccadilly_Circus_%282019%29_-_4K_60fps_%28UHD%29.webm",
+      "revision_id": 1157657701,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1157657701",
+      "author": "POPtravel",
+      "author_html": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+      "credit_html": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=BgMKsDwIDgQ\"><bdi lang=\"\">Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=BgMKsDwIDgQ\">archive.org</a></bdi>",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "access_date_utc": "2026-10-30",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 770453041,
+      "split": "heldout",
+      "source_sha256": "c76d9a8118779e28eae11b9617f5ef802167581615fff6e6884d46a487f556a5"
+    },
+    {
+      "id": "paris-walk",
+      "title": "File:Paris , France - A Walking Travel Tour - YouTube.webm",
+      "source_path": "fixtures/cache/fresh-heldout-v2/paris-walk.webm",
+      "source_sha1": "25e02b5819662d7b50e12399905c48bc417a74bb",
+      "source_size_bytes": 658823532,
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_duration_seconds": 1219.501,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Paris_,_France_-_A_Walking_Travel_Tour_-_YouTube.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Paris_%2C_France_-_A_Walking_Travel_Tour_-_YouTube.webm",
+      "revision_id": 1031020312,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1031020312",
+      "author": "Le Monde en Vid\u00e9o",
+      "author_html": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/user/allairej1957\">Le Monde en Vid\u00e9o</a>",
+      "credit_html": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=O4W4X_UBRkg\"><bdi lang=\"\">Paris , France -  A WALKING TRAVEL TOUR - HD 1080P</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=O4W4X_UBRkg\">archive.org</a></bdi>",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "access_date_utc": "2026-10-30",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 953878931,
+      "split": "heldout",
+      "source_sha256": "5f9e3eeb1f0354a6017d4ef12097bc563bb1c91ec48f4291ebbb6202b634a1f8"
+    },
+    {
+      "id": "liverpool-walk",
+      "title": "File:Walking in LIVERPOOL - UK - 4K 60fps (UHD).webm",
+      "source_path": "fixtures/cache/fresh-heldout-v2/liverpool-walk.webm",
+      "source_sha1": "b90ffd27a58949207cfaff3bbddbbfd44577853c",
+      "source_size_bytes": 2011492977,
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_duration_seconds": 3600.521,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_in_LIVERPOOL_-_UK_-_4K_60fps_(UHD).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Walking_in_LIVERPOOL_-_UK_-_4K_60fps_%28UHD%29.webm",
+      "revision_id": 1053656681,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1053656681",
+      "author": "POPtravel",
+      "author_html": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+      "credit_html": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=jKJ2zDSYns8\"><bdi lang=\"\">Walking in LIVERPOOL / UK \ud83c\uddec\ud83c\udde7- 4K 60fps (UHD)</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=jKJ2zDSYns8\">archive.org</a></bdi>",
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "access_date_utc": "2026-10-30",
+      "excerpt_start": 2.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "seed": 2355994416,
+      "split": "heldout",
+      "source_sha256": "4f83dfb12efdec0afb7762e614ff4854c83760271269f0c31e94048a32c49855"
+    }
+  ],
+  "inputs": [
+    {
+      "clip": "london-westminster",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout-v2/london-westminster-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/london-westminster-natural.truth.json",
+      "source_sha256": "01c6e5e984ccdb9c649bf63691f96937ac065e5f4e0d1c41bc6dee301d6effb7",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "london-westminster",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout-v2/london-westminster-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/london-westminster-synthetic.truth.json",
+      "source_sha256": "21a4c1eb412b034573594aeb4d676d61b43673b4c8e667aafe4d78f661cfbc0e",
+      "truth_sha256": "bb60859522995b318637ebe5c235d1fbf06bbb7d2975dd1f547bc0c1d8d67200"
+    },
+    {
+      "clip": "paris-walk",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout-v2/paris-walk-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/paris-walk-natural.truth.json",
+      "source_sha256": "8e6b3c1ac8bba3e5fb37e260759ba414ad5920367b500e9658bc2d916814601e",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "paris-walk",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout-v2/paris-walk-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/paris-walk-synthetic.truth.json",
+      "source_sha256": "964212f2521ff28d5f867543d24cc4450f334312df1485ffa4a79288f6e9d7a0",
+      "truth_sha256": "97f046c2fcb1f197656bb30d2aabdc79eb10d616db9179843ef98854e28e38fd"
+    },
+    {
+      "clip": "liverpool-walk",
+      "synthetic_variant": false,
+      "source": "fixtures/cache/fresh-heldout-v2/liverpool-walk-natural.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/liverpool-walk-natural.truth.json",
+      "source_sha256": "4c7e36e2a66c2bac25d6aeb03bad3970a41b66498a788e6f51947daa83ea2fbe",
+      "truth_sha256": "b4c38275a53d14f6046f856bbab8edbefe17acd9c4e188cfde4ba3df38ceeb72"
+    },
+    {
+      "clip": "liverpool-walk",
+      "synthetic_variant": true,
+      "source": "fixtures/cache/fresh-heldout-v2/liverpool-walk-synthetic.mp4",
+      "truth": "fixtures/cache/fresh-heldout-v2/liverpool-walk-synthetic.truth.json",
+      "source_sha256": "714b6401e8f201f584bf957770bdf2d856fbdf037c26a355ca75b166c0c49b1b",
+      "truth_sha256": "95f2026f57fe675409ddc700b4cd9621e8ccf6cea7bc41c773a51b0199375e96"
+    }
+  ],
+  "receipts": {
+    "fixtures/cache/fresh-heldout-v2/london-westminster.prepared.json": "d88a8cd3cdfad857ed6418a7760c2357fb247b07a32db043aface60ebf1604a6",
+    "fixtures/cache/fresh-heldout-v2/paris-walk.prepared.json": "49e1f259f2be455fa2c24f77988dfb1a5a32dfdc0c0e330fa27fb2e7ba73079e",
+    "fixtures/cache/fresh-heldout-v2/liverpool-walk.prepared.json": "7822420094791ff41314c8fad86bc09a09a505f4f2ad62ad00254ff1d736257d"
+  },
+  "code_identity": {
+    "fixtures/prepare_heldout_v2.py": "05664329ce1416b64bac477d605e90ff3baee21fe59fd15383bee2066f6a38ff",
+    "fixtures/heldout_prepare.py": "0cedc35016dc3aacb1249cae51ac0ba0c097139bc4820c217abae9cee8f8cf6c",
+    "fixtures/prepare.py": "c3e43d9d7b8caf59b0b9a868e3fe2f611d1ed7cf62ec05436d64fcf060ef77e4",
+    "bench/synthetic.py": "566d58d7002f47d9c3bc68f8b95ac67be84b4b7f03abf43ddf3f4c12382352ea",
+    "fixtures/fonts/DejaVuSans-Bold.ttf": "e1d733afbbfce842a1b43dced0c9885a76a4e67290dc7e690c4e9b76ebfc7d23",
+    "fixtures/fonts/DejaVuSansMono-Bold.ttf": "2d67eed9b325ee2e69f906ce4f3f6264d5105230a13352c8494daad4f17b12c8",
+    "fixtures/fonts/DejaVuSerif-Bold.ttf": "3f704f75238454f68a8202e5098cb0687887480dd63d3dc20b34bdbdfa9d9f3f"
+  },
+  "commons_metadata": {
+    "london-westminster": {
+      "access_date_utc": "2026-10-30",
+      "api_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3AWalking+in+LONDON+-+England+%28UK%29+-+Westminster+to+Piccadilly+Circus+%282019%29+-+4K+60fps+%28UHD%29.webm%7CFile%3AParis+%2C+France+-+A+Walking+Travel+Tour+-+YouTube.webm%7CFile%3AWalking+in+LIVERPOOL+-+UK+-+4K+60fps+%28UHD%29.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "page": {
+        "pageid": 105547564,
+        "ns": 6,
+        "title": "File:Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD).webm",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 1900657185,
+            "width": 1920,
+            "height": 1080,
+            "duration": 3300.381,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Walking_in_LONDON_-_England_%28UK%29_-_Westminster_to_Piccadilly_Circus_%282019%29_-_4K_60fps_%28UHD%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Walking_in_LONDON_-_England_(UK)_-_Westminster_to_Piccadilly_Circus_(2019)_-_4K_60fps_(UHD).webm",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=105547564",
+            "sha1": "e1d64199f8cdfb11bdd5a188cecf0493c546746a",
+            "metadata": [
+              {
+                "name": "GETID3_VERSION",
+                "value": "1.9.20-202006061653"
+              },
+              {
+                "name": "filesize",
+                "value": 1900657185
+              },
+              {
+                "name": "avdataoffset",
+                "value": 0
+              },
+              {
+                "name": "avdataend",
+                "value": 1900657185
+              },
+              {
+                "name": "fileformat",
+                "value": "webm"
+              },
+              {
+                "name": "audio",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "A_OPUS"
+                  },
+                  {
+                    "name": "sample_rate",
+                    "value": 48000
+                  },
+                  {
+                    "name": "channels",
+                    "value": 2
+                  },
+                  {
+                    "name": "language",
+                    "value": "eng"
+                  },
+                  {
+                    "name": "bits_per_sample",
+                    "value": 32
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": "a7af98bf5f560570",
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "A_OPUS"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "sample_rate",
+                            "value": 48000
+                          },
+                          {
+                            "name": "channels",
+                            "value": 2
+                          },
+                          {
+                            "name": "language",
+                            "value": "eng"
+                          },
+                          {
+                            "name": "bits_per_sample",
+                            "value": 32
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "channelmode",
+                    "value": "stereo"
+                  }
+                ]
+              },
+              {
+                "name": "video",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "V_VP9"
+                  },
+                  {
+                    "name": "resolution_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "resolution_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "display_unit",
+                    "value": "pixels"
+                  },
+                  {
+                    "name": "display_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "display_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "frame_rate",
+                    "value": 60
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": "69dc09677c0ea31b",
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "V_VP9"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "resolution_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "resolution_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "display_unit",
+                            "value": "pixels"
+                          },
+                          {
+                            "name": "display_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "display_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "frame_rate",
+                            "value": 60
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "warning",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 63"
+                  },
+                  {
+                    "name": 1,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 77"
+                  },
+                  {
+                    "name": 2,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [2 bytes]) at 91"
+                  },
+                  {
+                    "name": 3,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [4 bytes]) at 106"
+                  },
+                  {
+                    "name": 4,
+                    "value": "Unhandled track.video element [module.audio-video.matroska.php:712] (5552::15b0 [16 bytes]) at 337"
+                  },
+                  {
+                    "name": 5,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:819] (5802::16aa [3 bytes]) at 397"
+                  },
+                  {
+                    "name": 6,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:819] (5819::16bb [4 bytes]) at 403"
+                  },
+                  {
+                    "name": 7,
+                    "value": "Unhandled audio type \"A_OPUS\""
+                  }
+                ]
+              },
+              {
+                "name": "encoding",
+                "value": "UTF-8"
+              },
+              {
+                "name": "mime_type",
+                "value": "video/webm"
+              },
+              {
+                "name": "matroska",
+                "value": [
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "muxingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "writingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "encoder",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "duration",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "00:55:00.373000000\ufffd\ufffd"
+                          },
+                          {
+                            "name": 1,
+                            "value": "00:55:00.381000000\ufffd\ufffd"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "playtime_seconds",
+                "value": 3300.381
+              },
+              {
+                "name": "bitrate",
+                "value": 4607121.868656983
+              },
+              {
+                "name": "playtime_string",
+                "value": "55:00"
+              },
+              {
+                "name": "version",
+                "value": 2
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2021-05-20 03:48:35",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "WebM videos|Videos from YouTube|Media of the day|Videos from London|Uploaded with video2commons/Server-side uploads|Videos of 2019 from the United Kingdom|License reviewed by YouTubeReviewBot|4K videos|First-person videos on foot|Videos of cities by POPtravel",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "We are in London, the great city and capital of the UK. On this cloudy day in fall (October 2019) we start our tour at Westminster Abbey, the royal church. N...",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2020-10-23",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=BgMKsDwIDgQ\"><bdi lang=\"\">Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=BgMKsDwIDgQ\">archive.org</a></bdi>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Attribution": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "video/webm"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 1157657701,
+            "parentid": 1030825455,
+            "timestamp": "2026-02-01T15:11:24Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "== {{int:filedesc}} ==\n{{Information\n|description={{en|1=We are in London, the great city and capital of the UK. On this cloudy day in fall (October 2019) we start our tour at Westminster Abbey, the royal church. N...}}\n|date=2020-10-23\n|source={{From YouTube|1=BgMKsDwIDgQ|2=Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)}}\n|author=[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{YouTube CC-BY|[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]}}\n{{YouTubeReview|id=BgMKsDwIDgQ|ChannelName=POPtravel|ChannelID=UClODDXeUIz1-FaKyN8dsNrA|title=Walking in LONDON / England (UK) \ud83c\uddec\ud83c\udde7- Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD)|archive=https://web.archive.org/web/20201101234504/https://www.youtube.com/watch?v=BgMKsDwIDgQ&feature=youtu.be|date=2021-05-20}}\n=={{Assessment}}==\n{{Media of the day|2026|02|26}}\n[[Category:Uploaded with video2commons/Server-side uploads]]\n[[Category:WebM videos]]\n[[Category:Videos from London]]\n[[Category:First-person videos on foot]]\n[[Category:4K videos]]\n[[Category:Videos of 2019 from the United Kingdom]]\n[[Category:Videos of cities by POPtravel]]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "paris-walk": {
+      "access_date_utc": "2026-10-30",
+      "api_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3AWalking+in+LONDON+-+England+%28UK%29+-+Westminster+to+Piccadilly+Circus+%282019%29+-+4K+60fps+%28UHD%29.webm%7CFile%3AParis+%2C+France+-+A+Walking+Travel+Tour+-+YouTube.webm%7CFile%3AWalking+in+LIVERPOOL+-+UK+-+4K+60fps+%28UHD%29.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "page": {
+        "pageid": 82789239,
+        "ns": 6,
+        "title": "File:Paris , France - A Walking Travel Tour - YouTube.webm",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 658823532,
+            "width": 1920,
+            "height": 1080,
+            "duration": 1219.501,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Paris_%2C_France_-_A_Walking_Travel_Tour_-_YouTube.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Paris_,_France_-_A_Walking_Travel_Tour_-_YouTube.webm",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=82789239",
+            "sha1": "25e02b5819662d7b50e12399905c48bc417a74bb",
+            "metadata": [
+              {
+                "name": "GETID3_VERSION",
+                "value": "1.9.17-201902071234"
+              },
+              {
+                "name": "filesize",
+                "value": 658823532
+              },
+              {
+                "name": "avdataoffset",
+                "value": 0
+              },
+              {
+                "name": "avdataend",
+                "value": 658823532
+              },
+              {
+                "name": "fileformat",
+                "value": "webm"
+              },
+              {
+                "name": "audio",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "A_OPUS"
+                  },
+                  {
+                    "name": "sample_rate",
+                    "value": 48000
+                  },
+                  {
+                    "name": "channels",
+                    "value": 2
+                  },
+                  {
+                    "name": "language",
+                    "value": "eng"
+                  },
+                  {
+                    "name": "bits_per_sample",
+                    "value": 32
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "A_OPUS"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "sample_rate",
+                            "value": 48000
+                          },
+                          {
+                            "name": "channels",
+                            "value": 2
+                          },
+                          {
+                            "name": "language",
+                            "value": "eng"
+                          },
+                          {
+                            "name": "bits_per_sample",
+                            "value": 32
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "channelmode",
+                    "value": "stereo"
+                  }
+                ]
+              },
+              {
+                "name": "video",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "V_VP9"
+                  },
+                  {
+                    "name": "resolution_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "resolution_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "display_unit",
+                    "value": "pixels"
+                  },
+                  {
+                    "name": "display_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "display_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "frame_rate",
+                    "value": 60
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "V_VP9"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "resolution_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "resolution_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "display_unit",
+                            "value": "pixels"
+                          },
+                          {
+                            "name": "display_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "display_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "frame_rate",
+                            "value": 60
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "warning",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [1 bytes]) at 63"
+                  },
+                  {
+                    "name": 1,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [2 bytes]) at 77"
+                  },
+                  {
+                    "name": 2,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [2 bytes]) at 92"
+                  },
+                  {
+                    "name": 3,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:600] (5036::SeekPosition [4 bytes]) at 107"
+                  },
+                  {
+                    "name": 4,
+                    "value": "Unhandled track.video element [module.audio-video.matroska.php:683] (5552::15b0 [8 bytes]) at 398"
+                  },
+                  {
+                    "name": 5,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:790] (5802::16aa [3 bytes]) at 443"
+                  },
+                  {
+                    "name": 6,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:790] (5819::16bb [4 bytes]) at 449"
+                  },
+                  {
+                    "name": 7,
+                    "value": "Unhandled audio type \"A_OPUS\""
+                  }
+                ]
+              },
+              {
+                "name": "encoding",
+                "value": "UTF-8"
+              },
+              {
+                "name": "mime_type",
+                "value": "video/webm"
+              },
+              {
+                "name": "matroska",
+                "value": [
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "muxingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.29.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "writingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.29.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "encoder",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.29.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "duration",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "00:20:19.473000000\ufffd\ufffd"
+                          },
+                          {
+                            "name": 1,
+                            "value": "00:20:19.501000000\ufffd\ufffd"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "playtime_seconds",
+                "value": 1219.501
+              },
+              {
+                "name": "bitrate",
+                "value": 4321922.045164375
+              },
+              {
+                "name": "playtime_string",
+                "value": "20:20"
+              },
+              {
+                "name": "version",
+                "value": 2
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2019-10-02 15:02:55",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Paris , France - A Walking Travel Tour - YouTube",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Media from YouTube|April 2013 in Paris|Videos of 2014|Uploaded with video2commons|License reviewed by YouTubeReviewBot|Videos of Paris from YouTube",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Visite durant une p\u00e9riode de 3 jours \u00e0 Paris en avril 2013.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2014-05-24",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=O4W4X_UBRkg\"><bdi lang=\"\">Paris , France -  A WALKING TRAVEL TOUR - HD 1080P</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=O4W4X_UBRkg\">archive.org</a></bdi>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/user/allairej1957\">Le Monde en Vid\u00e9o</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Attribution": {
+                "value": "Le Monde en Vid\u00e9o",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "video/webm"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 1031020312,
+            "parentid": 1023537886,
+            "timestamp": "2025-05-12T05:13:43Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "=={{int:filedesc}}==\n{{Information\n|description={{en|1=A walk around the city of Paris France during a period of 3 days  in april 2013 .}}\n{{en|1=Visite durant une p\u00e9riode de 3 jours \u00e0 Paris en avril 2013.}}\n|date=2014-05-24\n|source={{From YouTube|1=O4W4X_UBRkg|2=Paris , France -  A WALKING TRAVEL TOUR - HD 1080P}}\n|author=[https://www.youtube.com/user/allairej1957 Le Monde en Vid\u00e9o]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{YouTube CC-BY|Le Monde en Vid\u00e9o}}\n{{YouTubeReview|id=O4W4X_UBRkg|date=2019-12-05}}\n\n[[Category:Uploaded with video2commons]]\n[[Category:Videos of Paris from YouTube]]\n[[Category:April 2013 in Paris]]\n[[Category:Videos of 2014|0524]]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "liverpool-walk": {
+      "access_date_utc": "2026-10-30",
+      "api_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&titles=File%3AWalking+in+LONDON+-+England+%28UK%29+-+Westminster+to+Piccadilly+Circus+%282019%29+-+4K+60fps+%28UHD%29.webm%7CFile%3AParis+%2C+France+-+A+Walking+Travel+Tour+-+YouTube.webm%7CFile%3AWalking+in+LIVERPOOL+-+UK+-+4K+60fps+%28UHD%29.webm&prop=imageinfo%7Crevisions&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main",
+      "page": {
+        "pageid": 102651633,
+        "ns": 6,
+        "title": "File:Walking in LIVERPOOL - UK - 4K 60fps (UHD).webm",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 2011492977,
+            "width": 1920,
+            "height": 1080,
+            "duration": 3600.521,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Walking_in_LIVERPOOL_-_UK_-_4K_60fps_%28UHD%29.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Walking_in_LIVERPOOL_-_UK_-_4K_60fps_(UHD).webm",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=102651633",
+            "sha1": "b90ffd27a58949207cfaff3bbddbbfd44577853c",
+            "metadata": [
+              {
+                "name": "GETID3_VERSION",
+                "value": "1.9.20-202006061653"
+              },
+              {
+                "name": "filesize",
+                "value": 2011492977
+              },
+              {
+                "name": "avdataoffset",
+                "value": 0
+              },
+              {
+                "name": "avdataend",
+                "value": 2011492977
+              },
+              {
+                "name": "fileformat",
+                "value": "webm"
+              },
+              {
+                "name": "audio",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "A_OPUS"
+                  },
+                  {
+                    "name": "sample_rate",
+                    "value": 48000
+                  },
+                  {
+                    "name": "channels",
+                    "value": 2
+                  },
+                  {
+                    "name": "language",
+                    "value": "eng"
+                  },
+                  {
+                    "name": "bits_per_sample",
+                    "value": 32
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": "d975d4cf7aceb3ad",
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "A_OPUS"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "sample_rate",
+                            "value": 48000
+                          },
+                          {
+                            "name": "channels",
+                            "value": 2
+                          },
+                          {
+                            "name": "language",
+                            "value": "eng"
+                          },
+                          {
+                            "name": "bits_per_sample",
+                            "value": 32
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "channelmode",
+                    "value": "stereo"
+                  }
+                ]
+              },
+              {
+                "name": "video",
+                "value": [
+                  {
+                    "name": "dataformat",
+                    "value": "V_VP9"
+                  },
+                  {
+                    "name": "resolution_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "resolution_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "display_unit",
+                    "value": "pixels"
+                  },
+                  {
+                    "name": "display_x",
+                    "value": 1920
+                  },
+                  {
+                    "name": "display_y",
+                    "value": 1080
+                  },
+                  {
+                    "name": "frame_rate",
+                    "value": 60
+                  },
+                  {
+                    "name": "streams",
+                    "value": [
+                      {
+                        "name": "edf4d5637e88f0b2",
+                        "value": [
+                          {
+                            "name": "dataformat",
+                            "value": "V_VP9"
+                          },
+                          {
+                            "name": "default",
+                            "value": true
+                          },
+                          {
+                            "name": "resolution_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "resolution_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "display_unit",
+                            "value": "pixels"
+                          },
+                          {
+                            "name": "display_x",
+                            "value": 1920
+                          },
+                          {
+                            "name": "display_y",
+                            "value": 1080
+                          },
+                          {
+                            "name": "frame_rate",
+                            "value": 60
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "warning",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 63"
+                  },
+                  {
+                    "name": 1,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 77"
+                  },
+                  {
+                    "name": 2,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [2 bytes]) at 91"
+                  },
+                  {
+                    "name": 3,
+                    "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [4 bytes]) at 106"
+                  },
+                  {
+                    "name": 4,
+                    "value": "Unhandled track.video element [module.audio-video.matroska.php:712] (5552::15b0 [16 bytes]) at 337"
+                  },
+                  {
+                    "name": 5,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:819] (5802::16aa [3 bytes]) at 397"
+                  },
+                  {
+                    "name": 6,
+                    "value": "Unhandled track element [module.audio-video.matroska.php:819] (5819::16bb [4 bytes]) at 403"
+                  },
+                  {
+                    "name": 7,
+                    "value": "Unhandled audio type \"A_OPUS\""
+                  }
+                ]
+              },
+              {
+                "name": "encoding",
+                "value": "UTF-8"
+              },
+              {
+                "name": "mime_type",
+                "value": "video/webm"
+              },
+              {
+                "name": "matroska",
+                "value": [
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "muxingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "writingapp",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "encoder",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "Lavf58.45.100"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "duration",
+                        "value": [
+                          {
+                            "name": 0,
+                            "value": "01:00:00.489000000\ufffd\ufffd"
+                          },
+                          {
+                            "name": 1,
+                            "value": "01:00:00.521000000\ufffd\ufffd"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "playtime_seconds",
+                "value": 3600.521
+              },
+              {
+                "name": "bitrate",
+                "value": 4469337.580866769
+              },
+              {
+                "name": "playtime_string",
+                "value": "1:00:01"
+              },
+              {
+                "name": "version",
+                "value": 2
+              }
+            ],
+            "extmetadata": {
+              "DateTime": {
+                "value": "2021-03-30 14:06:57",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Walking in LIVERPOOL - UK - 4K 60fps (UHD)",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Media from YouTube|WebM videos|Uploaded with video2commons/Server-side uploads|License reviewed by YouTubeReviewBot|Videos from Liverpool|Videos of cities by POPtravel",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Liverpool / UK, famously the hometown of The Beatles, is a city in northwest England. This today modern city used to be an important port for trade and migra...",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2019-12-07",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=jKJ2zDSYns8\"><bdi lang=\"\">Walking in LIVERPOOL / UK \ud83c\uddec\ud83c\udde7- 4K 60fps (UHD)</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=jKJ2zDSYns8\">archive.org</a></bdi>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Attribution": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA\">POPtravel</a>",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "video/webm"
+          }
+        ],
+        "revisions": [
+          {
+            "revid": 1053656681,
+            "parentid": 1032196724,
+            "timestamp": "2025-07-07T15:32:09Z",
+            "slots": {
+              "main": {
+                "contentmodel": "wikitext",
+                "contentformat": "text/x-wiki",
+                "content": "== {{int:filedesc}} ==\n{{Information\n|description={{en|1=Liverpool / UK, famously the hometown of The Beatles, is a city in northwest England. This today modern city used to be an important port for trade and migra...}}\n|date=2019-12-07\n|source={{From YouTube|1=jKJ2zDSYns8|2=Walking in LIVERPOOL / UK \ud83c\uddec\ud83c\udde7- 4K 60fps (UHD)}}\n|author=[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{YouTube CC-BY|[https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA POPtravel]}}\n{{YouTubeReview|id=jKJ2zDSYns8|ChannelName=POPtravel|ChannelID=UClODDXeUIz1-FaKyN8dsNrA|title=Walking in LIVERPOOL / UK \ud83c\uddec\ud83c\udde7- 4K 60fps (UHD)|archive=https://web.archive.org/web/20201110080026/https://www.youtube.com/watch?list=PLaxUrZNxL7WJsHpmES3qTv8BUQ36vdNMt&v=jKJ2zDSYns8&app=desktop|date=2021-03-30}}\n\n[[Category:Uploaded with video2commons/Server-side uploads]]\n[[Category:WebM videos]]\n[[Category:Videos from Liverpool]]\n[[Category:Videos of cities by POPtravel]]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "nonreuse_sha256": "5ee0a6d68d0aed14f93a389e3dc23430b605e89a6a68a0c78064464f0f92546e"
+}
