@@ -13,6 +13,8 @@ import sys
 import threading
 from urllib.parse import urlsplit
 
+from shield.app.live import LiveModeError
+
 
 def parser():
     root = argparse.ArgumentParser(description=__doc__)
@@ -25,7 +27,9 @@ def parser():
             command.add_argument('--run', action='store_true', help='Keep memory-only login in this process and run')
         command.add_argument('--mock-origin', help='Synthetic HTTP/EventSub server on IPv4 loopback')
         command.add_argument('--local-only', action='store_true', help='No Twitch authentication or EventSub')
-        command.add_argument('--twitch-bandwidth-test', action='store_true', help='Explicitly publish to Twitch test ingest')
+        publication = command.add_mutually_exclusive_group()
+        publication.add_argument('--twitch-bandwidth-test', action='store_true', help='Explicitly publish to Twitch test ingest')
+        publication.add_argument('--twitch-live', action='store_true', help='Publish live to naie after fresh authorization and terminal confirmation')
         command.add_argument('--local-sink', help='Local fake Twitch RTMP /shielded sink; requires --mock-origin')
         command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'),
                              help='Required relay bind: IPv4 loopback or Tailscale 100.64.0.0/10 (or SHIELD_BIND_HOST)')
@@ -54,11 +58,11 @@ def validate(args):
         TwitchHTTP(None, mock_origin=args.mock_origin)
     if args.local_sink:
         parsed = urlsplit(args.local_sink)
-        if (not args.mock_origin or args.twitch_bandwidth_test or parsed.scheme != 'rtmp'
+        if (not args.mock_origin or args.twitch_bandwidth_test or args.twitch_live or parsed.scheme != 'rtmp'
                 or parsed.hostname != '127.0.0.1' or not parsed.port or parsed.path != '/shielded'
                 or parsed.username or parsed.password or parsed.query or parsed.fragment):
             raise ValueError('Fake sink requires mock controls and IPv4 loopback RTMP /shielded')
-    if args.twitch_bandwidth_test and (args.local_only or args.mock_origin):
+    if (args.twitch_bandwidth_test or args.twitch_live) and (args.local_only or args.mock_origin):
         raise ValueError('Twitch egress requires real owner authorization')
     if args.mock_origin and args.remember:
         raise ValueError('Synthetic credentials cannot use the owner OS keyring')
@@ -113,6 +117,7 @@ def terminal_setup(address, phone):
 
 async def execute(args):
     from aiohttp import ClientSession
+    from shield.app.live import authorize_live
     from shield.app.session import TwitchControls, login
     from shield.twitch.http import TwitchHTTP
     validate(args)
@@ -135,6 +140,7 @@ async def execute(args):
             if args.command == 'login' and not args.run:
                 print('Login validated. Memory-only session ends here; use login --run or --remember to continue.')
                 return
+            approval = await authorize_live(session, http) if args.twitch_live else None
             from relay.mediamtx import MediaMTX, verified_binary
             from relay.runtime import make_engine, run
             from relay.security import Credentials, RelayAddress
@@ -164,7 +170,8 @@ async def execute(args):
                     engine = await asyncio.to_thread(make_engine, args.model_cache)
                     work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
                         args.archive, stopped, args.seconds, control_ready=register,
-                        publish_twitch=args.twitch_bandwidth_test, local_sink=args.local_sink))
+                        publish_twitch=(args.twitch_bandwidth_test or args.twitch_live),
+                        twitch_live=args.twitch_live, live_approval=approval, local_sink=args.local_sink))
                     try:
                         await asyncio.shield(work)
                     finally:
@@ -197,6 +204,9 @@ def main(argv=None):
                         '(python -m shield.cli doctor) to find the address.')
     try:
         asyncio.run(execute(args))
+    except LiveModeError as error:
+        print(str(error), file=sys.stderr)
+        return 1
     except (Exception, asyncio.CancelledError):
         print('Shield stopped with an error; credentialed upstream diagnostics suppressed.', file=sys.stderr)
         return 1
