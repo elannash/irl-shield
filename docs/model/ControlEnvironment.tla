@@ -1,6 +1,7 @@
 ------------------------- MODULE ControlEnvironment -------------------------
 EXTENDS Integers, Sequences, FiniteSets, TLC
-CONSTANTS MaxGeneration, MaxQueries, HoldStamps, LocalNow
+CONSTANTS MaxGeneration, MaxQueries, HoldStamps, ReleaseStamps, LocalNow,
+          StartedAt, Missing
 VARIABLES env, policy, queries, obligation, received, execution, coverage, local
 vars == <<env, policy, queries, obligation, received, execution, coverage, local>>
 Topics == {"chat", "begin", "end"}
@@ -13,7 +14,8 @@ EnvironmentInit ==
   /\ env = [generation |-> 1, socketLive |-> TRUE, session |-> 0,
              enabledGeneration |-> 0, enabled |-> {}, queuedWelcome |-> {},
              callbackOrigin |-> 0, registry |-> {}, everSubscribed |-> FALSE,
-             shieldTruth |-> FALSE]
+             shieldTruth |-> FALSE, now |-> LocalNow,
+             holds |-> [s \in Sources |-> [stamp |-> Missing, receipt |-> 0]]]
   /\ queries = <<>> /\ obligation = [chat |-> FALSE, shield |-> FALSE]
   /\ received = {} /\ execution = [pc |-> "idle", token |-> 0]
   /\ coverage = TRUE /\ local = FALSE
@@ -66,11 +68,13 @@ Idle == UNCHANGED vars
 \* a valid protective envelope. One unique chat hold and Shield begin are enough
 \* for these counterexamples; deduplication/cache bounds are not abstract proofs.
 ProtectiveHoldReceived(source, stamp, origin, admitted, orderTime) ==
+  /\ env.now = LocalNow
   /\ source \in Sources /\ source \notin received /\ stamp \in HoldStamps
   /\ origin \in 1..env.generation /\ env.everSubscribed
   /\ received' = received \cup {source}
   /\ obligation' = [obligation EXCEPT ![source] = TRUE]
-  /\ env' = IF source = "shield" THEN [env EXCEPT !.shieldTruth = TRUE] ELSE env
+  /\ env' = [env EXCEPT !.holds[source] = [stamp |-> stamp, receipt |-> env.now],
+                        !.shieldTruth = IF source = "shield" THEN TRUE ELSE @]
   /\ policy' = IF ~admitted THEN policy
       ELSE IF source = "chat" THEN [policy EXCEPT !.chat = TRUE,
                                                   !.chatTime = Max(@,orderTime)]
@@ -78,18 +82,45 @@ ProtectiveHoldReceived(source, stamp, origin, admitted, orderTime) ==
                            !.revision = @ + 1]
   /\ UNCHANGED <<queries, execution, coverage, local>>
 
-\* All modeled releases are fresh, well-formed, owner-authorized and from the
-\* live current generation. Rejected/malformed/viewer releases stutter; parsing,
-\* authorization and replay-cache internals are verified by concrete tests only.
-LegitimateRelease(source, stamp) ==
-  /\ source \in Sources /\ stamp \in {LocalNow + 1, LocalNow + 30}
-  /\ ActualCurrentChannel /\ policy.live /\ ~policy.revoked /\ policy.phase = "ready"
+\* The evidence above retains the raw Twitch stamp AND local receipt. A bounded
+\* valid stamp is discharged strictly by Twitch order, never by policy's key.
+\* Missing/pre-start stamps have no usable remote order: require newer receipt.
+\* Pathological >+30 stamps have only a capped protective obligation, by design;
+\* they do NOT assert that all releases before their raw remote stamp are unsafe.
+IndependentNewer(source, stamp) ==
+  LET h == env.holds[source]
+  IN IF h.stamp = Missing THEN stamp > h.receipt
+     ELSE IF h.stamp < StartedAt THEN stamp > h.receipt
+     ELSE IF h.stamp <= h.receipt + 30 THEN stamp > h.stamp
+     ELSE stamp > h.receipt + 30
+
+ReleaseAdmitted(source, stamp) ==
+  /\ stamp >= StartedAt /\ stamp <= env.now + 30
   /\ stamp > (IF source = "chat" THEN policy.chatTime ELSE policy.shieldTime)
-  /\ obligation' = [obligation EXCEPT ![source] = FALSE]
-  /\ env' = IF source = "shield" THEN [env EXCEPT !.shieldTruth = FALSE] ELSE env
-  /\ policy' = IF source = "chat" THEN [policy EXCEPT !.chat = FALSE, !.chatTime = stamp]
+
+\* Envelopes are well-formed, authorized, unique and current-session, but their
+\* timestamps may be OLDER, EQUAL, newer or outside the release skew allowance.
+\* Arrival is not conditioned on ReleaseAdmitted or IndependentNewer.
+ReleaseReceived(source, stamp) ==
+  /\ env.now = LocalNow + 1
+  /\ execution.pc = "idle"
+  /\ source \in Sources /\ stamp \in ReleaseStamps
+  /\ ActualCurrentChannel /\ policy.live /\ ~policy.revoked /\ policy.phase = "ready"
+  /\ obligation' = IF stamp >= StartedAt /\ stamp <= env.now + 30
+                      /\ IndependentNewer(source, stamp)
+      THEN [obligation EXCEPT ![source] = FALSE] ELSE obligation
+  /\ env' = IF source = "shield" /\ stamp >= StartedAt
+                 /\ stamp <= env.now + 30 /\ IndependentNewer(source, stamp)
+      THEN [env EXCEPT !.shieldTruth = FALSE] ELSE env
+  /\ policy' = IF ~ReleaseAdmitted(source, stamp) THEN policy
+      ELSE IF source = "chat" THEN [policy EXCEPT !.chat = FALSE, !.chatTime = stamp]
       ELSE [policy EXCEPT !.shield = FALSE, !.shieldTime = stamp, !.revision = @ + 1]
   /\ UNCHANGED <<queries, received, execution, coverage, local>>
+
+\* Two local receipt times permit a later delivery with an older remote stamp.
+ClockAdvance ==
+  /\ env.now = LocalNow /\ env' = [env EXCEPT !.now = @ + 1]
+  /\ UNCHANGED <<policy, queries, obligation, received, execution, coverage, local>>
 
 NoLIVEWithoutCurrentChannel == Output = "LIVE" => ActualCurrentChannel
 AuthorizedChatHoldPersists == obligation.chat => Output = "HOLD"

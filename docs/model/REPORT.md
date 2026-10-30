@@ -1,263 +1,286 @@
-# R1 control model: counterexamples before the fix, bounded safety after it
+# R2: independent Twitch-order obligations
 
-The replacement model catches real defects in **unmodified `bb6948b` policy
-behavior**. Direct TLC found two eight-transition counterexamples, each ending at
-state 9. A single public-API replay reproduced both failures on code extracted by
-`git show`, and the same inputs remained HOLD on the frozen fixed policy. The
-fixed finite model exhausted **399,992 distinct states**, with **5,618,817 generated
-states**, **zero queued states**, depth **39**, and no violation of its six listed
-invariants. [Raw fixed TLC receipt](evidence/r1/fixed-pass.tlc.log).
+R2 reproduces `claude:r2:model-release-obligation-uses-policy-order-key` on the
+unmodified `ea004ec` policy. A delivered Shield begin with Twitch timestamp **20**
+and local receipt **10** remains an independent obligation when an older end
+with timestamp **19** arrives at local receipt **11**. The old policy clamps
+20 down to 10, accepts 19, and goes LIVE. Direct TLC reports
+`AuthorizedShieldBeginPersists` at **state 17**, after sixteen transitions.
+[Raw trace](evidence/r2/old-clamp.tlc.log), [config](evidence/r2/old-clamp.cfg),
+[Mermaid path](evidence/r2/old-clamp.mmd).
 
-This is evidence for the bounded policy/environment model described below. It is
-**not a proof of the complete transport, watchdog, Twitch service, or video path**.
-Three invariants compare output against independent environment facts; the other
-three are structural sanity checks, not independent transport safety evidence.
+The combined public replay reproduces old RED/fixed GREEN without source
+mutation, private policy state, or a defect flag. It also checks both chat and
+Shield at +10/+29 skew, older/equal releases, strictly newer successful releases,
+unusable timestamps and the approved extreme-future cap.
+[Replay source](evidence/r2/public_replay.py), [raw receipt](evidence/r2/public-replay.log).
 
-## Source and model identity
+Fixed TLC completed with **150,289,557 generated states**, **14,747,184 distinct
+states**, **zero queued states**, depth **44**, exit **0**, and no reported
+violation of the six unchanged invariants. The finite graph exhausted in eight
+minutes under the prescribed limits. [Raw fixed receipt](evidence/r2/fixed-pass.tlc.log).
 
-Prepared checkout: `/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3`, branch
-`t3/verify-control-channel-model`, clean starting HEAD
-`bb6948b9793e1bbb505e84e8042357818ddb9608`. The first command verified all four.
-Only `docs/model/` and `/tmp/agents/irl-shield/m3-r1-model/` were written. Nothing
-was staged, committed, pushed, published, or changed in production code.
+This is bounded policy/environment evidence. It does not prove the complete
+transport, watchdog, Twitch service, clock behavior, or video privacy path.
+The R1 passing counts are historical: R1 used the implementation's clamped
+key when discharging obligations and therefore missed this defect.
+[Historical R1 note](evidence/r1/README.md),
+[unaltered report before R2](evidence/r2/REPORT-before-r2.md).
 
-| Artifact | SHA-256 |
+## Exact sources and isolation
+
+The first command was exactly `pwd; git branch --show-current; git rev-parse
+HEAD; git status --short`. It returned isolated checkout
+`/home/elan/.t3/worktrees/irl-shield/t3-6552b346`, branch `t3/6552b346`,
+HEAD `ea004ecdad9583996d4907cfb0f35ca130a227af`, empty status. The host later
+renamed the branch `t3/fix-model-release-obligation`; this worker issued no git
+mutation. Writes are confined to `docs/model/` and owned scratch
+`/tmp/agents/irl-shield/m3-r2-model/`. No parent checkout was written.
+
+| Input | SHA-256 |
 | --- | --- |
-| [Shared environment](ControlEnvironment.tla) | `7f5a54653c1e8836920fb8558853aedc2836931abb4e0a507a02979da80a2e6d` |
-| [Pre-fix policy projection](PreFixControl.tla) | `5e44fc206007b03d0d97e4fc4a708aadf7ff6850d32d7a248eb02ba1fe108097` |
-| [Fixed policy projection](TwitchControl.tla) | `16aab26592e1e6a318cc689ce840d2a48439a264209d9e44fadd7ec52fa90e3f` |
-| [Fixed config](TwitchControl.cfg) | `c315764a6e1da99fab5cc53262e5786cfc553abb86ac2b52e7e02f1910db2f53` |
-| Pre-fix `shield/twitch/events.py` at `bb6948b` | `c632045a328442afd25ac4103878d1bd067cf0f3d19bb8641eb9e0ee0280c40f` |
-| Frozen fixed `shield/twitch/events.py` | `907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd` |
-| `shield/control.py`, identical old/fixed | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
+| Actual old policy, extracted with `git show ea004ec:shield/twitch/events.py` | `907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd` |
+| Parent-frozen policy, copied after the freeze message and hash-verified | `aa359f9b70a580b768b755febea8433d77ff1402ee6c70771e1967348c92c082` |
+| Public Control, unchanged at base | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
+| [Independent environment](ControlEnvironment.tla) | `dc50a33dbf72061bdd9bcba241f062ee1e213e51149e8f297f3d31e8f90a6a37` |
+| [Faithful old clamp projection](BeforeR2Control.tla) | `918f1d1afb88b81b23ed13a68212b1c3b5f0e355f7523ba25d8fcc28710ae579` |
+| [Fixed projection](TwitchControl.tla) | `422d85ae9db52390ea7f1d4cf58eb1e04577ad7450214e0ef9b4bc35bc4ccec7` |
+| [Fixed configuration](TwitchControl.cfg) | `721ceaed5cc2e6445fa95ed098aeb7fe9b28f7cdb952b355c81a476924a69b16` |
 
-The fixed source was confirmed in the parent's integrated checkout
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac` and copied to owned scratch before
-the fixed check. The replay refuses any source with a different hash.
-[Pre-fix source hashes](evidence/r1/source-pre.sha256),
-[fixed source/read-context hashes](evidence/r1/source-fixed.sha256), and
-[model/tool hashes](evidence/r1/model-and-tool.sha256) identify the exact inputs.
-The transport hash records the read context, not a frozen transport proof.
+The frozen file was copied from
+`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py` to
+scratch `events-fixed.py`. The replay refuses other hashes. It loads the two
+actual policies and Control by file path, not test helpers. The
+[frozen source diff](evidence/r2/frozen-source.diff) confirms that only the
+protective timestamp clamp and its explanatory comment changed. Release
+admission and the unusable/pre-start/expired fallback were retained.
+[Old hashes](evidence/r2/source-pre.sha256), [frozen hash](evidence/r2/source-fixed.sha256),
+[model/tool hashes](evidence/r2/model-and-tool.sha256).
 
-## What makes the safety checks independent
+## What is now independent
 
-[ControlEnvironment.tla:12](ControlEnvironment.tla#L12) owns `env.socketLive`,
-`env.session`, `env.generation`, `env.enabledGeneration`, and the enabled topic
-set. They do not come from `Output` or the implementation's connection hold.
-A fault independently kills the actual socket/subscriptions and asserts the
-policy hold. A welcome keeps its origin generation while its callback queues;
-subscription enabling, callback delivery, fault, begin-reconcile, and status
-completion are separate actions.
+[ControlEnvironment.tla:70](ControlEnvironment.tla#L70) records each authorized
+hold's raw Twitch stamp and local receipt in `env.holds` before considering the
+policy's admission or key. These facts never come from `policy.chatTime`,
+`policy.shieldTime`, or output. `IndependentNewer` at line 90 decides when the
+external obligation may end. `ReleaseAdmitted` at line 97 separately decides
+what the implementation will do. `ReleaseReceived` at line 104 runs both
+updates: admission is not an action guard, and it is not the obligation's
+criterion. An old/equal release can therefore be admitted by a broken policy
+while the independent obligation stays true.
 
-`obligation.chat` and `obligation.shield` record an authorized protective delivery
-before considering policy admission. They are not aliases for `policy.chat` or
-`policy.shield`. A policy that discards the envelope can therefore go LIVE while
-an obligation remains. Only a modeled fresh current-session release discharges an
-obligation. Chat releases represent fresh broadcaster resumes; Shield releases
-represent valid Shield ends. Release authorization, parsing, deduplication and
-freshness are assumptions of that action, not properties proved by this model.
+For a parseable, non-expired hold stamped between session start and local
+receipt +30, the obligation requires a strictly newer **raw Twitch stamp**.
+Equal stamps favor HOLD. Missing/unparseable/naive stamps and pre-start stamps
+have no trusted remote order: their explicitly separate contract uses receipt
+as the fallback reference. For a pathological raw future stamp beyond receipt
++30, the approved contract caps the protective obligation at receipt +30.
+Its raw stamp is still recorded, but this class does not assert that every
+release below that raw stamp must fail forever. In particular, a hold stamped
+100000 received at 10 may release on stamp 41; it need not wait for 100001.
 
-| Invariant | Evidence provided |
+This cap may delay an otherwise legitimate release by up to the 30-second
+forward window, with a strict tie favoring HOLD. It is a cap on the ordering
+barrier, not a liveness guarantee: a current authorized release must still
+arrive with a strictly newer stamp. Neither class weakens the raw-order claim
+for valid bounded stamps. The six invariant formulas are unchanged:
+
+| Invariant | Meaning and limit |
 | --- | --- |
-| `NoLIVEWithoutCurrentChannel` | LIVE requires the environment's live socket, current welcomed session and all three enabled subscriptions for its generation. The pre-fix trace violates this even though its connection hold has been cleared. |
-| `AuthorizedChatHoldPersists` | A delivered authorized chat hold requires output HOLD until a legitimate fresh broadcaster release. The old implementation's phase/time gates can drop it. |
-| `AuthorizedShieldBeginPersists` | A delivered Shield begin requires HOLD until a valid end, under the status-truth assumption below. The skew counterexample violates this on old code. |
-| `RevokedStaysHeld` | Structural safety check across generation changes and release callback steps. |
-| `LocalHoldPersists` | Structural Control hold precedence check. |
-| `NoLIVEWithoutCoverage` | Structural Control coverage check. It alone does not validate the Twitch path. |
+| `NoLIVEWithoutCurrentChannel` | LIVE requires the environment's actual live session and all three enabled subscriptions, matched to policy session. Transport establishment is assumed, not executed. |
+| `AuthorizedChatHoldPersists` | An independently recorded chat obligation requires HOLD until an independently newer authorized release. |
+| `AuthorizedShieldBeginPersists` | The analogous Shield obligation, under the truthful status-read assumption. |
+| `RevokedStaysHeld` | Structural hold precedence on revocation. |
+| `LocalHoldPersists` | Structural local hold precedence. |
+| `NoLIVEWithoutCoverage` | Structural coverage precedence; does not validate OCR or rendering. |
 
-Fixed reconciliation uses object identity as well as generation, session and
-revision. Two query slots can have equal snapshot fields but different identities;
-only the most recent token is current. Output includes the fifth internal source
-`twitch-reconcile`. Status callback, revalidation/Shield repair, connection callback,
-revalidation, guard callback and final return are separate states. A reentrant
-fault can run before a callback applies its argument. Thus connection FALSE may
-really overwrite a fault's connection TRUE; the guard must still prevent LIVE.
-A Shield begin can reenter before stale status FALSE applies; the revision recheck
-restores protection before either guard is released.
+## Mapping to the frozen implementation
 
-## Counterexamples and concrete replay
+Line references in this table are to the frozen policy above. The current
+checkout's policy remains old by this child's path boundary.
 
-Both failure configs use the separate [PreFixControl.tla](PreFixControl.tla),
-with **no defect flags or planted mutation**. They retain the old unguarded
-welcome/begin behavior and old phase/timestamp protective admission. They are
-projections of the source, not full emulators of it.
+| Model operation | Implementation mapping |
+| --- | --- |
+| `InitialPolicy`, `PolicyFault`, `Welcome`, `NewConnection` | `ShieldEvents.__init__`, `fault`, `connection_started`, `welcome`, lines 43–102 and 182–189. Initial timestamps -1 abstract a floor below session start; all modeled releases are above both. |
+| `BeginReconcile`, `Current`, object token `q` | `begin_reconcile` and `reconciliation_current`, lines 128–141 and 176–180. Query indices preserve object identity even for equal fields. |
+| Completion microsteps | `reconciled`, lines 143–174: initial revision decision, optional status effect, current-token/revision recheck and Shield repair, connection callback, current check, ready phase, guard callback, final check. |
+| `DeliverHold`, `OrderTime` | `accept`, lines 192–235 and 244–252: authorize/parse first, never reject protective admission on clock/phase/generation, unusable timestamps use receipt; fixed `max(started_at, min(at, now+30))`. Old projection instead uses actual old `min(at, now)`. |
+| `ReleaseAdmitted` and release policy update | Lines 236–243 and 259–273: ready/live/current/not revoked, raw release in the local +30 allowance, strict per-source comparison, timestamp max, Shield revision and hold callback. |
+| Independent hold/discharge evidence | External specification variables only. They deliberately have no implementation counterpart. They must not be derived from the implementation key. |
+| `Reconnect`, `HandedOver` | `reconnect` and `handed_over`, lines 104–126. Atomic remote subscription migration is an assumption. |
+| `Output` | Public `Control.set_hold`, `update_coverage`, `_settle`, base `shield/control.py:31–52`. Connection, reconciliation guard, chat, Shield and local hold have precedence over coverage. |
 
-1. **`NoLIVEWithoutCurrentChannel`: states 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.**
-   Welcome queues, three subscriptions enable, welcome reaches policy, socket
-   faults, the queued callback begins a new status read, inactive status returns.
-   At state 9, `env.socketLive=FALSE`, enabled topics are empty, policy is ready,
-   and output is LIVE. [Config](evidence/r1/stale-welcome.cfg),
-   [raw trace](evidence/r1/stale-welcome.tlc.log),
-   [Mermaid](evidence/r1/stale-welcome.mmd).
-   TLC's shortest trace delivers welcome before the fault; the additional public
-   replay also covers fault before delivery of that welcome.
-2. **`AuthorizedShieldBeginPersists`: states 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.**
-   After normal reconciliation reaches LIVE, an authorized Shield begin stamped
-   Twitch time 11 arrives while local time is 10. The old policy rejects it;
-   obligation becomes TRUE but output remains LIVE. [Config](evidence/r1/dropped-hold.cfg),
-   [raw trace](evidence/r1/dropped-hold.tlc.log),
-   [Mermaid](evidence/r1/dropped-hold.mmd).
-   TLC stops at the Shield violation; this is not a separate TLC counterexample
-   receipt for the chat property. Concrete replay covers both topics.
+[Base transport](../../shield/twitch/transport.py#L53) validates enabled
+subscription responses and origin/session matching before reconciliation;
+`_subscriptions_enabled` and `_handle_welcome` at lines 131–160 are the source
+mapping for that assumption. No startup/watchdog change is modeled here, and no
+claim is made that this executes all transport failure schedules.
 
-[public_replay.py](evidence/r1/public_replay.py) replays each numbered trace action
-through public constructors/methods and caller-owned synthetic environment facts.
-Queue/subscription actions only update those external facts because this is a
-policy replay, not a socket test. The old and fixed interfaces receive the same
-sequence, with required generation/session arguments added for the fixed API.
-No private policy fields, network, test helpers, source edits or model mutants
-are used. It verifies the old bad outcome as well as the fixed good outcome.
+## Finite bounds and retained lifecycle coverage
 
-[public-replay.log](evidence/r1/public-replay.log) also records old RED/fixed GREEN
-for: welcome delivered after fault; chat skew; chat hold during subscribing then
-inactive reconciliation; callback faults before status and connection effects;
-and Shield begin reentry during the inactive-status callback. It checks no
-intermediate LIVE transition after a fault on the fixed code, including the new
-guard-release callback. A fixed fresh broadcaster resume demonstrates that chat
-HOLD persists and can legitimately release. The run ended with `PASS`, exit 0.
+Fixed constants are exactly: `MaxGeneration=3`, `MaxQueries=2`, `LocalNow=10`,
+`StartedAt=1`, `Missing=Missing`, holds `{Missing,0,9,20,39,41}`, releases
+`{11,19,20,39,40,41,42}`. `Missing` represents only missing/unparseable/naive
+stamps; 0 is a separate numeric pre-start case; 9 is valid past; 20/39 are
++10/+29; 41 is beyond the hold receipt's +30 allowance. At release receipt 11,
+41 is the allowed forward boundary and 42 is rejected. Stamp 20 is both a hold
+and an equal release; 39 is likewise. Older release 19 is available against
+both future holds. Replay additionally covers the immediate predecessor 38
+for held stamp 39, and newer 21 for held stamp 20.
 
-Test-gate rationale: the behavior is output state/transition history through the
-public policy and Control interfaces; the realistic defects are exactly the old
-phase/time/generation guards and callback ordering. Policy owns this boundary.
-Existing `tests/m3/test_events.py` is outside this child's write fence, so the
-closest executable check is this replay, alongside the sibling's regression tests.
-The replay needs no production-only export, reset hook, private-state injection or
-manufactured pre-fix mutant. The sibling's full tests were read, not run here.
+There is at most one unique hold per source. Holds can arrive in every modeled
+phase and any known origin generation after at least one subscription enabled,
+including during callback microsteps. The environment clock advances once from
+10 to 11: holds are delivered at 10 and releases at 11. Releases use the public
+serialized boundary (`execution.pc="idle"`). This explicitly bounded schedule
+replaces R1's fixed receipt clock and excludes release-before-hold and release
+callback reentry schedules. It does not assume releases are newer. It is not a
+proof of arbitrary clock movement or arbitrary repeated holds. The fixed graph
+retains all existing lifecycle actions unchanged: queued welcome, each enabled
+topic, observed fault/revocation, new generation, begin/read identity, status
+completion and rechecks, Shield repair, connection and separate guard callbacks,
+planned reconnect/handover, local/coverage changes, status failure and idle.
+No invariant was removed or edited to make the graph pass.
 
-## Exact scope and omissions
+The old counterexample config uses one generation, one query, hold `{20}` and
+release `{19}` to expose the actual clamp defect directly. It changes the
+finite environment bounds, not the policy. There are no mutation flags. Both
+policy modules have the same lifecycle code, differing only in the protective
+order operation (and identifying comment/module name).
 
-- Fixed bounds: generation 1..3, at most two query objects, one unique authorized
-  chat hold and one Shield begin, three topic bits, local wall time fixed at 10.
-  Remote stamps are separate inputs: 9 (past), 11 (ahead), 41 (far ahead), and 0
-  (the invalid/pre-start/expired class). Protective stamps clamp/order at receipt.
-  Fresh releases use 11 or 40 (the local 30-second forward limit). This does not
-  enumerate changing local clocks, arbitrary timestamps or unbounded lifetimes.
-- `Fault` is an **observed** loss/revocation and updates environment and policy
-  together. Silent half-open sockets, watchdog scheduling/death, time-to-detect,
-  connect timeouts and availability/progress are not proved. No fairness is used.
-  `Idle`/status failure stutter, so deadlock checking is not a progress receipt.
-- Starting reconciliation after all enabled subscription responses match the
-  actual current session is a **transport assumption**, mapped to the parent's
-  `_api_post_request`, `_subscriptions_enabled`, and `_handle_welcome`. The old
-  registry persists across faults; the fixed transport clears it and validates
-  fresh IDs/session/status. The model does not execute HTTP, resubscribe failures,
-  unique ID parsing, owner-loop dispatch, reader generation stamps or Twitch.
-- Shield status is truthful at the modeled begin/read point, then may return late.
-  A newer delivered begin changes revision/truth and must win over that old
-  response. External Shield state changes with no delivered notification, status
-  caches/server inconsistency and independent status sampling times are omitted.
-  A fresh authoritative inactive status may legitimately clear a prior Shield
-  hold in production; the model only clears truth via a valid end action.
-- RLock/owner-loop serialization is source-mapped, not a Python memory-model
-  proof. Callback microsteps overapproximate interleavings with faults and
-  protective deliveries; arbitrary recursive lifecycle calls, callback exceptions,
-  and concurrent rendering internals are omitted. Begin's two hold assertions
-  are atomic in the model; completion release callbacks are split.
-- Planned migration assumes Twitch carries all current subscriptions atomically.
-  It does not prove that remote contract, URL authorization, token authorization,
-  release replay prevention, ID eviction/memory bounds, payload validation,
-  rendering/coverage accuracy, OCR privacy, media transport or live Twitch behavior.
-  The old `ReconnectNeverReplays` claim is not carried forward: fixed policy can
-  conservatively reassert an evicted protective ID. Concrete tests own releases.
-- Enabling subscriptions and queued protective deliveries deliberately
-  overapproximate scheduling: a protective event may arrive in any phase after
-  some subscription has enabled. No claim is made that every explored callback
-  ordering is produced by the concrete transport.
+Remaining assumptions and omissions:
 
-## Runs, commands, budget and cleanup
+- Inputs at this policy boundary are authorized, correctly scoped, enabled
+  envelopes with unique IDs. The model does not prove parsing, authorization,
+  ID eviction, replay-cache size, or floor advancement. Numeric valid stamps
+  are non-expired: local time 10/11 and age 600 keep them above the age floor;
+  capacity 4096 never evicts in replay. The expired fallback is read in source
+  but not proved by this bounded graph or separately replayed here.
+- The wall clock is finite, monotonic over 10/11 and after start. Backward jumps,
+  arbitrary skew, non-finite local clocks, float-resolution collisions and
+  unbounded lifetimes are outside the graph.
+- An observed fault simultaneously kills environment socket/subscriptions and
+  asserts policy fault protection. Silent half-open loss, watchdog death or
+  detection latency, connect deadlines and availability are omitted.
+- Shield status is truthful when the read starts and may return late. A newer
+  begin changes truth/revision. Independent truth is cleared by an independently
+  newer end, never by a policy release key. External unnotified Shield changes,
+  stale server caches and authoritative inactive reads clearing old Shield holds
+  without a delivered end are omitted.
+- RLock and owner-loop serialization are source mappings. Callback microsteps
+  overapproximate faults/protective deliveries. Begin's two assertions remain
+  atomic, and arbitrary recursive lifecycle calls/callback exceptions are omitted.
+- Planned migration carries all subscriptions atomically by assumption. HTTP,
+  upstream SDK behavior, OAuth, live Twitch, media transport, OCR/coverage
+  accuracy and complete watchdog safety are not proved.
+- No fairness or temporal progress property is checked. Idle/status-failure
+  stuttering prevents deadlock; deadlock success is not evidence of progress.
 
-| Invocation | Result | Generated / distinct / queued |
-| --- | --- | --- |
-| 1. Old stale callback, direct TLC | Exit 12, `NoLIVEWithoutCurrentChannel` violation, depth 9 | 1,886 / 272 / 28 |
-| 2. Old skew, direct TLC | Exit 12, `AuthorizedShieldBeginPersists` violation, depth 9 | 2,121 / 235 / 33 |
-| 3. First fixed config | Exit 255, cfg rejected negative literal; no graph checked | Not applicable |
-| 4. Corrected fixed config, direct TLC | Exit 0, six invariants, depth 39 | 5,618,817 / 399,992 / 0 |
-| 5. Combined old/fixed public Python replay | Exit 0, expected old failures and fixed safety | Not a TLC graph |
+## Direct trace and public replay
 
-Exactly **5/5 invocations spent**, including the rejected config. No helper,
-automatic continuation, SANY-only run, additional Python invocation or test suite
-was run. The parent owns the full gate and overall budget; this report adds five
-to that ledger, and makes no claim about later parent/sibling consumption.
-[Invocation ledger](evidence/r1/invocations.log),
-[exact command record](evidence/r1/commands.sh),
-[rejected config](evidence/r1/fixed-configuration-error.cfg.txt),
-[rejected run](evidence/r1/fixed-configuration-error.tlc.log).
+The TLC path is exactly:
+1 initial socket → 2 queued welcome → 3 chat enabled → 4 end enabled →
+5 begin enabled → 6 welcome accepted → 7 inactive status read starts →
+8 Shield begin (raw 20, receipt 10) → 9 completion chooses to skip old status →
+10 status microstep → 11 current check → 12 connection callback releases →
+13 ready/current check → 14 guard callback releases → 15 completion returns →
+16 local receipt time advances to 11 → 17 raw end 19 is admitted by old policy.
+At 17, `env.holds.shield=[stamp|->20, receipt|->10]`, obligation and external
+Shield truth are TRUE, but `policy.shield=FALSE`, `policy.shieldTime=19`, no other
+hold remains, and output is LIVE. The fixed replay returns `expired` and HOLD.
 
-Every Java/Python invocation used `systemd-run --user --scope`, slice
-`app-t3code-agents.slice`, `MemoryMax=2G`, `CPUQuota=200%`, `nice -n 10`,
-`JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2'`,
-`XDG_RUNTIME_DIR=/run/user/1000`, and
-`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus`.
-Existing Java/TLC were read-only. TLC used one worker, `-fp 0 -lncheck final`.
-The reused TLC distribution is MIT; its extracted notice remains in
-[TLC-LICENSE.txt](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2
-with Classpath Exception, recorded in the installed
-`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
-Exact Java/JAR hashes are in [model-and-tool.sha256](evidence/r1/model-and-tool.sha256).
-Neither tool is redistributed or newly installed by this round. The statechart
-helper was not executed in R1; these are direct TLC runs.
-No VIEW/SYMMETRY/CONSTRAINT/ACTION_CONSTRAINT quotient or pruning was applied.
+The replay records all seventeen numbered states for both actual policies.
+The queue/subscription actions update caller-owned environment facts, rather
+than opening sockets. States 9–11 are source-mapped stuttering microsteps of
+one public `reconciled` call when its status callback is skipped, not separate
+public operations or independent internal-state observations. States 12–14
+are observed through the actual public hold callback; 15 checks the public
+return. This distinction is explicit in both source and log. The replay is a
+policy trace replay, not a transport test or a Python memory-model proof.
+
+The additional tables run fresh public instances for each older/equal relation,
+source and skew. They assert old success/LIVE (the expected violation), fixed
+`expired`/HOLD, and a subsequent strictly newer successful release/LIVE. Thus a
+policy that holds forever would fail. The unusable class checks missing,
+malformed, naive and pre-start inputs, receipt tie HOLD and newer receipt LIVE.
+The pathological class checks hold raw 100000, receipt 10, early release 11,
+cap tie 40, then receipt advanced to 40 and release stamp 41 → LIVE.
+
+Test-gate rationale: these checks protect output via public `ShieldEvents` and
+Control APIs against the real old clamp, at the owning policy layer. Existing
+`tests/m3/test_events.py` is outside this worker's fence; the parent owns those
+regressions and the full gate. This replay is the closest permitted executable
+check. It requires no export, reset hook, private field or production-only flag.
+Its old RED is the historical source itself, not a mutation. The combined
+replay exits zero only after checking the negative control and fixed safety.
+
+## Invocations, licenses and cleanup
+
+| Invocation | Outcome | Generated / distinct / queued | Depth |
+| --- | --- | --- | --- |
+| 1. Actual old clamp projection, direct TLC | Exit 12; `AuthorizedShieldBeginPersists` violation at state 17 | 9,580 / 971 / 75 | 17 (stopped search) |
+| 2. Frozen fixed projection, direct TLC | Exit 0; six invariants; finite graph exhausted | 150,289,557 / 14,747,184 / 0 | 44 |
+| 3. Public Python old/fixed replay | Exit 0; expected old RED and fixed GREEN, including successful newer releases | Not a TLC graph | Not applicable |
+
+Exactly three invocations were made: old TLC, fixed TLC, combined Python replay.
+No config/parser failure, automatic retry, helper run, SANY-only check, Python
+syntax-only check or test suite was added. The strict five-run cap leaves two
+unused. With the parent's supplied cumulative 25/38 before these runs, this
+worker contributes three; the parent must reconcile any concurrent spending.
+[Ledger](evidence/r2/invocations.log), [exact commands](evidence/r2/commands.sh),
+[TLC wrapper](evidence/r2/run-tlc.sh), [Python wrapper](evidence/r2/run-public-replay.sh).
+
+Every Java/Python run used `systemd-run --user --scope`,
+`--slice=app-t3code-agents.slice`, `MemoryMax=2G`, `CPUQuota=200%`, `nice -n 10`.
+Both TLC runs used existing Java/TLC read-only with `-Xmx1g`,
+`-XX:ActiveProcessorCount=2`, two native workers, `-fp 0 -lncheck final`.
+No scaffolder, global install, network or metered API was used. No VIEW,
+SYMMETRY, state/action constraint or post-violation invariant removal was used.
 Generated states include duplicates; distinct states use TLC fingerprints.
-Failure queues remain unexamined. Fixed success exhausted the finite graph;
-its optimistic fingerprint-collision estimate is `1.1E-7`, not a probability of
-implementation correctness. Raw logs include tool version and JVM PID.
+The stopped old queue was not exhausted. The fixed exhausted graph is bounded
+fingerprint-based evidence. TLC's optimistic collision estimate is `1.1E-4`;
+its estimate based on actual fingerprints is `.0035`. Neither is a probability
+of implementation correctness. [Live scope limit receipt](evidence/r2/fixed-scope-limits.txt)
+confirms the agents slice, `MemoryMax=2147483648`, and CPU quota `2s` per second.
 
-For a future authorized rerun, `bash evidence/r1/run-tlc.sh NAME PreFixControl
-ABS_CONFIG_PATH` or `bash evidence/r1/run-tlc.sh NAME TwitchControl
-ABS_CONFIG_PATH` gives each run a new scratch/metadir `NAME`. The Python replay
-requires the three source snapshots at the paths/hashes above; the command record
-shows their creation and the exact runner. No further rerun is authorized by this
-child's exhausted budget. Charts preserve all nine states of each bug path and
-hide every off-path transition; they are manually transcribed from direct TLC,
-not helper-generated full graphs. [view.mjs](view.mjs) supports optional future
-helper labeling but was not executed during R1.
+All new model/replay code is original work in this authorized Codex lane.
+No new SDK/model/dataset or asset was introduced. The installed TLC JAR's root
+`License.txt` is MIT, copied verbatim to
+[TLC-MIT-LICENSE.txt](evidence/r2/TLC-MIT-LICENSE.txt); its bundled
+`META-INF/LICENSE.txt` (EPL 2.0/GPL notices) matches the already preserved
+[dependency notice](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2
+with Classpath Exception, in the installed
+`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
+System Python carries its PSF license chain in `/usr/share/doc/python3/copyright`.
+Tool binaries were neither modified nor redistributed; hashes identify them.
 
-[Cleanup receipt](evidence/r1/process-cleanup.txt) records exited owned scopes and
-JVM PIDs. Scratch retains source copies and TLC metadirs for audit; no owned
-background process is handed off. No HTTP, Twitch, secrets, Mac, GPU, accounts,
-installs, global config, git mutations or child agents were used.
+[Cleanup receipt](evidence/r2/process-cleanup.txt) confirms both owned JVM PIDs
+exited and all three owned scopes are inactive/unloaded. Both TLC commands and
+the Python runner returned; no background process is handed off. Scratch keeps
+only source snapshots and TLC state data for audit. No production/test/global
+files, secrets, accounts, HTTP, Mac, GPU, installs, worktrees, index, commits,
+pushes or PRs were changed; no children were spawned. Parent owns audit/copy,
+production regressions, and the full gate. New files are deliberately untracked
+because staging was forbidden; [base tracking receipt](evidence/r2/tracked-base-files.txt)
+identifies the previously tracked edited files.
 
-## Historical receipts
+For a future authorized rerun, use `bash evidence/r2/run-tlc.sh NEW_NAME
+BeforeR2Control ABS_OLD_CFG` or `bash evidence/r2/run-tlc.sh NEW_NAME TwitchControl
+ABS_FIXED_CFG` from any directory; `NEW_NAME` must be a fresh scratch subdirectory.
+The replay command is `bash evidence/r2/run-public-replay.sh`, with the three
+hash-pinned source snapshots prepared at the paths in `commands.sh`. The wrappers
+perform one invocation each. These recipes do not authorize another run under
+this packet, and no unused invocation is spent for repetition.
 
-`historical/` is unchanged earlier evidence. `evidence/reconciliation/` is also
-**historical**, including its planted release-clobber mutation and passing counts.
-The prior top-level model/config/report are preserved as
-`evidence/reconciliation/{TwitchControl-before-r1.tla.txt,TwitchControl-before-r1.cfg.txt,REPORT-before-r1.md}`.
-They do not establish current policy/transport safety. This report supersedes the
-prior top-level claim that the eight by-construction invariants verified the path.
+## Historical evidence and chart
 
-## Mermaid paths from the two direct TLC traces
-
-The red terminal state in the first path breaks `NoLIVEWithoutCurrentChannel`.
-The red terminal state in the second breaks `AuthorizedShieldBeginPersists`.
-Only these paths are drawn; all off-path actions are omitted.
-
-
-```mermaid
-stateDiagram-v2
-  direction LR
-  state "1 Awaiting welcome · HOLD" as s1
-  state "2 Welcome queued · HOLD" as s2
-  state "3 Chat enabled · HOLD" as s3
-  state "4 Shield begin enabled · HOLD" as s4
-  state "5 Shield end enabled · HOLD" as s5
-  state "6 Subscribing · HOLD" as s6
-  state "7 Socket dead · HOLD" as s7
-  state "8 Reconcile after fault · HOLD" as s8
-  state "9 Socket dead · LIVE" as s9
-  [*] --> s1
-  s1 --> s2: welcome queues
-  s2 --> s3: chat enables
-  s3 --> s4: begin enables
-  s4 --> s5: end enables
-  s5 --> s6: callback reaches policy
-  s6 --> s7: socket faults
-  s7 --> s8: stale callback starts read
-  s8 --> s9: inactive status returns
-  classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
-  class s9 breaks
-```
+`historical/`, `evidence/reconciliation/`, and R1 logs remain historical.
+Unaltered pre-R2 report, environment, policy, config and manifest are preserved
+under `evidence/r2/*-before-r2.*`; the old `PreFixControl.tla` remains unchanged
+historical R1 source. Their old counts do not prove current safety. The chart
+below is manually transcribed from the direct TLC old trace and keeps all
+seventeen states. It hides every off-path transition, including outcomes after
+the first violation. It is not a helper-generated full state graph.
 
 ```mermaid
 stateDiagram-v2
@@ -265,21 +288,37 @@ stateDiagram-v2
   state "1 Awaiting welcome · HOLD" as s1
   state "2 Welcome queued · HOLD" as s2
   state "3 Chat enabled · HOLD" as s3
-  state "4 Shield begin enabled · HOLD" as s4
-  state "5 Shield end enabled · HOLD" as s5
+  state "4 Shield end enabled · HOLD" as s4
+  state "5 Shield begin enabled · HOLD" as s5
   state "6 Subscribing · HOLD" as s6
-  state "7 Reconciling · HOLD" as s7
-  state "8 Ready · LIVE" as s8
-  state "9 Authorized Shield begin discarded · LIVE" as s9
+  state "7 Inactive status read · HOLD" as s7
+  state "8 Begin: Twitch 20, receipt 10 · HOLD" as s8
+  state "9 Completion starts · HOLD" as s9
+  state "10 Older inactive result skipped · HOLD" as s10
+  state "11 Status rechecked · HOLD" as s11
+  state "12 Connection hold cleared · HOLD" as s12
+  state "13 Ready; guard held · HOLD" as s13
+  state "14 Guard cleared · HOLD" as s14
+  state "15 Completion returns · HOLD" as s15
+  state "16 Local receipt clock 11 · HOLD" as s16
+  state "17 Older end: Twitch 19 · LIVE with obligation" as s17
   [*] --> s1
   s1 --> s2: welcome queues
   s2 --> s3: chat enables
-  s3 --> s4: begin enables
-  s4 --> s5: end enables
-  s5 --> s6: callback reaches policy
-  s6 --> s7: status read starts
-  s7 --> s8: inactive status returns
-  s8 --> s9: Twitch stamp 11; local time 10
+  s3 --> s4: end enables
+  s4 --> s5: begin enables
+  s5 --> s6: queued callback delivered
+  s6 --> s7: status read begins
+  s7 --> s8: authorized begin arrives
+  s8 --> s9: changed revision observed
+  s9 --> s10: inactive status skipped
+  s10 --> s11: current token checked
+  s11 --> s12: connection callback applies
+  s12 --> s13: generation checked
+  s13 --> s14: guard callback applies
+  s14 --> s15: final token checked
+  s15 --> s16: local clock advances
+  s16 --> s17: older end arrives later
   classDef breaks fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
-  class s9 breaks
+  class s17 breaks
 ```

@@ -1,0 +1,5 @@
+docs/model/ControlEnvironment.tla
+docs/model/REPORT.md
+docs/model/TwitchControl.cfg
+docs/model/TwitchControl.tla
+docs/model/view.mjs

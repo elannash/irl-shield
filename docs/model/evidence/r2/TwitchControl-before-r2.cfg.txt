@@ -1,0 +1,9 @@
+CONSTANTS
+  MaxGeneration = 3
+  MaxQueries = 2
+  HoldStamps = {0, 9, 11, 41}
+  LocalNow = 10
+SPECIFICATION Spec
+INVARIANTS NoLIVEWithoutCurrentChannel AuthorizedChatHoldPersists
+           AuthorizedShieldBeginPersists RevokedStaysHeld LocalHoldPersists
+           NoLIVEWithoutCoverage

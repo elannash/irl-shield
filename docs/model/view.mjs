@@ -22,7 +22,8 @@ const labels = {
   CheckStatus: 'status rechecked; newer Shield begin restored',
   ApplyConnectionRelease: 'connection callback clears its hold', CheckConnection: 'generation rechecked',
   ApplyGuardRelease: 'separate guard releases', FinishCompletion: 'completion returns',
-  DeliverHold: 'authorized protective message arrives', LegitimateRelease: 'fresh owner release arrives',
+  DeliverHold: 'authorized protective message arrives', ReleaseReceived: 'owner release arrives; raw Twitch order decides obligation',
+  ClockAdvance: 'local receipt clock advances',
   Reconnect: 'approved handover begins', HandedOver: 'subscriptions migrate to new session',
   CoverageChange: 'coverage changes', LocalHold: 'local hold changes', StatusFailure: null, Idle: null,
 };
