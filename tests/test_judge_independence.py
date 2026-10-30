@@ -1,7 +1,8 @@
 """Independent-family truth, all-judge leaks and retained pooled diagnostics."""
 import unittest
 from bench.scoring import score_records
-from bench.independence import policy_metadata, candidate_metadata
+from bench.independence import (policy_metadata, candidate_metadata,
+                                independent_readings, judging_scope, annotate_card)
 
 
 class IndependentJudging(unittest.TestCase):
@@ -48,10 +49,32 @@ class IndependentJudging(unittest.TestCase):
 
 
 class DeclaredProvenance(unittest.TestCase):
+    def test_policy_metadata_and_card_annotation_reject_family_overrides(self):
+        for families in ([], ['unregistered'], ['paddle-ocr'], ['apple-vision'], ['paddleocr']):
+            with self.subTest(families=families):
+                with self.assertRaisesRegex(ValueError, 'detector_families'):
+                    policy_metadata('ppocr-v6-small', {'detector_families': families})
+        with self.assertRaisesRegex(ValueError, 'detector_families'):
+            annotate_card({'candidate': 'unmasked', 'options': {'detector_families': []}})
+
+    def test_empty_families_remain_explicit_for_registered_no_detector_controls(self):
+        for candidate in ('unmasked', 'slate'):
+            with self.subTest(candidate=candidate):
+                families = policy_metadata(candidate, {})['detector_families']
+                self.assertEqual(families, [])
+                self.assertEqual(independent_readings([[{'text': 'synthetic control'}]], families),
+                                 [[{'text': 'synthetic control'}]])
+                self.assertEqual(judging_scope(families)['truth_judges'],
+                                 ['tesseract', 'vision-accurate', 'ppocr-independent'])
+
+    def test_unknown_families_cannot_select_pooled_truth_even_without_readings(self):
+        for validator, args in ((independent_readings, ([],)), (judging_scope, ())):
+            with self.subTest(validator=validator.__name__):
+                with self.assertRaisesRegex(ValueError, 'detector famil'):
+                    validator(*args, ['paddle-ocr'])
+
     def test_lane_union_is_declared_and_unknown_candidates_do_not_use_name_heuristics(self):
         policy=policy_metadata('ppocr-v6-small',{'fast_candidate':'vision-rectangles'})
         self.assertEqual(policy['detector_families'],['apple-vision','paddleocr'])
-        for candidate,fast in [('ppocr-v6-small','ppocr-v6-tiny'),('vision-union','vision-rectangles')]:
-            self.assertEqual(policy_metadata(candidate,{})['lanes']['fast'],candidate_metadata(fast))
         with self.assertRaisesRegex(ValueError,'declared detector families'):
             candidate_metadata('ppocr-unknown-candidate')

@@ -75,7 +75,8 @@ def variant(clip, out, synthetic, seconds):
     return truth
 
 
-def score(input_path, output_path, judge, synthetic_truth, options, slate):
+def score(input_path, output_path, judge, synthetic_truth, options, candidate):
+    metadata = policy_metadata(candidate, options)
     cap = cv2.VideoCapture(str(input_path))
     masked = cv2.VideoCapture(str(output_path))
     masks = json.loads(output_path.with_suffix('.masks.json').read_text())
@@ -90,7 +91,7 @@ def score(input_path, output_path, judge, synthetic_truth, options, slate):
         input_readings.append(original_readings)
         outputs.append(judge.read(after))
         _, mask = masked_frame(before,record['boxes'],options['padding'])
-        if slate:
+        if candidate == 'slate':
             mask[:] = 255
         guards.append(fidelity(before,after,mask))
         if index % 30 == 0:
@@ -99,7 +100,7 @@ def score(input_path, output_path, judge, synthetic_truth, options, slate):
         raise RuntimeError('Unexpected extra frames')
     cap.release()
     masked.release()
-    quality,details=score_records(input_readings,outputs,synthetic_truth,guards,detector_families=options["detector_families"])
+    quality,details=score_records(input_readings,outputs,synthetic_truth,guards,detector_families=metadata['detector_families'])
     quality['judging']=details['judging']=getattr(judge,'metadata',None)
     output_path.with_suffix('.evidence.json').write_text(json.dumps(details))
     return {**quality,'masked_area_fraction':quantiles([m['mask_fraction'] for m in masks]),
@@ -142,7 +143,7 @@ def main():
     args=p.parse_args()
     fingerprint=pipeline_fingerprint()
     options={'encoder':args.encoder,'static_model':args.static_model,'accurate_stride':args.accurate_stride,'rectangle_width':args.rectangle_width,'accurate_width':args.accurate_width,'lookahead':args.lookahead,'padding':args.padding,'persistence':args.persistence,'stride':args.stride,'detect_width':args.detect_width,'provider':args.provider,'limit_side_len':args.limit_side_len}
-    options['detector_families']=policy_metadata(args.candidate,options)['detector_families']
+    policy_metadata(args.candidate, options)
     manifest=json.loads((ROOT/'fixtures/manifest.json').read_text())
     clips=[c for c in manifest['clips'] if c['split']==args.split and (not args.clip or c['id']==args.clip)]
     if not clips:
@@ -163,7 +164,7 @@ def main():
                 truth=variant(clip,source,synthetic,args.seconds)
                 output=directory/f'{label}-masked.mp4'
                 perf=run(source,output,args.candidate,options)
-                quality={} if args.performance_only else score(source,output,judge,truth,options,args.candidate=='slate')
+                quality={} if args.performance_only else score(source,output,judge,truth,options,args.candidate)
                 results.append({'clip':clip['id'],'synthetic_variant':synthetic,'performance':perf,**quality})
     finally:
         if judge:
