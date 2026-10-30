@@ -1,0 +1,26 @@
+Fri Oct 30 05:08:19 UTC 2026
+Id=m3-r1-model-stale-welcome.scope
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+
+Id=m3-r1-model-dropped-hold.scope
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+
+Id=m3-r1-model-fixed.scope
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+
+Id=m3-r1-model-fixed-pass.scope
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+
+Id=m3-r1-model-public-replay.scope
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+ps_exit=1 (1 means no listed PID remains)

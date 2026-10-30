@@ -1,0 +1,5 @@
+stale-welcome direct TLC PreFixControl /home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/docs/model/evidence/r1/stale-welcome.cfg
+dropped-hold direct TLC PreFixControl /home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/docs/model/evidence/r1/dropped-hold.cfg
+fixed direct TLC TwitchControl /home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/docs/model/TwitchControl.cfg
+fixed-pass direct TLC TwitchControl /home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3/docs/model/TwitchControl.cfg
+public-replay Python old/fixed public API

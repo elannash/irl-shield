@@ -1,0 +1,12 @@
+CONSTANTS
+  Capacity = 1
+  MaxAge = 2
+  LastClock = 5
+  MaxGeneration = 2
+  AllowModeratorResume = FALSE
+  ForgetOnReconnect = FALSE
+  BadCoverage = FALSE
+  ClobberReconcileRelease = FALSE
+SPECIFICATION Spec
+INVARIANTS NoLIVEWithoutCoverage OnlyBroadcasterResumes ReconnectNeverReplays BoundedMemory
+           ReconcileReleaseIsolated ReconcileWaitHolds ReadyAndHandoverHaveNoConnectionHold RevokedStaysHeld
