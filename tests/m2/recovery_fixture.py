@@ -227,7 +227,9 @@ class FaultProxy:
             if upstream is not None:
                 self._shutdown(upstream)
             if reader is not None:
-                reader.join(timeout=3)
+                # A retired publisher does not cancel the fragment timer. Keep
+                # its sockets alive until the control thread finishes that wait.
+                reader.join(timeout=PAUSE_SECONDS + 3)
                 if reader.is_alive():
                     self.error_code = 'fixture-control-survived'
             client.close()
@@ -253,6 +255,8 @@ class FaultProxy:
                             pass
                     self.finished_at = time.monotonic()
                     self.completed.set()
+                if self.stopped.is_set() or done.is_set():
+                    break
                 if not select.select([upstream], [], [], .02)[0]:
                     continue
                 data = upstream.recv(65536)

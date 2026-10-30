@@ -22,7 +22,7 @@ from relay.stream import Egress, EgressError, _OPERATIONS
 from shield.engine import MaskingEngine
 from shield.lanes import DetectorLane
 from shield.types import Frame
-from recovery_fixture import LocalSink, NoOpMotion, PAUSE_SECONDS, child_pids, engine, record, safe_failure
+from recovery_fixture import FaultProxy, LocalSink, NoOpMotion, PAUSE_SECONDS, child_pids, engine, record, safe_failure
 
 
 def rows(directory, name):
@@ -138,6 +138,75 @@ class EgressRecovery(unittest.TestCase):
         self.assertTrue(receipt['worker_pids_gone'], diagnostic)
         return receipt, sink, output
 
+    def test_fragmented_proxy_retirement_keeps_fault_duration_and_reaps_controls(self):
+        stopped = threading.Event()
+        server_error = []
+        listener = socket.socket()
+        listener.bind(('127.0.0.1', 0))
+        listener.listen(1)
+        listener.settimeout(.1)
+
+        def serve():
+            try:
+                while not stopped.is_set():
+                    try:
+                        peer, _ = listener.accept()
+                        break
+                    except socket.timeout:
+                        continue
+                else:
+                    return
+                with peer:
+                    peer.settimeout(.1)
+                    # MessageGate passes the RTMP server handshake through.
+                    # No real encoder or authenticated application is needed
+                    # to exercise retirement of the proxy's own two threads.
+                    peer.sendall(bytes(3073))
+                    while not stopped.is_set():
+                        try:
+                            if not peer.recv(64):
+                                break
+                        except socket.timeout:
+                            continue
+            except OSError as error:
+                server_error.append(type(error).__name__)
+
+        server = threading.Thread(target=serve, name='recovery-fixture-retirement-peer')
+        server.start()
+        proxy = None
+        try:
+            proxy = FaultProxy(f'rtmp://127.0.0.1:{listener.getsockname()[1]}/shielded', 'fragmented')
+            with socket.create_connection(('127.0.0.1', proxy.port), timeout=2) as client:
+                remaining = 3073
+                while remaining:
+                    data = client.recv(remaining)
+                    self.assertTrue(data, 'fixture-handshake-closed')
+                    remaining -= len(data)
+                proxy.requested.set()
+                self.assertTrue(proxy.injected.wait(30), 'fixture-injection-not-reached')
+                self.assertEqual(client.recv(1), b'\x02')
+                client.shutdown(socket.SHUT_RDWR)
+            # Retire the peer well before the six-second fragment timer ends.
+            self.assertTrue(proxy.completed.wait(PAUSE_SECONDS + 3), 'fixture-pause-not-completed')
+            for worker in proxy.threads:
+                worker.join(timeout=PAUSE_SECONDS + 3)
+        finally:
+            if proxy is not None:
+                proxy.close()
+            stopped.set()
+            server.join(timeout=3)
+            listener.close()
+        receipt = {'proxy_error': proxy.error_code, 'pause_seconds': proxy.finished_at - proxy.injected_at,
+                   'connections': proxy.connections, 'server_error': server_error,
+                   'server_stopped': not server.is_alive(),
+                   'controls_stopped': not any(worker.is_alive() for worker in proxy.threads)}
+        diagnostic = record(self, receipt)
+        self.assertFalse(server.is_alive(), diagnostic)
+        self.assertEqual(server_error, [], diagnostic)
+        self.assertTrue(receipt['controls_stopped'], diagnostic)
+        self.assertGreaterEqual(receipt['pause_seconds'], PAUSE_SECONDS, diagnostic)
+        self.assertIsNone(receipt['proxy_error'], diagnostic)
+
     def test_full_ping_is_valid_then_fragmented_ping_recovers_without_replay(self):
         with tempfile.TemporaryDirectory(prefix='m2-recovery-control-') as temporary:
             directory = Path(temporary)
@@ -217,8 +286,11 @@ class EgressRecovery(unittest.TestCase):
                         now = time.monotonic()
                         with observation_lock:
                             inflight = observation['inflight']
-                            stale = now - observation['last_ack']
-                        phase, operation_start, active_index, completed_index = tuple(output._progress)
+                            last_ack = observation['last_ack']
+                            stale = now - last_ack
+                        worker = output._process
+                        progress = tuple(output._progress)
+                        phase, operation_start, active_index, completed_index = progress
                         network_blocked = (int(phase) == network_mux_phase and inflight is not None
                                            and int(active_index) == inflight[1]
                                            and completed_index < active_index
@@ -228,7 +300,7 @@ class EgressRecovery(unittest.TestCase):
                             # encoder. Require an actual native wait before arming
                             # the pause; an idle IPC reader is not a blocked mux.
                             try:
-                                proc = Path(f'/proc/{output._process.pid}')
+                                proc = Path(f'/proc/{worker.pid}')
                                 state = (proc / 'stat').read_text().rsplit(') ', 1)[1].split()[0]
                                 wait = (proc / 'wchan').read_text().strip()
                                 worker_waits[state + ':' + wait] = worker_waits.get(state + ':' + wait, 0) + 1
@@ -238,15 +310,26 @@ class EgressRecovery(unittest.TestCase):
                             except (OSError, ValueError, IndexError):
                                 network_blocked = False
 
+                        if network_blocked:
+                            # The sampled write can finish while /proc is read.
+                            # Never arm a later writer using that old frame.
+                            with observation_lock:
+                                network_blocked = (output._process is worker
+                                                   and observation['inflight'] == inflight
+                                                   and observation['last_ack'] == last_ack
+                                                   and tuple(output._progress) == progress)
+                            now = time.monotonic()
+                            stale = now - last_ack
+
                         if network_blocked and now - inflight[0] > .25 and stale > .2:
                             receipt.update(blocked_seconds_before_pause=now - inflight[0],
                                            blocked_index=inflight[1], blocked_state=inflight[2],
                                            blocked_batch_presented_at=inflight[3],
                                            blocked_coverage_reason=inflight[4],
-                                           worker_phase=int(output._progress[0]),
-                                           worker_operation_started_at=float(output._progress[1]),
-                                           worker_active_index=int(output._progress[2]),
-                                           worker_completed_index=int(output._progress[3]),
+                                           worker_phase=int(phase),
+                                           worker_operation_started_at=float(operation_start),
+                                           worker_active_index=int(active_index),
+                                           worker_completed_index=int(completed_index),
                                            worker_wait=wait)
                             sink.proxy.pause.set()
                             if not sink.proxy.pause_started.wait(30):
