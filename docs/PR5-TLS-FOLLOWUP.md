@@ -1,17 +1,21 @@
 # PR5 RTMPS peer-verification follow-up
 
-The pinned Linux RTMPS output remains vulnerable to active MITM/key capture.
-This follow-up uses the conductor-approved documented-unsupported fallback;
-it does not claim a transport fix. Twitch output stays default-off, the key
-stays memory-only, and the route still requires `?bandwidthtest=true`.
+The **current runtime route is verified** by a standard-library TLS forwarder.
+PyAV writes plain RTMP to `127.0.0.1`; the forwarder verifies the ingest
+certificate and hostname using system CAs before forwarding RTMP bytes.
+There is no direct unverified RTMPS runtime route or fallback. See
+[LIVE-EGRESS.md](LIVE-EGRESS.md) and [RUN.md](RUN.md) for the current interface
+and the loopback publication/negative/mutation proofs. Real Twitch ingest
+acceptance remains an attended bandwidth-test qualification, not a result of
+these local fixtures.
 
-An attacker who redirects the connection can terminate its unauthenticated
-TLS session and receive the stream key over RTMP. Encryption prevents passive
-observation, but memory-only storage does not protect against this active
-attack. The bandwidth-test query does not restrict the stolen key's authority;
-an attacker could reuse the key for a live publication. Local-only operation
-avoids sending the key over this route. No Twitch connection or real key was
-used in this investigation.
+The rest of this document records the **historical direct-PyAV defect** found
+at `4f3adbe`, and its diagnostic reproducer. That old route could encrypt
+traffic without authenticating the peer, exposing the stream key to an active
+MITM. Memory-only storage and bandwidth-test mode did not remove that risk.
+The original conductor-approved documentation fallback was superseded by the
+verified forwarder. The direct legacy probe below is deliberately a loopback
+counterexample and is never used by the runtime.
 
 ## Source and installed-library receipts
 
@@ -74,7 +78,12 @@ case changes just the CA file or expected hostname. The PyAV cases use the
 same output-open interface as the relay, then encode 61 silent, text-free
 64x32 H.264 frames. MediaMTX's publication log independently witnesses actual
 RTMP publication; a socket connection or generic open error alone does not
-count. The probe is not a privacy/real-video benchmark.
+count. The probe is not a privacy/real-video benchmark. It now reruns trusted native
+and PyAV controls after their negatives, requires the server to remain alive,
+and attributes rejected rows to the wheel’s exact GnuTLS certificate/hostname
+verification diagnostics. A timeout or connection error is fixture failure
+(exit 2), never a secure pass. Capturing those diagnostics temporarily enables
+FFmpeg ERROR logging, then restores the previous setting.
 
 Observed in `final-red/receipt.json`:
 

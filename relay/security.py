@@ -86,7 +86,7 @@ def mediamtx_environment(address, phone, internal):
 
 
 class TwitchDestination:
-    """Memory-only key route; runtime opts in to bandwidth-test RTMPS egress."""
+    """Memory-only key route through the runtime-owned verified TLS listener."""
 
     def __init__(self):
         self._key = None
@@ -100,7 +100,10 @@ class TwitchDestination:
             raise ValueError('Invalid ephemeral stream key')
         self._key = key
 
-    def destination(self):
+    def destination(self, port, *, live=False):
         if self._key is None:
             raise RuntimeError('No ephemeral stream key')
-        return 'rtmps://live.twitch.tv:443/app/' + self._key + '?bandwidthtest=true'
+        if type(port) is not int or not 1 <= port <= 65535:
+            raise ValueError('A verified loopback TLS listener port is required')
+        query = '' if live else '?bandwidthtest=true'
+        return f'rtmp://127.0.0.1:{port}/app/' + self._key + query

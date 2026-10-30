@@ -37,7 +37,7 @@ class Security(unittest.TestCase):
         secret = 'synthetic-key-never-log'
         stub.set_key(secret)
         self.assertTrue(stub.configured)
-        self.assertTrue(stub.destination() == 'rtmps://live.twitch.tv:443/app/' + secret + '?bandwidthtest=true')
+        self.assertEqual(stub.destination(12345), 'rtmp://127.0.0.1:12345/app/' + secret + '?bandwidthtest=true')
         self.assertTrue(secret not in repr(stub))
         stub.set_key(None)
         self.assertFalse(stub.configured)

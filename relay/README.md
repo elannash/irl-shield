@@ -82,22 +82,29 @@ events to this vocabulary; do not send raw chat text as reasons. Each source
 owns its hold. A reconnect clears only the transport hold.
 
 The application controls acquire the stream key through the authorized Helix
-flow and install it in memory. The runtime sends that destination to the sole
-encoder worker through a private spawn pipe only when `publish_twitch=True`
-(the CLI flag is `--twitch-bandwidth-test`). A configured key alone never forms
-a Twitch destination. The route is RTMPS on port 443 with mandatory
-`?bandwidthtest=true`; it is an external publish requiring separate session
-authorization. No live-publish override exists. Keys never enter argv, logs,
-archives or the OS keyring; removal is explicit. No Twitch request was run here.
+flow and install it in memory. A configured key alone never forms a Twitch
+destination. Explicit bandwidth-test mode appends `?bandwidthtest=true`;
+`--twitch-live` requires fresh `naie` identity and an attended per-session
+confirmation. The runtime consumes the one-use approval before opening any
+live route. Only owner-started Sat/Sun test-channel live sessions are authorized.
+Keys never enter argv, logs, archives or the OS keyring.
 
-The pinned Linux RTMPS output does **not** verify the peer certificate or
-hostname. An active MITM can impersonate Twitch and capture the stream key;
-memory-only storage and bandwidth-test mode do not prevent that attack.
-PyAV 16.0.1's primary output open bypasses the protocol options needed to
-enable verification in its bundled FFmpeg/GnuTLS backend. Keep Twitch egress
-off and use local-only operation while this remains unresolved. The
-[TLS follow-up](../docs/PR5-TLS-FOLLOWUP.md) contains the source receipts and
-loopback publication/control results. No transport security fix is claimed.
+The sole Twitch route is plain RTMP over `127.0.0.1` to a runtime-owned TLS
+forwarder, then verified TLS to `live.twitch.tv:443`. The forwarder uses
+Python's standard-library `ssl.create_default_context()` with system CAs,
+certificate/hostname verification and the ingest hostname as `server_hostname`.
+No bytes leave this host before TLS verification succeeds. Failure closes the
+local socket; the existing encoder recovery protects output and reconnects
+through the same listener. There is no direct PyAV RTMPS output or fallback.
+The forwarder owns at most two connections, transfers chunks of at most 64 KiB,
+bounds socket I/O and joins its owned threads at shutdown. It stores no key.
+
+[The forwarder proof](../docs/LIVE-EGRESS.md) uses actual Egress/PyAV and a
+loopback MediaMTX peer. The [earlier TLS investigation](../docs/PR5-TLS-FOLLOWUP.md)
+records why the old direct route was removed. Real Twitch ingest acceptance
+still requires the owner's attended bandwidth test; this work made no Twitch
+connection. Authenticated controls remain available without publishing when
+neither Twitch publication flag is supplied.
 
 ## Evidence and limits
 

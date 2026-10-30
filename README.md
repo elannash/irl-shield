@@ -7,17 +7,23 @@ produces a protected frame, and a local HOLD produces a slate.
 
 The Linux integration command is `python -m shield.cli login|run|doctor`.
 [Run instructions](docs/RUN.md) cover private RTMP phone ingest, OBS pull output,
-memory-only Twitch authorization, EventSub controls and optional bandwidth-test
-egress. Native Twitch publishing is not part of local verification. SRT and
+memory-only Twitch authorization, EventSub controls and explicit Twitch publication modes. Native Twitch publishing is not part of local verification. SRT and
 walking use remain unqualified; this is not a production relay.
 
-**Active MITM/key-capture risk:** the pinned Linux PyAV 16.0.1 RTMPS output
-encrypts traffic but does not verify the server certificate or hostname.
-An attacker who redirects the connection can impersonate Twitch and receive
-the stream key. Memory-only storage and `?bandwidthtest=true` do not prevent
-this theft or subsequent misuse of the key. Twitch egress stays off by default;
-use local-only operation while peer verification remains unresolved. See the
-[TLS investigation and loopback reproducer](docs/PR5-TLS-FOLLOWUP.md).
+**Twitch egress verifies its TLS peer.** PyAV sends RTMP only to a runtime-owned
+`127.0.0.1` listener. A standard-library TLS forwarder connects to Twitch on
+port 443 with system CAs, certificate verification and hostname checking.
+There is no direct unverified RTMPS output route or fallback. The stream key
+stays in memory and crosses plaintext only on loopback.
+
+Twitch publication remains off unless selected explicitly.
+`--twitch-bandwidth-test` is the default Twitch test mode; `--twitch-live`
+requires fresh authorization as `naie` and an attended `LIVE naie` confirmation
+each session. Only the owner's Sat/Sun test-channel sessions are authorized for
+live use. Omitting both flags keeps authenticated controls without publishing.
+[Verified route and loopback proofs](docs/LIVE-EGRESS.md) document the limits:
+real Twitch ingest acceptance still requires the owner's attended bandwidth
+test, and privacy/walking qualification remains separate.
 
 For a local attended terminal after setup:
 

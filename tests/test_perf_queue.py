@@ -276,39 +276,36 @@ class PerformanceQueue(unittest.TestCase):
 
     def test_contention_retries_at_back_of_priority_and_stops_after_three_attempts(self):
         queue = perf_queue.Queue(self.storage)
-        busy, sampled, order = self.root / 'busy', self.root / 'sampled', self.root / 'order'
+        order = self.root / 'order'
         class LoadWindow:
             def sample(inner, *, deadline, cancel=None, cpu_sampler=None):
-                idle = 40. if busy.exists() else 95.
                 result = QuietHealth().sample(deadline=deadline, cancel=cancel, cpu_sampler=cpu_sampler)
-                result['idle_percent'] = idle
                 if cpu_sampler is not None:
-                    result.update(total_busy_percent=100 - idle, other_busy_percent=100 - idle)
-                    if idle == 40.:
-                        sampled.write_text('busy window observed')
+                    running = [job for job in queue.jobs('linux') if job['state'] == 'running']
+                    self.assertEqual(len(running), 1)
+                    if running[0]['id'] == a['id']:
+                        result.update(idle_percent=40., total_busy_percent=60., other_busy_percent=60.)
                 return result
-        # Keep the synthetic busy window open until observed, even if the host
-        # schedules the monitor after a short foreground command would exit.
-        code = ('from pathlib import Path; import sys,time; busy=Path(sys.argv[1]); '
-                'sampled=Path(sys.argv[4]); sampled.unlink(missing_ok=True); busy.write_text("busy"); '
-                'f=Path(sys.argv[2]).open("a"); f.write("A"+sys.argv[3]+"\\n"); f.close(); '
-                'deadline=time.monotonic()+3\n'
-                'while not sampled.exists() and time.monotonic()<deadline: time.sleep(.005)\n'
-                'if not sampled.exists(): raise RuntimeError("Busy window was never sampled")\n'
-                'busy.unlink()')
-        a = queue.enqueue('linux', 'contended', [sys.executable, '-c', code, str(busy), str(order), '{attempt}', str(sampled)],
+        # This test owns retry scheduling. CPU attribution has separate native
+        # tests; classify the running job instead of racing a sampled busy window.
+        code = ('from pathlib import Path; import sys; '
+                'f=Path(sys.argv[1]).open("a"); f.write("A"+sys.argv[2]+"\\n"); f.close()')
+        a = queue.enqueue('linux', 'contended', [sys.executable, '-c', code, str(order), '{attempt}'],
                           cwd=self.caller, lane='a')
         queue.enqueue('linux', 'quiet', [sys.executable, '-c', 'from pathlib import Path; import sys; f=Path(sys.argv[1]).open("a"); f.write("B1\\n"); f.close()', str(order)], cwd=self.caller, lane='b')
         queue.seal('linux')
-        runner = self.runner(queue, hard_stop=time.time() + 60)
+        runner = self.runner(queue, hard_stop=time.time() + 300)
         runner.sensor = LoadWindow()
         runner.run()
         row = next(job for job in queue.status('linux')['linux']['jobs'] if job['id'] == a['id'])
         self.assertEqual(row['state'], 'exhausted-contended')
         self.assertEqual(len(row['attempts']), 3)
         self.assertEqual(order.read_text().splitlines(), ['A1', 'B1', 'A2', 'A3'])
-        self.assertTrue(all(json.loads(Path(path).read_text())['contended'] for path in row['attempts']))
-        self.assertTrue(all(json.loads(Path(path).read_text())['returncode'] == 0 for path in row['attempts']))
+        receipts = [json.loads(Path(path).read_text()) for path in row['attempts']]
+        self.assertTrue(all(receipt['contended'] for receipt in receipts))
+        self.assertTrue(all(receipt['contamination']['valid'] for receipt in receipts))
+        self.assertTrue(all('other_busy' in receipt['contamination']['reasons'] for receipt in receipts))
+        self.assertTrue(all(receipt['returncode'] == 0 for receipt in receipts))
 
     def test_crashed_attempt_is_retained_and_retried_without_signaling_a_reused_identity(self):
         queue = perf_queue.Queue(self.storage)

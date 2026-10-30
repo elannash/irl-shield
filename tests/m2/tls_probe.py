@@ -18,6 +18,14 @@ import time
 import av
 
 
+def verification_failure(messages):
+    # Exact diagnostics from this wheel's GnuTLS implementation. A refused
+    # connection, timeout or unrelated FFmpeg error is not certificate evidence.
+    return any('Peer certificate failed verification' in message
+               or "The certificate's owner does not match hostname " in message
+               for _, _, message in messages)
+
+
 def native_open(url, options):
     # Load the wheel's actual libraries, never the host's FFmpeg installation.
     libraries = Path(av.__file__).parent.parent / 'av.libs'
@@ -81,7 +89,7 @@ def wait_for(log, text, server):
         time.sleep(.01)
 
 
-def audit(binary, evidence, controls_only):
+def _audit(binary, evidence, controls_only):
     with tempfile.TemporaryDirectory(prefix='certificates-', dir=evidence) as directory:
         root = Path(directory)
         for name in ('peer', 'other'):
@@ -126,10 +134,17 @@ paths:
                             ('native-mismatched', {'verifyhost': 'wrong.invalid'}, False)]
                 for name, override, expected in controls:
                     url = f'rtmps://127.0.0.1:{port}/audit/{name}?bandwidthtest=true'
-                    code = native_open(url, good | override)
-                    report['rows'].append({'case': name, 'accepted': code >= 0, 'code': code})
-                    if (code >= 0) != expected:
+                    with av.logging.Capture() as messages:
+                        code = native_open(url, good | override)
+                    row = {'case': name, 'accepted': code >= 0, 'code': code,
+                           'verification_failure': verification_failure(messages)}
+                    report['rows'].append(row)
+                    if (code >= 0) != expected or (not expected and not row['verification_failure']):
                         raise RuntimeError('Native verification control failed: ' + name)
+                code = native_open(f'rtmps://127.0.0.1:{port}/audit/native-trusted-after?bandwidthtest=true', good)
+                report['rows'].append({'case': 'native-trusted-after', 'accepted': code >= 0, 'code': code})
+                if server.poll() is not None or code < 0:
+                    raise RuntimeError('Native post-negative trusted control unavailable')
                 if controls_only:
                     report['scope'] = 'backend controls only; relay peer verification untested'
                     return 0
@@ -139,22 +154,37 @@ paths:
                          ('pyav-mismatched-options', good | {'verifyhost': 'wrong.invalid'}, '', False),
                          ('pyav-query', {}, '&verify=1', False),
                          ('pyav-io-open', good | {'ca_file': str(root / 'other.crt')}, '', True)]
+                pyav_rows = []
                 for name, options, query, custom in cases:
                     url = f'rtmps://127.0.0.1:{port}/audit/{name}?bandwidthtest=true{query}'
                     row = {'case': name, 'accepted': False, 'publication_witness': False}
-                    try:
-                        row['custom_io_calls'] = publish(
-                            url, {'flvflags': 'no_duration_filesize'} | options, custom)
-                        row['accepted'] = True
-                    except av.FFmpegError as error:
-                        row['error'] = type(error).__name__
+                    with av.logging.Capture() as messages:
+                        try:
+                            row['custom_io_calls'] = publish(
+                                url, {'flvflags': 'no_duration_filesize'} | options, custom)
+                            row['accepted'] = True
+                        except av.FFmpegError as error:
+                            row['error'] = type(error).__name__
+                    row['verification_failure'] = verification_failure(messages)
                     report['rows'].append(row)
+                    pyav_rows.append(row)
                     if row['accepted']:
                         wait_for(logpath, f"is publishing to path 'audit/{name}'", server)
                         row['publication_witness'] = True
-                if not all(row['accepted'] for row in report['rows'][3:5]):
+                if not all(row['accepted'] for row in pyav_rows[:2]):
                     raise RuntimeError('PyAV default/trusted publication control failed')
-                report['unverified_publication'] = any(row['accepted'] for row in report['rows'][5:])
+                if server.poll() is not None:
+                    raise RuntimeError('Peer exited during negative publication cases')
+                post = f'rtmps://127.0.0.1:{port}/audit/pyav-trusted-after?bandwidthtest=true'
+                publish(post, {'flvflags': 'no_duration_filesize'} | good)
+                wait_for(logpath, "is publishing to path 'audit/pyav-trusted-after'", server)
+                report['rows'].append({'case': 'pyav-trusted-after', 'accepted': True,
+                                       'publication_witness': True})
+                if server.poll() is not None:
+                    raise RuntimeError('Peer exited after trusted publication control')
+                if any(not row['accepted'] and not row['verification_failure'] for row in pyav_rows[2:]):
+                    raise RuntimeError('Negative rejection was not a TLS verification failure')
+                report['unverified_publication'] = any(row['accepted'] for row in pyav_rows[2:])
                 return 1 if report['unverified_publication'] else 0
             finally:
                 server.terminate()
@@ -167,6 +197,17 @@ paths:
                 report['owned_mediamtx_exit'] = server.returncode
                 (evidence / 'receipt.json').write_text(json.dumps(report, indent=2) + '\n')
                 print(json.dumps(report, indent=2))
+
+
+def audit(binary, evidence, controls_only):
+    previous = av.logging.get_level()
+    # PyAV ignores FFmpeg logs by default; capture only certificate errors,
+    # restore the caller's process-local setting even on fixture failure.
+    av.logging.set_level(av.logging.ERROR)
+    try:
+        return _audit(binary, evidence, controls_only)
+    finally:
+        av.logging.set_level(previous)
 
 
 def main():

@@ -1,5 +1,8 @@
 # PR5 follow-ups
 
+This is the record at `aa2b79e`. The later [live-egress change](LIVE-EGRESS.md)
+replaces its documented direct-PyAV TLS limitation with a verified forwarder.
+
 This change starts from `4f3adbec1e628891bb3cfc855c3a617a851425cf`.
 It fixes the operator bind diagnostic and writer status/error handling, and
 adds the approved startup association rule to the native evidence harness.
