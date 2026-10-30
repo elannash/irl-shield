@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Download only the hash-pinned, permissively licensed face weights. No installs."""
+import hashlib
+import json
+from pathlib import Path
+import urllib.request
+
+
+def main():
+    root = Path(__file__).resolve().parents[1]
+    manifest = json.loads((root / 'models/faces-manifest.json').read_text())
+    cache = root / 'models/cache/faces'
+    cache.mkdir(parents=True, exist_ok=True)
+    for entry in manifest['models']:
+        if entry['license'] not in ('MIT', 'Apache-2.0', 'BSD-3-Clause', 'BSD-2-Clause'):
+            raise ValueError('face model license is outside approved gate')
+        path = cache / entry['filename']
+        if path.exists():
+            if hashlib.sha256(path.read_bytes()).hexdigest() != entry['sha256']:
+                raise ValueError('cached face model hash mismatch: ' + entry['id'])
+        else:
+            data = urllib.request.urlopen(entry['url'], timeout=60).read()
+            if hashlib.sha256(data).hexdigest() != entry['sha256']:
+                raise ValueError('downloaded face model hash mismatch: ' + entry['id'])
+            temporary = path.with_suffix(path.suffix + '.part')
+            try:
+                temporary.write_bytes(data)
+                temporary.replace(path)
+            finally:
+                temporary.unlink(missing_ok=True)
+        print(entry['id'], entry['sha256'], entry['license'])
+
+
+if __name__ == '__main__':
+    main()

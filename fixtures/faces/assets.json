@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "origin": "Built-in imagegen in W4 Codex child of submitted thread",
+  "model": "not exposed",
+  "assets": [
+    {
+      "id": "asset_a",
+      "path": "fixtures/faces/adult-a.png",
+      "sha256": "576d8f199a3c7b940d1712a099e3fa4406f58ef701625210e66188ac8b06e86f",
+      "license": "CC0-1.0",
+      "provenance": "Generated using built-in image_gen.imagegen in this submitted Codex child; no reference inputs",
+      "model": "not exposed",
+      "prompt": "Use case: photorealistic-natural. Asset type: synthetic privacy benchmark cutout, one fictional adult, no reference images. Create a realistic front-facing head and upper torso of a wholly fictional adult woman aged about 35, medium-dark brown skin, short natural curly black hair, calm neutral expression, eyes open looking at the camera, face evenly lit and fully visible, wearing a plain unbranded muted gray crew-neck shirt. Studio diffuse daylight, real skin texture. Centered upright head, shoulders and upper chest, with generous transparent space above and beside the hair, no cropping of hair or shoulders. A single person only, genuinely transparent alpha background. No real person or celebrity resemblance, no accessories, no logos, no brands, no letters, no text, no watermark, no music. The face should be large and clearly visible, realistic rather than cartoon.",
+      "face_box_xyxy": [
+        462,
+        263,
+        882,
+        792
+      ],
+      "truth_method": "Manual source-pixel facial region annotated from visual inspection; approximate anatomical boundary, not detector-derived",
+      "public_demo": "fictional adult cutout only; no brands, text, real person references or music",
+      "generator_original": "/home/elan/.codex/generated_images/01a18dfa-2900-7601-acd4-7c3319db8b77/exec-141510a1-54aa-4f45-ada0-cc80e932c4ae.png"
+    },
+    {
+      "id": "asset_b",
+      "path": "fixtures/faces/adult-b.png",
+      "sha256": "270e66ec7c66236e82ba8b705443cbf72e40a3148424a3c9e09acbfb298a95bc",
+      "license": "CC0-1.0",
+      "provenance": "Generated using built-in image_gen.imagegen in this submitted Codex child; no reference inputs",
+      "model": "not exposed",
+      "prompt": "Use case: photorealistic-natural. Asset type: synthetic face privacy benchmark cutout. Create ONE wholly fictional adult man aged about 45, light olive skin, short wavy brown hair and a short beard, head and upper torso with whole shoulders visible, plain unbranded navy shirt. Head turned only slightly, about 15 degrees from frontal, eyes visible, neutral expression, even diffuse daylight and realistic facial skin details. One single person centered upright with generous transparent margin around hair and shoulders; genuine transparent alpha background, no ground. No reference image and no resemblance to a known or real person. No logos, brands, objects, jewelry, letters, text or watermark.",
+      "face_box_xyxy": [
+        425,
+        190,
+        869,
+        768
+      ],
+      "truth_method": "Manual source-pixel facial region annotated from visual inspection; approximate anatomical boundary, not detector-derived",
+      "public_demo": "fictional adult cutout only; no brands, text, real person references or music",
+      "generator_original": "/home/elan/.codex/generated_images/01a18dfa-2900-7601-acd4-7c3319db8b77/exec-3d92cd85-a103-4e68-9c2e-8a1e6dfdae38.png"
+    }
+  ]
+}

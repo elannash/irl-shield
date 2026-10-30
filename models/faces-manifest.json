@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "detector": "yunet-2023mar",
+  "judge": "blazeface-short-range-float16-1",
+  "code_pins": {
+    "opencv-python-headless": "4.11.0.86",
+    "mediapipe": "0.10.21",
+    "onnxruntime-gpu": "1.20.2",
+    "onnx-inspection-only": "1.17.0"
+  },
+  "models": [
+    {
+      "id": "yunet-2023mar",
+      "family": "YuNet",
+      "filename": "face_detection_yunet_2023mar.onnx",
+      "url": "https://media.githubusercontent.com/media/opencv/opencv_zoo/f88e9b2bafd21f1cad242fb5af6d78f2bcba16a3/models/face_detection_yunet/face_detection_yunet_2023mar.onnx",
+      "license": "MIT",
+      "license_url": "https://raw.githubusercontent.com/opencv/opencv_zoo/f88e9b2bafd21f1cad242fb5af6d78f2bcba16a3/models/face_detection_yunet/LICENSE",
+      "weights_license_evidence": "https://raw.githubusercontent.com/opencv/opencv_zoo/f88e9b2bafd21f1cad242fb5af6d78f2bcba16a3/models/face_detection_yunet/README.md#license",
+      "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+      "bytes": 232589
+    },
+    {
+      "id": "blazeface-short-range-float16-1",
+      "family": "BlazeFace",
+      "filename": "blaze_face_short_range.tflite",
+      "url": "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+      "license": "Apache-2.0",
+      "license_url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/v0.10.21/LICENSE",
+      "weights_license_evidence": "https://storage.googleapis.com/mediapipe-assets/MediaPipe%20BlazeFace%20Model%20Card%20(Short%20Range).pdf",
+      "sha256": "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f",
+      "bytes": 229746
+    }
+  ],
+  "license_files": {
+    "fixtures/faces/licenses/blazeface-model-card.pdf": "cd335c06fc0de7807cd815a0777a697932598bcdb28fa98adaaabf847485f758",
+    "fixtures/faces/licenses/opencv-face-detect.cpp": "03d1a0c8e9580b2eeb78e42b02aa15564e0e387281c73b93467740dce0ee685d",
+    "fixtures/faces/licenses/mediapipe-Apache-2.0.txt": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+    "fixtures/faces/licenses/yunet-MIT.txt": "c83b8120c50ccbd4c4f96edf53141bdd566ebb8f8e9227e415326aa1b1aba958",
+    "fixtures/faces/licenses/onnx-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "fixtures/faces/licenses/yunet-README.md": "025b1e86a57443516fca4deaed2fdd7e52ddacc726a5d04f3f099fb48670715e",
+    "fixtures/faces/licenses/ort-session-options.h": "a8fb19e4ddaab339e0be13ac21f2644aa517184ffe8c327dd03128bf2a8cbdff",
+    "fixtures/faces/licenses/onnxruntime-MIT.txt": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "fixtures/faces/licenses/opencv-Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "decode_source": {
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4.11.0/modules/objdetect/src/face_detect.cpp",
+    "sha256": "03d1a0c8e9580b2eeb78e42b02aa15564e0e387281c73b93467740dce0ee685d",
+    "license": "Apache-2.0",
+    "implementation": "independent NumPy decode authored in submitted Codex child"
+  }
+}
