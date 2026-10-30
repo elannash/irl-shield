@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2
+export OPENCV_FOR_THREADS_NUM=1 PYTHONDONTWRITEBYTECODE=1
+unset PYTHONPATH
+python=${SHIELD_PYTHON:-.venv/bin/python}
+sdk_root=${python%/bin/python}
+libraries=()
+for directory in "$sdk_root"/lib/python3.11/site-packages/nvidia/*/lib; do
+  [[ -d "$directory" ]] && libraries+=("$directory")
+done
+[[ ${#libraries[@]} -gt 0 ]] || { echo 'Missing pinned CUDA runtime libraries' >&2; exit 1; }
+export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CUDA_CACHE_PATH="$PWD/.tmp/srt-cuda-cache"
+mkdir -p "$CUDA_CACHE_PATH"
+exec "$python" -m relay.srt_soak "$@"
