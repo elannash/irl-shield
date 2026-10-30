@@ -1,0 +1,136 @@
+{
+  "at": "2026-10-30T05:19:50.211556+00:00",
+  "branch": "elannash/q-integration",
+  "base_head": "631dc5b9bf7cb90c84f0d4aebf430fdcf24eb89c",
+  "commit_status": "uncommitted; Opus conducts/reviews/commits",
+  "q_results_accepted": false,
+  "status": "five P2 implementations integrated; native Mac identity and both full gates pass; independent test review pending",
+  "source_sha256": {
+    "bench/independence.py": "1b37989cf8c034717c927630728a17866edfcd8de5b1978ed20373408824d90c",
+    "bench/offline_quality.py": "28a6a4281603c10838acb1fd028937ccc2cc7e84fabd871408d62f41499ea0a0",
+    "bench/clocked_pipeline.py": "178aa49703d544b647d6198b16f1d0f714b5c253f34c1750205fdedd51893455",
+    "bench/run.py": "d76ce827b37a390de5591f04f8ba7af31bf0eaf9bba8b5b20104c420d8421e88",
+    "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+    "scripts/check": "8934812102c0a544e2dda035f1425efa42e9c509d5406f0b80e369e3a7398f5f",
+    "tests/test_judge_independence.py": "14de990a34473206bb7b6213eadb4a907d8c6ae2279eef37b49a7eb0cf587437",
+    "tests/test_offline_quality.py": "7c720886f5ab469e2576ba8cb192f1ef2bd04d952ed696a0375579d39419622e",
+    "tests/test_p2_families.py": "aaf4fb850dca997388cdbfd2248a82709a2cf7efc034c8fcc12d8bbbdc1f0633",
+    "tests/test_judge_cache.py": "5acce1d2a57da25c685f00bb6ea6e69ba2518cfa15e6ba52932664783d442d33",
+    "tests/test_judge_gates.py": "5ae53dfeebffd5f000851591fec9786cc7a832ecf3d3e68d9df3c5e9b11b4c9a",
+    "tests/test_legacy_judge_gate.py": "d6b9c49f584aea70eb314cd6e0e3755d856b4ffff6556ee60b5623c337998343",
+    "tests/test_perf_queue.py": "b71ef5b827a03e93f088c62e71ba596e1f728270854819d14ac62eec13633c37",
+    "docs/P2-FAMILIES.md": "25a66ad02b7d2844630f624fc98542741fb1e5d651052651db873ef870ba5bbf",
+    "docs/P2-CACHE.md": "dfaed788a9889c9c92db4311b0d969acbbbf132e49738d64566d9af5bc47694a",
+    "docs/P2-GATES.md": "bff2e73cd2048895a5e5cf5f3337efb729bf05da253e3f4f52d850bd81c8c8df"
+  },
+  "gates": {
+    "linux": {
+      "exit": 0,
+      "main_tests": 126,
+      "platform_skips": 1,
+      "relay_tests": 3,
+      "compileall": true
+    },
+    "mac": {
+      "exit": 0,
+      "main_tests": 126,
+      "platform_skips": 1,
+      "relay_tests": 3,
+      "compileall": true,
+      "swift_optimized_build": true
+    }
+  },
+  "gate_scope": "Full working tree includes one experimental quality_bundle unit test. That helper/test/script/doc may be committed separately after the P2-only first commit.",
+  "legacy_mutation": {
+    "mutation": "Legacy independent_judges report unconditionally true",
+    "original_sha256": "d76ce827b37a390de5591f04f8ba7af31bf0eaf9bba8b5b20104c420d8421e88",
+    "mutated_sha256": "6e1ee38b930afedc144fcd7752a4fb2d46b7080cdac2f6b0d4dfef00d7dc4271",
+    "restored_sha256": "d76ce827b37a390de5591f04f8ba7af31bf0eaf9bba8b5b20104c420d8421e88",
+    "red_exit": 1,
+    "green_exit": 0,
+    "scope": "Real legacy gate constructor, mixed versus PP-only policy; every other substantive check passes. Final eligibility/pass remain permanently false for this reference path."
+  },
+  "deterministic_queue_fixture": {
+    "fault": "Delay synthetic observer300ms, beyond previous150ms busy window",
+    "results": {
+      "original": {
+        "successful": false,
+        "source_sha256": "c0bb927621488bee1aed6a3d95f6789da7c79286a666fe80bc3b46f8f0aee183",
+        "log": "/home/elan/code/irl-shield/.tmp/q/queue-fixture-original.log"
+      },
+      "acknowledged": {
+        "successful": true,
+        "source_sha256": "b71ef5b827a03e93f088c62e71ba596e1f728270854819d14ac62eec13633c37",
+        "log": "/home/elan/code/irl-shield/.tmp/q/queue-fixture-acknowledged.log"
+      }
+    },
+    "production_queue_changed": false
+  },
+  "native_mac_cache3": {
+    "signature": "9e3fc153a53bb1982a055a7600b44ae6059ae8bb3d8f9cfbc3f05d410f882e94",
+    "identity": {
+      "schema_version": 3,
+      "runtime": {
+        "tesseract_binary": "5.5.4",
+        "tesseract_data": {
+          "language": "eng",
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.4/share/tessdata/eng.traineddata",
+          "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+        },
+        "pytesseract": "0.3.13",
+        "onnxruntime": "1.31.1",
+        "rapidocr": "3.10.0",
+        "opencv": {
+          "opencv-python-headless": "4.11.0.86"
+        },
+        "macos_product_version": "27.0.1"
+      },
+      "source_sha256": {
+        "bench/judges.py": "a73b165bbf248dad134b9c435ae5be38ec95ebfe2a9986ac14e9e0c7fb7c7d1a",
+        "bench/vision.py": "9cc9f1a5ce0181b08f3f3cb95280a65461f6883ea7c3044d2ad704ce8fee1c5b",
+        "bench/onnx_detectors.py": "c64ce35b446c3c37e173694af3ba8b16b305672bcecd25b94d0b8e37216bb8c0",
+        "Sources/VisionBridge/main.swift": "384ac6744da468413297eac6d6961ac1da2e7294524394a408d116fb2d2d3c11",
+        "models/manifest.json": "52b8d5ee27aaf872801d91ba0f181b6ea1f068689b4d805b39fa2487ba651316"
+      }
+    }
+  },
+  "logs": {
+    ".tmp/q/integrated-linux-full-gate-final.log": {
+      "sha256": "1293ea63dfe89e32ad9474582b0ce5fc547ab83b06655ff0b47edd317601e85e",
+      "bytes": 24232
+    },
+    ".tmp/q/integrated-mac-full-gate-final.log": {
+      "sha256": "d89ac6d3aa3c94bc2426b21dcb35bdcca5db7f299a8400be759851876f0c8450",
+      "bytes": 24307
+    },
+    ".tmp/q/integrated-linux-main.log": {
+      "sha256": "f588150b347fb5f03ff8f00e12d756d208ec38459ba43724d89a67c026ec273d",
+      "bytes": 24209
+    },
+    ".tmp/q/legacy-gate-mutant-red.log": {
+      "sha256": "5098668c7989a2f182bba974daeb9d7e8082f312d8e2d15f0c6eca1c77734843",
+      "bytes": 1302
+    },
+    ".tmp/q/legacy-gate-restored-green.log": {
+      "sha256": "3e40dd34f6efaebd8703d5d6b0c51c61f06aa529336f955c9c33dfcaaf4bbadb",
+      "bytes": 305
+    },
+    ".tmp/q/queue-fixture-original.log": {
+      "sha256": "54e5cc5fa0d8ffc071993066808c0e410ab1bf5522560ba487a444eb7f6f7655",
+      "bytes": 977
+    },
+    ".tmp/q/queue-fixture-acknowledged.log": {
+      "sha256": "7e3608576efd2a4b13ad78d77390d8fa1553ad7529b472559e4844bbd6308639",
+      "bytes": 294
+    },
+    ".tmp/q/compile-venv-red.log": {
+      "sha256": "9e0b92ea65677b8df19eff7ee79ee81f2c92e17030e1f461675f550c07c1a206",
+      "bytes": 1714
+    },
+    ".tmp/q/compile-venv-green.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "queue_retry_policy_change": "Separate worker, not activated; production perf_queue.py unchanged by this P2 integration."
+}

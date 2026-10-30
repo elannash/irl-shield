@@ -32,22 +32,47 @@ JUDGE_METADATA = {
 
 def candidate_metadata(name):
     try:
-        return {'detector_families': list(CANDIDATE_METADATA[name]['detector_families'])}
+        families = list(CANDIDATE_METADATA[name]['detector_families'])
     except KeyError as error:
         raise ValueError(f'Candidate has no declared detector families: {name}') from error
+    if not families and name not in ('unmasked', 'slate'):
+        raise ValueError(f'Only no-detector controls may declare empty detector families: {name}')
+    return {'detector_families': families}
+
+
+def resolve_fast_candidate(candidate, options):
+    """Resolve the declared fast lane for both runtime construction and provenance."""
+    if 'detector_families' in options:
+        raise ValueError('detector_families overrides are not supported; families come from the candidate/lane registry')
+    candidate_metadata(candidate)
+    if candidate in ('unmasked', 'slate'):
+        return None
+    fast = options.get('fast_candidate', DEFAULT_FAST_CANDIDATES[candidate])
+    candidate_metadata(fast)
+    return fast
 
 
 def policy_metadata(candidate, options):
     lanes = {'accurate': candidate_metadata(candidate)}
-    fast = options.get('fast_candidate', DEFAULT_FAST_CANDIDATES[candidate]) if candidate not in ('unmasked','slate') else None
-    if fast:
+    fast = resolve_fast_candidate(candidate, options)
+    if fast is not None:
         lanes['fast'] = candidate_metadata(fast)
     return {'lanes': lanes, 'detector_families': sorted({family for lane in lanes.values()
                                                        for family in lane['detector_families']})}
 
 
-def independent_readings(frames, detector_families):
+def _validated_families(detector_families):
     families = set(detector_families)
+    declared = {meta['family'] for meta in JUDGE_METADATA.values()}
+    declared.update(family for meta in CANDIDATE_METADATA.values() for family in meta['detector_families'])
+    unknown = families - declared
+    if unknown:
+        raise ValueError(f'Unregistered detector families: {sorted(unknown)}')
+    return families
+
+
+def independent_readings(frames, detector_families):
+    families = _validated_families(detector_families)
     if not families:
         return frames
     selected = []
@@ -64,7 +89,7 @@ def independent_readings(frames, detector_families):
 
 
 def judging_scope(detector_families):
-    families = sorted(set(detector_families))
+    families = sorted(_validated_families(detector_families))
     included = [name for name, meta in JUDGE_METADATA.items() if meta['family'] not in families]
     return {'detector_families': families, 'included_judges': included,
             'truth_judges': included, 'output_leak_judges': list(JUDGE_METADATA),

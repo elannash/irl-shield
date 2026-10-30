@@ -276,7 +276,7 @@ class PerformanceQueue(unittest.TestCase):
 
     def test_contention_retries_at_back_of_priority_and_stops_after_three_attempts(self):
         queue = perf_queue.Queue(self.storage)
-        busy, order = self.root / 'busy', self.root / 'order'
+        busy, sampled, order = self.root / 'busy', self.root / 'sampled', self.root / 'order'
         class LoadWindow:
             def sample(inner, *, deadline, cancel=None, cpu_sampler=None):
                 idle = 40. if busy.exists() else 95.
@@ -284,9 +284,19 @@ class PerformanceQueue(unittest.TestCase):
                 result['idle_percent'] = idle
                 if cpu_sampler is not None:
                     result.update(total_busy_percent=100 - idle, other_busy_percent=100 - idle)
+                    if idle == 40.:
+                        sampled.write_text('busy window observed')
                 return result
-        code = 'from pathlib import Path; import sys,time; busy=Path(sys.argv[1]); busy.write_text("busy"); f=Path(sys.argv[2]).open("a"); f.write("A"+sys.argv[3]+"\\n"); f.close(); time.sleep(.15); busy.unlink()'
-        a = queue.enqueue('linux', 'contended', [sys.executable, '-c', code, str(busy), str(order), '{attempt}'],
+        # Keep the synthetic busy window open until observed, even if the host
+        # schedules the monitor after a short foreground command would exit.
+        code = ('from pathlib import Path; import sys,time; busy=Path(sys.argv[1]); '
+                'sampled=Path(sys.argv[4]); sampled.unlink(missing_ok=True); busy.write_text("busy"); '
+                'f=Path(sys.argv[2]).open("a"); f.write("A"+sys.argv[3]+"\\n"); f.close(); '
+                'deadline=time.monotonic()+3\n'
+                'while not sampled.exists() and time.monotonic()<deadline: time.sleep(.005)\n'
+                'if not sampled.exists(): raise RuntimeError("Busy window was never sampled")\n'
+                'busy.unlink()')
+        a = queue.enqueue('linux', 'contended', [sys.executable, '-c', code, str(busy), str(order), '{attempt}', str(sampled)],
                           cwd=self.caller, lane='a')
         queue.enqueue('linux', 'quiet', [sys.executable, '-c', 'from pathlib import Path; import sys; f=Path(sys.argv[1]).open("a"); f.write("B1\\n"); f.close()', str(order)], cwd=self.caller, lane='b')
         queue.seal('linux')

@@ -39,6 +39,26 @@ class IndexedBoxes:
 
 
 class OfflineSampling(unittest.TestCase):
+    def test_empty_model_declarations_cannot_masquerade_as_no_detector_controls(self):
+        for candidate, options in (('ppocr-v6-small', {}),
+                                   ('vision-accurate', {'fast_candidate': 'ppocr-v6-small'})):
+            with self.subTest(candidate=candidate, options=options), \
+                 patch.dict('bench.independence.CANDIDATE_METADATA', {'ppocr-v6-small': {'detector_families': []}}), \
+                 patch('bench.offline_quality._media', side_effect=AssertionError('Media opened before family validation')):
+                with self.assertRaisesRegex(ValueError, 'detector famil'):
+                    run_file('/nonexistent-source.mp4', '/nonexistent-output.mp4', candidate, options)
+
+    def test_family_overrides_are_rejected_before_media_or_model_work(self):
+        for families in ([], ['unregistered'], ['paddle-ocr'], ['apple-vision'], ['paddleocr']):
+            with self.subTest(families=families), \
+                 patch('bench.offline_quality._media', side_effect=AssertionError('Media opened before family validation')), \
+                 patch('pathlib.Path.exists', side_effect=AssertionError('Host I/O before family validation')), \
+                 patch('bench.pipeline.detector_for') as factory:
+                with self.assertRaisesRegex(ValueError, 'detector_families'):
+                    run_file('/nonexistent-source.mp4', '/nonexistent-output.mp4',
+                             'ppocr-v6-small', {'detector_families': families})
+                factory.assert_not_called()
+
     def test_legacy_composite_is_rejected_before_offline_media_work(self):
         for candidate,options in [('vision-scheduled',{}),('vision-union',{'fast_candidate':'vision-scheduled'})]:
             with self.subTest(candidate=candidate,options=options),self.assertRaisesRegex(ValueError,'legacy'):
@@ -111,37 +131,68 @@ class OfflineSampling(unittest.TestCase):
             names = ['synthetic-pixel-judge']
 
             def read(self, pixels):
-                return [{'text': '1234', 'confidence': 1., 'box': [20, 12, 26, 18]}] if pixels[15, 23].mean() > 180 else []
+                readings = []
+                first_visible = pixels[15, 23].mean() > 180
+                if first_visible:
+                    readings.append({'text': '1234', 'confidence': 1., 'box': [20, 12, 26, 18], 'judge': 'tesseract'})
+                if pixels[15, 43].mean() > 180:
+                    readings.append({'text': '5678', 'confidence': 1., 'box': [40, 12, 46, 18], 'judge': 'ppocr-independent'})
+                if pixels[15, 63].mean() > 180:
+                    target = {'text': '9012', 'confidence': 1., 'box': [60, 12, 66, 18]}
+                    readings.append({**target, 'judge': 'ppocr-independent'})
+                    # Surrounding pixels affect this synthetic reader's recognition.
+                    if first_visible:
+                        readings.append({**target, 'judge': 'tesseract'})
+                return readings
 
         yy, xx = np.indices((48, 96))
         pixels = np.repeat((80 + ((xx // 4 + yy // 4) % 2) * 50).astype(np.uint8)[..., None], 3, axis=2)
-        pixels[12:19, 20:27] = 240
+        for x in (20, 40, 60):
+            pixels[12:19, x:x + 7] = 240
         with tempfile.TemporaryDirectory() as temporary:
-            source, output = Path(temporary) / 'input.mp4', Path(temporary) / 'output.mp4'
+            source = Path(temporary) / 'input.mp4'
             subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-f', 'rawvideo',
                             '-pix_fmt', 'bgr24', '-s', '96x48', '-r', '10', '-i', 'pipe:0', '-an',
                             '-c:v', 'libx264', '-preset', 'ultrafast', '-threads', '2', '-bf', '0',
                             '-pix_fmt', 'yuv420p', str(source)], input=pixels.tobytes() * 4, check=True, timeout=20)
-            result = run_file(source, output, 'synthetic',
-                              {'encoder': 'libx264', 'detector_families': [], 'fast_rate_hz': 10., 'accurate_rate_hz': 10.,
-                               'delay_seconds': .2, 'padding': 0},
-                              judge=PixelJudge(), backends={name: Box() for name in ('fast', 'accurate')})
-            self.assertTrue(output.is_file())
-            self.assertEqual(result['frames'], 4)
-            self.assertEqual(result['natural']['hidden'], 1)
-            self.assertEqual(result['natural']['total'], 1)
-            self.assertTrue(result['real_video_pass'])
-            self.assertEqual(result['protected_fraction'], 0.)
-            records = json.loads(output.with_suffix('.masks.json').read_text())
-            self.assertEqual([r['frame'] for r in records], [0, 1, 2, 3])
-            with zipfile.ZipFile(output.with_suffix('.mask-pixels.zip')) as archive:
-                self.assertEqual(len(archive.namelist()), 4)
-                packed = np.frombuffer(archive.read('00000000.bin'), np.uint8)
-                mask = np.unpackbits(packed, bitorder='little', count=48 * 96).reshape(48, 96) * 255
-            self.assertEqual(mask[15, 23], 255)
-            self.assertEqual(mask[0, 95], 0)
-            self.assertEqual(hashlib.sha256(mask.tobytes()).hexdigest(), records[0]['mask_sha256'])
-            self.assertFalse(result['gate_1']['pass'])
+            for candidate, total, hidden, masked in (('unmasked', 3, 0, 0), ('ppocr-v6-small', 2, 1, 255)):
+                with self.subTest(candidate=candidate):
+                    output = Path(temporary) / f'{candidate}.mp4'
+                    result = run_file(source, output, candidate,
+                                      {'encoder': 'libx264', 'fast_rate_hz': 10., 'accurate_rate_hz': 10.,
+                                       'delay_seconds': .2, 'padding': 0},
+                                      judge=PixelJudge(), backends={name: Box() for name in ('fast', 'accurate')})
+                    self.assertTrue(output.is_file())
+                    self.assertEqual(result['frames'], 4)
+                    self.assertEqual(result['natural']['hidden'], hidden)
+                    self.assertEqual(result['natural']['total'], total)
+                    self.assertEqual(result['pooled_not_independent']['natural']['total'], 3)
+                    self.assertTrue(result['real_video_pass'])
+                    self.assertEqual(result['protected_fraction'], 0.)
+                    evidence = json.loads(output.with_suffix('.evidence.json').read_text())
+                    targets = {row['text']: row for row in evidence['natural']}
+                    self.assertEqual(targets['9012']['leak_frames'], [0, 1, 2, 3])
+                    records = json.loads(output.with_suffix('.masks.json').read_text())
+                    self.assertEqual([r['frame'] for r in records], [0, 1, 2, 3])
+                    with zipfile.ZipFile(output.with_suffix('.mask-pixels.zip')) as archive:
+                        self.assertEqual(len(archive.namelist()), 4)
+                        packed = np.frombuffer(archive.read('00000000.bin'), np.uint8)
+                        mask = np.unpackbits(packed, bitorder='little', count=48 * 96).reshape(48, 96) * 255
+                    self.assertEqual(mask[15, 23], masked)
+                    self.assertEqual(mask[0, 95], 0)
+                    self.assertEqual(hashlib.sha256(mask.tobytes()).hexdigest(), records[0]['mask_sha256'])
+                    self.assertFalse(result['gate_1']['pass'])
+
+            from bench.run import score
+            reference = Path(temporary) / 'reference.mp4'
+            reference.write_bytes((Path(temporary) / 'unmasked.mp4').read_bytes())
+            reference.with_suffix('.masks.json').write_text(json.dumps(
+                [{'boxes': [], 'mask_fraction': 0.} for _ in range(4)]))
+            options = {'padding': 0}
+            swapped = score(source, reference, PixelJudge(), [[] for _ in range(4)], options, 'ppocr-v6-small')
+            self.assertEqual(swapped['natural'], {'hidden': 0, 'total': 2, 'hidden_fraction': 0.})
+            self.assertEqual(swapped['pooled_not_independent']['natural']['total'], 3)
+            self.assertEqual(options, {'padding': 0})
 
     def test_corpus_uses_interval_weights_and_rejects_a_protected_frame_win(self):
         with tempfile.TemporaryDirectory() as temporary:

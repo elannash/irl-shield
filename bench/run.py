@@ -75,7 +75,8 @@ def variant(clip, out, synthetic, seconds):
     return truth
 
 
-def score(input_path, output_path, judge, synthetic_truth, options, slate):
+def score(input_path, output_path, judge, synthetic_truth, options, candidate):
+    metadata = policy_metadata(candidate, options)
     cap = cv2.VideoCapture(str(input_path))
     masked = cv2.VideoCapture(str(output_path))
     masks = json.loads(output_path.with_suffix('.masks.json').read_text())
@@ -90,7 +91,7 @@ def score(input_path, output_path, judge, synthetic_truth, options, slate):
         input_readings.append(original_readings)
         outputs.append(judge.read(after))
         _, mask = masked_frame(before,record['boxes'],options['padding'])
-        if slate:
+        if candidate == 'slate':
             mask[:] = 255
         guards.append(fidelity(before,after,mask))
         if index % 30 == 0:
@@ -99,7 +100,7 @@ def score(input_path, output_path, judge, synthetic_truth, options, slate):
         raise RuntimeError('Unexpected extra frames')
     cap.release()
     masked.release()
-    quality,details=score_records(input_readings,outputs,synthetic_truth,guards,detector_families=options["detector_families"])
+    quality,details=score_records(input_readings,outputs,synthetic_truth,guards,detector_families=metadata['detector_families'])
     quality['judging']=details['judging']=getattr(judge,'metadata',None)
     output_path.with_suffix('.evidence.json').write_text(json.dumps(details))
     return {**quality,'masked_area_fraction':quantiles([m['mask_fraction'] for m in masks]),
@@ -114,6 +115,26 @@ def summary(card):
     print('  masked area',card['masked_area_fraction'],'real video',card['real_video_pass'])
     print('  minimum clip fps',card['minimum_clip_fps'],'latency',card['latency_seconds'])
     print('  gate',card['gate_1'],'baseline deltas',card['baseline_deltas'])
+
+
+def build_gate(card):
+    """Build the reference-only verdict and its independent-truth report."""
+    results, sustained = card['clips'], card['sustained']
+    controls=[r['synthetic_input_control'] for r in results if r.get('synthetic_variant') and 'synthetic_input_control' in r]
+    control_total=sum(c['total'] for c in controls)
+    control_unreadable=sum(c['unreadable'] for c in controls)
+    card['synthetic_input_control']={'total':control_total,'unreadable':control_unreadable}
+    independence=annotate_card(card)
+    card['gate_1']={'independent_judges':independence['sufficient_independent_engines'],'judge_discrimination':control_total>0 and control_unreadable==0,'natural':card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction']>=.9,
+                    'synthetic':card['synthetic']['total']>0 and card['synthetic']['hidden_fraction']==1,
+                    'masked_area':card['masked_area_fraction']['p50']<=.2,
+                    'throughput':bool(sustained) and sustained['results']['720-saturated']['fps']>=30,
+                    'latency':bool(sustained) and sustained['results']['720-paced']['realtime_added_latency_seconds']['p95']<=1,
+                    'real_video':card['real_video_pass']}
+    card['gate_version']='superseded-synchronous-reference-only'
+    card['gate_1']['eligible']=False
+    card['gate_1']['pass']=False
+    return card
 
 
 def main():
@@ -142,7 +163,7 @@ def main():
     args=p.parse_args()
     fingerprint=pipeline_fingerprint()
     options={'encoder':args.encoder,'static_model':args.static_model,'accurate_stride':args.accurate_stride,'rectangle_width':args.rectangle_width,'accurate_width':args.accurate_width,'lookahead':args.lookahead,'padding':args.padding,'persistence':args.persistence,'stride':args.stride,'detect_width':args.detect_width,'provider':args.provider,'limit_side_len':args.limit_side_len}
-    options['detector_families']=policy_metadata(args.candidate,options)['detector_families']
+    policy_metadata(args.candidate, options)
     manifest=json.loads((ROOT/'fixtures/manifest.json').read_text())
     clips=[c for c in manifest['clips'] if c['split']==args.split and (not args.clip or c['id']==args.clip)]
     if not clips:
@@ -163,7 +184,7 @@ def main():
                 truth=variant(clip,source,synthetic,args.seconds)
                 output=directory/f'{label}-masked.mp4'
                 perf=run(source,output,args.candidate,options)
-                quality={} if args.performance_only else score(source,output,judge,truth,options,args.candidate=='slate')
+                quality={} if args.performance_only else score(source,output,judge,truth,options,args.candidate)
                 results.append({'clip':clip['id'],'synthetic_variant':synthetic,'performance':perf,**quality})
     finally:
         if judge:
@@ -205,20 +226,7 @@ def main():
     card['sustained']=sustained
     card['cpu_percent_one_core_100']=quantiles([r['performance']['cpu_percent_one_core_100'] for r in results])
     card['peak_tree_rss_mb']=max(r['performance']['peak_tree_rss_mb'] for r in results)
-    controls=[r['synthetic_input_control'] for r in results if r.get('synthetic_variant') and 'synthetic_input_control' in r]
-    control_total=sum(c['total'] for c in controls)
-    control_unreadable=sum(c['unreadable'] for c in controls)
-    card['synthetic_input_control']={'total':control_total,'unreadable':control_unreadable}
-    independence=annotate_card(card)
-    card['gate_1']={'independent_judges':independence['sufficient_independent_engines'],'judge_discrimination':control_total>0 and control_unreadable==0,'natural':card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction']>=.9,
-                    'synthetic':card['synthetic']['total']>0 and card['synthetic']['hidden_fraction']==1,
-                    'masked_area':card['masked_area_fraction']['p50']<=.2,
-                    'throughput':bool(sustained) and sustained['results']['720-saturated']['fps']>=30,
-                    'latency':bool(sustained) and sustained['results']['720-paced']['realtime_added_latency_seconds']['p95']<=1,
-                    'real_video':card['real_video_pass']}
-    card['gate_version']='superseded-synchronous-reference-only'
-    card['gate_1']['eligible']=False
-    card['gate_1']['pass']=False
+    build_gate(card)
     baseline_path=ROOT/'bench/baseline.json'
     baseline=json.loads(baseline_path.read_text()) if baseline_path.exists() else {}
     card['baseline_comparison']='Same scoring thresholds; reference corpus differs' if baseline.get('manifest_sha256')!=card['manifest_sha256'] or baseline.get('pilot')!=card['pilot'] or baseline.get('split')!=card['split'] else 'Same manifest and scoring thresholds'
