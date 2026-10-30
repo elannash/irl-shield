@@ -1,0 +1,9 @@
+# Private Python 3.11 lane only; install with --no-deps.
+# OpenVINO native CPU runtime Apache-2.0; license/source in LOG-openvino.md.
+# Telemetry/conversion tools are unused and openvino-telemetry is not installed.
+-r ../requirements.txt
+-r ../requirements-models.txt
+-r ../requirements-relay.txt
+psutil==7.0.0
+pytesseract==0.3.13
+openvino==2026.0.0
