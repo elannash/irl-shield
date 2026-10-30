@@ -74,7 +74,29 @@ class EgressMedia(unittest.TestCase):
             self.assertTrue(all(row['protected'] and row['slate'] for row in rows))
             self.assertEqual(rows[15]['pixels_sha256'], hashlib.sha256(presented(15).pixels.tobytes()).hexdigest())
 
-    def test_rejects_raw_frames_bad_audio_and_discontinuous_timestamps_without_encoding(self):
+    def test_current_hold_overrides_precomputed_live_frame_at_native_handoff(self):
+        with tempfile.TemporaryDirectory() as directory:
+            network = str(Path(directory) / 'network.flv')
+            output = Egress(network, directory, width=64, height=32, encoder='libx264')
+            try:
+                output.hold_active = lambda: True
+                for index in range(6):
+                    frame = presented(index)
+                    frame.state, frame.slate, frame.protected = 'LIVE', False, False
+                    frame.pixels[:] = 231
+                    frame.mask[:] = 0
+                    output.write(frame, np.zeros(1600, np.int16))
+            finally:
+                output.close()
+            with av.open(network) as incoming:
+                decoded = list(incoming.decode(video=0))
+            self.assertEqual(len(decoded), 6)
+            self.assertTrue(all(frame.to_ndarray(format='bgr24').max() <= 2 for frame in decoded),
+                            'a precomputed LIVE result crossed the native seam after HOLD')
+            rows = [json.loads(line) for line in (Path(directory)/'frames.jsonl').read_text().splitlines()]
+            self.assertTrue(all(row['state'] == 'HOLD' and row['slate'] for row in rows))
+
+    def test_rejects_raw_frames_bad_audio_and_replayed_timestamps_without_encoding(self):
         before = set(multiprocessing.active_children())
         with tempfile.TemporaryDirectory() as directory:
             output = Egress(str(Path(directory) / 'network.flv'), directory,
@@ -87,7 +109,7 @@ class EgressMedia(unittest.TestCase):
                 self.assertEqual(output.count, 0)
                 output.write(presented(0), pcm)
                 with self.assertRaisesRegex(RuntimeError, '^egress-frame-contract$'):
-                    output.write(presented(2), pcm)
+                    output.write(presented(0), pcm)
                 self.assertEqual(output.count, 1)
             finally:
                 output.close()
@@ -148,7 +170,7 @@ class EgressMedia(unittest.TestCase):
 
 
 class InputMedia(unittest.TestCase):
-    def test_full_queue_invalidates_generation_and_close_discards_owned_frames(self):
+    def test_file_eof_invalidates_generation_and_close_discards_owned_frames(self):
         before = set(threading.enumerate())
         with tempfile.TemporaryDirectory() as directory:
             path = str(Path(directory) / 'camera.nut')
@@ -165,14 +187,14 @@ class InputMedia(unittest.TestCase):
             source = NetworkInput(path)
             try:
                 deadline = time.monotonic() + 2
-                while source.dropped == 0 and time.monotonic() < deadline:
+                while source.error_code != 'input-eof' and time.monotonic() < deadline:
                     source.thread.join(timeout=.005)
                 rows = source.drain()
                 self.assertGreater(source.dropped, 0, 'producer may not wait forever on a full event queue')
                 self.assertLessEqual(source.high_water, 8)
                 self.assertLessEqual(len(rows), 8)
                 self.assertEqual(rows[0][0], 'drop', 'no stale pixels may precede an invalidated generation')
-                self.assertEqual(rows[0][2], 'input-backpressure')
+                self.assertEqual(rows[0][2], 'input-eof')
             finally:
                 source.close()
             source.close()

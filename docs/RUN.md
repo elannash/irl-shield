@@ -60,29 +60,47 @@ mkdir -p "$CUDA_CACHE_PATH"
 
 Start this from an attended terminal. `--phone-setup` writes runtime publish
 credentials to `/dev/tty`, never stdout/stderr, files or process arguments.
-Do not record or share that terminal. The default host is IPv4 loopback. Use
-only the assigned Tailscale host to let a phone connect:
+Do not record or share that terminal. Supply an explicit bind with `--host` or `SHIELD_BIND_HOST`: IPv4 loopback
+(`127.0.0.1`) for a local run, or your own Tailscale IPv4 address in
+`100.64.0.0/10` for a phone. Wildcards, public/LAN addresses and IPv6 are rejected.
+`doctor` reports `tailscale_ipv4` or the explicit value `unavailable`. If unavailable,
+use loopback for local testing; a phone connection requires Tailscale on the host.
+For a configured Tailscale host:
 
 ```sh
-.venv/bin/python -m shield.cli run --local-only --host 100.109.49.77 --phone-setup
+export SHIELD_BIND_HOST="$(tailscale ip -4)"
+.venv/bin/python -m shield.cli doctor
+.venv/bin/python -m shield.cli run --local-only --phone-setup
 ```
 
 Enter the displayed private RTMP URL in the phone broadcaster. Add an OBS media
-source with URL `rtmp://100.109.49.77:19350/shielded`. On the same machine use
-`rtmp://127.0.0.1:19350/shielded` when running with the default loopback host.
+source with URL `rtmp://<your-tailscale-ip>:19350/shielded`. On the same machine use
+`rtmp://127.0.0.1:19350/shielded` when explicitly running with `--host 127.0.0.1`.
 Ingest is restricted to the `camera` path and random runtime publish
 credentials. Only internal credentials may read raw `camera` or publish
 `shielded`. Viewers can read only the shielded path. No wildcard listener,
 firewall rule, recording service or public host is configured by this command.
-The relay's local encoded diagnostic archive is saved under `out/run/`.
+Nothing is archived by default: no encoded video, frame log or runtime JSON.
+Use `--archive out/my-session` to opt into the full encoded archive and diagnostic
+evidence. This can grow for the duration of the session. Before every evidence
+write a 128 MiB free-space guard leaves room for the OS/operator; low space or
+an I/O error permanently disables that writer's evidence, while relay output
+continues. Evidence may therefore be partial. No disk policy changes the engine
+or turns a transport failure into a diagnostic success.
 
 M2's bounded egress recovery replaces a stalled writer after reaping its old
 worker, asserts an independent egress HOLD, and waits for fresh engine output
 and network readiness before releasing that guard. Manual and EventSub holds
 remain independent. Recovery can leave honest frame/PTS gaps; it is not a
-cadence guarantee. Generation archives and recovery events remain in the run
-artifacts. The existing limit is five reconnects in a rolling 60-second window;
-exhaustion stops the relay rather than reporting a healthy stream.
+cadence guarantee. A dedicated writer owns a single replaceable pending frame, so a blocked
+destination never blocks draining ingest. Frames are dropped rather than replayed;
+HOLD is checked again at the actual encoder handoff. Frames already inside native
+encoding cannot be retracted. Generation archives and recovery events are saved
+only with `--archive`. Retries use exponential delays from 0.5 to 8 seconds plus
+0–20% positive jitter. A continuous outage ends the relay only after at least
+60 seconds and five failures; a network-ready ACK resets the outage budget.
+OBS and Twitch still share one encoding/mux worker: either destination failing
+interrupts both outputs. This change does not claim destination isolation.
 
 SIGINT/Ctrl-C and SIGTERM stop this process and its owned media processes.
 For manual HOLD, send SIGUSR1 to this run's PID. SIGUSR2 releases only the manual
@@ -100,7 +118,7 @@ The following is an **attended, separately authorized recipe**. It was not run
 against Twitch during integration testing:
 
 ```sh
-infisical run -- .venv/bin/python -m shield.cli login --run --phone-setup
+infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --phone-setup
 ```
 
 The activation URL is shown only on `/dev/tty`. The token, refresh token and
@@ -122,16 +140,21 @@ session and add `--twitch-bandwidth-test`. This is an external publish even
 though viewers cannot watch it. It is never part of the local verification
 recipe. There is no live-publish flag. Twitch documents the RTMP URL and query
 parameter in [Video Broadcast](https://dev.twitch.tv/docs/video-broadcast/).
-Real Twitch device login and platform behavior remain an attended check.
+The destination uses `rtmps://live.twitch.tv:443/app/` with the memory-only key
+and mandatory `?bandwidthtest=true`. The pinned Linux PyAV/FFmpeg SDK enumerates
+RTMPS and TLS output protocols. Twitch also publishes secure URL templates in
+[its ingest catalog](https://ingest.twitch.tv/ingests). No Twitch connection was
+made to qualify this endpoint; real Twitch device login and platform behavior
+remain an attended check.
 
 ## Local integration verification
 
 The conductor-approved gate uses the actual pyTwitchAPI transport against an
 IPv4-loopback aiohttp OAuth/Helix/EventSub mock. All identities, labels and
 flash/beep media are synthetic; no external user records or natural fixtures
-are used. Native CUDA/NVENC runs and the functional gate go through the root's
-perf queue with inherited canonical EX lease, forced/contended accounting, and
-retained artifacts. `out/integration/timed-jobs.json` records literal argv and
+are used. Native CUDA/NVENC runs go through the root's perf queue with inherited
+canonical EX lease, forced/contended accounting, and retained artifacts.
+Untimed functional gates take the canonical SH lock after root coordination. `out/integration/timed-jobs.json` records literal argv and
 expected receipts for this task. Do not manually rerun these native jobs while
 the queue is active, and do not acquire a nested perf lock inside them.
 

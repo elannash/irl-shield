@@ -15,12 +15,15 @@ For a local attended terminal after setup:
 
 ```sh
 .venv/bin/python -m shield.cli doctor
-.venv/bin/python -m shield.cli run --local-only --phone-setup
+.venv/bin/python -m shield.cli run --local-only --host 127.0.0.1 --phone-setup
 ```
 
-The default listeners are loopback only. The phone needs the explicit assigned
-Tailscale host described in [docs/RUN.md](docs/RUN.md). Credentials printed for
+The bind address must be supplied with `--host` or `SHIELD_BIND_HOST`. Use
+IPv4 loopback for local operation, or the detected Tailscale address for a phone, as described in [docs/RUN.md](docs/RUN.md). Credentials printed for
 phone setup go only to the private terminal; do not capture or share them.
+
+Run archives are off by default. Add `--archive <dir>` only when diagnostic
+evidence is needed; a low-disk guard stops evidence without stopping the relay.
 
 Gate 1 has not passed. Sustained timing is qualified on the M1 Pro and Linux,
 including Linux CPU detection with libx264, but no tune policy meets all privacy

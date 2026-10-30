@@ -51,14 +51,18 @@ def sender(url, stopped, directory, generation):
             audio.layout = 'mono'
             audio.codec_context.thread_count = 2
             audio.time_base = audio.codec_context.time_base = Fraction(1, 48000)
+            y, x = np.indices((720, 1280))
+            pattern = np.stack((x % 180 + 30, y % 180 + 30,
+                                (x // 7 + y // 7) % 180 + 30), axis=2).astype(np.uint8)
             origin = time.monotonic()
             index = 0
             while not stopped.is_set():
                 if stopped.wait(max(0, origin + index / 30 - time.monotonic())):
                     break
-                y, x = np.indices((720, 1280))
-                pixels = np.stack(((x + index * 2) % 180 + 30, (y + index) % 180 + 30,
-                                   (x // 7 + y // 7) % 180 + 30), axis=2).astype(np.uint8)
+                # Skip elapsed source slots if this fixture was descheduled.
+                # Sequential PTS at <30fps makes the receiver discard late data.
+                index = max(index, int((time.monotonic() - origin) * 30))
+                pixels = np.roll(pattern, index * 2, axis=1)
                 epoch_ms = time.time_ns() // 1_000_000
                 labels = decorate(pixels, index, epoch_ms)
                 frame = av.VideoFrame.from_ndarray(pixels, format='bgr24')
@@ -129,9 +133,21 @@ def decode(directory, actions, manifest, archive):
     matched = offset >= 0 and [r['pixels_sha256'] for r in rows] == [r['pixels_sha256'] for r in archive[offset:]]
     if not matched:
         raise RuntimeError('Network pixels do not match encoded archive suffix')
+    if any((picture['egress_generation'], picture['engine_index']) !=
+           (f.get('egress_generation', 1), f['index'])
+           for f, picture in zip(manifest, archive, strict=True)):
+        raise RuntimeError('Archive generation/frame mapping disagrees')
+    origin_pts = rows[0]['pts'] - manifest[offset]['pts']
+    if any(abs(row['pts'] - origin_pts - manifest[i+offset]['pts']) > .002
+           for i, row in enumerate(rows)):
+        raise RuntimeError('Network frame timestamps disagree with manifest mapping')
     for i, row in enumerate(rows):
         row['engine_index'] = manifest[i + offset]['index']
-    archive_by_index = {f['index']: picture for f, picture in zip(manifest, archive, strict=True)}
+        row['egress_generation'] = manifest[i + offset].get('egress_generation', 1)
+    identity = lambda f: (f.get('egress_generation', 1), f['index'])
+    archive_by_index = {identity(f): picture for f, picture in zip(manifest, archive, strict=True)}
+    if len(archive_by_index) != len(manifest):
+        raise RuntimeError('Duplicate generation/frame identity')
     first, last = manifest[0]['encoded_at_monotonic'], manifest[-1]['encoded_at_monotonic']
     holds = []
     for i, action in enumerate(actions):
@@ -141,22 +157,23 @@ def decode(directory, actions, manifest, archive):
         release = next((a.get('received_at', a['at']) for a in actions[i + 1:]
                         if a['source'] == action['source'] and not a['active']), None)
         entry = {'source': action['source'], 'receipt_at': at, 'release_at': release}
-        if at < first:
-            active_at_first = release is None or release > first
-            entry.update(phase='startup', active_at_first_emit=active_at_first,
-                         pass_=not active_at_first or archive[0]['black'])
-        elif at > last:
-            entry.update(phase='after-output-shutdown', pass_=True)
+        following = next((f for f in manifest if f['encoded_at_monotonic'] >= at), None)
+        if following is None:
+            entry.update(phase='after-output-shutdown', observed=False, pass_=None)
         else:
-            emitted = [f for f in manifest if f['encoded_at_monotonic'] >= at
-                       and (release is None or f['encoded_at_monotonic'] < release)]
-            live = [f['index'] for f in emitted if f['state'] == 'LIVE']
-            black = next((f for f in emitted if archive_by_index[f['index']]['black']), None)
-            delay = black['encoded_at_monotonic'] - at if black else None
-            entry.update(phase='streaming', live_encoded_during_hold=live,
-                         first_slate_index=black['index'] if black else None,
-                         encoded_slate_delay_seconds=delay,
-                         pass_=not live and delay is not None and delay <= 1 / 30)
+            active = [f for f in manifest if f['encoded_at_monotonic'] >= at
+                      and (release is None or f['encoded_at_monotonic'] < release)]
+            live = [identity(f) for f in active if f['state'] == 'LIVE']
+            black = archive_by_index[identity(following)]['black']
+            delay = following['encoded_at_monotonic'] - at
+            held = following['state'] == 'HOLD' and black
+            phase = 'startup' if at < first else 'streaming'
+            entry.update(phase=phase, observed=True, live_encoded_during_hold=live,
+                         first_frame_identity=list(identity(following)),
+                         first_frame_state=following['state'],
+                         first_slate_index=following['index'] if held else None,
+                         encoded_slate_delay_seconds=delay if held else None,
+                         pass_=held and not live and (phase == 'startup' or delay <= 1 / 30))
         holds.append(entry)
     gaps = np.diff([r['pts'] for r in rows])
     write(directory / 'pixel-evidence.json', {'frames': rows, 'holds': holds,
@@ -169,6 +186,29 @@ def decode(directory, actions, manifest, archive):
             'archive_suffix_offset': offset, 'exact_pixel_suffix_match': matched,
             'hold_latency_scope': 'control receipt to encoder completion + independently decoded pixel suffix',
             'no_all_slate_pass': any(r['spatial'] for r in rows)}
+
+
+def live_share(manifest, actions):
+    """A majority must be LIVE outside only the fixture's scripted controls.
+
+    Startup, ingest gaps, detector-fault intervals, automatic protection and
+    EventSub connection/reconcile holds remain in the denominator.
+    """
+    eligible = []
+    scripted = {'chat', 'shield_mode', 'local'}
+    for row in manifest:
+        active = {}
+        for action in actions:
+            if action['source'] in scripted and action.get('received_at', action['at']) <= row['encoded_at_monotonic']:
+                active[action['source']] = action['active']
+        if not any(active.values()):
+            eligible.append(row)
+    live = sum(row['state'] == 'LIVE' for row in eligible)
+    return {'minimum_fraction': .5, 'denominator': len(eligible), 'live': live,
+            'fraction': live / len(eligible) if eligible else None,
+            'excluded': len(manifest)-len(eligible),
+            'excluded_sources': sorted(scripted),
+            'pass': bool(eligible) and live / len(eligible) >= .5}
 
 
 async def exercise(args, receipt):
@@ -277,12 +317,19 @@ async def exercise(args, receipt):
             for frame in movie.decode(video=0):
                 pixels = frame.to_ndarray(format='bgr24')
                 decoded.append({'pixels_sha256': hashlib.sha256(pixels.tobytes()).hexdigest(),
-                                'black': bool(pixels.max() < 12)})
-        expected = sum(row.get('egress_generation', 1) == generation for row in manifest)
-        if len(decoded) != expected:
+                                'black': bool(pixels.max() < 12),
+                                'pts': float(frame.pts * frame.time_base)})
+        expected = [row for row in manifest if row.get('egress_generation', 1) == generation]
+        if len(decoded) != len(expected):
             raise RuntimeError('Generation archive and acknowledged manifest counts disagree')
+        origin_pts = decoded[0]['pts'] - expected[0]['pts']
+        for picture, row in zip(decoded, expected, strict=True):
+            if abs(picture['pts'] - origin_pts - row['pts']) > .002:
+                raise RuntimeError('Archive timestamp/frame association disagrees')
+            picture.update(egress_generation=generation, engine_index=row['index'])
         archive.extend(decoded)
     receipt['pixels'] = {name: decode(args.out / name, actions, manifest, archive) for name in ('obs', 'sink')}
+    receipt['live_share'] = live_share(manifest, actions)
     source_rows = {}
     for path in args.out.glob('sender-*.json'):
         data = json.loads(path.read_text())
@@ -291,10 +338,12 @@ async def exercise(args, receipt):
     receipt['av'] = {name: analyze_capture(args.out / name, source_rows) for name in ('obs', 'sink')}
     receipt['runtime'] = json.loads((args.out / 'relay/runtime.json').read_text())
     receipt['assertions_pass'] = (all(p['no_all_slate_pass'] and p['label_edge_guard']
-        and p['holds'] and all(h['pass_'] for h in p['holds'])
+        and any(h.get('observed') for h in p['holds'])
+        and all(h['pass_'] for h in p['holds'] if h.get('observed'))
         for p in receipt['pixels'].values()) and receipt['manual_survives_shield_end']
         and receipt['manual_survives_ingest_reconnect']
-        and receipt['runtime']['session']['sessions'] >= 2)
+        and receipt['runtime']['session']['sessions'] >= 2
+        and receipt['live_share']['pass'])
 
 
 def main():

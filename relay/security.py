@@ -1,6 +1,7 @@
 """Restricted relay addresses and runtime-only credentials. No network side effects."""
 from dataclasses import dataclass, field
 import json
+import ipaddress
 import re
 import resource
 import secrets
@@ -9,14 +10,20 @@ from urllib.parse import quote, urlencode
 
 @dataclass(frozen=True)
 class RelayAddress:
-    host: str = '100.109.49.77'
+    host: str
     rtmp_port: int = 19350
     srt_port: int = 18890
     rtsp_port: int = 18554
 
     def __post_init__(self):
-        if self.host not in ('100.109.49.77', '127.0.0.1'):
-            raise ValueError('Relay listeners require the assigned Tailscale or IPv4 loopback address')
+        if not isinstance(self.host, str):
+            raise ValueError('An explicit IPv4 loopback or Tailscale bind address is required')
+        try:
+            address = ipaddress.IPv4Address(self.host)
+        except ipaddress.AddressValueError:
+            raise ValueError('An explicit IPv4 loopback or Tailscale bind address is required') from None
+        if not (address.is_loopback or address in ipaddress.IPv4Network('100.64.0.0/10')):
+            raise ValueError('Relay bind must be IPv4 loopback or Tailscale 100.64.0.0/10')
         if any(type(p) is not int or not 1024 <= p <= 65535
                for p in (self.rtmp_port, self.srt_port, self.rtsp_port)):
             raise ValueError('Relay requires explicit unprivileged ports')
@@ -78,9 +85,8 @@ def mediamtx_environment(address, phone, internal):
     }
 
 
-class TwitchStub:
-    """M3 calls set_key in memory. Tonight this has no socket/publish implementation."""
-    connected = False
+class TwitchDestination:
+    """Memory-only key route; runtime opts in to bandwidth-test RTMPS egress."""
 
     def __init__(self):
         self._key = None
@@ -97,4 +103,4 @@ class TwitchStub:
     def destination(self):
         if self._key is None:
             raise RuntimeError('No ephemeral stream key')
-        return 'rtmp://live.twitch.tv/app/' + self._key + '?bandwidthtest=true'
+        return 'rtmps://live.twitch.tv:443/app/' + self._key + '?bandwidthtest=true'

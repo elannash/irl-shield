@@ -73,7 +73,7 @@ class Application(unittest.IsolatedAsyncioTestCase):
                           ['--local-sink', 'rtmp://live.twitch.tv/app/fake'],
                           ['--mock-origin', 'http://127.0.0.1:8080', '--local-sink', 'rtmp://127.0.0.1:1935/camera']):
             with self.subTest(arguments=arguments), self.assertRaises(ValueError):
-                validate(parser().parse_args(['run', *arguments]))
+                validate(parser().parse_args(['run', '--host', '127.0.0.1', *arguments]))
         report = doctor()
         self.assertFalse(report['ready'])
         self.assertIn('UNQUALIFIED', report['srt'])

@@ -295,55 +295,74 @@ class EgressRecovery(unittest.TestCase):
             session.control.hold(False, source='twitch-chat', reason='moderator')
             self.assertNotEqual(source.control.state, 'HOLD', 'the temporary egress hold must release after ready ACK')
 
-    def test_refused_loopback_connection_exhausts_five_reconnects_without_hanging(self):
-        before = child_pids()
-        owned = set()
-        source = engine()
-        origin = time.monotonic()
-        source.hold(True, source='local', reason='synthetic hold')
-        source.submit(Frame(0, 0., np.zeros((32, 64, 3), np.uint8)), now=origin)
-        receipt = {'failure': None}
-        output = None
-        # A bound, non-listening socket reserves a genuinely refused TCP port.
-        with socket.socket() as refused, tempfile.TemporaryDirectory(prefix='m2-recovery-limit-') as temporary:
-            refused.bind(('127.0.0.1', 0))
-            receipt['port'] = refused.getsockname()[1]
-            directory = Path(temporary)
-            try:
-                output = Egress(f'rtmp://127.0.0.1:{receipt["port"]}/shielded', directory,
-                                width=64, height=32, encoder='libx264')
-                owned.update(child_pids() - before)
-                deadline = time.monotonic() + 15
-                while time.monotonic() < deadline:
-                    for frame in source.poll(now=time.monotonic()):
-                        if output.write(frame, np.zeros(1600, np.int16)) is False:
-                            break
-                    owned.update(child_pids() - before)
-                    time.sleep(.005)
-            except EgressError as error:
-                receipt['failure'] = safe_failure(error, output)
-            finally:
-                if output is not None:
-                    output.close()
-                source.close()
-            events = list(getattr(output, 'recovery_events', ()))
-            receipt.update(events=events, persisted_events=rows(directory, 'egress-recovery.jsonl'),
-                           elapsed_seconds=time.monotonic() - origin, owned_worker_pids=sorted(owned),
-                           surviving_workers=sorted(child_pids() - before),
-                           worker_pids_gone=all(not Path(f'/proc/{pid}').exists() for pid in owned))
-            diagnostic = record(self, receipt)
-            self.assertEqual(receipt['surviving_workers'], [], diagnostic)
-            self.assertTrue(receipt['worker_pids_gone'], diagnostic)
-            self.assertIsNotNone(receipt['failure'], diagnostic)
-            self.assertEqual(receipt['failure']['code'], 'egress-recovery-limit', diagnostic)
-            self.assertLess(receipt['elapsed_seconds'], 15, diagnostic)
-            self.assertEqual(len(events), 5, diagnostic)
-            self.assertEqual(receipt['persisted_events'], events)
-            self.assertEqual([event['generation'] for event in events], [1, 2, 3, 4, 5])
-            self.assertTrue(all(event['old_worker_reaped'] for event in events))
-            self.assertTrue(all(event['operation'] == 'network-startup' for event in events))
-            self.assertLess(events[-1]['at_monotonic'] - events[0]['at_monotonic'], 60)
-            self.assertEqual([event['attempts_in_window'] for event in events], [1, 2, 3, 4, 5])
+    def test_destination_blip_recovers_but_persistent_refusal_gets_at_least_sixty_seconds(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from relay.mediamtx import MediaMTX
+        from relay.security import Credentials, RelayAddress
+        from test_stream import presented
+
+        for recover in (False, True):
+            with self.subTest(recover=recover), tempfile.TemporaryDirectory() as temporary:
+                before = child_pids()
+                # Reserve all listener ports, with the RTMP port genuinely refusing.
+                sockets = [socket.socket(socket.AF_INET, kind) for kind in
+                           (socket.SOCK_STREAM, socket.SOCK_DGRAM, socket.SOCK_STREAM)]
+                for reserved in sockets:
+                    reserved.bind(('127.0.0.1', 0))
+                address = RelayAddress('127.0.0.1', *(r.getsockname()[1] for r in sockets))
+                phone, internal = Credentials.generate(), Credentials.generate()
+                clock = SimpleNamespace(now=1000.)
+                output = server = None
+                terminal = None
+                recovered_at = None
+                try:
+                    # Only the parent's scheduling clock is controlled. Spawned
+                    # encoders, refused TCP and MediaMTX are actual transports.
+                    with patch('relay.stream.time', SimpleNamespace(monotonic=lambda: clock.now)):
+                        output = Egress(address.rtmp('shielded', internal), Path(temporary),
+                                        width=64, height=32, encoder='libx264')
+                        for index in range(1000):
+                            clock.now = 1000. + index / 10
+                            if recover and clock.now >= 1010. and server is None:
+                                for reserved in sockets:
+                                    reserved.close()
+                                server = MediaMTX(address, phone, internal).__enter__()
+                            frame = presented(index)
+                            frame.presented_at = clock.now
+                            try:
+                                accepted = output.write(frame, np.zeros(1600, np.int16))
+                            except EgressError as error:
+                                terminal = (error.code, clock.now - 1000.)
+                                break
+                            if recover and server is not None and accepted is True:
+                                recovered_at = clock.now - 1000.
+                                break
+                        if recover:
+                            self.assertIsNone(terminal, 'a ten-second outage must not terminate the relay')
+                            self.assertIsNotNone(recovered_at, 'fresh output must resume after the destination returns')
+                            self.assertGreaterEqual(recovered_at, 10.)
+                            self.assertLess(recovered_at, 30.)
+                        else:
+                            self.assertIsNotNone(terminal)
+                            self.assertEqual(terminal[0], 'egress-recovery-limit')
+                            self.assertGreaterEqual(terminal[1], 60., 'a persistent outage gets a full time budget')
+                            self.assertLess(terminal[1], 75.)
+                            self.assertGreaterEqual(output.recovery_count, 5)
+                        events = list(output.recovery_events)
+                        gaps = [b['at_monotonic'] - a['at_monotonic'] for a, b in zip(events, events[1:])]
+                        if not recover:
+                            self.assertGreater(max(gaps), 4., 'retry delay must grow instead of spinning')
+                        record(self, {'recover': recover, 'terminal': terminal, 'recovered_at': recovered_at,
+                                      'events': events}, (phone.password, internal.password))
+                finally:
+                    if output is not None:
+                        output.close()
+                    if server is not None:
+                        server.__exit__(None, None, None)
+                    for reserved in sockets:
+                        reserved.close()
+                self.assertEqual(child_pids(), before)
 
 
 if __name__ == '__main__':
