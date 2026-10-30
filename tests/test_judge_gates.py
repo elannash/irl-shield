@@ -44,7 +44,7 @@ class JudgeGates(unittest.TestCase):
     @staticmethod
     def options(mixed):
         return {'fast_candidate': 'vision-rectangles' if mixed else 'ppocr-v6-tiny',
-                'area_ceiling': .2, 'delay_seconds': 1.}
+                'area_ceiling': .2, 'area_ceiling_basis': 'unit:known-raster-area', 'delay_seconds': 1.}
 
     @staticmethod
     def evidence():
@@ -155,6 +155,7 @@ class JudgeGates(unittest.TestCase):
         result['source'] = str(source / 'one-synthetic-input.mp4')
         card = {'schema_version': 1, 'run_id': source.name, 'candidate': 'ppocr-v6-small',
                 'options': self.options(mixed), 'clips': [result], 'gate_1': {},
+                'masked_area_fraction': {'p50': .1},
                 'quality_checks': {'protected': True, 'real_video': True, 'masked_area': True},
                 'real_video_pass': True}
         for kind in ('natural', 'synthetic'):

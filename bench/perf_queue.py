@@ -444,6 +444,15 @@ def read_json(path, default=None):
         return default
 
 
+def _not_executed(receipt):
+    # Missing legacy evidence is ambiguous and must still spend the budget.
+    return receipt.get('rejected_before_exec') is True or receipt.get('execution_started') is False
+
+
+def _execution_count(job):
+    return sum(not _not_executed(read_json(path, {})) for path in job['attempts'])
+
+
 @contextmanager
 def file_lock(path, nonblocking=False):
     path = Path(path)
@@ -486,7 +495,7 @@ class Queue:
             job = {'id': identifier, 'host': host, 'name': name, 'cwd': str(cwd), 'argv': list(argv),
                    'lane': lane, 'priority': priority, 'receipts': list(receipts),
                    'created_at': time.time(), 'order': max((row['order'] for row in jobs), default=0) + 1,
-                   'state': 'pending', 'attempts': []}
+                   'state': 'pending', 'attempts': [], 'preexec_rejections': []}
             atomic_json(directory / 'jobs' / identifier / 'job.json', job)
         return job
 
@@ -517,10 +526,14 @@ class Queue:
         with file_lock(directory / 'queue.lock'):
             for job in self.jobs(host):
                 attempts = sorted((directory / 'jobs' / job['id'] / 'attempts').glob('*/attempt.json'))
-                extra = [str(path) for path in attempts if str(path) not in job['attempts']]
+                known = set(job['attempts']) | set(job.get('preexec_rejections', []))
+                extra = [str(path) for path in attempts if str(path) not in known]
                 if extra:
                     job['attempts'].extend(extra)
                     job['state'] = 'running'
+                    atomic_json(directory / 'jobs' / job['id'] / 'job.json', job)
+                if job['state'] == 'exhausted-contended' and _execution_count(job) < 3:
+                    job['state'] = 'pending'
                     atomic_json(directory / 'jobs' / job['id'] / 'job.json', job)
                 if job['state'] != 'running':
                     continue
@@ -534,10 +547,15 @@ class Queue:
                     launch = read_json(attempt_dir / 'launch.json', {})
                     if launch.get('sampling_ack') and (attempt_dir / 'command-exit.json').exists():
                         atomic_json(attempt_dir / 'sampling-complete.json', {'abandoned_after_runner_crash': True, 'at': time.time()})
-                    live.append({'job': job['id'], 'attempt': len(job['attempts']), 'child_identity': child})
+                    live.append({'job': job['id'], 'attempt': old.get('attempt', int(attempt_dir.name)), 'child_identity': child})
                     continue
                 receipt = {'phase': 'closed', 'started_at': old.get('started_at'), 'finished_at': time.time(),
-                           'attempt': len(job['attempts']), 'returncode': read_json(attempt_dir / 'command-exit.json', {}).get('returncode'),
+                           'attempt': old.get('attempt', int(attempt_dir.name)),
+                           'execution_started': (old.get('execution_started', True) or child is not None
+                                                 or (attempt_dir / 'command-exit.json').exists()),
+                           'rejected_before_exec': old.get('rejected_before_exec', False),
+                           'execution_attempt': old.get('execution_attempt'),
+                           'returncode': read_json(attempt_dir / 'command-exit.json', {}).get('returncode'),
                            'contended': True, 'recovered_after_runner_crash': True,
                            'start_health': read_json(attempt_dir / 'start-health.json', {'unavailable': 'runner crashed before recording START'}),
                            'end_health': {'unavailable': 'runner crashed; no END sample was recorded'},
@@ -559,14 +577,18 @@ class Queue:
             if not pending:
                 return None
             job = pending[0]
-            if len(job['attempts']) >= 3:
+            if _execution_count(job) >= 3:
                 job['state'] = 'exhausted-contended'
                 atomic_json(directory / 'jobs' / job['id'] / 'job.json', job)
                 return None
-            attempt_dir = directory / 'jobs' / job['id'] / 'attempts' / f'{len(job["attempts"]) + 1:03d}'
+            trials = directory / 'jobs' / job['id'] / 'attempts'
+            ordinals = [int(path.name) for path in trials.iterdir() if path.name.isdecimal()] if trials.exists() else []
+            number = max(ordinals, default=0) + 1
+            attempt_dir = trials / f'{number:03d}'
             attempt_dir.mkdir(parents=True, exist_ok=False)
             receipt = attempt_dir / 'attempt.json'
-            atomic_json(receipt, {'phase': 'starting', 'started_at': time.time(),
+            atomic_json(receipt, {'phase': 'starting', 'started_at': time.time(), 'attempt': number,
+                                  'execution_started': False,
                                   'contamination_policy': 'other-busy-v2'})
             job['state'] = 'running'
             job['attempts'].append(str(receipt))
@@ -576,9 +598,15 @@ class Queue:
     def finish(self, job, attempt_dir, receipt):
         directory = self.host_dir(job['host'])
         with file_lock(directory / 'queue.lock'):
-            atomic_json(attempt_dir / 'attempt.json', receipt)
-            if receipt['contended']:
-                job['state'] = 'pending' if len(job['attempts']) < 3 else 'exhausted-contended'
+            job = read_json(directory / 'jobs' / job['id'] / 'job.json')
+            path = attempt_dir / 'attempt.json'
+            if read_json(path) != receipt:
+                atomic_json(path, receipt)
+            if _not_executed(receipt):
+                job['attempts'].remove(str(path))
+                job.setdefault('preexec_rejections', []).append(str(path))
+            if receipt['contended'] or _not_executed(receipt):
+                job['state'] = 'pending' if _execution_count(job) < 3 else 'exhausted-contended'
                 job['order'] = max(row['order'] for row in self.jobs(job['host'])) + 1
             else:
                 job['state'] = 'completed' if receipt['returncode'] == 0 else 'failed'
@@ -764,7 +792,8 @@ class Runner:
         cancel = threading.Event()
         sampling_closed = threading.Event()
         sample_lock = threading.Lock()
-        number = len(job['attempts'])
+        number = int(directory.name)
+        execution_attempt = _execution_count(job) + 1
         job_dir = self.queue.host_dir(self.host) / 'jobs' / job['id']
         expand = lambda value: value.replace('{attempt}', str(number)).replace('{job_dir}', str(job_dir))
         argv = [expand(value) for value in job['argv']]
@@ -779,11 +808,13 @@ class Runner:
                              'IRL_SHIELD_PERF_QUEUE_ATTEMPT': str(number),
                              'IRL_SHIELD_PERF_QUEUE_RECEIPT': str(directory / 'attempt.json'),
                              'IRL_SHIELD_PERF_QUEUE_LEASE_FD': str(lease.fd)}
-        atomic_json(directory / 'attempt.json', {'phase': 'prepared', 'started_at': started,
+        prepared = {'phase': 'prepared', 'started_at': started,
                     'job': job['id'], 'host': self.host, 'attempt': number, 'forced': forced,
+                    'execution_started': False, 'execution_attempt': None,
                     'contamination_policy': 'other-busy-v2',
                     'queue_environment': queue_environment, 'lease_path': str(self.perf_lock),
-                    'lease_identity': {'device': os.fstat(lease.fd).st_dev, 'inode': os.fstat(lease.fd).st_ino}})
+                    'lease_identity': {'device': os.fstat(lease.fd).st_dev, 'inode': os.fstat(lease.fd).st_ino}}
+        atomic_json(directory / 'attempt.json', prepared)
 
         def observe(cpu_sampler):
             while True:
@@ -811,6 +842,10 @@ class Runner:
                           'lease_path': str(self.perf_lock), 'queue_environment': queue_environment}
                 atomic_json(directory / 'launch.json', launch)
                 with stdout.open('w') as out, stderr.open('w') as err:
+                    # Commit launch before spawning: a crash in the spawn window
+                    # is ambiguous, so recovery must charge it conservatively.
+                    atomic_json(directory / 'attempt.json', prepared | {'execution_started': True,
+                                'execution_attempt': execution_attempt})
                     process = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), '_exec', str(directory / 'launch.json')],
                                                cwd=job['cwd'], stdout=out, stderr=err,
                                                start_new_session=True, pass_fds=(lease.fd,),
@@ -879,6 +914,8 @@ class Runner:
         outside_health_bad = (start.get('memory_ok') is not True or end.get('memory_ok') is not True
                               or end.get('idle_percent') is None)
         receipt = {'phase': 'closed', 'started_at': started, 'finished_at': time.time(), 'attempt': number,
+                   'execution_started': process is not None,
+                   'execution_attempt': execution_attempt if process is not None else None,
                    'argv': argv, 'cwd': job['cwd'], 'stdout': str(stdout), 'stderr': str(stderr),
                    'start_health': start, 'end_health': end, 'periodic_health': samples,
                    'forced': forced, 'rejected_before_exec': rejected, 'returncode': returncode,

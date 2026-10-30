@@ -1,0 +1,75 @@
+{
+  "root_head": "e698aac799434f1bebf1a31dc1c9f575a0245c9f",
+  "branch": "elannash/q-quality",
+  "findings": [
+    "claude:retained-rescore-rederives-fast-default",
+    "claude:rejudge-scope-says-cache-v2"
+  ],
+  "sources": {
+    "bench/clocked_bench.py": "111d5f189068d77e4e33ea9117f301a48f696bb08951439d90e83005bcddbac8",
+    "bench/rejudge_retained.py": "739336ef211da40ceaa95a085a7054241461754f87350518ac77cf738e0e5832",
+    "tests/test_retained_judging.py": "82eeaf5b6fbe4b2ef3789082a0c0b3612862b2680a1e6e227ac2498f9001239c"
+  },
+  "proof": [
+    {
+      "case": "fast-lane",
+      "file": "bench/clocked_bench.py",
+      "command": [
+        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "test_retained_judging.RetainedJudging.test_recorded_fast_lane_cannot_be_replaced_by_a_later_default",
+        "-v"
+      ],
+      "fixed_sha256": "111d5f189068d77e4e33ea9117f301a48f696bb08951439d90e83005bcddbac8",
+      "original_bug_sha256": "a380656e73344da0bf1d8c31613b71c82f024667e4a11a6f3985a65866dfd439",
+      "red_exit": 1,
+      "expected_failure": "ValueError not raised",
+      "green_exit": 0,
+      "restored_byte_for_byte": true
+    },
+    {
+      "case": "cache-scope",
+      "file": "bench/rejudge_retained.py",
+      "command": [
+        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "test_retained_judging.RetainedJudging.test_rejudge_scope_reports_the_schema_of_the_judge_that_read_the_movie",
+        "-v"
+      ],
+      "fixed_sha256": "739336ef211da40ceaa95a085a7054241461754f87350518ac77cf738e0e5832",
+      "original_bug_sha256": "8180f1c21d9fc38b6a98e066763e62c4bbf13ec90edaec02bb39fe4f6e2df57a",
+      "red_exit": 1,
+      "expected_failure": "'cache-v9' not found",
+      "green_exit": 0,
+      "restored_byte_for_byte": true
+    }
+  ],
+  "gates": {
+    "linux": {
+      "exit": 0,
+      "main_tests": 138,
+      "relay_tests": 3,
+      "platform_skips": 1,
+      "compilation": true,
+      "log": ".tmp/q/quality-final-linux-gate.log",
+      "sha256": "08aae122f0c5da337e325a4d05229d6db6d7105560728b3a562d627f6bfa9594"
+    },
+    "mac": {
+      "exit": 0,
+      "main_tests": 138,
+      "relay_tests": 3,
+      "platform_skips": 1,
+      "compilation": true,
+      "swift": true,
+      "mirror": "~/code/irl-shield-q-quality",
+      "log": ".tmp/q/quality-final-mac-gate.log",
+      "sha256": "73f6269438e8e66684c9dd51cd2ce0c055b196bd97b62db0b688994fea96da4c"
+    }
+  },
+  "scope": "Retained judging identity/provenance only; no new detector/OCR corpus score or performance receipt. Full gate includes five separate experimental harness tests; committed P2-only discovery has133 main tests.",
+  "compatibility": "Missing recorded fast model fails before OCR. Existing model keys without historical family metadata resolve through the explicit registry. A changed current default conflicting with the recorded lane fails closed rather than allowing aggregate annotations to change. No-detector controls are exempt from nonexistent lanes."
+}

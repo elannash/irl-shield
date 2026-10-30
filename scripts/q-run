@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# One untimed quality clip or challenge under shared perf and serial quality leases.
+set -euo pipefail
+root=$(cd "$(dirname "$0")/.." && pwd)
+worktree=${1:?usage: scripts/q-run WORKTREE render|grade|aggregate|verify|exec ...}
+shift
+cd "$worktree"
+[[ -f AGENTS.md && -f fixtures/manifest.json ]] || { echo 'Not an IRL Shield worktree' >&2; exit 2; }
+export OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2
+if [[ $(uname -s) == Linux ]]; then
+  quality_python="$root/.tmp/linux-probe/.venv/bin/python"
+  export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+  export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+  export CUDA_CACHE_PATH="$PWD/.tmp/q/cuda-cache"
+  mkdir -p "$CUDA_CACHE_PATH"
+  libraries=()
+  for directory in "$root/.tmp/linux-probe/.venv/lib/python3.11/site-packages/nvidia"/*/lib; do
+    [[ -d $directory ]] && libraries+=("$directory")
+  done
+  export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+  launch=(systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10)
+else
+  quality_python="$root/.venv/bin/python"
+  launch=(nice -n 10)
+fi
+exec "${launch[@]}" "$quality_python" "$root/scripts/bounded.py" 1800 \
+  "$quality_python" -u "$root/bench/quality_bundle.py" --root "$PWD" --lock-root "$root" "$@"

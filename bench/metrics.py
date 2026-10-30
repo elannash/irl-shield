@@ -1,9 +1,40 @@
 """Interval scoring and anti-cheating metrics, independent of detector code."""
+import math
 import re
 from difflib import SequenceMatcher
+from numbers import Real
 
 import cv2
 import numpy as np
+
+
+def validate_area_ceiling(ceiling, basis=None, *, required=False):
+    """Return a backed fractional ceiling, or no configured diagnostic guard.
+
+    Basis is a nonempty receipt reference, retained for human review; it may
+    name a repository artifact, a retained run, or a source URL.
+    """
+    if ceiling is None:
+        if required:
+            raise ValueError('An explicit masked-area ceiling and basis receipt are required')
+        return None
+    if isinstance(ceiling, bool) or not isinstance(ceiling, Real) or not math.isfinite(ceiling) or not 0 <= ceiling <= 1:
+        raise ValueError('Area ceiling must be finite and between zero and one')
+    if not isinstance(basis, str) or not basis.strip():
+        if required:
+            raise ValueError('Area ceiling requires a nonempty basis receipt reference')
+        return None
+    return float(ceiling)
+
+
+def masked_area_pass(card):
+    """A comparison needs a backed ceiling and a finite measured median."""
+    options = card.get('options', {})
+    ceiling = validate_area_ceiling(card.get('area_ceiling', options.get('area_ceiling')),
+                                    card.get('area_ceiling_basis', options.get('area_ceiling_basis')))
+    median = card.get('masked_area_fraction', {}).get('p50')
+    return bool(ceiling is not None and not isinstance(median, bool) and isinstance(median, Real)
+                and math.isfinite(median) and 0 <= median <= ceiling)
 
 
 def normalize(text):

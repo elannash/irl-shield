@@ -300,7 +300,7 @@ class PerformanceQueue(unittest.TestCase):
                           cwd=self.caller, lane='a')
         queue.enqueue('linux', 'quiet', [sys.executable, '-c', 'from pathlib import Path; import sys; f=Path(sys.argv[1]).open("a"); f.write("B1\\n"); f.close()', str(order)], cwd=self.caller, lane='b')
         queue.seal('linux')
-        runner = self.runner(queue)
+        runner = self.runner(queue, hard_stop=time.time() + 60)
         runner.sensor = LoadWindow()
         runner.run()
         row = next(job for job in queue.status('linux')['linux']['jobs'] if job['id'] == a['id'])

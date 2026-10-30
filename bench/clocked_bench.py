@@ -18,9 +18,9 @@ import zipfile
 import cv2
 import numpy as np
 
-from bench.metrics import fidelity, quantiles
+from bench.metrics import fidelity, quantiles, validate_area_ceiling, masked_area_pass
 from bench.scoring import score_records
-from bench.independence import policy_metadata, annotate_card
+from bench.independence import policy_metadata, resolve_fast_candidate, annotate_card
 from bench.clocked_pipeline import performance_trust, coverage_distribution
 
 
@@ -71,11 +71,38 @@ def quality_window(records, performance, synthetic_truth):
     return selected, truth
 
 
+def recorded_policy_metadata(performance):
+    """Require retained lanes to agree with the policy before any OCR credit.
+
+    Old options may omit a resolved default. A changed default must reject that
+    receipt rather than silently changing its denominator or aggregate scope.
+    """
+    candidate, options = performance['candidate'], performance['options']
+    declared_fast = resolve_fast_candidate(candidate, options)
+    if declared_fast is None:
+        return policy_metadata(candidate, options)
+    loading = performance.get('loading', {})
+    recorded_fast = loading.get('fast', {}).get('candidate')
+    if recorded_fast is None:
+        raise ValueError('Retained performance is missing its recorded fast lane candidate')
+    recorded = policy_metadata(candidate, {**options, 'fast_candidate': recorded_fast})
+    if declared_fast != recorded_fast:
+        raise ValueError('Current policy differs from the recorded fast lane; use the frozen recorded policy')
+    for lane, model in (('accurate', candidate), ('fast', recorded_fast)):
+        receipt = loading.get(lane, {})
+        families = receipt.get('metadata', {}).get('detector_families')
+        if (receipt.get('candidate') != model or
+                (families is not None and families != recorded['lanes'][lane]['detector_families'])):
+            raise ValueError(f'Retained performance has inconsistent recorded {lane} lane provenance')
+    return recorded
+
+
 def score_video(input_path, output_path, judge, synthetic_truth):
     """Decode and judge after timing, using saved actual mask pixels, never rebuilt quads."""
     input_path, output_path = Path(input_path), Path(output_path)
     full_records = json.loads(output_path.with_suffix('.masks.json').read_text())
     performance = json.loads(output_path.with_suffix('.performance.json').read_text())
+    detector_metadata = recorded_policy_metadata(performance)
     records, selected_truth = quality_window(full_records, performance, synthetic_truth)
     before_capture = cv2.VideoCapture(str(input_path), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 2])
     after_capture = cv2.VideoCapture(str(output_path), cv2.CAP_FFMPEG, [cv2.CAP_PROP_N_THREADS, 2])
@@ -119,7 +146,7 @@ def score_video(input_path, output_path, judge, synthetic_truth):
         before_capture.release()
         after_capture.release()
     quality, details = score_observations(inputs, outputs, selected_truth, guards, records,
-        detector_families=policy_metadata(performance["candidate"],performance["options"])["detector_families"])
+        detector_families=detector_metadata['detector_families'])
     quality['judging']=details['judging']=getattr(judge,'metadata',None)
     window = {'judged_frames': len(records), 'original_start_frame': records[0]['original_frame'],
               'original_stop_frame_exclusive': records[-1]['original_frame'] + 1,
@@ -263,8 +290,11 @@ def main(argv=None, judge=None):
         parser.error('Warmup seconds must be finite and nonnegative')
     if args.sustained_seconds and (not math.isfinite(args.sustained_seconds) or args.sustained_seconds < 30):
         parser.error('Sustained source duration must be at least30 seconds')
-    if args.area_ceiling is not None and (not math.isfinite(args.area_ceiling) or not 0 <= args.area_ceiling <= 1):
-        parser.error('Area ceiling must be between zero and one')
+    try:
+        validate_area_ceiling(args.area_ceiling, args.area_ceiling_basis,
+                              required=args.area_ceiling is not None)
+    except ValueError as error:
+        parser.error(str(error))
     if Path(args.run_id).name != args.run_id or args.run_id in ('.', '..'):
         parser.error('Run ID must be a single directory name')
     options = {key: getattr(args, key) for key in (
@@ -412,7 +442,8 @@ def aggregate_card(card, directory, *, root=None):
     card['synthetic_input_control'] = control
     short_guards = [clock_guards(result['performance']) for result in results]
     sustained_guards = clock_guards(sustained) if sustained else {'throughput': False, 'latency': False, 'protected': False}
-    area_configured = card['area_ceiling'] is not None and bool(card['area_ceiling_basis'])
+    ceiling = validate_area_ceiling(card.get('area_ceiling'), card.get('area_ceiling_basis'))
+    area_configured = ceiling is not None
     area = card['masked_area_fraction']['p50']
     independence=annotate_card(card)
     card['gate_1'] = {
@@ -420,7 +451,7 @@ def aggregate_card(card, directory, *, root=None):
         'judge_discrimination': control['total'] > 0 and control['unreadable'] == 0,
         'natural': card['natural']['hidden_fraction'] is not None and card['natural']['hidden_fraction'] >= .9,
         'synthetic': card['synthetic']['total'] > 0 and card['synthetic']['hidden_fraction'] == 1.,
-        'masked_area': area_configured and area is not None and area <= card['area_ceiling'],
+        'masked_area': masked_area_pass(card),
         'throughput': sustained_guards['throughput'],
         'latency': sustained_guards['latency'],
         'protected': sustained_guards['protected'] and all(guard['protected'] for guard in short_guards),

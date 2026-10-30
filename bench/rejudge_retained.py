@@ -50,9 +50,10 @@ def main():
     finally:judge.close()
     validate_card(card,source)
     card['run_id']=args.run_id
+    cache_schema=card['judging']['cache_identity']['schema_version']
     card['rejudge']={'source_scorecard':str(original),'source_sha256':file_sha256(original),
                     'measurement_plan_sha256':file_sha256(plan_path),'processing_pipeline_sha256':card['pipeline_sha256'],
-                    'scope':'Fresh cache-v2 OCR of exact sealed CUDA output; no new detector/performance measurement. Original evidence untouched.'}
+                    'scope':f'Fresh cache-v{cache_schema} OCR of exact sealed CUDA output; no new detector/performance measurement. Original evidence untouched.'}
     card['queue_measurement_trust']={'clean':False,'scope':'Historical diagnostic processing; this untimed OCR run cannot qualify performance.'}
     aggregate_card(card,destination)
 

@@ -21,7 +21,22 @@ class ProcessDeadline(unittest.TestCase):
                 program=('import os,subprocess,sys,time,json;from pathlib import Path;os.close(1);os.close(2);'
                          'p=subprocess.Popen([sys.executable,"-c","import time;time.sleep(60)"]);'
                          'Path(sys.argv[1]).write_text(json.dumps([os.getpid(),p.pid]));time.sleep(60)')
-                shim=("import os,runpy,signal,sys\nreal=os.killpg\n"
+                # This case tests cleanup permissions. Start its short deadline
+                # only once the controlled process group reports readiness.
+                shim=("import os,runpy,signal,subprocess,sys,time\nfrom pathlib import Path\n"
+                      "real=os.killpg\nstart=subprocess.Popen\nmarker=Path(sys.argv[3])\n"
+                      "def ready(*args,**kwargs):\n"
+                      " child=start(*args,**kwargs)\n"
+                      " if kwargs.get('start_new_session'):\n"
+                      "  deadline=time.monotonic()+10\n"
+                      "  while not marker.exists() and child.poll() is None:\n"
+                      "   if time.monotonic()>=deadline:\n"
+                      "    try: real(child.pid,signal.SIGKILL)\n"
+                      "    except ProcessLookupError: pass\n"
+                      "    child.wait(timeout=3)\n"
+                      "    raise RuntimeError('Controlled group did not become ready')\n"
+                      "   time.sleep(.01)\n"
+                      " return child\nsubprocess.Popen=ready\n"
                       "def injected(group,number):\n"
                       " if number==signal.SIGKILL: raise PermissionError('synthetic group permission denial')\n"
                       f" if number==signal.SIGTERM and {keep_alive!r}: return\n"
@@ -31,7 +46,7 @@ class ProcessDeadline(unittest.TestCase):
                 started=time.time()
                 try:
                     result=subprocess.run([sys.executable,'-c',shim,str(ROOT/'scripts/bounded.py'),
-                                           program,str(pidfile)],capture_output=True,timeout=10)
+                                           program,str(pidfile)],capture_output=True,timeout=20)
                     self.assertTrue(pidfile.exists(),'Controlled child never started')
                     self.assertEqual(result.returncode,expected,result.stderr.decode())
                     if keep_alive:
