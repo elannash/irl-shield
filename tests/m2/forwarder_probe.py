@@ -1,7 +1,7 @@
 """Loopback-only verified-forwarder publication proof; synthetic CC0 media/certs.
 
 Exit0: verified route and rejection controls hold. Exit1: an unverified peer
-received a publication. Exit2: fixture/verification attribution unavailable.
+received a publication or plaintext/non-TLS bytes. Exit2: fixture/verification attribution unavailable.
 """
 import argparse
 from contextlib import contextmanager
@@ -22,6 +22,7 @@ from relay.stream import Egress, EgressError
 from relay.tls_forwarder import TLSForwarder
 from shield.types import Coverage, PresentedFrame
 from tls_fixture import certificates
+from wire_fixture import RawPeer
 
 
 class FixtureError(RuntimeError):
@@ -34,6 +35,10 @@ def require_verification_rejection(row, server):
     if (row['tls']['last_error'] != 'tls-verification-failed'
             or row['tls']['failures'] < 1 or not row['egress_error']):
         raise FixtureError('Rejection is not a TLS verification failure')
+    wire = row['wire']
+    if not wire['connections'] or not wire['bytes_received'] or wire['capture_errors']:
+        raise FixtureError('Raw TCP rejection capture unavailable')
+    return wire['canary_absent'] and wire['client_hello_and_controls_only']
 
 
 def wait_witness(log, name, server):
@@ -135,11 +140,12 @@ def audit(binary, evidence):
                             ('unrelated-ca', '127.0.0.1', 'other'),
                             ('mismatched-hostname', 'mismatch.invalid', 'peer'),
                             ('trusted-after', '127.0.0.1', 'peer')):
-                        with TLSForwarder(hostname, port, cafile=root / (authority + '.crt')) as forwarder:
+                        with RawPeer(port) as wire, TLSForwarder(hostname, wire.port, cafile=root / (authority + '.crt')) as forwarder:
                             row = publish(forwarder.port, name)
                             if not row['refused']:
                                 wait_witness(log, name, peer)
                             row['tls'] = forwarder.stats
+                        row['wire'] = wire.rejection(name.encode('ascii'))
                         row['publication_witness'] = "is publishing to path 'app/" + name + "'" in log.read_text()
                         row['server_alive'] = peer.poll() is None
                         report['rows'].append(row)
@@ -150,11 +156,13 @@ def audit(binary, evidence):
                                 raise FixtureError('Trusted publication control failed')
                 # Complete the post-negative trusted control even if a mutant
                 # publishes; a dead or broken fixture must never earn a pass.
+                unsafe_wire = []
                 for row in report['rows'][1:3]:
                     if not row['publication_witness']:
-                        require_verification_rejection(row, peer)
+                        unsafe_wire.append(not require_verification_rejection(row, peer))
+                report['unsafe_rejection_wire'] = any(unsafe_wire)
                 report['unverified_publication'] = any(row['publication_witness'] for row in report['rows'][1:3])
-                return 1 if report['unverified_publication'] else 0
+                return 1 if report['unverified_publication'] or report['unsafe_rejection_wire'] else 0
     except Exception as error:
         report['fixture_error'] = type(error).__name__
         report['fixture_reason'] = str(error) if isinstance(error, FixtureError) else 'Fixture failed; upstream text suppressed'
