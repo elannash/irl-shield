@@ -39,7 +39,8 @@ direct underlying benchmark commands. **Do not enqueue `scripts/linux-bench`,
 lock.** Root's wrapper integration may instead verify the inherited queue lease
 and explicitly skip a nested acquisition.
 
-`{attempt}` expands to 1, 2 or 3, and `{job_dir}` to the job's unique absolute
+`{attempt}` expands to the unique one-based trial ordinal, which can exceed
+three after pre-execution rejections, and `{job_dir}` to the job's unique absolute
 directory. Only those literal placeholders are replaced, so ordinary braces in
 Python/JSON arguments are preserved. Use them in immutable benchmark outputs
 and receipt paths. Repeated `--receipt` options are supported. Relative receipt
@@ -120,8 +121,9 @@ use `contamination_policy: other-busy-v2`; historical receipts keep their
 original idle policy, labels and bytes. Readiness and the repeated START check
 remain idle >=80% plus memory OK. END is outside the job, so a numeric END idle
 below 60% does not itself contaminate a new attempt. Missing END health or
-memory not OK still rejects trust. A rejected START consumes an attempt and is
-recorded without pretending the command ran.
+memory not OK still rejects trust. A rejected START is retained separately and
+does not consume an execution. Historical rejected START receipts also do not
+consume the execution budget; their original labels and bytes remain intact.
 
 For each measurement window, `total_busy_percent = 100 - idle_percent` and
 `job_tree_busy_percent` is identity-bound foreground job CPU divided by that
@@ -171,10 +173,13 @@ timeout or missing-root windows fail
 closed. A replacement runner can ACK an abandoned, already-finished watchdog;
 it still marks the recovered attempt incomplete/contended.
 
-Contended attempts go to the back **within the same priority**, with two retries
-and three total attempts across policy versions; upgrading does not reset this
-budget. A new qualification trial must be an explicitly named new job linked
-by root to its history. All prior stdout, stderr, health and artifact receipts
+Contended executions go to the back **within the same priority**, with two
+retries and three total executions across policy versions; upgrading does not
+reset executed history. Pre-execution rejections do not spend that budget.
+See [execution retry accounting](QUEUE-EXECUTION-RETRIES.md) for state fields,
+legacy recovery, unique artifact ordinals and the job-boundary cutover procedure.
+A new qualification trial must be an explicitly named new job linked by root to
+its history. All prior stdout, stderr, health and artifact receipts
 remain in distinct attempt directories. An uncontended nonzero command is
 recorded failed rather than retried as if it were contention. Exit zero yields
 `completed`, meaning only process completion; every attempt keeps
@@ -186,7 +191,7 @@ is the watchdog result, with `wrapper_returncode` separately retained.
 
 On Friday October 30, 2026 at **15:00 UTC / 08:00 PT**, pending jobs run even
 without readiness and are explicitly CONTENDED. They still have a maximum of
-three attempts. At **16:00 UTC / 09:00 PT**, the runner stops and kills only its
+three executions. At **16:00 UTC / 09:00 PT**, the runner stops and kills only its
 current owned job process group. Enforcement begins 0.1 seconds before that
 boundary to leave shutdown margin; this is ordinary OS scheduling, not a
 real-time guarantee. Pending work remains visible. The deadline supersedes
@@ -197,7 +202,7 @@ Each actual child inherits these scoped values, also recorded in its receipt:
 | Variable | Value |
 | --- | --- |
 | `IRL_SHIELD_PERF_QUEUE_FORCED` | `1` at the forced deadline, otherwise `0` |
-| `IRL_SHIELD_PERF_QUEUE_ATTEMPT` | One-based attempt number |
+| `IRL_SHIELD_PERF_QUEUE_ATTEMPT` | Unique one-based trial ordinal, possibly above three |
 | `IRL_SHIELD_PERF_QUEUE_RECEIPT` | Absolute attempt JSON path |
 | `IRL_SHIELD_PERF_QUEUE_LEASE_FD` | Inherited canonical lock descriptor |
 
@@ -232,7 +237,11 @@ gone, an interrupted attempt is preserved as contended, missing END health
 stays explicitly unavailable, and retry accounting continues without reset.
 
 Per host, `runner.json`, `readiness.json`, readiness history and `jobs/*/job.json`
-show state. Per attempt, inspect `attempt.json`, `start-health.json`,
+show state. Jobs list execution/current-trial paths in `attempts` and new
+non-executed trial paths in `preexec_rejections`; legacy rejected paths may remain
+in `attempts`, so list length is not an execution count. New receipts include
+`execution_started` and `execution_attempt` (null if not launched). Per trial,
+inspect `attempt.json`, `start-health.json`,
 `periodic-health.json`, `end-health.json`, `stdout.log`, `stderr.log`, `launch.json`
 and available child/exit identity files. Job status lists the immutable attempt
 receipt paths and requested artifact templates. No credentials belong in argv
