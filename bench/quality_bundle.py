@@ -30,17 +30,58 @@ def modules(root):
     return offline_quality
 
 
-def entries(root, inputs):
-    manifest = json.loads((Path(root) / 'fixtures/manifest.json').read_text())
-    expected = {(c['id'], synthetic) for c in manifest['clips'] if c['split'] == 'tune'
-                for synthetic in (False, True)}
+def frozen_dataset(path):
+    """Read one relocatable, explicitly selected fresh heldout snapshot."""
+    snapshot = Path(path).read_bytes()
+    manifest = json.loads(snapshot)
+    clips = manifest['clips']
+    ids = [clip['id'] for clip in clips]
+    if (manifest.get('schema_version') != 1 or manifest.get('status') != 'frozen-ungraded'
+            or manifest.get('dataset_id') != 'fresh-heldout-v1' or manifest.get('split') != 'heldout'
+            or len(ids) != 3 or len(set(ids)) != 3
+            or any(clip['split'] != 'heldout' for clip in clips)):
+        raise ValueError('Fresh heldout dataset must freeze exactly three unique heldout clips')
+    expected = {(clip, variant) for clip in ids for variant in (False, True)}
+    rows = manifest['inputs']
+    actual = [(row['clip'], row['synthetic_variant']) for row in rows]
+    if (len(actual) != 6 or set(actual) != expected
+            or any(type(row['synthetic_variant']) is not bool for row in rows)):
+        raise ValueError('Fresh heldout dataset must freeze all six unique heldout pairs')
+    for row in rows:
+        for key in ('source', 'truth'):
+            checked_file(Path(path).parent, row[key])
+        for key in ('source_sha256', 'truth_sha256'):
+            value = row[key]
+            if not isinstance(value, str) or len(value) != 64 or any(c not in '0123456789abcdef' for c in value):
+                raise ValueError('Fresh heldout frozen hashes must be SHA-256')
+    return manifest, snapshot, expected
+
+
+def entries(root, inputs, *, dataset=None):
+    if dataset is None:
+        manifest_path = Path(root) / 'fixtures/manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        expected = {(c['id'], synthetic) for c in manifest['clips'] if c['split'] == 'tune'
+                    for synthetic in (False, True)}
+    else:
+        manifest_path = Path(dataset)
+        manifest, _, expected = frozen_dataset(manifest_path)
     snapshot = Path(inputs).read_bytes()
     data = json.loads(snapshot)
     actual = [(r['clip'], r['synthetic_variant']) for r in data['clips']]
-    if len(expected) != 14 or len(actual) != 14 or set(actual) != expected:
-        raise ValueError('Quality input manifest must contain exactly all seven tune clip pairs')
-    if data['fixture_manifest_sha256'] != digest(Path(root) / 'fixtures/manifest.json'):
+    count = 14 if dataset is None else 6
+    if len(expected) != count or len(actual) != count or set(actual) != expected:
+        label = 'all seven tune clip pairs' if dataset is None else 'all six unique heldout pairs'
+        raise ValueError('Quality input manifest must contain exactly ' + label)
+    if data['fixture_manifest_sha256'] != digest(manifest_path):
         raise ValueError('Quality fixture manifest changed')
+    if dataset is not None:
+        frozen = {(r['clip'], r['synthetic_variant']): r for r in manifest['inputs']}
+        for row in data['clips']:
+            if type(row['synthetic_variant']) is not bool or row != frozen[(row['clip'], row['synthetic_variant'])]:
+                raise ValueError('Quality heldout input differs from its frozen dataset')
+            for key in ('source', 'truth'):
+                checked_file(root, row[key])
     return data, snapshot
 
 
@@ -49,6 +90,17 @@ def checked_file(directory, name):
     if Path(name).is_absolute() or not path.resolve().is_relative_to(Path(directory).resolve()):
         raise ValueError('Quality artifact escapes its sealed directory')
     return path
+
+
+def dataset_file(root, name, cache_root=None):
+    """Resolve a frozen relative asset through an optional read-only cache mount."""
+    if cache_root is None:
+        return checked_file(root, name)
+    try:
+        relative = Path(name).relative_to('fixtures/cache/fresh-heldout')
+    except ValueError as error:
+        raise ValueError('Heldout input escapes the frozen cache prefix') from error
+    return checked_file(cache_root, relative)
 
 
 def verify(directory):
@@ -67,6 +119,12 @@ def verify(directory):
             raise ValueError('Quality artifact changed: ' + name)
     if digest(directory / 'inputs.json') != plan['input_manifest_sha256']:
         raise ValueError('Quality frozen input manifest changed')
+    if 'dataset_identity' in plan:
+        identity = plan['dataset_identity']
+        if identity != {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+                        'manifest_sha256': digest(directory / 'dataset.json')}:
+            raise ValueError('Quality frozen dataset identity changed')
+        entries(directory, directory / 'inputs.json', dataset=directory / 'dataset.json')
     data = json.loads((directory / 'inputs.json').read_bytes())
     rows = [row for row in data['clips'] if (row['clip'], row['synthetic_variant']) ==
             (plan['clip'], plan['synthetic_variant'])]
@@ -94,20 +152,23 @@ def clip_lease(root, host):
             yield
 
 
-def render(root, inputs, config, directory, clip, synthetic):
+def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, cache_root=None):
     """Write one encoded clip and actual masks; privacy remains ungraded."""
     quality = modules(root)
     import cv2
     import numpy as np
     cv2.setNumThreads(1)
-    data, input_snapshot = entries(root, inputs)
+    data, input_snapshot = entries(root, inputs, dataset=dataset)
     row = next(r for r in data['clips'] if (r['clip'], r['synthetic_variant']) == (clip, synthetic))
     config = json.loads(Path(config).read_text())
     candidate, options = config['candidate'], dict(config['options'])
     quality.validate_area_ceiling(options.get('area_ceiling'), options.get('area_ceiling_basis'), required=True)
     from bench.independence import policy_metadata
     policy_metadata(candidate, options)
-    source_original, truth_original = Path(row['source']), Path(row['truth'])
+    if cache_root is not None and dataset is None:
+        raise ValueError('Cache override requires an explicit frozen heldout dataset')
+    source_original, truth_original = (dataset_file(root, row[key], cache_root) if dataset is not None else Path(row[key])
+                                       for key in ('source', 'truth'))
     for key, path in [('source_sha256', source_original), ('truth_sha256', truth_original)]:
         if digest(path) != row[key]:
             raise ValueError('Frozen quality input changed: ' + key)
@@ -117,6 +178,9 @@ def render(root, inputs, config, directory, clip, synthetic):
     shutil.copyfile(source_original, source)
     shutil.copyfile(truth_original, directory / 'input.truth.json')
     (directory / 'inputs.json').write_bytes(input_snapshot)
+    if dataset is not None:
+        (directory / 'dataset.json').write_bytes(Path(dataset).read_bytes())
+        entries(root, directory / 'inputs.json', dataset=directory / 'dataset.json')
     for name, key in (('input.mp4', 'source_sha256'), ('input.truth.json', 'truth_sha256')):
         if digest(directory / name) != row[key]:
             raise ValueError('Frozen copied input changed: ' + name)
@@ -177,6 +241,9 @@ def render(root, inputs, config, directory, clip, synthetic):
                 'pipeline_sha256': code, 'orchestrator_sha256': orchestrator,
                 'input_manifest_sha256': hashlib.sha256(input_snapshot).hexdigest(), 'artifacts': artifacts,
                 'scope': 'Untimed ideal/offline Linux output; no OCR score or realtime qualification exists yet.'}
+        if dataset is not None:
+            plan['dataset_identity'] = {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+                                        'manifest_sha256': digest(directory / 'dataset.json')}
         write_json(directory / 'bundle.json', plan)
         (directory / 'bundle.sha256').write_text(digest(directory / 'bundle.json') + '\n')
         verify(directory)
@@ -232,21 +299,30 @@ def grade(root, directory, *, judge=None, cache=None):
             judge.close()
 
 
-def aggregate(root, directory, run_id):
+def aggregate(root, directory, run_id, *, dataset=None):
     quality = modules(root)
     directory = Path(directory)
-    manifest = json.loads((Path(root) / 'fixtures/manifest.json').read_text())
-    expected = {(c['id'], synthetic) for c in manifest['clips'] if c['split'] == 'tune' for synthetic in (False, True)}
+    if dataset is None:
+        manifest = json.loads((Path(root) / 'fixtures/manifest.json').read_text())
+        expected = {(c['id'], synthetic) for c in manifest['clips'] if c['split'] == 'tune' for synthetic in (False, True)}
+    else:
+        _, _, expected = frozen_dataset(dataset)
     paths = sorted(directory.glob('*/grade.json'))
     results = [json.loads(p.read_text()) for p in paths]
-    if len(results) != 14 or {(r['clip'], r['synthetic_variant']) for r in results} != expected:
-        raise ValueError('All seven tune clip pairs must be judged before aggregation')
+    if len(results) != (14 if dataset is None else 6) or {(r['clip'], r['synthetic_variant']) for r in results} != expected:
+        raise ValueError(('All seven tune clip pairs' if dataset is None else 'All six heldout pairs')
+                         + ' must be judged before aggregation')
     first = results[0]
     run_identity = None
     for path, result in zip(paths, results):
         plan = verify(path.parent)
         identity = {key: plan[key] for key in ('input_manifest_sha256', 'pipeline_sha256',
                                               'orchestrator_sha256')}
+        if dataset is not None:
+            identity['dataset_identity'] = plan.get('dataset_identity')
+            if identity['dataset_identity'] != {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+                                                 'manifest_sha256': digest(dataset)}:
+                raise ValueError('Quality bundles differ from the frozen heldout dataset')
         if run_identity is None:
             run_identity = identity
         elif identity != run_identity:
@@ -262,7 +338,7 @@ def aggregate(root, directory, run_id):
             raise ValueError('Quality clips use different policies or source')
         if result['bundle_sha256'] != digest(path.parent / 'bundle.json'):
             raise ValueError('Quality grade refers to a different render')
-        entries(root, path.parent / 'inputs.json')
+        entries(root, path.parent / 'inputs.json', dataset=dataset)
         if any(result[key] != plan[key] for key in ('clip', 'synthetic_variant', 'candidate', 'options',
                                                     'frames', 'source_fps', 'pipeline_sha256')):
             raise ValueError('Quality grade differs from its sealed render policy')
@@ -271,7 +347,7 @@ def aggregate(root, directory, run_id):
         result['source'] = str(path.parent / 'input.mp4')
         result['output'] = str(path.parent / 'masked.mp4')
     card = quality.build_scorecard(results, first['candidate'], first['options'], run_id=run_id,
-                                  split='tune', baseline=json.loads((Path(root) / 'bench/baseline.json').read_text()))
+                                  split='tune' if dataset is None else 'heldout', baseline=json.loads((Path(root) / 'bench/baseline.json').read_text()))
     card['pipeline_sha256'] = first['pipeline_sha256']
     card['quality_run_identity'] = run_identity
     card['grading_scope'] = 'Independent truth/input controls, ALL output judges, exact sealed CUDA/NVENC frames; ideal/offline, never a performance gate.'
