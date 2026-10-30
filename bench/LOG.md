@@ -315,3 +315,202 @@ The read-only audit reproduced two P2 errors in the retrospective regrader. A ro
 The same audit verified source-clock presentation delay, frame-weighted coverage aggregation across distinct origins, startup exclusion, zero warmup behavior and motion-threshold wiring, without finding another P1. Those are synthetic arithmetic/wiring receipts; accepted Mac performance still awaits the quiet window.
 
 Linux portability now covers tiny and medium as well as v5 mobile and v6 small. On identical20 source frames, tiny CPU/CUDA mean inference66.01/9.36ms and medium714.61/37.27ms; exact CPU/CUDA boxes and real CUDA kernel events are verified. These are shared-Linux inference rates, not emitted fps or an M1 gate claim. No new install or model rewrite was needed. `bench/PORTABILITY.md` records the complete scope.
+
+### 2026-10-30 00:00Z — host serialization and static comparisons
+
+The conductor checkpointed the tree at `2dd52a6`; the builder leaves subsequent edits uncommitted. A common Perl `flock` exec wrapper now serializes timed host work exclusively and untimed quality with shared leases, at `/tmp/agents/irl-shield/perf.lock`. Actual OS-process checks prove shared coexistence, exclusion until every reader releases, and a reader waiting for a writer; a deliberately removed-lock copy fails with `exclusive/shared exclusion violated`, then the unchanged real wrapper passes. Receipt: `/tmp/agents/irl-shield/m1-lock-proof/receipt.json`.
+
+All four initial ideal/offline detector policies completed. Raw natural results are Vision370/435, PP-v5 mobile385/435, v6-small393/435 and v6-tiny353/435. Every initial policy fails guards and remains diagnostic; raw synthetic52-interval cards must be regraded to the current54-interval definition. The Mac sustained queue now polls immediately every two minutes for load1<4 plus normal memory pressure, with the fallback contended run at02:30UTC. Linux static comparison support was installed privately and pinned; an initial static Small/Tiny CUDA trial was rejected before inference for warning PSI pressure, with no accepted speed claim.
+
+`bench.motion_bakeoff` prepares E1 on all seven tune clips with exact copied source/truth SHA-256s, fixed static detector settings and current judges/rendering. Its baseline phase floor.5, floors.2/.05 and ORB+phase fallback.5 differ only in the stated motion policy. This is ideal/offline quality and never substitutes for a clocked receipt. It is queued behind the root Mac sustained receipts, as directed. Separate Sol-xhigh worktree lanes investigate GStreamer, FAST diversity and OpenVINO; all timed work waits for a completed root sustained receipt on that host.
+
+The first Linux readiness launcher had a receipt-classification defect: a retained preflight rejection file was mistaken for a completed sustained trial. The marker was revoked and the lanes were steered immediately. Readiness now requires at least900 steady and1200 encoded frames; a real rejection/complete-but-invalid pair exercises that distinction in `/tmp/agents/irl-shield/m1-lock-proof/readiness-counterexample.json`. This changes scheduling only and grants no accepted performance number. A static Small/Tiny CUDA diagnostic is completing under the same exclusive host lease.
+
+### 2026-10-30 00:30Z — E1 exposes protection credit and a concrete false positive
+
+The fresh Small/Tiny E1 baseline at phase floor.5 gives393/435 natural,46/54 synthetic,8.1905% protection, median12.996% masks, real-video false. Floor.2 gives368/435 natural (−5.747pp),46/54 synthetic,1.8095% protection (−6.381pp), median12.805%, real-video false. Floor.05 gives369/435 natural,44/54 synthetic,.2857% protection, median12.692%, real-video false. Neither lower threshold is a standalone quality win. Mazatlan synthetic still has4/150 protected frames, exceeding the unchanged stricter per-clip guard; aggregate protection alone conceals that concentration. ORB remains in progress.
+
+A retained frame45 from Mazatlan shows clear feet/pavement, with no readable text. PP's raw detections explain the area failure, independently of tracking: Tiny640 returns a95.3%-of-frame quad at box score.599, and Small960 returns99.8% at.508. The same broad failure occurs under Core ML and CUDA. CPU inference on that exact frame confirms the probabilities; raising only pixel threshold does not remove the giant regions. A box-confidence .5→.6 experiment is therefore queued on all7 tune clips, with exact source bytes, independent judges and all guards. No giant-box geometry filter is introduced. Source images and raw probability/box receipts live in `/tmp/agents/irl-shield/m1-mask-inspection/`; they are benchmark-only, not demo-ready.
+
+Raw phase.05 synthetic leaks include London-bus PINE STREET at frames96–97 and BXR219 at96, and Mazatlan's plate/edge entries. CEDAR AVE is known visible only at78–79 and again148–149. The8Hz schedule never samples148/149. Increasing fast sampling is the next candidate lever after confidence, rather than dropping those visible intervals from ground truth.
+
+The complete ORB+phase-.5 E1 alternative gives376/435 natural,41/54 synthetic,2.7619% protection, median12.487% masks, real-video false. It is rejected as a standalone replacement. No E1 policy is guard-valid. The phase-.05 configuration is used only as a lower-protection diagnostic base for the confidence experiment, not called a winner. The full current counts are retained in `bench/results/e1-motion-comparison.json`.
+
+Actual CUDA medium (dynamic ONNX, lower phase floor.05, same8Hz tiny/4Hz accurate policy) grades380/435 natural,44/54 synthetic,.3333% protection, median13.216% masks, real-video false. Its short per-clip timelines and sustained receipt are explicitly contended; static-medium follow-up stopped with a retained clock-drain timeout on the busy host and is not a complete scorecard. Neither result supplies an accepted performance claim.
+
+### 2026-10-30 01:30Z — failed confidence filter, Vision motion check, overnight queue
+
+The one-knob Small/Tiny box-confidence change .5→.6 (`e2-small-box060`, an experiment name unrelated to the research report's static-shape E2) gives327/435 natural,44/54 synthetic,.2857% protection, median11.744% masks and real-video false. Relative to phase-.05 it loses42 natural intervals (−9.655pp), with no synthetic gain or guard repair. **Revert/reject**. Giant region suppression by area is not introduced.
+
+Vision union with only the phase response floor .5→.05 (`v1-vision-phase005`) gives337/435 natural,47/54 synthetic,.2857% protection, median11.558%, p9525.715%, real-video true. The lower protection removes optimistic privacy credit: natural is−7.586pp and synthetic−1.852pp from the original Vision policy. Aggregate protection passes; the stronger per-clip check still fails on Mazatlan. Reject it as a standalone gate configuration, retain as a diagnostic base. Two isolated next experiments change fast sampling8→30Hz, one with Tiny/Small and one with Vision rectangles/union. All7 tune clips, exact source bytes and the existing three judges remain required; partial progress does not earn a score.
+
+The owner superseded every fixed quiet window with an overnight per-host queue. New Linux health receipts use `linux-available-owner-v2`: at least4GiB available is memory-ready; PSI remains diagnostic. Old `linux-psi-memavailable-v1` warning/critical receipts stay rejected. Literal changed-policy cases fail red, then pass; the legacy-warning case stays invalid. A forced queue-deadline trial explicitly sets `contended` and cannot pass performance trust. The19 affected clocked-adapter tests pass. Direct10s CPU-idle sampling and during-job contamination belong to the queue receipt, an additional requirement beyond the benchmark's endpoint memory check. No accepted host-performance receipt exists at this entry.
+
+### 2026-10-30 01:45Z — per-frame Tiny sampling does not close the quality gap
+
+`h3-small-fast30` changes only Tiny fast sampling8→30Hz from the phase-.05 Small/Tiny source. All7 tune clips complete:385/435 natural (88.506%,+16intervals/+3.678pp),46/54 synthetic (85.185%,+2intervals/+3.704pp),.2857% protection unchanged, median masked area15.560% (+2.868pp), p9565.958%. Real video remains false and the stronger per-clip protection guard remains false. **Reject as a passing configuration**; retain as diagnostic evidence that sampling helps some intervals but does not establish100% synthetic privacy or solve false-positive area. No held-out feedback was used.
+
+The production queues are now detached and identity-verified: LinuxPID2644125, nice10 in app-t3code-agents.slice; MacPID26083. Root accelerated/CPU-only/1080p trials have priority1; lane jobs priority2. Live10s preflight samples were Linux32.69% idle/5.64GiB available, Mac2.4% idle/pressure warning. Neither is accepted timing. Root full Mac gate passes85M1+3relay tests, compileall and optimizedSwift, after repairing two canonical-temp-path test expectations. Linux30-test queue/clock integration passes. The root-only joined reporter rejects a quiet-looking raw endpoint receipt when periodic queue CPU is contaminated, and rejects a changed artifact hash/size. Old contended receipts stay diagnostic.
+
+Root integration also found a forced-deadline metadata mismatch before enqueueing the final held-out measurement: the lower-level `run` marks forced options contended, while `clocked_bench` could still declare a noncontended measurement plan. The sealed-bundle options check would correctly reject it rather than silently grade it. A public deferred-orchestration regression fails `False != True`, then passes for FORCED0/1 after setting the CLI's option before any measurement. The plan and every raw/sustained receipt now agree. The already queued standalone performance sources remain immutable at139a0555; the final held-out orchestration will use a new frozen snapshot. No source or old receipt was overwritten.
+
+The proposed median-area ceiling is frozen at15% in `bench/gate-1-policy.json`, before held-out grading. The real-video-preserving Vision tune medians are10.85% and11.56%;15% allows3.44percentage points above the lower-protection policy while retaining at least85% unmasked image at the median. The independent per-LIVE-frame50% outside-video guard remains. This proposal cannot rescue another failed guard. Final diagnostic configuration selection waits only for the already-running Vision30Hz tune card; no new long untimed quality job starts while the timed queue is populated.
+
+### 2026-10-30 01:53Z — final tune decision frozen, no passing winner
+
+`v2-vision-fast30` changes only Vision rectangles fast8→30Hz from `v1-vision-phase005`. All7 tune clips:355/435 natural (81.609%,+18intervals/+4.138pp),46/54 synthetic (85.185%,−1interval/−1.852pp),.2857% protection unchanged, median14.214% masks (+2.656pp), p9533.757%, real-video **false**. Reject. Faster sampling alone does not close privacy and can break image preservation.
+
+The final held-out diagnostic policy is **Vision union accurate4Hz1280 + Vision rectangles fast8Hz640, D1 B6/A30, phase320 floor.05, padding.3**, with15% proposed median area. Its tune card is337/435 natural,47/54 synthetic, median11.558%,.286% protected, real-video true; stronger per-clip protection still fails on Mazatlan. No tune winner passes all guards. The choice is frozen by receipt hash in `bench/gate-1-policy.json` before any held-out grading. Final measurement may retry only for queue trust; a separate lower-priority one-shot grader selects by trust before OCR and never tunes from held-out.
+
+### 2026-10-30 01:55Z — first accepted Linux sustained receipts
+
+The root priority1 queue found an actual quiet period. Static Tiny8Hz/Small4Hz with CUDA+NVENC, D1/A30/B6/floor.05, passes both queue trust and the raw benchmark guards:1200encoded frames,300warmup+900steady, observed30.0779fps, steady added p951.12747s,0% protected, CPU155.73% (one core100), peak tree RSS1248.93MiB. Queue START83.56% idle, END88.66%, minimum periodic69.93%; start/end memory normal. The30Hz Tiny-only rate change also passes:30.0789fps,p951.12802s,0% protected,CPU182.34%,RSS1277.34MiB, minimum sampled idle68.11%. No sample crossed the60% contamination bound.
+
+These are accepted **performance** receipts on the repeated SF workload, not a privacy-gate pass. Small/Tiny tune cards still fail image/privacy guards, and the frozen held-out policy is Vision. Root independently checks movie/mask hashes,1200consecutive mask records and every actual demux packet PTS; receipt `/tmp/agents/irl-shield/m1-perf-queue/linux-first-clean-artifact-audit.json`. Full joined rows and health histories are retained in `bench/results/perf-queue-linux.json`; original queue attempts and movies remain under `.tmp/perf-queue` and `out/perf-queue`. Mac is still waiting for readiness; no Mac speed number is invented.
+
+The first CPU-detector/NVENC trial finishes1200/900frames at30.0721fps,p951.20093s,0% protection,RSS801.46MiB, but401.02% process-tree CPU and minimum queue idle23.61% make it contended. The current global-idle rule includes our own job: average401% on8threads already exceeds its40%-busy budget, so this configuration may be unable to earn an uncontended receipt even on an otherwise idle host. Blocker evidence sent to Opus; no threshold/label changed and retries remain. A separate Small/Tiny CPU+libx264 row4777228d993349898db1ddf8b6576117 tests the GPU-free encoding path, distinct from CPU detection with NVENC. Medium's first attempt rejected before execution when its second START sample fell below80% readiness; it is not a measured Medium speed.
+
+### 2026-10-30 02:04Z — owner replaces contamination policy, history retained
+
+Opus reproduced the CPU self-contamination issue and replaced the rule. Readiness stays at80% idle plus memory OK. New job-window samples subtract only the root-bound job-tree CPU from total host busy; contamination is mean other_busy>20% or any other_busy>40%, with incomplete accounting/health rejected. Old CUDA receipts remain accepted under the stricter old pointwise rule; old CPU attempt1 remains contended. The new mean20% criterion is additionally stricter for a zero-work job; only the single-sample40% criterion reduces to the old idle60% boundary.
+
+Both owned runners were cooperatively stopped at02:04UTC. The old Linux CPU job is held with all original attempts/labels preserved; a new linked qualification will use the revised rule. Other pending jobs will run under the new runner after validation. Linux1080p completed under the old rule before stop; Medium's second attempt was interrupted and remains retained, not relabeled. The queue author updates CPU ancestry/reaped-child counters, partial-window closure and named other_busy reasons test-first. Root prepares real4-worker / separate3-worker / removed-burner proof, with every process bounded and owned.
+
+A new direct-card guard also prevents an endpoint-only raw/deferred scorecard from claiming gate1 before closed queue evidence is joined. The public orchestration regression failed for missing queue_environment, then passes with that field false. The one-shot finalizer sets it only from its selected verified queue measurement, alongside its existing performance/quality guards. This changes acceptance evidence, not pixels, interval counts or the frozen detector policy. The unstarted held-out jobs will migrate to a new immutable orchestration snapshot, retaining their original source/cwd revision in metadata.
+
+
+### 2026-10-30 02:42Z — native other-load proof, runners restored, clean CPU receipts
+
+Root verified counter implementation45dbdd1a and15 retained red/green log hashes.
+The full Mac gate passes96M1 tests (one Linux-procfs integration skip),3relay,
+compileall and optimized Swift. The initial Mac gate correctly exposed the
+unscoped Linux real-procfs test; explicit platform scoping repairs that test,
+while both hosts still require their real native proof. The first partial-window
+Mac sampler would have rejected every normal completion; the revised native
+Mach four-tick host counter measures those tails while exact top sampling remains
+for readiness/START/END. Installed SDK ABI and live tick deltas were checked.
+No detector/renderer policy changed.
+
+Both real four-core/separate-three-core/remove-burner proofs pass. Linux mean
+other busy3.30%→39.46% (`other_busy`)→2.18%; Mac3.78%→41.21% (`other_busy`)→5.47%.
+All four job workers were attributed, no foreign worker was credited and every
+known proof identity exited. Raw samples and cleanup are retained; compact
+tracked receipts are `results/other-busy-proof-{linux,mac}.json`. The old Mac
+proof waiter was stopped by its exact owned identity before the passing proof;
+no other session's process was touched.
+
+Linux resumed atPID2773686 and Mac atPID74976, both nohup/nice10, with Linux
+inside app-t3code-agents.slice. Identity-safe cooperative stop commands are
+`scripts/perf-queue stop linux` and `scripts/mac --no-sync scripts/perf-queue stop mac`.
+The explicit overnight09:00PT hard stop remains. Held-out measurement and grading
+jobs migrated before first execution to immutable final source264dcc9b, with an
+append-only source revision and unchanged frozen detector/area policy. Mac's
+quiet hour is not extended by these runners; they subsequently wait for readiness.
+
+Original Mac Small/Core ML fast8 and Vision union fast30 remain **uncontended**,
+minimum idle73.13% and64.10%, respectively:30.125fps/1.199s/.111% protected and
+30.118fps/1.210s/0%. Vision fast8 stays contended at59.75% idle; a fresh linked
+-v2 job requalifies it instead of changing history. Original Linux CPU/NVENC
+attempt1 also stays contended. Its linked v2 qualifies at30.077fps/1.125s/0%,
+other mean/max2.3%/3.2%. Fully CPU ORT+libx264 qualifies30.009fps/1.066s/0%,
+CPU377.78%,RSS720.31MiB,other mean/max3.20%/4.91%. Both detector active-provider
+lists are CPU only and the literal encoder argv uses libx264. These are timing
+receipts, not independent CPU-path privacy acceptance.
+
+Clean Linux1080p CUDA8 gives30.069fps/1.185s/0%; Medium CUDA8 gives
+30.072fps/1.124s/0%. Fresh OpenVINO CPU-detector/NVENC gives30.067fps/1.157s/0%,
+242.16% CPU, but its CPU comparisons and privacy qualification remain incomplete.
+Mac CPU detector/VideoToolbox qualifies30.152fps/1.199s/0%, and upscaled1080p
+Core ML/VideoToolbox30.116fps/1.205s/0%. All sustained rows use10s startup plus
+30s steady. Joined artifacts retain pressure/swap/load/coverage/startup; no raw
+memory-only card establishes gate1. No tune winner or held-out score is inferred.
+
+
+### 2026-10-30 02:46Z — first held-out measurement retained, not judged
+
+The first frozen held-out measurement exits0 and seals its plan, but revised
+queue accounting labels it contended: mean other busy20.0586%,maximum36.8842%.
+The limit is strictly20%; no near-boundary exception or relabel is introduced.
+It waits for a new quiet measurement attempt. No held-out OCR was run and no
+quality decision was made from held-out. The final grader will select by trust
+before independent OCR, not by the quality of these attempts.
+
+
+### 2026-10-30 02:53Z — merit-lane hand-backs joined, no implementation swap
+
+All three actual branches are verified at2dd52a6: elannash/m1-gst,
+elannash/m1-openvino and elannash/m1-fast, with separate uncommitted source.
+Root checked21GST source/options hashes, fiveOpenVINO source hashes, and FAST's
+source fingerprint171449fd plus all four queue/runtime hash/size pairs. Existing
+FAST manifest entries compare equal; only Apache-2.0 FAST tiny is introduced,
+weight28867779. Eight FAST target tests are green by the read retained log;
+root full-gate/implementation acceptance for merit branches is not claimed.
+
+FAST's closed clean30s detector costs: CPU640288.15/312.71ms, CPU1024752.17/788.14ms,
+CUDA64033.08/38.48ms, CUDA102464.15/68.42ms p50/p95. Natural/synthetic privacy,
+area and complete-interval complementarity are **unmeasured**, as are Core ML and
+stream fps. OpenVINO's clean CPU/NVENC stream is30.067fps/1.157s/0%, but its
+comparison stops on v1 warning pressure and Tiny960 strict parity remains false.
+GST's fresh FFmpeg comparator is clean30.07fps/1.135s/0%; GST/NUT all-clip
+qualification remains incomplete. Their older contended pairs are not promoted.
+These are ledger merges of the lane outcomes, with full branch LOG files retained
+for separate PR review; no lane implementation replaces the M1 default.
+
+One summary with all three branches and qualified numbers was queued to Opus.
+Linux has all18 submissions terminal and is sealed for exit. Mac has a producer-
+complete marker: its remaining priority4GST setup seals only after submitting
+its five prepared priority2jobs. FAST's Mac SDK/model setup and quality work stay
+unsubmitted after its explicit three-hour timebox. No new quality job starts.
+
+
+### 2026-10-30 02:59Z — Mac OpenVINO CPU receipt lands; held-out grading begins
+
+The queued Mac SDK/compare prerequisite completes with normal raw pressure and
+clean closed other-busy accounting (mean12.52%,max26.99%). Root verifies its
+artifact hash/size. Three repetitions of21 frames across seven tune clips give
+63 full calls each. Tiny640 ORT vsOpenVINO p50/p95 total-call24.69/28.35 vs
+26.80/27.87ms; Small960139.96/142.27 vs123.47/127.71ms. All four native
+Tiny/Small at640/960 strict box-parity checks pass. This is accepted CPU-call
+cost/parity only, not a Mac OpenVINO stream or privacy result. Private27-package
+Mac SDK installs are recorded in INSTALLS. Raw/compact artifacts remain in
+`.tmp/m1/openvino-mac-{comparison,attempt}.json` and tracked
+`results/openvino-mac-comparison.json`.
+
+Held-out's second and third attempts reject before execution. Its complete
+first plan remains contended at mean other20.0586%; the job is exhausted-contended.
+The one-shot grader may now select that only complete plan by trust before OCR,
+retain its invalid performance status, and report privacy once. No quality number
+is manufactured from an incomplete grader. Linux all18jobs are terminal and
+runner2773686 is drained/exited; Mac runner74976 alone remains live.
+
+
+### 2026-10-30 03:09Z — attribution hypothesis remains untested; diagnostic jobs queued
+
+Opus20:06PT proposes Apple ML/XPC/kernel work outside the process tree as a
+possible source of Mac other_busy. No conclusion or service exclusion is made.
+After the active held-out grader, two matched Vision8/30Hz jobs7b8967f73e814da1a52a463ff153578a
+and4460653a1ffb4c608aeb87cb5e34710f use the same source139a0555 and observer
+`.tmp/m1/mac-service-observer.py`. Per sample they retain top-five stable
+non-job CPU deltas/names alongside unchanged total/job/other metrics, with scan
+latency and uncredited endpoint job PIDs. No production counter changed. The
+synthetic endpoint exclusion/arithmetic check and Mac compilation pass; native
+execution, causality and a possible service-specific fix/proof are unfinished.
+Mac's owner quiet period ends; no extension is requested or enforced.
+
+Root reads all four failed Linux stderr artifacts. GST and NUT stop on frozen
+v1 per-clip warning-pressure guards; OpenVINOcompare likewise stops on warn
+and retains Tiny960 parity false; local SRTnetwork propagates no-video10s timeout.
+All four have clean CPU queue accounting. No missing-plugin explanation or
+reclassification is introduced. Causes and attempt IDs are in M1-HANDBACK.
+
+
+### 2026-10-30 03:11Z — correction from complete attempt artifacts
+
+The root03:10joined artifact audit corrects the earlier03:00 status inference:
+held-out attempt3 **completed**, with30.11fps/1.206s steady p95/0% protected,
+but remains contended because maximum other_busy is about42.0% (>40%), despite
+mean about19.3%. Only attempt2 rejected before execution. The one-shot grader
+therefore selects attempt3, the **last complete contended measurement**, under
+the frozen pre-OCR selection rule. It does not select attempt1. Earlier root
+status prose about two rejected preflights was wrong; original attempt files
+and labels were never altered. No quality score or policy changed.

@@ -13,7 +13,7 @@ The artifact shortlist contains five offline, Apache-2.0 model artifacts:
 | `ppocr-v5-server` | RapidOCR ONNX conversion of PP-OCRv5 server detector | Larger v5 comparison that can reveal a recall/latency trade. |
 | `ppocr-v6-small` | Official PaddlePaddle PP-OCRv6 small ONNX detector | Current mobile/desktop tier; a practical successor to v5 mobile. |
 | `ppocr-v6-medium` | Official PaddlePaddle PP-OCRv6 medium ONNX detector | Current higher-capacity comparison for the largest recall budget. |
-| `ppocr-v6-tiny` | Official PaddlePaddle PP-OCRv6 tiny ONNX detector | A smaller edge candidate; raw CPU/CUDA inference is verified in PORTABILITY.md, while the full tune quality comparison is in progress. |
+| `ppocr-v6-tiny` | Official PaddlePaddle PP-OCRv6 tiny ONNX detector | Integrated in either lane. All-seven-clip tune scoring is complete: 353/435 natural and 46/54 synthetic under the initial policy, with failed protection and real-video guards. See `results/m1-tune-comparison.json`. |
 
 PaddleOCR describes v5 mobile/server as efficiency/accuracy variants in its
 [v5 model list](https://paddlepaddle.github.io/PaddleOCR/main/en/version3.x/pipeline_usage/OCR.html).
@@ -117,13 +117,18 @@ describes provider configuration and unsupported-operator fallback.
 
 ## Parameters and judging limits
 
-Shared options are `cache_dir`, `provider` (`cpu`/`coreml`), `threads` (default
+Shared options are `cache_dir`, `provider` (`cpu`/`coreml`/`cuda`), `threads` (default
 2), `limit_side_len` (960), `limit_type` (`max`), `thresh` (0.3), `box_thresh`
 (0.5), `unclip_ratio` (1.6), `use_dilation` (true), `max_candidates` (1000), and
 `score_mode` (`fast`). These common postprocessing defaults are the bench
 starting point, rather than each upstream model's tuned defaults. Record
 every override and tune only against the tune split. The manifest retains
 the upstream postprocessing settings for comparison.
+
+Linux CUDA uses the separate, pinned Pascal-compatible environment documented in
+`bench/PORTABILITY.md`; the main Mac requirements do not install a GPU runtime.
+CPU/CUDA execution and the asynchronous CUDA/NVENC path are measured. Windows
+remains untested, and provider activation alone does not establish kernel use.
 
 All detector artifacts use their official BGR/ImageNet mean and standard
 deviation from the linked `inference.yml` files. This is explicit because

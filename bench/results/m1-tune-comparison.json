@@ -1,0 +1,892 @@
+{
+  "scope": "Completed all-seven-clip tune cards. Ideal/offline cards cannot establish wall-clock throughput/latency. Actual CUDA cards are explicitly contended. Every initial candidate fails at least one guard; no gate winner is selected by raw privacy alone. English-configured judges; Latin-script text/digits only.",
+  "rows": [
+    {
+      "group": "initial_matched_ideal",
+      "run_id": "auto-final-offline-vision-union-a30",
+      "source": "out/auto-final-offline-vision-union-a30/scorecard.json",
+      "source_sha256": "21c5ce6333cb1f66d28fd2ab4c565824c3c49d7c197073a438f42ea7e7539896",
+      "candidate": "vision-union",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null
+      },
+      "natural": {
+        "hidden": 370,
+        "total": 435,
+        "hidden_fraction": 0.8505747126436781
+      },
+      "synthetic": {
+        "hidden": 48,
+        "total": 54,
+        "hidden_fraction": 0.8888888888888888
+      },
+      "masked_area_fraction": {
+        "p50": 0.10846733940972222,
+        "p95": 1.0
+      },
+      "protected_fraction": 0.08190476190476191,
+      "real_video_pass": true,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": true,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false,
+        "natural": false,
+        "synthetic": false,
+        "judge_discrimination": true
+      }
+    },
+    {
+      "group": "initial_matched_ideal",
+      "run_id": "auto-final-offline-ppocr-v5-mobile-a30",
+      "source": "out/auto-final-offline-ppocr-v5-mobile-a30/scorecard.json",
+      "source_sha256": "04025e631f21b9fae639327f1c4b3c20ecda2a31a724578617af8eb4260acece",
+      "candidate": "ppocr-v5-mobile",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox"
+      },
+      "natural": {
+        "hidden": 385,
+        "total": 435,
+        "hidden_fraction": 0.8850574712643678
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.12223958333333333,
+        "p95": 1.0
+      },
+      "protected_fraction": 0.08190476190476191,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false,
+        "natural": false,
+        "synthetic": false,
+        "judge_discrimination": true
+      }
+    },
+    {
+      "group": "initial_matched_ideal",
+      "run_id": "auto-final-offline-ppocr-v6-small-a30",
+      "source": "out/auto-final-offline-ppocr-v6-small-a30/scorecard.json",
+      "source_sha256": "1679f28795c7652d5c7d0329686177f01c6c07f825f7b724ffae3ea29b18372d",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox"
+      },
+      "natural": {
+        "hidden": 393,
+        "total": 435,
+        "hidden_fraction": 0.903448275862069
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.12995713975694445,
+        "p95": 1.0
+      },
+      "protected_fraction": 0.08190476190476191,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": true,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false,
+        "natural": true,
+        "synthetic": false,
+        "judge_discrimination": true
+      }
+    },
+    {
+      "group": "initial_matched_ideal",
+      "run_id": "auto-final-offline-ppocr-v6-tiny-a30",
+      "source": "out/auto-final-offline-ppocr-v6-tiny-a30/scorecard.json",
+      "source_sha256": "6d4c45753b6a0be312028b3ce1de10e12a4b50f5d2ea79a454220ef9a7d9b611",
+      "candidate": "ppocr-v6-tiny",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input confidence>=.9 on at least2 frames; synthetic truth splits at every known visibility gap; output confidence>=.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox"
+      },
+      "natural": {
+        "hidden": 353,
+        "total": 435,
+        "hidden_fraction": 0.8114942528735632
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.11528971354166667,
+        "p95": 1.0
+      },
+      "protected_fraction": 0.08190476190476191,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false,
+        "natural": false,
+        "synthetic": false,
+        "judge_discrimination": true
+      }
+    },
+    {
+      "group": "motion_E1",
+      "run_id": "e1-small-phase-050",
+      "source": "out/e1-small-phase-050/scorecard.json",
+      "source_sha256": "e01e4e8692b9658a4a6c9732ef2d17dc4803d336027869ee76f15279add45522",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.5
+      },
+      "natural": {
+        "hidden": 393,
+        "total": 435,
+        "hidden_fraction": 0.903448275862069
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.12995713975694445,
+        "p95": 1.0
+      },
+      "protected_fraction": 0.08190476190476191,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": true,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "motion_E1",
+      "run_id": "e1-small-phase-020",
+      "source": "out/e1-small-phase-020/scorecard.json",
+      "source_sha256": "91bfe940b4097bab0bdd993a91fdd4ea52d8f92283598488e9a63f4960cce2ac",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.2
+      },
+      "natural": {
+        "hidden": 368,
+        "total": 435,
+        "hidden_fraction": 0.8459770114942529
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.1280523003472222,
+        "p95": 0.5580483398437499
+      },
+      "protected_fraction": 0.018095238095238095,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "motion_E1",
+      "run_id": "e1-small-phase-005",
+      "source": "out/e1-small-phase-005/scorecard.json",
+      "source_sha256": "8e27ed9c694257c383c66db9b26ca1a9c9ceadd3d8791d0102aec38f6ab805df",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.05
+      },
+      "natural": {
+        "hidden": 369,
+        "total": 435,
+        "hidden_fraction": 0.8482758620689655
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "masked_area_fraction": {
+        "p50": 0.12692003038194444,
+        "p95": 0.5551158854166666
+      },
+      "protected_fraction": 0.002857142857142857,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "motion_E1",
+      "run_id": "e1-small-orb-050",
+      "source": "out/e1-small-orb-050/scorecard.json",
+      "source_sha256": "010b1a3c072efe9b4609869fcfb05443d99adbff716f5282adfe11dd68f667b6",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "orb",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.5
+      },
+      "natural": {
+        "hidden": 376,
+        "total": 435,
+        "hidden_fraction": 0.864367816091954
+      },
+      "synthetic": {
+        "hidden": 41,
+        "total": 54,
+        "hidden_fraction": 0.7592592592592593
+      },
+      "masked_area_fraction": {
+        "p50": 0.124873046875,
+        "p95": 0.8075959743923611
+      },
+      "protected_fraction": 0.02761904761904762,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": false,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "one_knob_followups",
+      "run_id": "e2-small-box060",
+      "source": "out/e2-small-box060/scorecard.json",
+      "source_sha256": "9338dc5b40afbe137b9297b7212aa08a3ae39875014559692975670e2166cdea",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.05,
+        "box_thresh": 0.6
+      },
+      "natural": {
+        "hidden": 327,
+        "total": 435,
+        "hidden_fraction": 0.7517241379310344
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "masked_area_fraction": {
+        "p50": 0.11743977864583333,
+        "p95": 0.4903037651909721
+      },
+      "protected_fraction": 0.002857142857142857,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "one_knob_followups",
+      "run_id": "h3-small-fast30",
+      "source": "out/h3-small-fast30/scorecard.json",
+      "source_sha256": "e262e8364d78304f1a6db02dae215fbe130f03d12bd1c351f9efb636a0ad39ea",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "padding": 0.3,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "encoder": "h264_videotoolbox",
+        "motion_min_response": 0.05
+      },
+      "natural": {
+        "hidden": 385,
+        "total": 435,
+        "hidden_fraction": 0.8850574712643678
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.15560492621527777,
+        "p95": 0.6595794813368053
+      },
+      "protected_fraction": 0.002857142857142857,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "one_knob_followups",
+      "run_id": "v1-vision-phase005",
+      "source": "out/v1-vision-phase005/scorecard.json",
+      "source_sha256": "ea00d75706fa9223d49e7ddcd19f90f6cacfdc99e1d63186517c9650ea4b2ed6",
+      "candidate": "vision-union",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null,
+        "motion_min_response": 0.05
+      },
+      "natural": {
+        "hidden": 337,
+        "total": 435,
+        "hidden_fraction": 0.774712643678161
+      },
+      "synthetic": {
+        "hidden": 47,
+        "total": 54,
+        "hidden_fraction": 0.8703703703703703
+      },
+      "masked_area_fraction": {
+        "p50": 0.11558376736111112,
+        "p95": 0.25714984809027763
+      },
+      "protected_fraction": 0.002857142857142857,
+      "real_video_pass": true,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": true,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "one_knob_followups",
+      "run_id": "v2-vision-fast30",
+      "source": "out/v2-vision-fast30/scorecard.json",
+      "source_sha256": "6102342a49b6a67b3e2a77a1425183751b6a45c433f770fd6f8fd7df610b416d",
+      "candidate": "vision-union",
+      "split": "tune",
+      "scope": "IDEAL/OFFLINE intended-sampling content quality: detector completions occur at source PTS, irrespective of host wall time. Natural truth is OCR-observed Latin text/digits at confidence>=.9 on at least2 frames; output threshold>=.5; every annotated visible synthetic label remains truth. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Non-Latin coverage is unproven. No realtime throughput, latency, CPU budget or gate eligibility is established. Benchmark-only, no audio.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "padding": 0.3,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "control": null,
+        "motion_min_response": 0.05
+      },
+      "natural": {
+        "hidden": 355,
+        "total": 435,
+        "hidden_fraction": 0.8160919540229885
+      },
+      "synthetic": {
+        "hidden": 46,
+        "total": 54,
+        "hidden_fraction": 0.8518518518518519
+      },
+      "masked_area_fraction": {
+        "p50": 0.1421440972222222,
+        "p95": 0.3375656467013889
+      },
+      "protected_fraction": 0.002857142857142857,
+      "real_video_pass": false,
+      "quality_checks": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "protected": false,
+        "protected_aggregate": true,
+        "protected_each_clip": false,
+        "real_video": false,
+        "masked_area": null
+      },
+      "comparison_valid": false,
+      "gate_1": {
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "actual_encoded_cuda_contended",
+      "run_id": "linux-static-small-tune",
+      "source": "out/linux-static-small-tune/scorecard.json",
+      "source_sha256": "9f91dde17160ea2dd50aa6351cbab9a7c1e5f6b168bc6f1cd5463ebdd4d6b2cc",
+      "candidate": "ppocr-v6-small",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input truth requires confidence>=0.9 on at least 2 frames per interval; every visible synthetic label remains truth; output OCR confidence>=0.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Benchmark-only footage, no audio; non-Latin coverage and demo readiness unproven. Quality judges one final fixture cycle after warmup; indices are normalized only in scoring evidence.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "warmup_seconds": 10.0,
+        "contended": true,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_faults": [],
+        "accurate_faults": [],
+        "source_skip_ranges": []
+      },
+      "natural": {
+        "hidden": 380,
+        "total": 435,
+        "hidden_fraction": 0.8735632183908046
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "masked_area_fraction": {
+        "p50": 0.13777289496527778,
+        "p95": 0.566750813802083
+      },
+      "protected_fraction": 0.006190476190476191,
+      "real_video_pass": false,
+      "quality_checks": {},
+      "comparison_valid": false,
+      "gate_1": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "masked_area": false,
+        "throughput": false,
+        "latency": false,
+        "protected": false,
+        "real_video": false,
+        "eligible": false,
+        "pass": false
+      }
+    },
+    {
+      "group": "actual_encoded_cuda_contended",
+      "run_id": "linux-cuda-medium-tune-contended",
+      "source": "out/linux-cuda-medium-tune-contended/scorecard.json",
+      "source_sha256": "93bee6bc34a21e9ba36d211cb7bdf5a21386879492b171ee1e9fc9aa5e41ec75",
+      "candidate": "ppocr-v6-medium",
+      "split": "tune",
+      "scope": "Latin-script text and Arabic digits; natural input truth requires confidence>=0.9 on at least 2 frames per interval; every visible synthetic label remains truth; output OCR confidence>=0.5. Judges: Tesseract eng, Apple Vision accurate en-US, PP-OCRv5 English-mobile. Benchmark-only footage, no audio; non-Latin coverage and demo readiness unproven. Quality judges one final fixture cycle after warmup; indices are normalized only in scoring evidence.",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "cuda",
+        "provider": "cuda",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": false,
+        "encoder": "h264_nvenc",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "warmup_seconds": 10.0,
+        "contended": true,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_faults": [],
+        "accurate_faults": [],
+        "source_skip_ranges": []
+      },
+      "natural": {
+        "hidden": 380,
+        "total": 435,
+        "hidden_fraction": 0.8735632183908046
+      },
+      "synthetic": {
+        "hidden": 44,
+        "total": 54,
+        "hidden_fraction": 0.8148148148148148
+      },
+      "masked_area_fraction": {
+        "p50": 0.13216417100694444,
+        "p95": 0.553708279079861
+      },
+      "protected_fraction": 0.0033333333333333335,
+      "real_video_pass": false,
+      "quality_checks": {},
+      "comparison_valid": false,
+      "gate_1": {
+        "judge_discrimination": true,
+        "natural": false,
+        "synthetic": false,
+        "masked_area": false,
+        "throughput": false,
+        "latency": false,
+        "protected": false,
+        "real_video": false,
+        "eligible": false,
+        "pass": false
+      }
+    }
+  ],
+  "pending_at_snapshot": []
+}

@@ -251,6 +251,8 @@ def main(argv=None, judge=None):
                         help='Tune-derived median ceiling over ALL masks, including protected masks; no default is invented')
     parser.add_argument('--area-ceiling-basis', help='Receipt pointer behind the configured area ceiling')
     args = parser.parse_args(argv)
+    if os.environ.get('IRL_SHIELD_PERF_QUEUE_FORCED') == '1':
+        args.contended = True
     if (not math.isfinite(args.seconds) or args.seconds < 2 / 30
             or not math.isfinite(args.delay_seconds) or not 0 <= args.delay_seconds <= 1):
         parser.error('At least two source frames are required, and D must be between zero and one second')
@@ -418,6 +420,7 @@ def aggregate_card(card, directory, *, root=None):
         'latency': sustained_guards['latency'],
         'protected': sustained_guards['protected'] and all(guard['protected'] for guard in short_guards),
         'real_video': card['real_video_pass'],
+        'queue_environment': card.get('queue_measurement_trust', {}).get('clean') is True,
         'eligible': card['split'] == 'heldout' and not card['pilot'] and len({result['clip'] for result in results}) >= 3
                     and not card.get('performance_only', False) and not card.get('natural_only', False) and sustained is not None and area_configured,
     }
@@ -425,6 +428,7 @@ def aggregate_card(card, directory, *, root=None):
     card['performance_scope'] = 'Only the separate healthy30s steady trial can establish accepted performance; short warmed quality runs are diagnostic'
     card['startup'] = {result['output']: result['performance']['startup'] for result in results}
     card['gate_notes'] = {'protected': 'Strictly below2%; PROTECT blur and HOLD both count.',
+                          'queue_environment': 'Requires a closed, clean queue measurement receipt. Direct/deferred raw cards retain endpoint memory checks only; the final joined card applies the recorded contamination policy.',
                           'throughput': 'Healthy30s steady window after warmup,900+ steadyframes,720p30 CFR full media; observed steady span at source rate. Short timings are diagnostic only.',
                           'latency': 'Healthy30s steady-only encoded added latency p95<=1.3s; startup and first-packet latency retained separately.',
                           'masked_area': 'Median over ALL scored steady masks, including protected masks; requires an explicit tune-derived value and receipt basis, otherwise fails unconfigured. Full warmup artifacts and both all-mask/LIVE p95 remain reported.'}

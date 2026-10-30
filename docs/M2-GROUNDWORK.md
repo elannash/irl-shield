@@ -10,14 +10,18 @@ secret is used.
 ## Status
 
 The current relay adapter uses the new fixed-deadline `submit`/`poll` engine.
-Three lightweight Linux checks pass, including the actual new engine with
-both detector lanes. **The current adapter has no Mac or network revalidation.**
+Three lightweight adapter checks pass on Linux and, in the root full gate,
+on Mac, including the actual new engine with both detector lanes. **The
+current adapter has no network revalidation.** The Mac functional-gate receipt
+is `/tmp/agents/irl-shield/m1-perf-queue/root-v2-mac-gate-fixed.log`.
 The earlier RTMP/SRT measurements below are preserved historical receipts from
 the replaced synchronous `push`/`flush` engine. They do not measure the new
 engine or its presentation delay.
 
 The Mac `.tmp/m2/runtime` remains the unchanged historical source snapshot.
-No Mac command, media run, install or clip ping occurred during this migration.
+No Mac command, media run, install or clip ping occurred in the child migration
+step. The later root functional gate ran these tests on the main Mac mirror;
+it did not resync or rerun the historical local-network snapshot.
 The historical runs used a private source copy and virtual environment under
 `.tmp/m2/` and each delivered 240 numbered frames with decoded audio through
 RTMP → engine → RTMP and SRT → engine → SRT. Their latency and EOF-buffering
@@ -109,10 +113,9 @@ No isolated FFmpeg build is necessary for this design.
 
 **Do not use this recipe as current migration validation.** No further Mac or
 media run is authorized by the adapter migration. Before a later allowed
-window, the parent must update the private sync manifest: `scripts/m2-mac`
-currently copies only `shield/__init__.py`, `engine.py` and `masking.py` and
-does not copy the new `types`, `lanes`, `control`, `motion` and `render`
-modules. That launcher is outside this migration's four-file edit fence.
+window, use the parent-updated private sync manifest: `scripts/m2-mac`
+now copies `shield/*.py`, including types, lanes, control, motion and render.
+That source-copy fix does not establish another media or network measurement.
 The commands below document the historical run forms; the Mac snapshot has
 not been resynced with the current relay or engine.
 
@@ -240,7 +243,8 @@ exact PCM bytes/timestamps, final drain/close, and state/coverage/deadline
 events. The actual-engine check covers the real lane and engine composition
 in HOLD; the root engine suite owns detector coverage and scheduling policy.
 These checks use generated arrays and PCM only. They do not exercise RTMP,
-SRT, FFmpeg, VideoToolbox, a real detector, or the current Mac environment.
+SRT, FFmpeg, VideoToolbox or a real detector. The later root Mac functional
+gate exercises the adapter environment only, not network or codec behavior.
 
 ## Historical execution receipts and remaining work
 
@@ -323,8 +327,7 @@ FFmpeg remained `/opt/homebrew/Cellar/ffmpeg/8.1.2` and ran successfully after
 the install. The private Python environment installed only PyAV 16.0.1,
 NumPy 2.2.6 and OpenCV headless 4.11.0.86, with no compilation.
 
-Remaining work: update the parent's private sync recipe and run a later
-authorized Mac/network revalidation of the current deadline adapter; reduce
+Remaining work: run a later authorized Mac/network revalidation of the current deadline adapter; reduce
 transport/mux/EOF buffering; obtain a clean SRT direct
 baseline with the final shutdown policy; investigate the RTMP A/V offset and
 FFmpeg video timestamp quantization; exercise cross-transport URLs;

@@ -105,7 +105,7 @@ def perf_health():
                'load_per_cpu': load[0] / cpus if cpus else None,
                'pressure_state': 'unknown', 'pressure_level': None, 'raw': {}}
     if system == 'Linux':
-        receipt['health_adapter'] = 'linux-psi-memavailable-v1'
+        receipt['health_adapter'] = 'linux-available-owner-v2'
         paths = {'memory_psi': '/proc/pressure/memory', 'cpu_psi': '/proc/pressure/cpu',
                  'io_psi': '/proc/pressure/io', 'meminfo': '/proc/meminfo', 'vmstat': '/proc/vmstat'}
         for name, path in paths.items():
@@ -114,14 +114,10 @@ def perf_health():
             except OSError as error:
                 row = {'path': path, 'returncode': 1, 'stdout': '', 'stderr': str(error)}
             receipt['raw'][name] = row
-        receipt['thresholds'] = {'normal_memory_some_avg10_below_percent': 1.,
-                                 'normal_memory_full_avg10_below_percent': .1,
-                                 'normal_available_at_least_bytes': 2 * 1024**3,
-                                 'normal_available_at_least_fraction': .1,
-                                 'critical_memory_full_avg10_at_least_percent': 1.,
-                                 'critical_available_below_bytes': 1024**3,
-                                 'critical_available_below_fraction': .05}
-        receipt['policy_source'] = 'docs/LINUX_BENCH.md; benchmark policy, not a kernel pressure classification'
+        receipt['thresholds'] = {'normal_available_at_least_bytes': 4 * 1024**3,
+                                 'critical_available_below_bytes': 1024**3}
+        receipt['policy_source'] = ('Owner perf-queue readiness policy, 2026-10-29; '
+                                    'docs/LINUX_BENCH.md. PSI is diagnostic, not a readiness threshold.')
         receipt['kernel_source'] = 'https://docs.kernel.org/accounting/psi.html'
         try:
             if any(receipt['raw'][key]['returncode'] for key in ('memory_psi', 'meminfo', 'vmstat')):
@@ -143,9 +139,8 @@ def perf_health():
                            mem_available_fraction=available / total, swap_total_bytes=memory['SwapTotal'],
                            swap_used_bytes=memory['SwapTotal'] - memory['SwapFree'],
                            swap_pages_in=vmstat['pswpin'], swap_pages_out=vmstat['pswpout'])
-            critical = psi['full']['avg10'] >= 1. or available < 1024**3 or available / total < .05
-            normal = (psi['some']['avg10'] < 1. and psi['full']['avg10'] < .1
-                      and available >= 2 * 1024**3 and available / total >= .1)
+            critical = available < 1024**3
+            normal = available >= 4 * 1024**3
             receipt['pressure_state'] = 'critical' if critical else 'normal' if normal else 'warn'
         except (ValueError, KeyError, IndexError) as error:
             receipt['reason'] = str(error)
@@ -213,7 +208,7 @@ def performance_trust(performance):
             reasons.append(f'{phase}-memory-pressure-{snapshot.get("pressure_state", "unknown")}')
         raw = snapshot.get('raw', {})
         required = ('memory_psi', 'meminfo', 'vmstat') if linux else ('memory_pressure', 'swapusage', 'pressure_level')
-        if (linux and snapshot.get('health_adapter') != 'linux-psi-memavailable-v1') or any(raw.get(key, {}).get('returncode') != 0 for key in required):
+        if (linux and snapshot.get('health_adapter') not in ('linux-psi-memavailable-v1', 'linux-available-owner-v2')) or any(raw.get(key, {}).get('returncode') != 0 for key in required):
             reasons.append(f'{phase}-health-query-incomplete')
         load = snapshot.get('load_average', [])
         if len(load) != 3 or not all(math.isfinite(value) for value in load) or not snapshot.get('cpu_count'):
@@ -681,6 +676,10 @@ def run(input_path, output_path, candidate, options, max_frames=None):
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     options = dict(options)
+    if os.environ.get('IRL_SHIELD_PERF_QUEUE_FORCED') == '1':
+        # The owner requested a last-resort receipt at the queue deadline.
+        # It still records pressure and cannot establish accepted performance.
+        options['contended'] = True
     start = perf_health()
     health = {'preflight': start, 'start': start}
     failure = None

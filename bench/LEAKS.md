@@ -163,3 +163,11 @@ sheet are under `/tmp/agents/irl-shield/m1-async-taxonomy/`. Inspection confirms
 examples of unmasked moving-vehicle text and small storefront text, while some
 short OCR targets remain ambiguous. The current next lever is detector recall
 and resolution; protection reliability is being addressed separately.
+
+## Current E1 evidence: low protection is not sufficient
+
+The complete seven-clip Small/Tiny phase-.05 card retains56 actual natural OCR-leak intervals plus10 intervals whose privacy credit is removed only because a clip fails the real-video guard. Its66 primary natural failures must not all be called detector misses. Synthetic failures similarly comprise6 actual leaked intervals and4 additional guard-only failures (44/54 credited hidden). These counts come directly from the retained interval flags and per-variant real-video verdicts, without rerunning OCR.
+
+The area failure has an observed detector false-positive cause: on Mazatlan natural frame45, a clear view of feet and pavement, Tiny640 returns a95.3%-of-frame polygon at confidence.599 and Small960 a99.8% polygon at.508. This occurs with both Core ML and CUDA. The CPU probability/threshold probe and source frames are in `/tmp/agents/irl-shield/m1-mask-inspection/`; none is demo-ready. Raising pixel thresholds alone preserves giant regions on that frame; box-confidence.6 is the next measured experiment. This is not evidence that all large text boxes are false, so no area-based suppression is applied.
+
+The6 actual synthetic leaks are4 Mazatlan intervals (plate4NV635; CEDAR AVE at78–79; plate7KQ482 at131–149; CEDAR AVE at148–149) and2 London-bus intervals (PINE STREET at96–97 and BXR219 at96). The known two-frame edge-entry intervals remain in ground truth. An8Hz source schedule skips both final frames148/149; increasing the fast rate is the next sampling experiment after confidence. Other partial-coverage and independent-object-motion causes remain hypotheses until the corresponding masks/detections are compared.

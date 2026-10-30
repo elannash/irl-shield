@@ -10,6 +10,11 @@ phone ingestion, Twitch publishing, chat commands and Shield Mode are later work
 The local RTMP/SRT experiment is separate groundwork, with its measured limits in
 [docs/M2-GROUNDWORK.md](docs/M2-GROUNDWORK.md). It is not a production relay.
 
+Gate 1 has not passed. Sustained timing is qualified on the M1 Pro and Linux,
+including Linux CPU detection with libx264, but no tune policy meets all privacy
+and real-video guards. The frozen held-out evaluation is queued separately;
+[the hand-back](docs/M1-HANDBACK.md) distinguishes finished and pending evidence.
+
 The engine accepts timestamped in-memory BGR frames independently of transport.
 Apple Vision is available on macOS; PP-OCR models use ONNX Runtime on CPU, Core ML
 or CUDA. Linux CPU/CUDA execution has been exercised; Windows remains untested.
@@ -20,17 +25,34 @@ the final M1 scorecard. A configured 30fps source is never treated as measured
 From the Linux checkout, the Mac wrapper synchronizes source and provisioned
 assets, runs a bounded command and leaves all generated media out of git:
 
+Run this reproduction after the overnight queues drain or are cooperatively
+stopped; queued timing has priority over new quality work.
+
 ```sh
-scripts/mac scripts/setup
-scripts/mac --seconds 14400 scripts/bench --candidate ppocr-v6-tiny \
-  --split tune --run-id tune-example
-scripts/collect
+scripts/mac --seconds 14400 scripts/host-lock exclusive scripts/bench \
+  --candidate vision-union --fast-candidate vision-rectangles \
+  --split tune --run-id m1-reproduce-tune \
+  --provider coreml --fast-provider coreml --static-model \
+  --D 1 --B 6 --A 30 --fast-rate-hz 8 --accurate-rate-hz 4 \
+  --fast-width 640 --accurate-width 1280 \
+  --fast-limit-side-len 640 --limit-side-len 960 \
+  --motion-mode phase --motion-width 320 --motion-min-response .05 \
+  --padding .3 --encoder h264_videotoolbox \
+  --warmup-seconds 10 --sustained-seconds 30 \
+  --area-ceiling .15 --area-ceiling-basis bench/gate-1-policy.json
 ```
 
 `scripts/bench` provisions hash-pinned fixtures/models and writes
-`out/scorecard.json` plus an immutable run directory. The final documented gate
-recipe will add the selected lane settings, tune-derived median-area ceiling and
-30s sustained workload. Held-out is reserved for the final milestone evaluation.
+`out/scorecard.json` plus an immutable run directory. This command includes the frozen diagnostic lane settings, proposed15% median
+area ceiling and30-second sustained workload. Use a fresh run ID to repeat it.
+It reproduces measurement and judging, not a passing policy: no tune candidate
+passes all guards. Endpoint-only raw cards cannot claim gate1 until a closed
+queue contamination receipt is joined. The one-shot held-out evaluation is
+queued separately and remains reserved for the final milestone result.
+
+Current counts, accepted/rejected timing receipts and limits are in
+[docs/M1-HANDBACK.md](docs/M1-HANDBACK.md). The per-host overnight scheduler and
+safe stop/report commands are in [docs/PERF-QUEUE.md](docs/PERF-QUEUE.md).
 
 The measuring stick covers Latin-script text and Arabic digits observed by
 Tesseract `eng`, Vision accurate `en-US`, and PP-OCRv5 English-mobile. Natural

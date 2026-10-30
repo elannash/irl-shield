@@ -4,7 +4,7 @@ The same `shield.engine.MaskingEngine`, motion, renderer, frame clock, windows,
 mask archives and gate definitions run on both hosts. Providers and encoders
 are explicit options. Linux uses the existing pinned CUDA 12/cuDNN 9 environment
 in `.tmp/linux-probe/.venv`; `bench/PORTABILITY.md` records runtime limitations
-and licenses. No install, download, model export or model rewrite is required.
+and licenses. Fixed-shape comparisons also require the pinned ONNX exporter packages in `requirements-linux-gpu.txt`. Static derivation changes checked shape declarations, retaining weights and graph operations.
 All footage and images are benchmark-only, without music or audio, and are not
 demo-ready assets. Fixture/model attribution remains in
 `fixtures/ATTRIBUTION.md` and `models/manifest.json`.
@@ -27,13 +27,22 @@ PSI averages are stall percentages; MemAvailable estimates memory available
 for new applications without swapping. Swap already in use is retained as a
 receipt and does not alone establish current pressure.
 
-`linux-psi-memavailable-v1` is a **benchmark heuristic**, not a kernel warning
+New receipts use `linux-available-owner-v2`, following the owner's October 29
+perf-queue policy: MemAvailable must be at least 4 GiB. Below 1 GiB is labeled
+critical; other complete snapshots below 4 GiB are warning. PSI remains in the
+receipt as diagnostic evidence. The queue separately requires 80% directly
+sampled CPU idle before launch, monitors contamination, and retains its own
+start/end idle, load and swap receipts. A benchmark's endpoint memory check
+alone does not establish a quiet run. See [PERF-QUEUE.md](PERF-QUEUE.md).
+
+Earlier receipts used `linux-psi-memavailable-v1`, a **benchmark heuristic**, not a kernel warning
 level and not Apple's OS-normal flag. `pressure_level` stays null on Linux.
 The heuristic accepts memory health only when memory SOME avg10 is below 1%,
 FULL avg10 is below 0.1%, and MemAvailable is at least both 2 GiB and 10% of
 MemTotal. It labels the snapshot critical when FULL avg10 is at least 1%, or
 MemAvailable is below either 1 GiB or 5%; other complete snapshots are warning.
-Missing/malformed required PSI, memory or swap counters remain unknown. CPU
+Those recorded classifications remain unchanged; earlier rejected receipts
+are not reclassified by the new policy. Missing/malformed required PSI, memory or swap counters remain unknown. CPU
 and I/O PSI and load are reported without a speed claim. Endpoint snapshots
 can miss brief intermediate pressure; low PSI does not prove an idle host.
 The explicit `--contended` mode remains diagnostic and cannot pass performance
@@ -46,7 +55,10 @@ Run one heavy Linux job at a time. `scripts/linux-bench` sets two-thread native
 limits, selects only the existing private NVIDIA libraries, and launches at
 nice 10 inside `app-t3code-agents.slice`. CUDA provider arenas remain limited
 to 2 GiB each, with heuristic convolution search; this does not cap all device
-memory. Dynamic ONNX is the default.
+memory. The frozen diagnostic source used dynamic ONNX. The newly requested
+static default is not validated by these receipts; exporter installation and a
+static rerun are a separate phase. Commands here describe the frozen dynamic
+source snapshot.
 
 ```bash
 scripts/linux-bench perf --candidate ppocr-v5-mobile \
@@ -123,3 +135,46 @@ and quads from `out/offline-vision-union-a30/sf-market-natural-input.mp4` and
 `sf-market-natural-masked.masks.json`, via existing `bench.cpu_cost`. Thread CPU
 measures motion/projection/render; process-tree CPU measures inference. These
 CPU medians do not imply wall throughput and omit GPU/device execution time.
+
+## Recorded dynamic diagnostic, 2026-10-29
+
+The v5/tiny trial and medium/tiny trial used the same prepared San Francisco
+natural input bytes, 4/8 Hz lanes, D=1, B=6, A=30, padding 0.3, phase width 320
+and response 0.05, CUDA and NVENC. Each retained 1,200 frames, including 300
+startup and 900 steady frames. Neither is accepted performance.
+
+| Accurate detector | Observed steady FPS | Encoded latency p95 | Steady protected | Performance validity |
+| --- | --- | --- | --- | --- |
+| v5 mobile | 30.074 | 1.1603 s | 0% | Rejected: END memory heuristic warning |
+| v6 medium | 30.073 | 1.2001 s | 0% | Explicit contended diagnostic; END memory heuristic critical |
+
+The strict medium quality attempt stopped at its second source's warning
+preflight; it remains in `out/linux-cuda-medium-tune`. The completed retry used
+`--contended` and a new run ID, `linux-cuda-medium-tune-contended`. That mode
+changed trust classification, not engine settings or pressure thresholds.
+Its sealed `measurement-plan.json` verified all 119 artifacts. Fourteen output
+movies each retain 450 frames; only their final 150 frames await real Mac OCR
+grading. Aggregate protection is 7/2,100 (0.333%); Mazatlan synthetic has 4/150
+(2.667%), which fails the preserved stronger per-clip guard. Median all-mask
+area is 13.216%, p95 55.371%; no ceiling or privacy-quality verdict is inferred.
+
+The shared five-repeat 16-frame CPU workload produced median motion thread CPU
+2.781 ms/frame, projection 0.190, render 2.207, and medium detector process-tree
+CPU 79.245. Projection plus render is 2.398 ms/frame. These figures describe
+that retained workload and exclude GPU device time; they do not establish
+wall throughput or the feasibility of a higher accurate-lane rate.
+
+Raw receipts are `out/linux-cuda-v5-sustained/output.performance.json`,
+`out/linux-cuda-medium-tune-contended/measurement-plan.json`, and
+`out/linux-cuda-cpu-cost.json`. The independent artifact audit, commands,
+RED/GREEN logs and preserved dynamic source snapshot are under
+`/tmp/agents/irl-shield/m1-linux-bench/`. The source fingerprint is
+`17ec5477dc6f6f02d6c2370cc4e4e8726de2fe91eea1a244b9977a18b8a40b18`.
+Use that snapshot to grade this bundle after the main source changes; the
+verifier correctly rejects a different source fingerprint. Reuse the existing
+Mac Python environment, model cache and native Vision bridge with the snapshot;
+no model weights or native binary are copied into it.
+
+## Per-host serialization
+
+`scripts/host-lock exclusive <command>` holds the host-wide Perl flock through a timed command; use `shared` for untimed quality/grading. All mirrors and worktrees use `/tmp/agents/irl-shield/perf.lock`. Linux timed wrappers use it automatically. On macOS, wrap the remote command after `scripts/mac` so the lock is taken on the Mac. A root receipt completion marker is a scheduling barrier for parallel experimental lanes, not a gate pass. Warning/critical receipts remain invalid even after the barrier opens.

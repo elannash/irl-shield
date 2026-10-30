@@ -5,6 +5,7 @@ import time
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import zipfile
@@ -371,6 +372,7 @@ class ClockedTransport(unittest.TestCase):
                         events.index('judge-create'))
         self.assertEqual(card['peak_tree_rss_mb'], 10.)
         self.assertTrue(card['real_video_pass'])
+        self.assertFalse(card['gate_1']['queue_environment'])
         self.assertTrue(all('truth' not in result for result in card['clips']))
 
     def test_main_reports_borrowed_residency_and_never_constructs_performance_only_judges(self):
@@ -403,6 +405,16 @@ class ClockedTransport(unittest.TestCase):
         self.assertEqual(plan['status'], 'awaiting-grading')
         self.assertEqual(plan['card']['judges'], [])
         self.assertTrue(all(result['truth'].endswith('.truth.json') for result in plan['card']['clips']))
+
+    def test_forced_queue_mode_is_consistent_in_plan_and_every_performance_receipt(self):
+        for value, expected in (('0', False), ('1', True)):
+            with self.subTest(forced=value), patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_FORCED': value}):
+                plan, _, state = self.run_orchestration(deferred=True)
+            self.assertEqual(state['created'], 0)
+            self.assertEqual(plan['card']['options']['contended'], expected)
+            self.assertEqual(plan['card']['sustained']['options']['contended'], expected)
+            self.assertTrue(all(row['performance']['options']['contended'] == expected
+                                for row in plan['card']['clips']))
 
     def test_warmed_perf_requires_thirty_steady_seconds_and_normal_endpoint_pressure(self):
         self.assertEqual(source_window({'frames': 150, 'fps': 30.}, {'repeat_seconds': 30})['total_frames'], 1200)
@@ -496,11 +508,12 @@ class ClockedTransport(unittest.TestCase):
                 self.assertIn('1024.00M', receipt['raw']['swapusage']['stdout'])
                 self.assertEqual(receipt['raw']['pressure_level']['returncode'], 0 if level is not None else 1)
 
-    def test_linux_health_uses_psi_and_available_memory_without_a_macos_level(self):
+    def test_linux_health_uses_owner_available_memory_policy_and_retains_psi(self):
         for some, full, available, expected in ((.2, .02, 4 * 1024**2, 'normal'),
-                                                (1., .02, 4 * 1024**2, 'warn'),
-                                                (.2, 1., 4 * 1024**2, 'critical'),
-                                                (.2, .02, 1024**2, 'warn')):
+                                                (1., .02, 4 * 1024**2, 'normal'),
+                                                (.2, 1., 6 * 1024**2, 'normal'),
+                                                (.2, .02, 3 * 1024**2, 'warn'),
+                                                (.2, .02, 512 * 1024, 'critical')):
             with self.subTest(some=some, full=full, available=available):
                 files = {'/proc/pressure/memory': f'some avg10={some} avg60=0.00 avg300=0.00 total=1234\nfull avg10={full} avg60=0.00 avg300=0.00 total=321\n',
                          '/proc/pressure/cpu': 'some avg10=2.00 avg60=1.00 avg300=0.50 total=500\n',
@@ -512,12 +525,42 @@ class ClockedTransport(unittest.TestCase):
                     receipt = perf_health()
                 self.assertEqual(receipt['pressure_state'], expected)
                 self.assertIsNone(receipt['pressure_level'])
-                self.assertEqual(receipt['health_adapter'], 'linux-psi-memavailable-v1')
+                self.assertEqual(receipt['health_adapter'], 'linux-available-owner-v2')
                 self.assertEqual(receipt['swap_used_bytes'], 1024**3)
                 self.assertEqual(receipt['memory_psi']['some']['total'], 1234)
                 self.assertEqual(receipt['raw']['memory_psi']['stdout'], files['/proc/pressure/memory'])
                 self.assertNotIn('memory_pressure', receipt['raw'])
                 self.assertEqual(clock_guards(self.warmed_performance(receipt))['throughput'], expected == 'normal')
+
+    def test_legacy_linux_pressure_warning_is_not_reclassified_by_new_policy(self):
+        snapshot = {'platform': 'Linux', 'health_adapter': 'linux-psi-memavailable-v1',
+                    'pressure_state': 'warn', 'pressure_level': None,
+                    'mem_available_bytes': 6 * 1024**3,
+                    'load_average': [2., 2., 2.], 'cpu_count': 8,
+                    'raw': {key: {'returncode': 0} for key in ('memory_psi', 'meminfo', 'vmstat')}}
+        self.assertFalse(clock_guards(self.warmed_performance(snapshot))['throughput'])
+
+    def test_queue_deadline_runs_diagnostic_instead_of_rejecting_pressure_preflight(self):
+        warning = {'platform': 'Linux', 'pressure_state': 'warn', 'pressure_level': None,
+                   'load_average': [2., 2., 2.], 'cpu_count': 8, 'raw': {}}
+        options = {'padding': .3}
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'forced.mp4'
+            with patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_FORCED': '1'}), \
+                 patch('bench.clocked_pipeline.perf_health', return_value=warning), \
+                 patch('bench.clocked_pipeline._run_file', return_value={'options': {'contended': True}}) as worker:
+                receipt = run('synthetic-input.mp4', output, 'ppocr-v6-tiny', options)
+            self.assertTrue(worker.call_args.args[3]['contended'])
+            self.assertFalse(receipt['performance_valid'])
+            self.assertIn('contended-diagnostic-trial', receipt['performance_rejection_reasons'])
+            self.assertEqual(options, {'padding': .3})
+            self.assertEqual(json.loads(output.with_suffix('.performance.json').read_text()), receipt)
+            with patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_FORCED': '0'}), \
+                 patch('bench.clocked_pipeline.perf_health', return_value=warning), \
+                 patch('bench.clocked_pipeline._run_file') as worker:
+                with self.assertRaisesRegex(RuntimeError, 'before loading'):
+                    run('synthetic-input.mp4', Path(directory) / 'ordinary.mp4', 'ppocr-v6-tiny', options)
+                worker.assert_not_called()
 
     def test_measurement_windows_exclude_startup_protection_latency_and_first_packet(self):
         records = []

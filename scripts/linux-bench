@@ -31,5 +31,7 @@ done
 export LD_LIBRARY_PATH="$(IFS=:; printf '%s' "${cuda_libraries[*]}")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 free -g
 uptime
-exec systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
+lock_mode=exclusive
+if [[ "$mode" == verify ]]; then lock_mode=shared; fi
+exec "$root/scripts/host-lock" "$lock_mode" systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 \
   "$probe_python" -u -m "$module" "$@"

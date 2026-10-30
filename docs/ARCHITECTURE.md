@@ -105,10 +105,24 @@ D<=1.0s, steady added-latency p95<=1.3s after warmup, sustained720p30 source-rat
 protected frames<2%. Natural truth remains Latin-script text/digits observed at
 input confidence>=.9 on at least2frames; one-frame-only natural text and non-Latin
 coverage remain unproven. The held-out set is evaluated only after tune results
-have margin, or at the milestone hand-back. The confirmed quiet measurement window
-is02:00–03:00UTC October30. Performance receipts record startup separately, use at
-least30s steady state, and reject warn/critical memory pressure. The final hand-back
-follows the sustained receipt, no later than03:15UTC.
+have margin, or at the milestone hand-back. Host contention is handled by
+`scripts/perf-queue`, replacing all earlier fixed quiet windows and load-average
+readiness thresholds. Every two minutes it samples ten seconds of direct CPU
+idle and the host's memory health. Root sustained receipts have priority over
+the three experiment lanes. Each attempt retains its own start/end and periodic
+health evidence. The owner replaced the original total-idle contamination
+rule after CPU-only work exceeded that budget by itself. New attempts subtract
+only the identity-bound job tree's CPU from total busy. Mean other busy above20%
+or any sample above40% rejects the attempt; missing accounting fails closed.
+Readiness remains80% idle, and old attempt labels remain unchanged. At most
+two contamination retries are retained.
+Performance receipts report startup separately and use at least30s steady state.
+Friday08:00PT forces waiting jobs to run as contended diagnostics;09:00PT ends
+the runners. The03:15UTC milestone hand-back distinguishes completed artifacts
+from these explicitly authorized overnight jobs. A queue exit code is not a
+privacy or performance verdict.
 
 The later `shield login/run/replay/bench/doctor` CLI is a direction, not an M1
 claim. Current setup and test commands remain scripts until that work is built.
+
+Host choice is configuration: the same engine/render code uses Vision or ORT with Core ML, CUDA or CPU, plus VideoToolbox, NVENC or libx264. Transport probing in the later `shield doctor` chooses available backends; no host-specific engine branch is introduced. Per-host Perl flock leases prevent concurrent timed runs across mirrors: timed work is exclusive and untimed quality is shared. Lanes submit to the central host queue after the root's priority1 jobs; no long untimed job starts while timed jobs are queued.

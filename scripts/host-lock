@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Fcntl qw(:flock F_SETFD);
+my $mode = shift @ARGV // '';
+die "usage: scripts/host-lock shared|exclusive command [args...]\n"
+    unless ($mode eq 'shared' || $mode eq 'exclusive') && @ARGV;
+my $directory = '/tmp/agents/irl-shield';
+mkdir '/tmp/agents' unless -d '/tmp/agents';
+mkdir $directory unless -d $directory;
+open my $lock, '>>', "$directory/perf.lock" or die "open perf lock: $!\n";
+flock($lock, $mode eq 'exclusive' ? LOCK_EX : LOCK_SH) or die "lock: $!\n";
+# The command must retain the lease until it and its foreground work finish.
+fcntl($lock, F_SETFD, 0) or die "preserve perf lock descriptor: $!\n";
+exec @ARGV;
+die "exec $ARGV[0]: $!\n";

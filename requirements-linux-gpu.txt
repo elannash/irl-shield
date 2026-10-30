@@ -33,3 +33,8 @@ packaging==26.3
 protobuf==7.36.2
 sympy==1.14.0
 urllib3==2.8.0
+
+# Fixed-shape export; Apache-2.0 ONNX/ml_dtypes, PSF-2.0 typing_extensions.
+onnx==1.23.2
+ml_dtypes==0.6.0
+typing_extensions==4.16.0

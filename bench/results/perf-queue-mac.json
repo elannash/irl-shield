@@ -1,0 +1,1622 @@
+{
+  "scope": "Queue health AND hash-verified raw benchmark endpoint trust; no OCR quality inference. Every attempt remains visible; accepted timing does not establish a privacy gate pass.",
+  "rows": [
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-coreml-720-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.12537849974187,
+      "steady_p95_seconds": 1.198638287524227,
+      "presentation_delay_seconds": {
+        "p50": 1.0391973745427094,
+        "p95": 1.0475617597694509
+      },
+      "protected_fraction": 0.0011111111111111111,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 73.13,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 89.9,
+      "end_idle_percent": 89.62,
+      "cpu_percent_one_core_100": 98.83682908469758,
+      "peak_tree_rss_mb": 528.828125,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/4c1fea0b999643b0b0d4c648608190c5/attempts/001/attempt.json",
+      "performance_receipt_sha256": "98487accbf594eb6f3bdebb5d43fcafb590487ffb3b4d7766129cb5317768154",
+      "queue_receipt_sha256": "9e624613bf6d69948c809e82e63c786b5f06dfa94e7faa76554f0f1695c6967b",
+      "startup_first_packet_seconds": 1.446196083095856,
+      "engine": {
+        "outputs": 1200,
+        "protected": 1,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 1.7429114375000396
+      },
+      "lanes": {
+        "fast": {
+          "completed": 306,
+          "failed": 0,
+          "actual_hz": 7.65,
+          "service_quantiles_seconds": {
+            "p50": 0.019072853960096836,
+            "p95": 0.027114093740237877
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.0362106665270403,
+            "p95": 0.04372224370599724
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:01:18Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.00927734375,
+            15.37255859375,
+            40.080078125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 12288.00M  used = 10685.81M  free = 1602.19M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 68%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:01:20Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.84814453125,
+            15.1337890625,
+            39.85107421875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 12288.00M  used = 10685.81M  free = 1602.19M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 62%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:02:08Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.4111328125,
+            13.30859375,
+            37.904296875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 11264.00M  used = 9747.88M  free = 1516.12M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 63%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-vision-union-coreml-720-fast30",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "vision-union",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "vision-rectangles",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.11795366569565,
+      "steady_p95_seconds": 1.2099541712726931,
+      "presentation_delay_seconds": {
+        "p50": 1.0500983545207419,
+        "p95": 1.0583532735763583
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 64.1,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 91.6,
+      "end_idle_percent": 82.16,
+      "cpu_percent_one_core_100": 117.7948611339131,
+      "peak_tree_rss_mb": 954.703125,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast30/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/b8d0afa475654a209790e3c2f01068fc/attempts/001/attempt.json",
+      "performance_receipt_sha256": "30e72fae2779cf18fb27a5078324802dee93b910f9ab9aa62ed41419d0da2348",
+      "queue_receipt_sha256": "922b894dd5a319f19410eb9525630c8a103655c26de421f8f6e6252ca14ad117",
+      "startup_first_packet_seconds": 1.3951261250767857,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 2.3712022858333444
+      },
+      "lanes": {
+        "fast": {
+          "completed": 1017,
+          "failed": 0,
+          "actual_hz": 25.425,
+          "service_quantiles_seconds": {
+            "p50": 0.004671874921768904,
+            "p95": 0.012518958002328872
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.1108802500530146,
+            "p95": 0.12891460175742397
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:02:42Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.5263671875,
+            12.1220703125,
+            36.47900390625
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 11264.00M  used = 9619.88M  free = 1644.12M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 64%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:02:43Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.5263671875,
+            12.1220703125,
+            36.47900390625
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 11264.00M  used = 9619.88M  free = 1644.12M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 63%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:03:31Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.20703125,
+            10.54638671875,
+            34.50341796875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 11264.00M  used = 9619.88M  free = 1644.12M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 56%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-cpu-720-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "cpu",
+        "provider": "cpu",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.152391284617096,
+      "steady_p95_seconds": 1.1989155903283972,
+      "presentation_delay_seconds": {
+        "p50": 1.0432904798071831,
+        "p95": 1.0490410174126736
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 63.781491643801445,
+      "mean_other_busy_percent": 11.560667938246018,
+      "max_other_busy_percent": 29.576989810903562,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 93.32,
+      "end_idle_percent": 93.55,
+      "cpu_percent_one_core_100": 227.74311726256403,
+      "peak_tree_rss_mb": 706.859375,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-cpu-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/905915a8e9504602bc4fb71c3174fd0e/attempts/001/attempt.json",
+      "performance_receipt_sha256": "4ba58bc9bf6293d6fa1f708b9082ab4df9a0cab190d24b51e3d487234cc9d0c8",
+      "queue_receipt_sha256": "26810d953973220a4d6343db1c1889d22209d9f250c5fd2e64acfc81d243d4ac",
+      "startup_first_packet_seconds": 1.4924674589419737,
+      "engine": {
+        "outputs": 1200,
+        "protected": 1,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 1.6363114350000205
+      },
+      "lanes": {
+        "fast": {
+          "completed": 306,
+          "failed": 0,
+          "actual_hz": 7.65,
+          "service_quantiles_seconds": {
+            "p50": 0.02908329199999571,
+            "p95": 0.035828708292683586
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.14255662495270371,
+            "p95": 0.15329608314787038
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:37:54Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            1.64501953125,
+            2.35205078125,
+            5.25439453125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6532.94M  free = 1659.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 69%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:37:56Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            1.64501953125,
+            2.35205078125,
+            5.25439453125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6532.94M  free = 1659.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 69%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:38:43Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.9677734375,
+            2.62890625,
+            5.1923828125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6524.94M  free = 1667.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 69%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-coreml-1080-fast8",
+      "attempt": 1,
+      "job_state": "completed",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "command": [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-y",
+            "-filter_threads",
+            "1",
+            "-i",
+            "/Users/elannash/code/irl-shield/out/offline-vision-union-a30/sf-market-natural-input.mp4",
+            "-an",
+            "-vf",
+            "scale=1920:1080,fps=30,setsar=1",
+            "-c:v",
+            "h264_videotoolbox",
+            "-realtime",
+            "1",
+            "-bf",
+            "0",
+            "-b:v",
+            "15M",
+            "-pix_fmt",
+            "yuv420p",
+            "-map_metadata",
+            "-1",
+            "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-1080-fast8/attempt-1/output-1080-input.mp4"
+          ],
+          "scope": "Upscaled runtime cost; native1080p recognition unproven"
+        }
+      },
+      "resolution": [
+        1920,
+        1080
+      ],
+      "steady_fps": 30.115802714705207,
+      "steady_p95_seconds": 1.204683191375807,
+      "presentation_delay_seconds": {
+        "p50": 1.047928354004398,
+        "p95": 1.0532895832788198
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": true,
+      "clock_guards": {
+        "throughput": true,
+        "latency": true,
+        "protected": true
+      },
+      "rejection_reasons": [],
+      "minimum_sampled_idle_percent": 61.33100262205019,
+      "mean_other_busy_percent": 12.814749920027896,
+      "max_other_busy_percent": 38.581711704289894,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 92.44,
+      "end_idle_percent": 93.22,
+      "cpu_percent_one_core_100": 111.46953034056574,
+      "peak_tree_rss_mb": 799.78125,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "4a733b5f4743acdbe01ca819ca933030dbad6a949890b70fd94dcf42f7c94019",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-1080-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/e31bea52a15d47e7b2d7e0ca66a4fa81/attempts/001/attempt.json",
+      "performance_receipt_sha256": "029c385da6fe2fda90d0e63b647c56bc7a1be65f9f583b7eca0231a9dbd8701f",
+      "queue_receipt_sha256": "bbbe7222701a99c266337c92a0a0bb168b657529bafbb6e7be1a3e637e6a502c",
+      "startup_first_packet_seconds": 1.7647653330350295,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 2.007186379999993
+      },
+      "lanes": {
+        "fast": {
+          "completed": 306,
+          "failed": 0,
+          "actual_hz": 7.65,
+          "service_quantiles_seconds": {
+            "p50": 0.016518999997060746,
+            "p95": 0.021736874477937818
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.0368423750041984,
+            "p95": 0.04131104191765189
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:39:20Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.78857421875,
+            2.62109375,
+            5.0849609375
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6500.94M  free = 1691.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 69%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:39:22Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.28564453125,
+            2.7265625,
+            5.107421875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6500.94M  free = 1691.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 65%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:40:12Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.76318359375,
+            2.68115234375,
+            4.96728515625
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 8192.00M  used = 6500.94M  free = 1691.06M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 69%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-vision-union-coreml-720-fast8",
+      "attempt": 1,
+      "job_state": "held-policy-change",
+      "candidate": "vision-union",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "vision-rectangles",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.1332039706025,
+      "steady_p95_seconds": 1.2058442066016142,
+      "presentation_delay_seconds": {
+        "p50": 1.0469403751194477,
+        "p95": 1.055215437564766
+      },
+      "protected_fraction": 0.0011111111111111111,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 59.75,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 91.36,
+      "end_idle_percent": 66.83,
+      "cpu_percent_one_core_100": 108.53959518904828,
+      "peak_tree_rss_mb": 866.6875,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/521679cc4119438db3cabe08a5de8438/attempts/001/attempt.json",
+      "performance_receipt_sha256": "823fe3596d653b2df6fb0222eee206353dd5007a3cb465b401e1729e73de0641",
+      "queue_receipt_sha256": "14b5a0b653b018e44d55071396bea5d1b6341cb68ac6230e9977569283519b40",
+      "startup_first_packet_seconds": 1.6851167080458254,
+      "engine": {
+        "outputs": 1200,
+        "protected": 1,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 1.6085970850000206
+      },
+      "lanes": {
+        "fast": {
+          "completed": 307,
+          "failed": 0,
+          "actual_hz": 7.675,
+          "service_quantiles_seconds": {
+            "p50": 0.004737499984912574,
+            "p95": 0.012331712490413338
+          }
+        },
+        "accurate": {
+          "completed": 157,
+          "failed": 0,
+          "actual_hz": 3.925,
+          "service_quantiles_seconds": {
+            "p50": 0.11153229197952896,
+            "p95": 0.12659095861017705
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T01:57:55Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.3896484375,
+            25.58349609375,
+            49.39453125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 12288.00M  used = 11149.81M  free = 1138.19M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 71%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T01:57:57Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.3896484375,
+            25.58349609375,
+            49.39453125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 12288.00M  used = 11141.81M  free = 1146.19M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 70%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T01:58:44Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            4.06689453125,
+            22.31005859375,
+            46.8203125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 12288.00M  used = 11093.81M  free = 1194.19M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 66%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-coreml-720-fast30",
+      "attempt": 1,
+      "job_state": "exhausted-contended",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-720-fast30/attempt-1/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 87.77,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "total-idle-v1",
+      "start_idle_percent": 87.77,
+      "end_idle_percent": null,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-720-fast30/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/a21383bc7ec347b0a207af64e6be6dcf/attempts/001/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "560dfd56105a7152a52d9db72c3341d1cc95cf982d956d0412ded0f23b06b270",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-coreml-720-fast30",
+      "attempt": 2,
+      "job_state": "exhausted-contended",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.12506135233296,
+      "steady_p95_seconds": 1.2022784958302508,
+      "presentation_delay_seconds": {
+        "p50": 1.0430489166174084,
+        "p95": 1.0528741430782247
+      },
+      "protected_fraction": 0.0011111111111111111,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-other_busy",
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 56.21398145828113,
+      "mean_other_busy_percent": 21.24164203969046,
+      "max_other_busy_percent": 28.47227446930993,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 82.1,
+      "end_idle_percent": 86.79,
+      "cpu_percent_one_core_100": 118.19367039270949,
+      "peak_tree_rss_mb": 588.375,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-720-fast30/attempt-2/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/a21383bc7ec347b0a207af64e6be6dcf/attempts/002/attempt.json",
+      "performance_receipt_sha256": "d5cbd45879a3f175169d4a553d1a85b2b6e3443792e46daf96b08039fbb5c1cf",
+      "queue_receipt_sha256": "ffe379b18324d15cd633710d4621523e62e79df63c7a2593afa04e5bda918c2b",
+      "startup_first_packet_seconds": 1.733967832988128,
+      "engine": {
+        "outputs": 1200,
+        "protected": 1,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 3.0657362750000092
+      },
+      "lanes": {
+        "fast": {
+          "completed": 1082,
+          "failed": 0,
+          "actual_hz": 27.05,
+          "service_quantiles_seconds": {
+            "p50": 0.016862458491232246,
+            "p95": 0.024175620835740142
+          }
+        },
+        "accurate": {
+          "completed": 159,
+          "failed": 0,
+          "actual_hz": 3.975,
+          "service_quantiles_seconds": {
+            "p50": 0.040477292030118406,
+            "p95": 0.054597737744916226
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:46:09Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.04541015625,
+            2.9990234375,
+            4.31591796875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5126.56M  free = 1017.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 57%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:46:12Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.04541015625,
+            2.9990234375,
+            4.31591796875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5126.56M  free = 1017.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 51%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:47:00Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.576171875,
+            2.88623046875,
+            4.1982421875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5118.56M  free = 1025.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 51%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-ppocr-v6-small-coreml-720-fast30",
+      "attempt": 3,
+      "job_state": "exhausted-contended",
+      "candidate": "ppocr-v6-small",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "warmup_seconds": 10.0,
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 30.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_candidate": "ppocr-v6-tiny",
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "encoder": "h264_videotoolbox",
+        "motion_mode": "phase",
+        "motion_width": 320,
+        "motion_min_response": 0.05,
+        "padding": 0.3,
+        "badge": false,
+        "contended": false,
+        "repeat_seconds": 30.0,
+        "source_derivation": {
+          "base_source_sha256": "bed20032b30bcdfebb32f137809b71cedf8486c7881020e5e955a91aa28aca7c",
+          "prepared_input_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+          "license": "CC BY 3.0",
+          "attribution": "fixtures/ATTRIBUTION.md",
+          "scope": "Exact existing prepared input bytes, reused without encoding"
+        }
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.115636927246765,
+      "steady_p95_seconds": 1.2076129872177261,
+      "presentation_delay_seconds": {
+        "p50": 1.049261812295299,
+        "p95": 1.0569086562027223
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-other_busy",
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 59.38223938223938,
+      "mean_other_busy_percent": 18.990415032095257,
+      "max_other_busy_percent": 40.61776061776062,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 90.42,
+      "end_idle_percent": 88.83,
+      "cpu_percent_one_core_100": 112.02469751429811,
+      "peak_tree_rss_mb": 569.671875,
+      "pipeline_sha256": "139a05556c4338d3f1a063f6c8a8733f55282cb279d21f8929f19a4f8369a0bc",
+      "source_sha256": "36528042bc7cd24815d595655c9f535e75ad8fef0b6fc29243ffe4e62d18aada",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-ppocr-v6-small-coreml-720-fast30/attempt-3/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/a21383bc7ec347b0a207af64e6be6dcf/attempts/003/attempt.json",
+      "performance_receipt_sha256": "9f45d58207a27c2490a3eba427095e4937affad3769dc3021a2b5682690c1240",
+      "queue_receipt_sha256": "ec73e2af79fde8fcb39e592defa39baddf236a34102467d14a4ab9b79e1458ef",
+      "startup_first_packet_seconds": 1.5120753329247236,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 2.8066162100000156
+      },
+      "lanes": {
+        "fast": {
+          "completed": 1018,
+          "failed": 0,
+          "actual_hz": 25.45,
+          "service_quantiles_seconds": {
+            "p50": 0.016456374956760556,
+            "p95": 0.02386179369641468
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.04053212498547509,
+            "p95": 0.05405999019858428
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:48:37Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.2392578125,
+            3.06103515625,
+            4.126953125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5094.56M  free = 1049.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 53%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:48:39Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.0595703125,
+            3.0263671875,
+            4.1083984375
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5094.56M  free = 1049.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 48%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:49:28Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            5.4794921875,
+            3.5986328125,
+            4.2578125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5094.56M  free = 1049.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 49%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-heldout-vision-final",
+      "attempt": 1,
+      "job_state": "exhausted-contended",
+      "candidate": "vision-union",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "warmup_seconds": 10.0,
+        "contended": false,
+        "fast_candidate": "vision-rectangles",
+        "fast_faults": [],
+        "accurate_faults": [],
+        "source_skip_ranges": [],
+        "repeat_seconds": 30.0
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.14574853194423,
+      "steady_p95_seconds": 1.200529359804932,
+      "presentation_delay_seconds": {
+        "p50": 1.0464758538873866,
+        "p95": 1.052553358284058
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-other_busy",
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 51.646013268243834,
+      "mean_other_busy_percent": 20.058556367494216,
+      "max_other_busy_percent": 36.88418059443034,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 95.88,
+      "end_idle_percent": 88.66,
+      "cpu_percent_one_core_100": 102.01886060387588,
+      "peak_tree_rss_mb": 1017.75,
+      "pipeline_sha256": "264dcc9b4abfd0c7ca5d7dc0a75143bc0f165a23a18a28e003e801b55d60706f",
+      "source_sha256": "f6903286a4ff52c51d92b6e6b07afcf34e48d225783f6c6b64dd8976067a9625",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/m1-heldout-measure-1/sustained-masked.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/0cb3636276794a17b2de710d18c318c2/attempts/001/attempt.json",
+      "performance_receipt_sha256": "adc4db19306f37318639751faee1ccb7f70b0b65aa3f6d0d5c06b4cbc96dca5e",
+      "queue_receipt_sha256": "680a8ee99eb4fdc88f004e9ec5fdeeb55eae1639702ca16553aed5bde7940452",
+      "startup_first_packet_seconds": 1.4638838750543073,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 1.6591302616665957
+      },
+      "lanes": {
+        "fast": {
+          "completed": 313,
+          "failed": 0,
+          "actual_hz": 7.825,
+          "service_quantiles_seconds": {
+            "p50": 0.0048122910084202886,
+            "p95": 0.010784766823053358
+          }
+        },
+        "accurate": {
+          "completed": 159,
+          "failed": 0,
+          "actual_hz": 3.975,
+          "service_quantiles_seconds": {
+            "p50": 0.10614987497683614,
+            "p95": 0.12902504523517558
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:42:47Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            4.07080078125,
+            3.0078125,
+            4.69384765625
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5246.56M  free = 897.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 62%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:42:48Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.82470703125,
+            2.97412109375,
+            4.671875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5246.56M  free = 897.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 61%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:43:35Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            2.96826171875,
+            2.8662109375,
+            4.54345703125
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5230.56M  free = 913.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 61%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-heldout-vision-final",
+      "attempt": 2,
+      "job_state": "exhausted-contended",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-cpu_accounting_unavailable",
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/Users/elannash/code/irl-shield/out/m1-heldout-measure-2/sustained-masked.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 76.39,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 76.39,
+      "end_idle_percent": 83.11,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/m1-heldout-measure-2/sustained-masked.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/0cb3636276794a17b2de710d18c318c2/attempts/002/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "511a7282b4511844c79679cb66f0e77fd08ab798ccb1cfc57a30d681128edec8",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "mac",
+      "job": "root-heldout-vision-final",
+      "attempt": 3,
+      "job_state": "exhausted-contended",
+      "candidate": "vision-union",
+      "encoder": "h264_videotoolbox",
+      "options": {
+        "delay_seconds": 1.0,
+        "before": 6,
+        "after": 30,
+        "fast_max_age": 6,
+        "accurate_max_age": 12,
+        "fast_rate_hz": 8.0,
+        "accurate_rate_hz": 4.0,
+        "fast_width": 640,
+        "accurate_width": 1280,
+        "fast_provider": "coreml",
+        "provider": "coreml",
+        "limit_side_len": 960,
+        "fast_limit_side_len": 640,
+        "thresh": 0.3,
+        "box_thresh": 0.5,
+        "unclip_ratio": 1.6,
+        "static_model": true,
+        "encoder": "h264_videotoolbox",
+        "padding": 0.3,
+        "badge": false,
+        "style": "opaque",
+        "motion_width": 320,
+        "motion_mode": "phase",
+        "motion_min_response": 0.05,
+        "warmup_seconds": 10.0,
+        "contended": false,
+        "fast_candidate": "vision-rectangles",
+        "fast_faults": [],
+        "accurate_faults": [],
+        "source_skip_ranges": [],
+        "repeat_seconds": 30.0
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "steady_fps": 30.11249100447962,
+      "steady_p95_seconds": 1.2063085107540246,
+      "presentation_delay_seconds": {
+        "p50": 1.0481016668491066,
+        "p95": 1.0553718228649813
+      },
+      "protected_fraction": 0.0,
+      "measurement_trusted": false,
+      "clock_guards": {
+        "throughput": false,
+        "latency": false,
+        "protected": true
+      },
+      "rejection_reasons": [
+        "queue-other_busy",
+        "queue-contended"
+      ],
+      "minimum_sampled_idle_percent": 44.475,
+      "mean_other_busy_percent": 19.25773544765602,
+      "max_other_busy_percent": 42.01027085231031,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 90.68,
+      "end_idle_percent": 79.67,
+      "cpu_percent_one_core_100": 102.39766296011496,
+      "peak_tree_rss_mb": 772.296875,
+      "pipeline_sha256": "264dcc9b4abfd0c7ca5d7dc0a75143bc0f165a23a18a28e003e801b55d60706f",
+      "source_sha256": "e04ea0ee90760f10fc00cf80921095904e57a0f280f11e2e42ee16c6f31ba75b",
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/m1-heldout-measure-3/sustained-masked.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/0cb3636276794a17b2de710d18c318c2/attempts/003/attempt.json",
+      "performance_receipt_sha256": "9aed62de95d7a0c6e9b36ad4b795983930f683d4c068a52b41a263b390df4063",
+      "queue_receipt_sha256": "37ccadac1ae08692bff235fd9554da3215ce383feec4f4f5da0a3895a0dc3b1e",
+      "startup_first_packet_seconds": 1.4071024169679731,
+      "engine": {
+        "outputs": 1200,
+        "protected": 0,
+        "late_ingest": 0,
+        "buffer_evictions": 0,
+        "all_poll_thread_cpu_ms_per_output": 1.7126888783333054
+      },
+      "lanes": {
+        "fast": {
+          "completed": 307,
+          "failed": 0,
+          "actual_hz": 7.675,
+          "service_quantiles_seconds": {
+            "p50": 0.004970500012859702,
+            "p95": 0.01117385015822947
+          }
+        },
+        "accurate": {
+          "completed": 158,
+          "failed": 0,
+          "actual_hz": 3.95,
+          "service_quantiles_seconds": {
+            "p50": 0.1045993544976227,
+            "p95": 0.1237270349462051
+          }
+        }
+      },
+      "endpoint_health": {
+        "preflight": {
+          "utc": "2026-10-30T02:54:35Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.95703125,
+            3.669921875,
+            4.05029296875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5086.56M  free = 1057.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 54%\n"
+        },
+        "start": {
+          "utc": "2026-10-30T02:54:36Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            3.72021484375,
+            3.62548828125,
+            4.0322265625
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5086.56M  free = 1057.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 53%\n"
+        },
+        "end": {
+          "utc": "2026-10-30T02:55:24Z",
+          "pressure_state": "normal",
+          "health_adapter": null,
+          "load_average": [
+            4.12841796875,
+            3.76513671875,
+            4.06201171875
+          ],
+          "mem_available_bytes": null,
+          "swap_used_bytes": null,
+          "pressure_level": 1,
+          "raw_swapusage": "vm.swapusage: total = 6144.00M  used = 5078.56M  free = 1065.44M  (encrypted)\n",
+          "raw_memory_pressure": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 53%\n"
+        }
+      }
+    },
+    {
+      "host": "mac",
+      "job": "root-vision-union-coreml-720-fast8-v2",
+      "attempt": 1,
+      "job_state": "exhausted-contended",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-cpu_accounting_unavailable",
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-1/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 73.46,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 73.46,
+      "end_idle_percent": 87.93,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-1/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/10e1ab8da0094039a97e876707de989f/attempts/001/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "e3893f87bf0dde6b108d05a4f7d9adf4c5b624e659612678be87970b45f0430f",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "mac",
+      "job": "root-vision-union-coreml-720-fast8-v2",
+      "attempt": 2,
+      "job_state": "exhausted-contended",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-cpu_accounting_unavailable",
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-2/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 70.27,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 70.27,
+      "end_idle_percent": 80.29,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-2/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/10e1ab8da0094039a97e876707de989f/attempts/002/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "d700209caca2cd5c3f95a20b28132e38478d14f47a3bd894f659fe1b5e1a3f18",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    },
+    {
+      "host": "mac",
+      "job": "root-vision-union-coreml-720-fast8-v2",
+      "attempt": 3,
+      "job_state": "exhausted-contended",
+      "candidate": null,
+      "encoder": null,
+      "options": null,
+      "resolution": null,
+      "steady_fps": null,
+      "steady_p95_seconds": null,
+      "presentation_delay_seconds": null,
+      "protected_fraction": null,
+      "measurement_trusted": false,
+      "clock_guards": null,
+      "rejection_reasons": [
+        "queue-cpu_accounting_unavailable",
+        "queue-contended",
+        "artifact-unverified: FileNotFoundError: [Errno 2] No such file or directory: '/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-3/output.performance.json'"
+      ],
+      "minimum_sampled_idle_percent": 73.17,
+      "mean_other_busy_percent": null,
+      "max_other_busy_percent": null,
+      "contamination_policy": "other-busy-v2",
+      "start_idle_percent": 73.17,
+      "end_idle_percent": 87.51,
+      "cpu_percent_one_core_100": null,
+      "peak_tree_rss_mb": null,
+      "pipeline_sha256": null,
+      "source_sha256": null,
+      "performance_receipt": "/Users/elannash/code/irl-shield/out/perf-queue/root-vision-union-coreml-720-fast8-v2/attempt-3/output.performance.json",
+      "queue_receipt": "/Users/elannash/code/irl-shield/.tmp/perf-queue/mac/jobs/10e1ab8da0094039a97e876707de989f/attempts/003/attempt.json",
+      "performance_receipt_sha256": null,
+      "queue_receipt_sha256": "0e4a320f0e0f65d42809e99d7ee26508bedd5d816e6a15d35256bee33a66b364",
+      "startup_first_packet_seconds": null,
+      "engine": {
+        "outputs": null,
+        "protected": null,
+        "late_ingest": null,
+        "buffer_evictions": null,
+        "all_poll_thread_cpu_ms_per_output": null
+      },
+      "lanes": {},
+      "endpoint_health": {}
+    }
+  ]
+}
