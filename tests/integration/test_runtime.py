@@ -91,6 +91,77 @@ class RuntimeDestination(unittest.TestCase):
 
 
 class RuntimeWriterFailure(unittest.TestCase):
+    def test_phone_context_cleanup_precedes_relay_teardown_on_stop_failure_and_init_error(self):
+        from contextlib import contextmanager
+        for failure in ('stop', 'sender-check', 'context-enter', 'input-init'):
+            with self.subTest(failure=failure):
+                events = []
+                stopped = threading.Event()
+                class Engine:
+                    delay = 1
+                    stats = {}
+                    def hold(self, *args, **kwargs):
+                        pass
+                    def submit(self, *args, **kwargs):
+                        pass
+                    def poll(self, *args, **kwargs):
+                        return []
+                    def close(self):
+                        events.append('engine-close')
+                class Output:
+                    error_code = error_details = None
+                    count = max_write_seconds = recovery_count = 0
+                    recovery_events = ()
+                    def __init__(self, *args):
+                        events.append('output-ready')
+                    def close(self):
+                        events.append('output-close')
+                class Source:
+                    error_code = last_failure = None
+                    high_water = active_generation = 0
+                    timestamp_issues = {}
+                    def __init__(self, *args):
+                        if failure == 'input-init':
+                            raise RuntimeError('synthetic-input-init')
+                        events.append('input-ready')
+                    def drain(self):
+                        return []
+                    def close(self):
+                        events.append('input-close')
+                class Sender:
+                    def check(self):
+                        events.append('sender-check')
+                        if failure == 'sender-check':
+                            raise RuntimeError('synthetic-worker-error')
+                        stopped.set()
+                @contextmanager
+                def factory(address, phone):
+                    events.append('factory')
+                    try:
+                        if failure == 'context-enter':
+                            raise RuntimeError('synthetic-start-error')
+                        yield Sender()
+                    finally:
+                        events.append('sender-joined')
+                with patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', Source):
+                    def execute():
+                        return run(Engine(), RelayAddress('127.0.0.1'), Credentials.generate(),
+                            Credentials.generate(), None, stopped, seconds=1, width=32, height=32,
+                            phone_input=factory)
+                    if failure == 'stop':
+                        self.assertEqual(execute()['status'], 'stopped')
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'Relay transport failed'):
+                            execute()
+                self.assertIn('output-close', events)
+                self.assertIn('engine-close', events)
+                if failure == 'input-init':
+                    self.assertNotIn('factory', events)
+                else:
+                    self.assertEqual(events.count('sender-joined'), 1)
+                    for closed in ('input-close', 'output-close', 'engine-close'):
+                        self.assertLess(events.index('sender-joined'), events.index(closed))
+
     def failure(self, write_fails, close_fails, stop_on_write=False):
         from contextlib import redirect_stderr, redirect_stdout
         import io
@@ -209,6 +280,81 @@ async def approved_live():
 
 
 class RuntimeLiveApproval(unittest.IsolatedAsyncioTestCase):
+    async def test_prepared_sender_starts_only_after_live_approval_is_consumed(self):
+        from contextlib import contextmanager
+        from shield.app.live import LiveModeError
+        events = []
+        stopped = threading.Event()
+        class Engine:
+            delay = 1
+            stats = {}
+            def hold(self, *args, **kwargs):
+                pass
+            def submit(self, *args, **kwargs):
+                pass
+            def poll(self, *args, **kwargs):
+                return []
+            def close(self):
+                events.append('engine-close')
+        class Output:
+            error_code = error_details = None
+            count = max_write_seconds = recovery_count = 0
+            recovery_events = ()
+            def __init__(self, *args):
+                events.append('output-ready')
+            def close(self):
+                events.append('output-close')
+        class Source:
+            error_code = last_failure = None
+            high_water = active_generation = 0
+            timestamp_issues = {}
+            def __init__(self, *args):
+                events.append('input-ready')
+            def drain(self):
+                return []
+            def close(self):
+                events.append('input-close')
+        class Forwarder:
+            port = 54321
+            stats = {}
+            def __init__(self, *args):
+                events.append('verified-forwarder')
+            def __enter__(self):
+                return self
+            def close(self):
+                events.append('forwarder-close')
+        class Sender:
+            def check(self):
+                stopped.set()
+        grant = await approved_live()
+        @contextmanager
+        def factory(address, phone):
+            # The authentic local authorization fixture issued this object;
+            # entering a publisher cannot race ahead of its one-shot consume.
+            with self.assertRaises(LiveModeError):
+                grant.consume()
+            events.append('sender-enter')
+            try:
+                yield Sender()
+            finally:
+                events.append('sender-joined')
+        def execute(approval):
+            return run(Engine(), RelayAddress('100.80.2.3'), Credentials.generate(),
+                Credentials.generate(), None, stopped, seconds=1, width=32, height=32,
+                phone_input=factory, publish_twitch=True, twitch_live=True,
+                live_approval=approval, control_ready=lambda control: control.set_stream_key('SYNTHETIC-KEY'))
+        with patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', Source), \
+                patch('relay.tls_forwarder.TLSForwarder', Forwarder):
+            with self.assertRaises(RuntimeError):
+                execute(None)
+            self.assertEqual(events, ['engine-close'])
+            events.clear()
+            self.assertEqual(execute(grant)['status'], 'stopped')
+        for ready in ('verified-forwarder', 'output-ready', 'input-ready'):
+            self.assertLess(events.index(ready), events.index('sender-enter'))
+        for closed in ('input-close', 'output-close', 'engine-close'):
+            self.assertLess(events.index('sender-joined'), events.index(closed))
+
     async def test_real_runtime_refuses_missing_or_consumed_approval_before_any_route(self):
         from recovery_fixture import engine
         grant = await approved_live()

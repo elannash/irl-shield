@@ -239,9 +239,10 @@ worktree exercises shared refs, and a detached checkout exercises a reset to
 the policy tree. A separate plain clone isolates the host-marker guard.
 Independent tests lose synthetic host state while
 retaining receipt refs, and lose receipt reachability while retaining host state,
-so neither guard can hide a missing implementation of the other. Lease tests
-reject malformed/closed/wrong-inode/nonexclusive inherited descriptors before
-any start changes, check the post-acquisition spent race, and compete for the
+so neither guard can hide a missing implementation of the other. The public-start
+test rejects a malformed inherited descriptor before any start changes; lease-layer
+tests cover shared, unlocked and wrong-inode descriptors. Tests also check the
+post-acquisition spent race and compete for the
 standalone lock during marker writes and every render. A tiny generated-video
 fixture checks v2 sealed identity through fake judging and relocation. These
 fixtures never read real v2 media. Physical guard mutations and the unified

@@ -40,6 +40,8 @@ def parser():
         command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate detector cadence; default 4 Hz')
         command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only box confidence floor; default 0.5')
         command.add_argument('--archive', type=Path, help='Opt in to full stream and per-frame evidence')
+        command.add_argument('--demo-source', type=Path, help='Prepared local-only loopback input manifest')
+        command.add_argument('--demo-receipt', type=Path, help='Fresh sender receipt; requires demo source and archive')
         command.add_argument('--mediamtx-dir', type=Path, help='Directory with the hash-pinned MediaMTX binary')
         command.add_argument('--seconds', type=float)
         command.add_argument('--phone-setup', action='store_true', help='Show runtime phone credentials on /dev/tty')
@@ -52,6 +54,8 @@ def parser():
 
 
 def validate(args):
+    from tools.demo_renderer.options import validate_demo
+    validate_demo(args)
     if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
                                              or not 0 < args.accurate_rate_hz <= 30):
         raise ValueError('accurate_rate_hz must be positive, finite and at most 30')
@@ -130,12 +134,24 @@ def terminal_setup(address, phone):
         terminal.flush()
 
 
-async def execute(args):
+async def execute(args, *, phone_input=None):
     from aiohttp import ClientSession
     from shield.app.live import authorize_live
     from shield.app.session import TwitchControls, login
     from shield.twitch.http import TwitchHTTP
     validate(args)
+    if phone_input is not None and not args.twitch_live and (not args.local_only or args.host != '127.0.0.1'):
+        raise ValueError('Phone input callback requires local-only loopback or attended live mode')
+    if args.demo_source is not None:
+        if phone_input is not None:
+            raise ValueError('Choose one phone input factory')
+        from tools.demo_renderer.sender import Sender, source_manifest
+        source_manifest(args.demo_source)
+        args.demo_receipt.expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
+        args.archive = args.archive.expanduser().resolve()
+        args.archive.mkdir(parents=True, exist_ok=False)
+        def phone_input(address, phone):
+            return Sender(args.demo_source, address, phone, args.demo_receipt, local_only=args.local_only)
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     cancel, stopped = asyncio.Event(), threading.Event()
     loop = asyncio.get_running_loop()
@@ -194,32 +210,54 @@ async def execute(args):
                         detector_options['accurate_rate_hz'] = args.accurate_rate_hz
                     if args.accurate_box_thresh is not None:
                         detector_options['accurate_box_thresh'] = args.accurate_box_thresh
-                    engine = await asyncio.to_thread(make_engine, args.model_cache, appearance=appearance,
-                                                     **detector_options)
+                    if phone_input is None:
+                        engine = await asyncio.to_thread(make_engine, args.model_cache, appearance=appearance,
+                                                         **detector_options)
+                    else:
+                        initializing = asyncio.create_task(asyncio.to_thread(make_engine, args.model_cache,
+                            appearance=appearance, **detector_options))
+                        try:
+                            engine = await asyncio.shield(initializing)
+                        except asyncio.CancelledError:
+                            # A cancelled to_thread await does not stop model
+                            # construction; reap its result before leaving MTX.
+                            engine = await initializing
+                            await asyncio.to_thread(engine.close)
+                            raise
                     appearance.engine = engine
                     work = dashboard = None
                     try:
                         if args.dashboard or args.phone_setup:
                             from shield.dashboard import DashboardServer, PairingData
-                            dashboard = DashboardServer(host=args.host, port=args.dashboard_port,
+                            dashboard_factory = DashboardServer
+                            if args.demo_source is not None and args.local_only:
+                                from tools.demo_renderer.rehearsal import local_dashboard
+                                dashboard_factory = local_dashboard
+                            dashboard = dashboard_factory(host=args.host, port=args.dashboard_port,
                                 get_public_snapshot=appearance.snapshot, set_manual_hold=dashboard_manual,
                                 pairing=PairingData(address.rtmp('camera', phone),
                                                     address.srt('publish', 'camera', phone)))
                             await dashboard.start()
+                        input_options = {'phone_input': phone_input} if phone_input is not None else {}
                         work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
                             args.archive, stopped, args.seconds, control_ready=register,
                             publish_twitch=(args.twitch_bandwidth_test or args.twitch_live),
                             twitch_live=args.twitch_live, live_approval=approval,
-                            local_sink=args.local_sink, appearance=appearance))
+                            local_sink=args.local_sink, appearance=appearance, **input_options))
                         await asyncio.shield(work)
+                        if args.demo_source is not None and args.local_only:
+                            from tools.demo_renderer.rehearsal import check_archive
+                            check_archive(args.archive, args.demo_receipt)
                     finally:
                         stopped.set()
-                        if dashboard is not None:
-                            await dashboard.close()
-                        if work is not None:
-                            await work
-                        else:
-                            await asyncio.to_thread(engine.close)
+                        try:
+                            if dashboard is not None:
+                                await dashboard.close()
+                        finally:
+                            if work is not None:
+                                await work
+                            else:
+                                await asyncio.to_thread(engine.close)
                 if controls and controls.failure:
                     raise RuntimeError('EventSub startup failed')
             finally:
