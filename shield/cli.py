@@ -37,6 +37,8 @@ def parser():
         command.add_argument('--rtsp-port', type=int, default=18554)
         command.add_argument('--srt-port', type=int, default=18890)
         command.add_argument('--model-cache', type=Path, default=Path('models/cache'))
+        command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate detector cadence; default 4 Hz')
+        command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only box confidence floor; default 0.5')
         command.add_argument('--archive', type=Path, help='Opt in to full stream and per-frame evidence')
         command.add_argument('--mediamtx-dir', type=Path, help='Directory with the hash-pinned MediaMTX binary')
         command.add_argument('--seconds', type=float)
@@ -50,6 +52,12 @@ def parser():
 
 
 def validate(args):
+    if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
+                                             or not 0 < args.accurate_rate_hz <= 30):
+        raise ValueError('accurate_rate_hz must be positive, finite and at most 30')
+    if args.accurate_box_thresh is not None and (not math.isfinite(args.accurate_box_thresh)
+                                                or not 0 <= args.accurate_box_thresh <= 1):
+        raise ValueError('accurate_box_thresh must be finite and between 0 and 1')
     if args.command == 'run' or args.command == 'login' and args.run:
         from relay.security import RelayAddress
         RelayAddress(args.host, args.rtmp_port, args.srt_port, args.rtsp_port)
@@ -181,7 +189,13 @@ async def execute(args):
                 with MediaMTX(address, phone, internal, binary=binary):
                     if args.phone_setup:
                         terminal_setup(address, phone)
-                    engine = await asyncio.to_thread(make_engine, args.model_cache, appearance=appearance)
+                    detector_options = {}
+                    if args.accurate_rate_hz is not None:
+                        detector_options['accurate_rate_hz'] = args.accurate_rate_hz
+                    if args.accurate_box_thresh is not None:
+                        detector_options['accurate_box_thresh'] = args.accurate_box_thresh
+                    engine = await asyncio.to_thread(make_engine, args.model_cache, appearance=appearance,
+                                                     **detector_options)
                     appearance.engine = engine
                     work = dashboard = None
                     try:

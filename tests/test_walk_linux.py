@@ -82,7 +82,9 @@ class WalkSelection(unittest.TestCase):
             self.assertEqual((routed.seconds, routed.dashboard_port), (12, 12345))
 
     def test_bad_duration_or_port_is_refused_before_any_lease_or_sdk(self):
-        for extra in (['--seconds', 'nan'], ['--seconds', '0'], ['--rtmp-port', '80'], ['--dashboard-port', '65536']):
+        for extra in (['--seconds', 'nan'], ['--seconds', '0'], ['--rtmp-port', '80'], ['--dashboard-port', '65536'],
+                      ['--accurate-rate-hz', '0'], ['--accurate-rate-hz', 'nan'], ['--accurate-rate-hz', '31'],
+                      ['--accurate-box-thresh', '-.1'], ['--accurate-box-thresh', '1.1'], ['--accurate-box-thresh', 'nan']):
             with self.subTest(extra=extra), patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease reached')):
                 with redirect_stderr(StringIO()):
                     self.assertEqual(walk.main(['--local-only', '--host', '127.0.0.1', *extra]), 2)
@@ -282,7 +284,10 @@ class WalkRealCLI(unittest.TestCase):
             with self.subTest(mode=mode):
                 self.check_route(mode)
 
-    def check_route(self, mode):
+    def test_measurement_policy_reaches_real_cli_engine_factory(self):
+        self.check_route('--local-only', {'accurate_rate_hz': 15., 'accurate_box_thresh': .73})
+
+    def check_route(self, mode, detector_options=None):
         from relay.security import Credentials
         records = {}
         terminal = StringIO()
@@ -316,7 +321,7 @@ class WalkRealCLI(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name, patch.dict(os.environ, environment, clear=True), \
                 installed_bootstrap(Path(name)), patch.object(walk.os, 'nice'), patch('relay.mediamtx.MediaMTX'), \
                 patch('relay.mediamtx.verified_binary'), patch('relay.security.Credentials.generate', side_effect=[phone, internal]), \
-                patch('relay.runtime.make_engine', return_value=Engine()), patch('relay.runtime.run', side_effect=runtime), \
+                patch('relay.runtime.make_engine', return_value=Engine()) as engine_factory, patch('relay.runtime.run', side_effect=runtime), \
                 patch('shield.dashboard.DashboardServer', Dashboard), patch('builtins.open', return_value=Terminal()), \
                 patch('shield.app.session.login', return_value=object()) as login, \
                 patch('shield.app.session.TwitchControls') as controls, \
@@ -326,10 +331,14 @@ class WalkRealCLI(unittest.TestCase):
             controls.return_value.prepare = AsyncMock()
             controls.return_value.close = AsyncMock()
             controls.return_value.failure = False
+            extra = [arg for key, value in (detector_options or {}).items()
+                     for arg in ('--' + key.replace('_', '-'), str(value))]
             with patch.object(sys, 'argv', ['walk-linux']), self.assertRaises(SystemExit) as stopped:
-                walk.main([mode, '--host', '127.0.0.1', '--seconds', '12'], lock_root=Path(name))
+                walk.main([mode, '--host', '127.0.0.1', '--seconds', '12', *extra], lock_root=Path(name))
             self.assertEqual(stopped.exception.code, 0)
             self.assertNotIn('TWITCH_STREAM_KEY', os.environ)
+            self.assertEqual({key: value for key, value in engine_factory.call_args.kwargs.items()
+                              if key != 'appearance'}, detector_options or {})
         self.assertEqual(records['route']['publish_twitch'], authenticated)
         self.assertEqual(records['route']['twitch_live'], mode == '--twitch-live')
         self.assertIs(records['route']['live_approval'], approval if mode == '--twitch-live' else None)

@@ -126,6 +126,13 @@ a fallback interpreter. See [RUN.md](RUN.md) for underlying runtime requirements
 
 ## Qualification
 
+The optional `--accurate-rate-hz` and `--accurate-box-thresh` arguments configure
+the accurate detector at construction for experimental comparisons. They leave
+the fast detector at 8 Hz. Omitting them preserves the accurate detector's 4 Hz
+cadence and 0.5 box threshold. Their availability is not a qualified policy;
+the corresponding source, independent grading and native runtime receipts must
+pass before a measured setting becomes the recommended launch configuration.
+
 The launcher starts rounded Patch masks by default. With the optimized painter,
 the licensed-clip local comparison delivered 30 fps with no steady-window slates.
 Bar remains chat-votable by conductor decision on its earlier passing receipt;

@@ -195,6 +195,8 @@ def _media(path):
 
 
 def _make_backends(candidate, options, resolution):
+    from bench.detector_options import lane_detector_options
+    lane_options = {lane: lane_detector_options(options, lane) for lane in ('fast', 'accurate')}
     _validate_models(candidate,options)
     fast = resolve_fast_candidate(candidate, options)
     if fast is None:
@@ -205,7 +207,7 @@ def _make_backends(candidate, options, resolution):
     try:
         for lane, model in (('fast', fast), ('accurate', candidate)):
             lane_width = options.get(lane + '_width', 640 if lane == 'fast' else 1280) or width
-            backend = detector_for(model, {**options, 'input_size': [height, width], 'detect_width': lane_width,
+            backend = detector_for(model, {**lane_options[lane], 'input_size': [height, width], 'detect_width': lane_width,
                                            'limit_side_len': options.get('fast_limit_side_len', 640) if lane == 'fast' else options.get('limit_side_len', 960),
                                            'provider': options.get('fast_provider', 'cpu') if lane == 'fast' else options.get('provider', 'cpu'),
                                            'threads': 2})
@@ -461,7 +463,7 @@ def _fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
     paths.update(ROOT / name for name in (
         'bench/offline_quality.py', 'bench/independence.py', 'bench/scoring.py', 'bench/metrics.py', 'bench/pipeline.py',
-        'bench/onnx_detectors.py', 'bench/static_model.py', 'bench/judges.py', 'bench/vision.py',
+        'bench/onnx_detectors.py', 'bench/detector_options.py', 'bench/static_model.py', 'bench/judges.py', 'bench/vision.py',
         'bench/run.py', 'bench/synthetic.py', 'fixtures/prepare.py', 'fixtures/manifest.json',
         'models/manifest.json', 'requirements.txt', 'requirements-models.txt', 'Sources/VisionBridge/main.swift'))
     digest = hashlib.sha256()
