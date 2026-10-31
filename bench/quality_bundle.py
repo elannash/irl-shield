@@ -156,16 +156,21 @@ def verify(directory):
 
 @contextmanager
 def clip_lease(root, host, *, lock_root=None):
-    """One clip per exclusive host lease; callers can isolate their lock storage."""
+    """Exclusive host lease; a one-shot caller may hold it across every clip."""
     import fcntl
+    inherited = (lock_root is None and sys.platform.startswith('linux')
+                 and 'IRL_SHIELD_PERF_QUEUE_LEASE_FD' in os.environ)
+    if inherited:
+        from relay.soak import require_queue_lease
+        # Invalid handoffs must fail before even task-local lock bookkeeping.
+        require_queue_lease()
     # Task-local serialization adds no daemon, global setting or alternate perf lock.
     serial = Path(root) / '.tmp/q' / ('quality-' + host + '.lock')
     serial.parent.mkdir(parents=True, exist_ok=True)
     with serial.open('a+') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
-        if (lock_root is None and sys.platform.startswith('linux')
-                and 'IRL_SHIELD_PERF_QUEUE_LEASE_FD' in os.environ):
-            from relay.soak import require_queue_lease
+        if inherited:
+            # Task-local serialization may have waited; verify the live lease.
             require_queue_lease()
             yield
             return

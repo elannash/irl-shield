@@ -1,11 +1,13 @@
 """Fresh heldout contracts, with generated pixels and fake detector/judge boundaries."""
 from datetime import datetime, timezone
+from contextlib import contextmanager
 from functools import partial
 import json
 import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -355,9 +357,21 @@ class HeldoutV2Start(unittest.TestCase):
     """Real temporary Git history; only the physical renderer and UTC clock are fakes."""
 
     def setUp(self):
+        from lock_isolation import install_lock_guard
+        install_lock_guard()
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.base = Path(temporary.name)
+        self.temporary = Path(temporary.name)
+        self.base = self.temporary / 'repo'
+        self.base.mkdir()
+        self.home = self.temporary / 'home'
+        self.home.mkdir()
+        # The production HOME boundary is isolated outside every synthetic repo.
+        # No real host one-shot marker is read, created or removed by these tests.
+        for override in (patch.object(Path, 'home', return_value=self.home),
+                         patch.dict(os.environ, {'HOME': str(self.home)})):
+            override.start()
+            self.addCleanup(override.stop)
         # Match the executing source bytes in a disposable repository. No source
         # commits, staging or hooks touch the worker's assigned checkout.
         for folder in ('bench', 'shield'):
@@ -424,6 +438,8 @@ class HeldoutV2Start(unittest.TestCase):
         self.clock.now.return_value = datetime(2026, 11, 1, 14, 0, tzinfo=timezone.utc)
         self.directory = self.base / 'out/evaluation'
         self.state = self.base / 'out/state'
+        self.host_marker = self.home / '.local/state/irl-shield' / (
+            'fresh-heldout-v2-' + bundle.digest(self.dataset) + '.started')
 
     def git(self, *args, **kwargs):
         return subprocess.check_output(['git', '-C', str(self.base), *args], **kwargs).decode().strip()
@@ -445,11 +461,17 @@ class HeldoutV2Start(unittest.TestCase):
         self.assertFalse((self.base / heldout_bench.V2_STARTED).exists())
         self.assertFalse(self.state.exists())
         self.assertFalse(self.directory.exists())
+        self.assertFalse(self.host_marker.exists())
 
     def test_committed_start_survives_lost_state_and_exists_at_first_render(self):
         calls = []
         def physical(*args, **kwargs):
             receipt = json.loads(self.git('show', 'HEAD:' + heldout_bench.V2_STARTED))
+            self.assertTrue(self.host_marker.is_file(), 'Host marker must precede the first render')
+            host = json.loads(self.host_marker.read_text())
+            self.assertEqual(host['dataset_id'], 'fresh-heldout-v2')
+            self.assertEqual(host['heldout_freeze'], receipt['heldout_freeze'])
+            self.assertEqual(host['started_at_utc'], '2026-11-01T14:00:00+00:00')
             self.v2_evidence = {'at': 'first render spy entry', 'prior_physical_calls': len(calls),
                 'head': self.git('rev-parse', 'HEAD'), 'parent': self.git('rev-parse', 'HEAD^'),
                 'tracked_receipt': receipt, 'status_porcelain': self.git('status', '--porcelain'),
@@ -485,6 +507,141 @@ class HeldoutV2Start(unittest.TestCase):
         self.assertFalse(self.state.exists())
         self.assertFalse((self.base / 'out').exists())
         self.assertEqual(self.git('rev-parse', 'HEAD'), receipt_commit)
+
+    def repeat_from_policy_checkout(self, *, linked):
+        # Reuse the reviewer's public start() scenario and six-render witness.
+        # The linked checkout shares refs with the first synthetic repository.
+        with patch.object(bundle, 'render') as physical:
+            first = self.start()
+        self.assertEqual(physical.call_count, 6)
+        receipt_commit = first['started_receipt_commit']
+        checkout = self.base
+        if linked:
+            checkout = self.temporary / 'second-checkout'
+            self.git('worktree', 'add', '-q', '--detach', str(checkout), self.commit)
+        subprocess.check_output(['git', '-C', str(checkout), 'checkout', '-q', '--detach', self.commit])
+        # Prove the refs guard independently: intentionally lose only synthetic
+        # host/scratch state. The reachable prior receipt must still refuse.
+        self.host_marker.unlink(missing_ok=True)
+        shutil.rmtree(self.base / 'out')
+        self.assertIn(receipt_commit, subprocess.check_output(
+            ['git', '-C', str(checkout), 'rev-list', '--all'], text=True).splitlines())
+        from bench import offline_quality
+        with patch.object(heldout_bench, 'CODE_ROOT', checkout), \
+                patch.object(heldout_bench, '__file__', str(checkout / 'bench/heldout_bench.py')), \
+                patch.object(bundle, '__file__', str(checkout / 'bench/quality_bundle.py')), \
+                patch.object(offline_quality, 'ROOT', checkout), \
+                patch.object(offline_quality, '__file__', str(checkout / 'bench/offline_quality.py')), \
+                patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+                self.start(root=checkout, dataset=checkout / 'dataset.json', policy=checkout / 'policy.json',
+                           directory=checkout / 'out/retry', state_directory=checkout / 'out/retry-state')
+            physical.assert_not_called()
+            # Also inspect the public guard directly; the host marker is absent.
+            with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+                heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+        self.assertFalse((checkout / 'out').exists())
+        self.assertFalse(self.host_marker.exists())
+        self.assertEqual(subprocess.check_output(
+            ['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip(), self.commit)
+
+    def test_second_checkout_at_policy_commit_refuses_reachable_prior_receipt(self):
+        self.repeat_from_policy_checkout(linked=True)
+
+    def test_detached_policy_commit_refuses_reachable_prior_receipt(self):
+        self.repeat_from_policy_checkout(linked=False)
+
+    def test_host_marker_refuses_after_receipt_is_unreachable_and_scratch_is_lost(self):
+        with patch.object(bundle, 'render') as physical:
+            first = self.start()
+        self.assertEqual(physical.call_count, 6)
+        self.assertTrue(self.host_marker.is_file(), 'A committed start must also persist host state')
+        saved = self.host_marker.read_bytes()
+        # A standalone source clone made from the policy tree has no receipt
+        # ref at all. This models loss of repository history on the same host.
+        self.git('checkout', '-q', '--detach', self.commit)
+        clean = self.temporary / 'policy-only'
+        # Use an explicit policy ref so clone cannot copy the spent branch.
+        self.git('branch', 'policy-only', self.commit)
+        subprocess.check_output(['git', 'clone', '-q', '--no-hardlinks', '--single-branch',
+                                 '--branch', 'policy-only', str(self.base), str(clean)])
+        for name, value in (('user.name', 'Synthetic heldout test'), ('user.email', 'test@example.invalid'),
+                            ('commit.gpgsign', 'false'), ('core.hooksPath', str(clean / '.git/no-hooks'))):
+            subprocess.check_output(['git', '-C', str(clean), 'config', name, value])
+        reachable = subprocess.check_output(['git', '-C', str(clean), 'rev-list', '--all'], text=True).splitlines()
+        self.assertNotIn(first['started_receipt_commit'], reachable)
+        shutil.rmtree(self.base / 'out')
+        from bench import offline_quality
+        with patch.object(heldout_bench, 'CODE_ROOT', clean), \
+                patch.object(heldout_bench, '__file__', str(clean / 'bench/heldout_bench.py')), \
+                patch.object(bundle, '__file__', str(clean / 'bench/quality_bundle.py')), \
+                patch.object(offline_quality, 'ROOT', clean), \
+                patch.object(offline_quality, '__file__', str(clean / 'bench/offline_quality.py')), \
+                patch.object(bundle, 'render') as physical:
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+            with self.assertRaisesRegex(ValueError, 'already spent by host marker'):
+                self.start(root=clean, dataset=clean / 'dataset.json', policy=clean / 'policy.json',
+                           directory=clean / 'out/retry', state_directory=clean / 'out/retry-state')
+            physical.assert_not_called()
+        self.assertEqual(self.host_marker.read_bytes(), saved)
+        self.assertFalse((clean / 'out').exists())
+
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'Linux inherited EX lease uses /proc')
+    def test_invalid_inherited_lease_refuses_before_any_persistent_change(self):
+        from relay import soak
+        canonical = self.temporary / 'inherited-perf.lock'
+        real_lease = bundle.clip_lease.func
+        index = (self.base / '.git/index').read_bytes()
+        with patch.object(bundle, 'clip_lease', real_lease), \
+                patch.object(soak, 'PERF_LOCK', canonical), \
+                patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_LEASE_FD': 'not-an-fd'}), \
+                patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(RuntimeError, 'inherited canonical queue lease'):
+                self.start()
+            physical.assert_not_called()
+            self.assert_unspent()
+            self.assertEqual((self.base / '.git/index').read_bytes(), index)
+            self.assertEqual(self.git('status', '--porcelain'), '')
+            self.assertFalse((self.base / '.tmp').exists(), 'Invalid FD must precede serial lock creation')
+
+    def test_spent_state_is_rechecked_after_lease_acquisition(self):
+        real_lease = bundle.clip_lease
+        @contextmanager
+        def waiting_lease(*args, **kwargs):
+            with real_lease(*args, **kwargs):
+                # Another checkout's receipt becomes reachable while waiting.
+                receipt = self.base / heldout_bench.V2_STARTED
+                receipt.parent.mkdir(parents=True, exist_ok=True)
+                bundle.write_json(receipt, {'heldout_freeze': {'dataset_sha256': bundle.digest(self.dataset)}})
+                self.git('add', '--', heldout_bench.V2_STARTED)
+                prior = self.commit_at('2026-11-01T14:01:00+00:00')
+                self.git('branch', 'other-checkout-receipt', prior)
+                self.git('checkout', '-q', '--detach', self.commit)
+                yield
+        with patch.object(bundle, 'clip_lease', waiting_lease), patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+
+    def test_standalone_ex_lease_covers_marker_receipt_and_all_six_renders(self):
+        import fcntl
+        lock = self.base / '.tmp/locks/perf.lock'
+        def assert_ex_held():
+            self.assertTrue(lock.is_file(), 'EX lease must exist before the first start witness')
+            with lock.open('a+') as competitor:
+                with self.assertRaises(BlockingIOError, msg='EX lease must cover the whole v2 start'):
+                    fcntl.flock(competitor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        real_exclusive = heldout_bench.exclusive_json
+        def write_under_lease(path, value):
+            assert_ex_held()
+            return real_exclusive(path, value)
+        with patch.object(heldout_bench, 'exclusive_json', side_effect=write_under_lease), \
+                patch.object(bundle, 'render', side_effect=lambda *a, **k: assert_ex_held()) as physical:
+            self.start()
+        self.assertEqual(physical.call_count, 6)
+        with lock.open('a+') as competitor:
+            fcntl.flock(competitor, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
     def test_too_early_start_has_no_physical_or_persistent_effect(self):
         self.clock.now.return_value = datetime(2026, 11, 1, 13, 59, 59, tzinfo=timezone.utc)
@@ -605,6 +762,7 @@ class HeldoutV2Start(unittest.TestCase):
         self.assertEqual(self.git('rev-parse', 'HEAD'), self.commit)
         self.assertFalse(self.directory.exists())
         self.assertFalse(self.state.exists())
+        self.assertTrue(self.host_marker.is_file(), 'Failed receipt commits must retain the host spent marker')
         with patch.object(bundle, 'render') as physical:
             with self.assertRaisesRegex(ValueError, 'already spent by tracked result'):
                 self.start()

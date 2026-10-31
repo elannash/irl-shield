@@ -157,8 +157,21 @@ do not supply Saturday's policy, amend dates or replace the supplied commit
 with a later receipt commit. No final v2 policy commit is designated by this
 harness implementation or by the preparation manifest.
 
+V2 acquires or validates its exclusive host lease before any start receipt or
+marker is created and holds that lease through the entire six-clip render loop.
+After acquiring the lease it rechecks spent receipts, closing the race with
+another checkout that started while this invocation waited.
+
 After validating the dataset, policy, source, time, all input hashes and output
-locations, the renderer exclusively creates
+locations, the renderer reserves the host's attempt by exclusively creating
+`~/.local/state/irl-shield/fresh-heldout-v2-<datasetsha>.started`. This fixed
+host location is outside Git and output/scratch directories; neither
+`--state-directory` nor `--cache-root` relocates it. The marker binds the dataset,
+policy commit, source hashes and UTC start time, and is flushed to disk before
+the receipt commit. It stays spent after a crash or commit failure. Do not delete
+or replace it to retry.
+
+The renderer then exclusively creates
 `bench/results/fresh-heldout-v2-started.json` and commits **only that receipt**
 before the first physical render. Git hooks run. The receipt's `heldout_freeze`
 binds the original policy commit, policy/dataset hashes and actual pipeline and
@@ -179,13 +192,17 @@ These placement checks run before committing the start, so bookkeeping cannot
 dirty the checkout or create the output prematurely after spending the attempt.
 A read-only cache override still requires separate writable state.
 
-Restart checks read committed `bench/results` objects before inspecting local
-markers or the current policy HEAD. A committed start spends the dataset even
-when rendering fails, the output/state directory is lost, or the working copy
-of the receipt is missing. Never delete or rewrite the receipt to retry. This
-is durable within a checkout retaining that Git history, not a service that
-can prevent deliberate rollback to a history without the receipt. Preserve
-and transfer the receipt commit alongside the sealed evaluation evidence.
+Restart checks read committed `bench/results` objects in every commit reachable
+from any Git ref (`git rev-list --all`) before inspecting local markers or the
+current policy HEAD. Identical JSON blobs are inspected once per scan. A receipt
+still spends the dataset when a newer commit removes it, a second linked
+worktree checks out the original policy, or HEAD is detached at that policy.
+A committed start also survives render failure, lost output/state directories,
+and a missing working copy of the receipt. Never delete or rewrite the receipt
+to retry. If no ref retains the receipt history, the independent host marker
+still refuses a repeat on that host. A fresh host with no receipt history and
+no host marker is outside this local enforcement boundary. Preserve and transfer
+the receipt commit alongside the sealed evaluation evidence.
 
 Validation uses **conductor decision: current main EX serialization (SH→EX per merged PR #11)**.
 Root runs one job at a time through the canonical EX queue, at nice 10 in
@@ -196,9 +213,12 @@ preparation commands above retain their original argv.
 
 Linux render calls queued under EX reuse the inherited descriptor only after
 verifying its canonical inode and actual exclusive flock. An invalid descriptor
-is rejected; it does not fall back to another lock. Standalone calls acquire
-their own per-clip lease. Do not add an outer `host-lock` around a standalone
-render command without the queue's verified descriptor handoff.
+is rejected before Git receipt/index/HEAD or marker changes, including task-local
+lock bookkeeping; it does not fall back to another lock. Standalone v2 calls
+acquire and hold their own EX lease across preflight, both durable witnesses and
+all six renders. V1 retains its per-clip lease behavior. Do not add an outer
+`host-lock` around a standalone render command without the queue's verified
+descriptor handoff.
 
 Exactly **one** future evaluation is reserved for the final policy after the
 **Sunday, November 1, 2026, 06:00 PT / 14:00 UTC** policy freeze. This preparation
@@ -212,7 +232,17 @@ v2 lifecycle fixtures. They use synthetic byte strings and a render spy to
 check committed start-before-render ordering, refusal after interrupted render
 and lost scratch, the reservation boundary, a pre-freeze policy commit, changed
 source/policy bytes, committed policy bytes even with a clean Git index,
-invalid output/state placement, and receipt-commit failure. A tiny generated-video
+invalid output/state placement, and receipt-commit failure. Synthetic HOME state
+is isolated outside the temporary repositories by patching the stdlib HOME
+boundary; tests never read or write the real host marker. A disposable linked
+worktree exercises shared refs, and a detached checkout exercises a reset to
+the policy tree. A separate plain clone isolates the host-marker guard.
+Independent tests lose synthetic host state while
+retaining receipt refs, and lose receipt reachability while retaining host state,
+so neither guard can hide a missing implementation of the other. Lease tests
+reject malformed/closed/wrong-inode/nonexclusive inherited descriptors before
+any start changes, check the post-acquisition spent race, and compete for the
+standalone lock during marker writes and every render. A tiny generated-video
 fixture checks v2 sealed identity through fake judging and relocation. These
 fixtures never read real v2 media. Physical guard mutations and the unified
 Python 3.11 gate are required validation receipts; static source inspection

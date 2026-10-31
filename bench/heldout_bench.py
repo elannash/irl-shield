@@ -4,9 +4,11 @@ Render once on Linux, transfer the sealed directory, then judge once on Mac.
 No runtime detector, renderer, scoring algorithm or family override is added.
 """
 import argparse
+from contextlib import nullcontext
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import subprocess
@@ -43,13 +45,39 @@ def v2_preflight(root, dataset, policy, manifest, policy_commit, policy_sha256):
 
 
 def committed_v2_spent(dataset_sha256):
-    # Read the committed tree, so a missing/edited worktree copy cannot erase a start.
-    names = git('ls-tree', '-r', '--name-only', 'HEAD', '--', 'bench/results').decode().splitlines()
-    for name in names:
-        if name.endswith('.json'):
-            result = json.loads(git('show', 'HEAD:' + name))
+    # Refs are shared across linked worktrees. A policy-tree checkout must see
+    # prior starts even when the receipt was later deleted from a newer tree.
+    seen = set()
+    for commit in git('rev-list', '--all').decode().splitlines():
+        entries = git('ls-tree', '-r', '-z', commit, '--', 'bench/results').split(b'\0')
+        for entry in filter(None, entries):
+            metadata, name = entry.split(b'\t', 1)
+            _, kind, blob = metadata.decode().split()
+            if kind != 'blob' or not name.endswith(b'.json') or blob in seen:
+                continue
+            seen.add(blob)
+            result = json.loads(git('cat-file', 'blob', blob))
             if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
-                raise ValueError('Heldout dataset already spent by committed receipt/result: ' + name)
+                raise ValueError('Heldout dataset already spent by committed receipt/result: ' + name.decode())
+
+
+def reserve_v2_host(identity):
+    # Outside Git/scratch: a lost receipt ref or failed commit still spends this
+    # host's attempt. There is no caller-selected alternate state location.
+    path = Path.home() / '.local/state/irl-shield' / (
+        'fresh-heldout-v2-' + identity['dataset_sha256'] + '.started')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        exclusive_json(path, {'schema_version': 1, 'status': 'started', 'dataset_id': 'fresh-heldout-v2',
+                              'started_at_utc': datetime.now(timezone.utc).isoformat(),
+                              'heldout_freeze': identity})
+    except FileExistsError:
+        raise ValueError('Heldout dataset already spent by host marker: ' + str(path)) from None
+    directory_fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
 
 
 def v2_output_preflight(directory, marker):
@@ -120,79 +148,85 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
     v2 = manifest['dataset_id'] == 'fresh-heldout-v2'
     if v2:
         committed_v2_spent(dataset_sha256)
-    # Tracked scorecards retain spent state when scratch markers are absent.
-    tracked = subprocess.check_output(
-        ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True)
-    for name in filter(None, tracked.split('\0')):
-        result = json.loads((CODE_ROOT / name).read_text())
-        if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
-            raise ValueError('Heldout dataset already spent by tracked result: ' + name)
-    commit = subprocess.check_output(['git', '-C', str(CODE_ROOT), 'rev-parse', 'HEAD'], text=True).strip()
-    if policy_commit != commit:
-        raise ValueError('Final policy commit must equal the executing source checkout HEAD')
-    if v2:
-        v2_preflight(root, dataset, policy, manifest, policy_commit, policy_sha256)
-    config_snapshot = policy.read_bytes()
-    config = json.loads(config_snapshot)
-    from bench.metrics import validate_area_ceiling
-    from bench.independence import policy_metadata
-    validate_area_ceiling(config['options'].get('area_ceiling'), config['options'].get('area_ceiling_basis'), required=True)
-    policy_metadata(config['candidate'], config['options'])
-    if cache_root is not None and state_directory is None:
-        raise ValueError('Read-only cache override requires a separate writable one-shot state directory')
-    for row in manifest['inputs']:
-        for name, key in (('source', 'source_sha256'), ('truth', 'truth_sha256')):
-            if bundle.digest(bundle.dataset_file(root, row[name], cache_root,
-                                                dataset_id=manifest['dataset_id'])) != row[key]:
-                raise ValueError('Frozen heldout media/truth changed: ' + row[name])
-    if directory.exists():
-        raise FileExistsError(directory)
-    identity = {'dataset_sha256': dataset_sha256, 'policy_sha256': policy_sha256,
-                'policy_commit': policy_commit, **source_identity(root)}
-    marker = (Path(state_directory) / (dataset_sha256 + '.started.json') if state_directory is not None
-              else bundle.checked_file(root, manifest['evaluation_marker']))
-    if marker.exists():
-        raise FileExistsError(marker)
-    if v2:
-        v2_output_preflight(directory, marker)
-        receipt_commit, receipt = commit_v2_start(identity, directory)
-        current = source_identity(root)
-        if current != {key: identity[key] for key in current}:
-            raise ValueError('Heldout source changed while committing started receipt')
-    marker.parent.mkdir(parents=True, exist_ok=True)
-    exclusive_json(marker, {**identity, 'status': 'started', 'directory': str(directory.resolve())})
-    directory.mkdir(parents=True, exist_ok=False)
-    (directory / 'dataset.json').write_bytes(snapshot)
-    (directory / 'policy.json').write_bytes(config_snapshot)
-    bundle.write_json(directory / 'inputs.json', {'fixture_manifest_sha256': dataset_sha256,
-                                                'clips': manifest['inputs']})
-    state = {**identity, 'status': 'rendering', 'completed': [], 'benchmark_only': True,
-             'demo_ready': False, 'real_time_verified': False}
-    if v2:
-        state['started_receipt_commit'] = receipt_commit
-    bundle.write_json(directory / 'evaluation.json', state)
-    try:
+    host = 'linux' if platform.system() == 'Linux' else 'mac'
+    with bundle.clip_lease(lock_root, host) if v2 else nullcontext():
+        if v2:
+            # Another checkout may have started while this lease waited.
+            committed_v2_spent(dataset_sha256)
+        # Tracked scorecards retain spent state when scratch markers are absent.
+        tracked = subprocess.check_output(
+            ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True)
+        for name in filter(None, tracked.split('\0')):
+            result = json.loads((CODE_ROOT / name).read_text())
+            if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
+                raise ValueError('Heldout dataset already spent by tracked result: ' + name)
+        commit = subprocess.check_output(['git', '-C', str(CODE_ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        if policy_commit != commit:
+            raise ValueError('Final policy commit must equal the executing source checkout HEAD')
+        if v2:
+            v2_preflight(root, dataset, policy, manifest, policy_commit, policy_sha256)
+        config_snapshot = policy.read_bytes()
+        config = json.loads(config_snapshot)
+        from bench.metrics import validate_area_ceiling
+        from bench.independence import policy_metadata
+        validate_area_ceiling(config['options'].get('area_ceiling'), config['options'].get('area_ceiling_basis'), required=True)
+        policy_metadata(config['candidate'], config['options'])
+        if cache_root is not None and state_directory is None:
+            raise ValueError('Read-only cache override requires a separate writable one-shot state directory')
         for row in manifest['inputs']:
-            label = row['clip'] + ('-synthetic' if row['synthetic_variant'] else '-natural')
-            if v2:
-                verify_started_commit(identity, receipt_commit, receipt)
-            with bundle.clip_lease(lock_root, 'linux' if platform.system() == 'Linux' else 'mac'):
-                bundle.render(root, directory / 'inputs.json', directory / 'policy.json', directory / label,
-                              row['clip'], row['synthetic_variant'], dataset=directory / 'dataset.json', cache_root=cache_root)
+            for name, key in (('source', 'source_sha256'), ('truth', 'truth_sha256')):
+                if bundle.digest(bundle.dataset_file(root, row[name], cache_root,
+                                                    dataset_id=manifest['dataset_id'])) != row[key]:
+                    raise ValueError('Frozen heldout media/truth changed: ' + row[name])
+        if directory.exists():
+            raise FileExistsError(directory)
+        identity = {'dataset_sha256': dataset_sha256, 'policy_sha256': policy_sha256,
+                    'policy_commit': policy_commit, **source_identity(root)}
+        marker = (Path(state_directory) / (dataset_sha256 + '.started.json') if state_directory is not None
+                  else bundle.checked_file(root, manifest['evaluation_marker']))
+        if marker.exists():
+            raise FileExistsError(marker)
+        if v2:
+            v2_output_preflight(directory, marker)
+            reserve_v2_host(identity)
+            receipt_commit, receipt = commit_v2_start(identity, directory)
             current = source_identity(root)
-            if current != {k: identity[k] for k in current}:
-                raise ValueError('Heldout source changed during rendering')
-            if bundle.digest(directory / 'policy.json') != policy_sha256 or bundle.digest(directory / 'dataset.json') != dataset_sha256:
-                raise ValueError('Heldout frozen snapshot changed during rendering')
-            state['completed'].append(label)
-            bundle.write_json(directory / 'evaluation.json', state)
-        state['status'] = 'awaiting-judging'
-    except BaseException as error:
-        state.update(status='partial-failed', error=type(error).__name__ + ': ' + str(error))
-        raise
-    finally:
+            if current != {key: identity[key] for key in current}:
+                raise ValueError('Heldout source changed while committing started receipt')
+        marker.parent.mkdir(parents=True, exist_ok=True)
+        exclusive_json(marker, {**identity, 'status': 'started', 'directory': str(directory.resolve())})
+        directory.mkdir(parents=True, exist_ok=False)
+        (directory / 'dataset.json').write_bytes(snapshot)
+        (directory / 'policy.json').write_bytes(config_snapshot)
+        bundle.write_json(directory / 'inputs.json', {'fixture_manifest_sha256': dataset_sha256,
+                                                    'clips': manifest['inputs']})
+        state = {**identity, 'status': 'rendering', 'completed': [], 'benchmark_only': True,
+                 'demo_ready': False, 'real_time_verified': False}
+        if v2:
+            state['started_receipt_commit'] = receipt_commit
         bundle.write_json(directory / 'evaluation.json', state)
-    return state
+        try:
+            for row in manifest['inputs']:
+                label = row['clip'] + ('-synthetic' if row['synthetic_variant'] else '-natural')
+                if v2:
+                    verify_started_commit(identity, receipt_commit, receipt)
+                with nullcontext() if v2 else bundle.clip_lease(lock_root, host):
+                    bundle.render(root, directory / 'inputs.json', directory / 'policy.json', directory / label,
+                                  row['clip'], row['synthetic_variant'], dataset=directory / 'dataset.json', cache_root=cache_root)
+                current = source_identity(root)
+                if current != {k: identity[k] for k in current}:
+                    raise ValueError('Heldout source changed during rendering')
+                if bundle.digest(directory / 'policy.json') != policy_sha256 or bundle.digest(directory / 'dataset.json') != dataset_sha256:
+                    raise ValueError('Heldout frozen snapshot changed during rendering')
+                state['completed'].append(label)
+                bundle.write_json(directory / 'evaluation.json', state)
+            state['status'] = 'awaiting-judging'
+        except BaseException as error:
+            state.update(status='partial-failed', error=type(error).__name__ + ': ' + str(error))
+            raise
+        finally:
+            bundle.write_json(directory / 'evaluation.json', state)
+        return state
 
 
 def grade(*, root, directory, lock_root, cache=None):

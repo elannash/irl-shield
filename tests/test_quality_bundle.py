@@ -49,8 +49,10 @@ class QualityLease(unittest.TestCase):
                                 self.fail('A different lock reached the clip')
                 with patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_LEASE_FD': 'not-an-fd'}):
                     with self.assertRaisesRegex(RuntimeError, 'requires an inherited canonical queue lease'):
-                        with bundle.clip_lease(base, 'linux'):
+                        with bundle.clip_lease(base / 'invalid', 'linux'):
                             self.fail('An invalid descriptor reached the clip')
+                    self.assertFalse((base / 'invalid').exists(),
+                                     'Invalid inherited descriptors must precede serial lock creation')
                 self.assertTrue(soak.require_queue_lease()['exclusive'])
 
 
