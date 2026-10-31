@@ -87,6 +87,8 @@ GPU headroom, maximum FPS, OCR recall or a real walk.
 
 ## Earlier rounded revision — historical observations
 
+The following measurements describe the painter before the W5b optimization.
+
 ## Native local comparison — October 30–31, 2026
 
 Each arm used the actual `scripts/walk-linux --local-only` launcher, the pinned

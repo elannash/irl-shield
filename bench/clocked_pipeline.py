@@ -221,7 +221,7 @@ def fingerprint():
     paths = set((ROOT / 'shield').glob('*.py'))
     paths.update(ROOT / name for name in (
         'bench/clocked_pipeline.py', 'bench/independence.py', 'bench/clocked_bench.py', 'bench/cross_host.py', 'bench/scoring.py',
-        'bench/metrics.py', 'bench/pipeline.py', 'bench/onnx_detectors.py',
+        'bench/metrics.py', 'bench/pipeline.py', 'bench/onnx_detectors.py', 'bench/detector_options.py',
         'bench/run.py', 'bench/synthetic.py', 'bench/judges.py', 'bench/scheduled.py', 'fixtures/prepare.py',
         'bench/vision.py', 'bench/static_model.py', 'models/manifest.json',
         'fixtures/manifest.json', 'requirements.txt', 'requirements-models.txt',
@@ -717,6 +717,8 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     """
     if candidate == 'vision-scheduled' or options.get('fast_candidate') == 'vision-scheduled':
         raise ValueError('legacy vision-scheduled cannot be used by the two-lane clocked pipeline')
+    from bench.detector_options import lane_detector_options
+    lane_options = {lane: lane_detector_options(options, lane) for lane in ('fast', 'accurate')}
     fast_name = resolve_fast_candidate(candidate, options) or candidate
     from bench.pipeline import detector_for
     from shield.engine import MaskingEngine
@@ -764,7 +766,7 @@ def _run_file(input_path, output_path, candidate, options, max_frames, health):
     try:
         for name, (model, rate, lane_width, side, provider) in lane_specs.items():
             began = time.monotonic()
-            backend = detector_for(model, {**options, 'input_size': [height, width],
+            backend = detector_for(model, {**lane_options[name], 'input_size': [height, width],
                                           'detect_width': lane_width, 'limit_side_len': side,
                                           'provider': provider, 'threads': 2})
             backends[name] = backend

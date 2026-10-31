@@ -40,6 +40,8 @@ def parser():
     command.add_argument('--venv', type=Path, default=Path(os.environ.get('SHIELD_WALK_VENV', ROOT / '.venv')))
     command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'), help='Own Tailscale IPv4; explicit 127.0.0.1 for local verification')
     command.add_argument('--model-cache', type=Path, default=ROOT / 'models/cache')
+    command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate cadence; default 4 Hz')
+    command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only confidence floor; default 0.5')
     command.add_argument('--mediamtx-dir', type=Path, default=ROOT / '.tmp/tools/mediamtx-v1.21.3')
     command.add_argument('--seconds', type=float)
     command.add_argument('--rtmp-port', type=int, default=19350)
@@ -72,6 +74,12 @@ def private_host(host):
 
 
 def cli_arguments(args, host):
+    if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
+                                             or not 0 < args.accurate_rate_hz <= 30):
+        raise WalkError('--accurate-rate-hz must be positive, finite and at most 30')
+    if args.accurate_box_thresh is not None and (not math.isfinite(args.accurate_box_thresh)
+                                                or not 0 <= args.accurate_box_thresh <= 1):
+        raise WalkError('--accurate-box-thresh must be finite and between 0 and 1')
     if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
         raise WalkError('--seconds must be positive and finite')
     if any(not 1024 <= port <= 65535 for port in (args.rtmp_port, args.rtsp_port, args.srt_port)):
@@ -86,6 +94,10 @@ def cli_arguments(args, host):
             '--srt-port', str(args.srt_port), '--dashboard-port', str(args.dashboard_port)]
     if args.seconds is not None:
         argv += ['--seconds', str(args.seconds)]
+    if args.accurate_rate_hz is not None:
+        argv += ['--accurate-rate-hz', str(args.accurate_rate_hz)]
+    if args.accurate_box_thresh is not None:
+        argv += ['--accurate-box-thresh', str(args.accurate_box_thresh)]
     return argv
 
 

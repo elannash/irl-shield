@@ -106,7 +106,11 @@ class Application(unittest.IsolatedAsyncioTestCase):
                           ['--mock-origin', 'http://127.0.0.1:8080', '--twitch-bandwidth-test'],
                           ['--local-only', '--twitch-bandwidth-test'],
                           ['--local-sink', 'rtmp://live.twitch.tv/app/fake'],
-                          ['--mock-origin', 'http://127.0.0.1:8080', '--local-sink', 'rtmp://127.0.0.1:1935/camera']):
+                          ['--mock-origin', 'http://127.0.0.1:8080', '--local-sink', 'rtmp://127.0.0.1:1935/camera'],
+                          ['--accurate-rate-hz', '0'], ['--accurate-rate-hz', '30.1'],
+                          ['--accurate-rate-hz', 'nan'], ['--accurate-rate-hz', 'inf'],
+                          ['--accurate-box-thresh', '-.1'], ['--accurate-box-thresh', '1.1'],
+                          ['--accurate-box-thresh', 'nan'], ['--accurate-box-thresh', 'inf']):
             with self.subTest(arguments=arguments), self.assertRaises(ValueError):
                 validate(parser().parse_args(['run', '--host', '127.0.0.1', *arguments]))
         report = doctor()

@@ -46,7 +46,7 @@ region's paint, and a feather cannot blend raw source into any region's
 original or expanded opaque pixels.
 
 The per-frame implementation keeps no raster-envelope or source-paint
-cache. Only nine tiny binary disk kernels (radii 0–8, at most 17×17 bytes each)
+cache. At most seven tiny binary disk kernels (radii 2–8, at most 17×17 bytes each)
 are cached, independently of source pixels. Full rectangular rasters retain
 the existing small precise-EDT corner, mirrored corners and integer-distance
 straight edges. Bar and Patch union irregular rasters with the same dilation

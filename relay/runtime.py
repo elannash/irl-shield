@@ -2,6 +2,7 @@
 import argparse
 import json
 import math
+from numbers import Real
 import os
 from pathlib import Path
 import signal
@@ -19,13 +20,20 @@ from shield.engine import MaskingEngine
 from shield.lanes import DetectorLane
 
 
-def make_engine(cache, provider='cuda', faults=(), appearance=None):
+def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_box_thresh=None,
+                accurate_rate_hz=4.0):
+    if (isinstance(accurate_rate_hz, bool) or not isinstance(accurate_rate_hz, Real)
+            or not 0 < accurate_rate_hz <= 30 or not math.isfinite(accurate_rate_hz)):
+        raise ValueError('accurate_rate_hz must be a finite number greater than 0 and at most 30')
+    from bench.detector_options import lane_detector_options
+    lane_options = {lane: lane_detector_options({'accurate_box_thresh': accurate_box_thresh}, lane)
+                    for lane in ('fast', 'accurate')}
     from bench.onnx_detectors import create_detector
     lanes = {}
     try:
         for name, model, rate, width in (('fast', 'ppocr-v6-tiny', 8, 640),
-                                        ('accurate', 'ppocr-v6-small', 4, 960)):
-            backend = create_detector(model, {'provider': provider, 'threads': 2, 'cache_dir': cache,
+                                        ('accurate', 'ppocr-v6-small', accurate_rate_hz, 960)):
+            backend = create_detector(model, {**lane_options[name], 'provider': provider, 'threads': 2, 'cache_dir': cache,
                                               'limit_side_len': width})
             lanes[name] = DetectorLane(name, backend, rate, width=width,
                                        fault_intervals=faults if name == 'accurate' else ())

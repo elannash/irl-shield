@@ -126,7 +126,7 @@ def _rounded_alpha(height, width, radius, grow):
 
 @lru_cache(maxsize=9)
 def _disk(grow):
-    # Radius <=24 bounds grow to 0..8; only these tiny binary kernels persist.
+    # Radii 6..24 produce grows 2..8; at most seven tiny kernels persist.
     y, x = np.ogrid[-grow:grow + 1, -grow:grow + 1]
     kernel = (x * x + y * y <= grow * grow).astype(np.uint8)
     kernel.setflags(write=False)
