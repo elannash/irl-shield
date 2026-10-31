@@ -2,9 +2,11 @@
 import hashlib
 from functools import partial
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -15,6 +17,41 @@ from bench import quality_bundle as bundle
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class QualityLease(unittest.TestCase):
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'Linux inherited EX lease uses /proc')
+    def test_queue_lease_is_verified_and_reused_without_relocking(self):
+        import fcntl
+        from lock_isolation import install_lock_guard
+        from relay import soak
+        install_lock_guard()
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            canonical = base / 'perf.lock'
+            with canonical.open('a+') as lease, patch.object(soak, 'PERF_LOCK', canonical), \
+                    patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_LEASE_FD': str(lease.fileno())}):
+                fcntl.flock(lease, fcntl.LOCK_EX)
+                with bundle.clip_lease(base, 'linux'):
+                    self.assertTrue(soak.require_queue_lease()['exclusive'])
+                self.assertTrue(soak.require_queue_lease()['exclusive'])
+                for mode in (fcntl.LOCK_SH, fcntl.LOCK_UN):
+                    fcntl.flock(lease, mode)
+                    with self.subTest(mode=mode), self.assertRaisesRegex(RuntimeError, 'no exclusive flock'):
+                        with bundle.clip_lease(base, 'linux'):
+                            self.fail('A nonexclusive inherited descriptor reached the clip')
+                fcntl.flock(lease, fcntl.LOCK_EX)
+                with (base / 'other.lock').open('a+') as other:
+                    fcntl.flock(other, fcntl.LOCK_EX)
+                    with patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_LEASE_FD': str(other.fileno())}):
+                        with self.assertRaisesRegex(RuntimeError, 'does not identify the canonical lock'):
+                            with bundle.clip_lease(base, 'linux'):
+                                self.fail('A different lock reached the clip')
+                with patch.dict(os.environ, {'IRL_SHIELD_PERF_QUEUE_LEASE_FD': 'not-an-fd'}):
+                    with self.assertRaisesRegex(RuntimeError, 'requires an inherited canonical queue lease'):
+                        with bundle.clip_lease(base, 'linux'):
+                            self.fail('An invalid descriptor reached the clip')
+                self.assertTrue(soak.require_queue_lease()['exclusive'])
 
 
 class Detector:

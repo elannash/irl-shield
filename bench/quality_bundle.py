@@ -8,12 +8,17 @@ import argparse
 from contextlib import contextmanager
 import hashlib
 import json
+import os
 import platform
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 import zipfile
+
+DATASET_CACHE_PREFIXES = {'fresh-heldout-v1': 'fixtures/cache/fresh-heldout',
+                          'fresh-heldout-v2': 'fixtures/cache/fresh-heldout-v2'}
+V2_NOT_BEFORE_UTC = '2026-11-01T14:00:00Z'
 
 
 def digest(path):
@@ -37,10 +42,19 @@ def frozen_dataset(path):
     clips = manifest['clips']
     ids = [clip['id'] for clip in clips]
     if (manifest.get('schema_version') != 1 or manifest.get('status') != 'frozen-ungraded'
-            or manifest.get('dataset_id') != 'fresh-heldout-v1' or manifest.get('split') != 'heldout'
+            or manifest.get('dataset_id') not in DATASET_CACHE_PREFIXES or manifest.get('split') != 'heldout'
             or len(ids) != 3 or len(set(ids)) != 3
             or any(clip['split'] != 'heldout' for clip in clips)):
         raise ValueError('Fresh heldout dataset must freeze exactly three unique heldout clips')
+    if manifest['dataset_id'] == 'fresh-heldout-v2':
+        reservation = manifest.get('evaluation_reservation', {})
+        if (reservation.get('maximum_evaluations') != 1 or reservation.get('evaluation_started') is not False
+                or reservation.get('not_before_utc') != V2_NOT_BEFORE_UTC):
+            raise ValueError('Fresh heldout v2 requires its immutable one-shot reservation')
+        for key in ('source_sha256', 'source_path', 'source_url'):
+            values = [clip.get(key) for clip in clips]
+            if any(not isinstance(value, str) or not value for value in values) or len(set(values)) != 3:
+                raise ValueError('Fresh heldout v2 must retain three distinct source identities')
     expected = {(clip, variant) for clip in ids for variant in (False, True)}
     rows = manifest['inputs']
     actual = [(row['clip'], row['synthetic_variant']) for row in rows]
@@ -50,6 +64,9 @@ def frozen_dataset(path):
     for row in rows:
         for key in ('source', 'truth'):
             checked_file(Path(path).parent, row[key])
+            if manifest['dataset_id'] == 'fresh-heldout-v2':
+                dataset_file(Path(path).parent, row[key], Path(path).parent,
+                             dataset_id=manifest['dataset_id'])
         for key in ('source_sha256', 'truth_sha256'):
             value = row[key]
             if not isinstance(value, str) or len(value) != 64 or any(c not in '0123456789abcdef' for c in value):
@@ -92,12 +109,12 @@ def checked_file(directory, name):
     return path
 
 
-def dataset_file(root, name, cache_root=None):
+def dataset_file(root, name, cache_root=None, *, dataset_id):
     """Resolve a frozen relative asset through an optional read-only cache mount."""
     if cache_root is None:
         return checked_file(root, name)
     try:
-        relative = Path(name).relative_to('fixtures/cache/fresh-heldout')
+        relative = Path(name).relative_to(DATASET_CACHE_PREFIXES[dataset_id])
     except ValueError as error:
         raise ValueError('Heldout input escapes the frozen cache prefix') from error
     return checked_file(cache_root, relative)
@@ -121,7 +138,8 @@ def verify(directory):
         raise ValueError('Quality frozen input manifest changed')
     if 'dataset_identity' in plan:
         identity = plan['dataset_identity']
-        if identity != {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+        manifest, _, _ = frozen_dataset(directory / 'dataset.json')
+        if identity != {'dataset_id': manifest['dataset_id'], 'split': 'heldout',
                         'manifest_sha256': digest(directory / 'dataset.json')}:
             raise ValueError('Quality frozen dataset identity changed')
         entries(directory, directory / 'inputs.json', dataset=directory / 'dataset.json')
@@ -145,6 +163,12 @@ def clip_lease(root, host, *, lock_root=None):
     serial.parent.mkdir(parents=True, exist_ok=True)
     with serial.open('a+') as stream:
         fcntl.flock(stream, fcntl.LOCK_EX)
+        if (lock_root is None and sys.platform.startswith('linux')
+                and 'IRL_SHIELD_PERF_QUEUE_LEASE_FD' in os.environ):
+            from relay.soak import require_queue_lease
+            require_queue_lease()
+            yield
+            return
         canonical = (Path(lock_root) if lock_root is not None else Path('/tmp/agents/irl-shield')) / 'perf.lock'
         canonical.parent.mkdir(parents=True, exist_ok=True)
         with canonical.open('a+') as perf:
@@ -167,7 +191,9 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
     policy_metadata(candidate, options)
     if cache_root is not None and dataset is None:
         raise ValueError('Cache override requires an explicit frozen heldout dataset')
-    source_original, truth_original = (dataset_file(root, row[key], cache_root) if dataset is not None else Path(row[key])
+    manifest = frozen_dataset(dataset)[0] if dataset is not None else None
+    source_original, truth_original = (dataset_file(root, row[key], cache_root, dataset_id=manifest['dataset_id'])
+                                       if dataset is not None else Path(row[key])
                                        for key in ('source', 'truth'))
     for key, path in [('source_sha256', source_original), ('truth_sha256', truth_original)]:
         if digest(path) != row[key]:
@@ -242,7 +268,7 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
                 'input_manifest_sha256': hashlib.sha256(input_snapshot).hexdigest(), 'artifacts': artifacts,
                 'scope': 'Untimed ideal/offline Linux output; no OCR score or realtime qualification exists yet.'}
         if dataset is not None:
-            plan['dataset_identity'] = {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+            plan['dataset_identity'] = {'dataset_id': manifest['dataset_id'], 'split': 'heldout',
                                         'manifest_sha256': digest(directory / 'dataset.json')}
         write_json(directory / 'bundle.json', plan)
         (directory / 'bundle.sha256').write_text(digest(directory / 'bundle.json') + '\n')
@@ -306,7 +332,7 @@ def aggregate(root, directory, run_id, *, dataset=None):
         manifest = json.loads((Path(root) / 'fixtures/manifest.json').read_text())
         expected = {(c['id'], synthetic) for c in manifest['clips'] if c['split'] == 'tune' for synthetic in (False, True)}
     else:
-        _, _, expected = frozen_dataset(dataset)
+        manifest, _, expected = frozen_dataset(dataset)
     paths = sorted(directory.glob('*/grade.json'))
     results = [json.loads(p.read_text()) for p in paths]
     if len(results) != (14 if dataset is None else 6) or {(r['clip'], r['synthetic_variant']) for r in results} != expected:
@@ -320,7 +346,7 @@ def aggregate(root, directory, run_id, *, dataset=None):
                                               'orchestrator_sha256')}
         if dataset is not None:
             identity['dataset_identity'] = plan.get('dataset_identity')
-            if identity['dataset_identity'] != {'dataset_id': 'fresh-heldout-v1', 'split': 'heldout',
+            if identity['dataset_identity'] != {'dataset_id': manifest['dataset_id'], 'split': 'heldout',
                                                  'manifest_sha256': digest(dataset)}:
                 raise ValueError('Quality bundles differ from the frozen heldout dataset')
         if run_identity is None:
