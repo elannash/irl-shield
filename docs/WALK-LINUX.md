@@ -126,10 +126,12 @@ a fallback interpreter. See [RUN.md](RUN.md) for underlying runtime requirements
 
 ## Qualification
 
-The launcher starts rounded Bar masks by default. In the licensed-clip local
-comparison it delivered 29.975 fps with no steady-window slates; rounded
-Frosted delivered 14.992 fps with 334 slates and is not the default. These
-are local observations, not phone-to-Twitch qualification. The full
+The launcher starts rounded Patch masks by default. With the optimized painter,
+the licensed-clip local comparison delivered 30 fps with no steady-window slates.
+Bar remains chat-votable by conductor decision on its earlier passing receipt;
+the new Bar run literally failed its no-extra-slate guard with two loop-seam
+PROTECT frames. Signed and Frosted remain configuration-only. These are local
+observations, not phone-to-Twitch qualification. The full
 [mask runtime comparison](MASK-RUNTIME.md) retains latency, CPU and queue
 accounting limitations. Saturday's planned walk was cancelled; the launcher
 remains available for attended local and Twitch operation.

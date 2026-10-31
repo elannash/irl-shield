@@ -1,11 +1,91 @@
 # Rounded-mask runtime observation
 
-Rounded **Bar is the CLI and session default**. Frosted, Signed and Patch remain
-selectable by explicit configuration. Only Bar is chat-votable, including
-moderator locks; Signed and Patch have no passing native receipt, and Frosted
-failed the local 720p30 runtime comparison below and has no
-30 fps qualification. The owner approved the four materials' appearance on
-licensed real-footage previews; this document records performance separately.
+Rounded **Patch is the CLI and session default**. Chat offers **Patch and Bar**,
+including moderator locks. Signed and Frosted remain selectable only by explicit
+configuration. The owner approved all four materials' appearance on licensed
+real-footage previews. The default and vote-set decisions below were made by
+the conductor from the measurements; they are not an owner performance verdict.
+
+## W5b render revision — October 31, 2026
+
+The optimized painter shares dilation and distance transforms for overlapping
+irregular masks, resolves material ownership before constructing Frosted/Signed
+paint, and caches only tiny source-independent disk kernels. It retains the
+original Frosted cell means, grain and reconstruction. All original polygon
+pixels remain opaque and retain their paint.
+
+Unit 3 passed 18 owning tests, three physical coverage/ownership mutations
+failed behaviorally, and restored tests passed. All 600 full-image, mask and
+alpha comparisons (four materials × 150 saved SF Market frames) matched the
+previous rounded painter exactly. The same source passed a 363-test full gate
+with two explicit Linux skips. This validates the tested pixels and geometry;
+it does not establish a new OCR hidden score on other clips.
+
+The full-150-frame offline render comparison observed Bar p99 19.854 ms versus
+unrounded Bar 20.388 ms, a −0.534 ms delta. Its raw queue flags include
+`cpu_accounting_unavailable` and `other_busy`; these timings remain diagnostic.
+
+The following separate native jobs used the same actual local launcher,
+1280×720/30 fps repeated licensed source, CUDA detector lanes, NVENC, ten-second
+warmup and 120-second steady window. Deltas use the original unrounded Bar
+reference below. Acceptance requires ≥29.5 fps, no extra slates, and both p95
+and p99 latency deltas ≤+50 ms. CPU and maximum latency do not gate.
+
+| Optimized material | fps | LIVE / slate | p95 delta, ms | p99 delta, ms | CPU, one core=100% | Literal guard |
+|---|---:|---:|---:|---:|---:|---|
+| Signed | 22.233 | 2668 / 0 | +402.483 | +455.942 | 147.383% | FAIL |
+| Patch | 30.000 | 3600 / 0 | -1.343 | +0.529 | 107.183% | PASS |
+| Bar | 29.992 | 3597 / 2 | +29.285 | +24.342 | 107.000% | FAIL |
+
+**Patch passed and is the default.** Signed failed throughput and latency and
+stays config-only. Bar literally failed the no-extra-slate condition: its two
+single-frame PROTECT ACKs were indices 3752 and 3902, each loop phase 2 of the
+150-frame repeated clip, with LIVE neighbours and zero egress recoveries.
+
+**Conductor decision, made after the result:** retain Bar in chat on its earlier
+passing rounded-Bar receipt (`36245885…` below), together with the revision's
+exact paint parity and lower observed offline cost. The conductor's post-hoc
+diagnosis is fail-closed coverage at the artificial hard cut, with detector-phase
+alignment varying between runs, rather than paint cost. The recorded seam
+positions support that interpretation but do not prove its cause. The decision
+is not a unit-7 pass, and the literal failure remains in the table and raw data.
+No frames or seam windows were removed from any current measurement.
+
+All three new native jobs were unforced, single physical executions under the
+canonical exclusive lock. Patch and Bar retain raw `queue_contended` with
+`cpu_accounting_unavailable`; Signed additionally retains `other_busy`. No run
+is relabelled uncontended, and Signed's result does not isolate an intrinsic
+paint-cost cause. Each run's seven recorded native process identities were gone
+at root's audit; cleanup reported no survivors.
+
+Frosted remains **final as config-only for this revision**. Its one separate
+coarse-field offline attempt passed 21 owning tests and its ≤12-LSB comparison
+bound (observed maximum 6), but full-render p95 was **49.134 ms**, above 20 ms on
+the prescribed 12-frame set. That approximation is not included in the shipped
+painter, and no further Frosted native unit was run.
+
+For future measurements, the conductor recommends a non-looping source, or a
+fixed seam exclusion window declared before the run. This does not change the
+current receipts. The Sunday demo source must avoid hard loop cuts inside the
+recorded window; fail-closed protection at such cuts remains enabled.
+
+| W5b receipt | SHA-256 |
+|---|---|
+| Exact 600 comparisons / 750 timed renders | `feb8354b37384abeb10edc0057d6a3e479e46eae436530ee95f9ad11bdafd283` |
+| Optimized Signed native, unit 5 | `8227a5c5dbe31fb720b3fba17685f4f8b4453ff40384143aa703becc5cd5b4bb` |
+| Optimized Patch native, unit 6 | `be3c10c2a8b28bb823bcca92c6d17a99fea5e7e0eefe26f99d2a0796c3e131c1` |
+| Optimized Bar native, unit 7 | `b136a202211bca7fa6b546f195be4cdd73e6516efe74015ba3e597829a0ae3b7` |
+| Frosted offline attempt closure | `a9983f2fbf6295c7aa4f7b79d16d3a1eff3f7cf50e5248da8a386fb670d0e179` |
+
+The measured optimized painter SHA-256 is
+`35aa3a6fd3bbe46ad48b82bc378a02891221149e377ddaae5d7c0c62e824e2b1`.
+W5b used seven measurement units, preserving its failed profiler/preflight and
+harness attempts without refunds or retries. Root's final integration gate is
+separate from those native measurements. Raw evidence remains in the W5b
+hand-back; the summaries here neither qualify phone/Twitch latency nor claim
+GPU headroom, maximum FPS, OCR recall or a real walk.
+
+## Earlier rounded revision — historical observations
 
 ## Native local comparison — October 30–31, 2026
 

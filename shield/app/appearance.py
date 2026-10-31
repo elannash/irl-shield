@@ -17,7 +17,7 @@ class Appearance:
     The caption is consequently disabled, rather than counting boxes per frame.
     """
 
-    def __init__(self, *, skin='bar', desaturation=0.0, width=1280, height=720):
+    def __init__(self, *, skin='patch', desaturation=0.0, width=1280, height=720):
         self._lock = threading.RLock()
         self._wall_offset = time.time() - time.monotonic()
         self._votes = SkinVotes(time.monotonic(), incumbent=skin)

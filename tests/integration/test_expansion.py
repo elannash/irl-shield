@@ -52,6 +52,19 @@ class Expansion(unittest.TestCase):
             clock.monotonic.return_value = 72
             self.assertEqual(appearance.snapshot()['votes'], {}, 'Replay must not extend the authenticated vote lifetime')
 
+            for skew in (.05, 2):
+                with self.subTest(authenticated_forward_skew=skew):
+                    clock.monotonic.return_value = 100
+                    appearance = Appearance(skin='bar', width=320, height=180)
+                    clock.monotonic.return_value = 110
+                    _, events = adapter(on_chat=appearance.chat)
+                    accepted = events.accept(notification('future', '!skin patch', badge=None,
+                                                           at=START+10+skew), generation=events.generation)
+                    self.assertEqual(accepted, 'skin-chat')
+                    self.assertEqual(appearance.snapshot()['votes'], {'patch': 1},
+                                     'Authenticated server skew must survive wall-to-monotonic conversion')
+                    self.assertEqual(appearance.snapshot()['skin'], 'patch')
+
     def test_actual_relay_keeps_poll_identity_and_ingress_highwater_through_hold_release(self):
         appearance = Appearance(width=320, height=180)
         engine = engine_for(appearance)
@@ -180,7 +193,7 @@ class DashboardCLI(unittest.IsolatedAsyncioTestCase):
                     response = await client.get(origin+'/private/snapshot', headers=headers)
                     data = await response.json()
                     self.assertEqual((data['state'], data['reason_code']), ('HOLD','chat'))
-                    self.assertEqual(data['skin'], 'bar', 'The real CLI must start the measured default material')
+                    self.assertEqual(data['skin'], 'patch', 'The real CLI must start the measured default material')
                     self.assertEqual((data['clues_hidden'],data['faces_hidden']), (None,None))
                     self.assertNotIn(server._token, str(data))
                     self.assertIn('/#token=', terminal.getvalue())

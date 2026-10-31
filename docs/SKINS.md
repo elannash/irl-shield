@@ -3,7 +3,7 @@
 `shield.skins.SkinPainter` paints the supplied local binary rasters with
 outward rounding and a six-pixel outside feather. The remaining choices are
 exactly `frosted`, `bar`, `signed`, and `patch`. The CLI and session appearance
-default to `bar`. Frosted remains an explicit selection; it failed the measured
+default to `patch`. Frosted remains an explicit selection; it failed the measured
 720p30 runtime guard on the evaluated Linux host. See
 [the runtime comparison](MASK-RUNTIME.md) for the measurements and limits.
 The integration seam is `MaskRegion(left, top, raster, text_height)`, where
@@ -45,17 +45,47 @@ restored in supplied order. An extension cannot displace another original
 region's paint, and a feather cannot blend raw source into any region's
 original or expanded opaque pixels.
 
-The per-frame implementation recomputes geometry for every supplied raster.
-It has no geometry or source-paint cache. Full rectangular rasters use one
-small precise-EDT corner plus mirrored corners and integer-distance straight
-edges; irregular rasters retain their full local precise distance transform.
-This avoids calculating a full rectangular distance field without changing
-the opaque envelope or six-pixel alpha field. Native masked copies and border
-replication replace BGR boolean gathers and NumPy padding. One color canvas
-uses the maximum-alpha region at each pixel, with supplied-order ties. Bar
-and Patch use constant canvases without per-region color arrays. One native
-blend covers the touched bounds, with zero source weight on opaque protection,
-followed by an explicit opaque canvas copy and original-paint restoration.
+The per-frame implementation keeps no raster-envelope or source-paint
+cache. Only nine tiny binary disk kernels (radii 0–8, at most 17×17 bytes each)
+are cached, independently of source pixels. Full rectangular rasters retain
+the existing small precise-EDT corner, mirrored corners and integer-distance
+straight edges. Bar and Patch union irregular rasters with the same dilation
+radius before dilating each overlapping rectangle group: dilation distributes
+over union, so the opaque result is unchanged. Colored skins retain individual
+opaque rasters for resolving color ownership.
+
+After the irregular opaque union is known, one precise distance transform per
+overlapping six-pixel-expanded rectangle group supplies its outside feather.
+Distance to a union is the minimum of the individual distances; the feather function is
+monotone. Disjoint expanded groups cannot contribute positive feather to each
+other. The original rectangular opaque and alpha fields are added afterward,
+so rectangle corners retain their exact original construction. The
+intended opaque geometry and alpha bytes are identical, including concavities,
+islands, clipped edges and overlap seams; there is no proposed visual delta.
+The existing 90 rectangular geometry comparisons remain unchanged. Owning
+tests cover grouped irregular fields, caller-order material ties and visible
+extensions whose original pixels were overwritten. Across all 150 saved SF
+Market frames, the four optimized materials matched the previous rounded
+painter byte for byte: 600 complete pixel, mask and alpha comparisons. This
+is the tested population, not a universal numerical proof.
+
+For Frosted and Signed, a temporary integer ownership map first resolves
+opaque extensions in supplied order, then maximum-alpha feather ties in that
+order, and finally all original rasters in supplied order. Only regions that
+own an output pixel build material. The complete original averaging rectangle
+is still used for every visible Frosted region; an occluded region can be
+skipped because none of its output bytes survive. Per-region feather EDT is
+needed only when a region's bounds intersect the global outside feather.
+This preserves the original-paint restoration rule without retaining every
+region's color array. The ownership map contains geometry, never source color,
+and expires after the call. One native blend covers the touched bounds with
+zero source weight on opaque protection, followed by an explicit opaque copy.
+
+The initial light profile identified repeated irregular envelope and feather
+work. It did not qualify runtime. The subsequent 150-frame render comparison
+and native local guards, including raw queue limitations and failed attempts,
+are recorded in [MASK-RUNTIME.md](MASK-RUNTIME.md). Patch is the default;
+Bar and Patch are chat-votable. Frosted and Signed remain config-only.
 
 ## Frosted information boundary
 
@@ -128,10 +158,13 @@ retain all state/transport coverage gates.
 
 ## Chat voting
 
-Only **Bar** is chat-votable, including moderator `!skin lock` commands. Frosted,
-Signed and Patch have no passing native runtime receipt and cannot be selected
+**Bar and Patch** are chat-votable, including moderator `!skin lock` commands.
+Frosted and Signed did not pass the native runtime guard and cannot be selected
 by chat. They remain available through explicit configuration/CLI selection.
-A new material needs a passing runtime receipt before joining `CHAT_SKINS`.
+Patch passed its current native guard. Bar is retained by the conductor on
+its earlier passing receipt plus exact paint parity; the new Bar run literally
+failed on two loop-seam PROTECT frames. This exception and the raw queue
+limits are recorded in MASK-RUNTIME.md. New materials need a passing guard.
 
 Root creates a `SkinVotes(session_started_at)` reducer for each authenticated
 EventSub session. It converts authenticated events to
@@ -147,15 +180,20 @@ Commands are exact lowercase ASCII forms with single spaces:
 - `!skin lock <name>` locks the output for a moderator or broadcaster.
 - `!skin unlock` releases that lock for a moderator or broadcaster.
 
-Votes are active in `(now - 60, now]`; events before session start, expired
-events, future events and duplicate session IDs do not count. Each viewer
-has at most one active vote. A late older vote cannot replace that viewer's
-newer vote. Equal timestamps break by lexical event ID. IDs are retained
-for the reducer's lifetime to prevent a replay with a changed timestamp.
+Votes are active in `(now - 60, now]`. Events before session start, expired
+events, events more than 30 seconds ahead, and duplicate session IDs do not
+count. Accepted future timestamps are clamped to receiver `now` for storage,
+expiry and ordering, so forward clock skew cannot extend a vote or outrank
+a later normal event. Each viewer has at most one active vote. A late older
+vote cannot replace that viewer's newer vote in this normalized clock. Equal
+normalized timestamps break by lexical event ID. IDs are retained for the
+reducer's lifetime to prevent a replay with a changed timestamp.
 Root must discard the reducer when its session ends.
 
-An active Bar vote selects Bar unless a moderator lock is active. No active
-votes retains the incumbent, including an explicitly configured material.
+The highest vote count selects a material unless a moderator lock is active.
+A tie retains the incumbent when it is tied; otherwise lexical material order
+breaks the tie. No active votes retains the incumbent, including an explicitly
+configured material.
 Votes continue to accrue and expire during a lock. Unlock immediately
 applies the current votes. An older moderator command cannot reverse a
 newer lock or unlock. The public snapshot contains only `skin`,
