@@ -208,6 +208,100 @@ class SkinPrivacy(unittest.TestCase):
                     if skin == 'bar':
                         self.assertTrue((a.pixels[a.mask != 0] == 0).all())
 
+    def test_shared_irregular_fields_preserve_exact_individual_geometry(self):
+        # Merging dilation/EDT work must retain individual raster boundaries,
+        # even across radii, disjoint groups, holes and clipped frame edges.
+        frame = np.full((100, 180, 3), 229, np.uint8)
+        a = np.zeros((23, 37), np.uint8)
+        cv2.fillConvexPoly(a, np.array([[0, 2], [34, 0], [36, 20], [3, 22]], np.int32), 255)
+        b = np.zeros((30, 50), np.uint8)
+        b[0:3] = 255
+        b[:, 0:3] = 255
+        b[15, 20] = b[-1, -1] = 255
+        c = np.zeros((10, 18), np.uint8)
+        c[2:8, 1:5] = 255
+        c[7, 4:15] = 255
+        regions = [MaskRegion(0, 0, a, 9), MaskRegion(16, 8, a.copy(), 11),
+                   MaskRegion(130, 70, b, 14), MaskRegion(21, 43, b, 14),
+                   MaskRegion(11, 27, c, 6),
+                   MaskRegion(60, 0, np.zeros((4, 7), np.uint8), 2)]
+        expected_mask = np.zeros(frame.shape[:2], np.uint8)
+        expected_alpha = np.zeros_like(expected_mask)
+        for region in regions:
+            if not region.raster.any():
+                continue
+            height, width = region.raster.shape
+            radius = min(24., max(6., .3 * min(height, width)))
+            grow = int(np.ceil(max(radius * (1 - 1 / np.sqrt(2)),
+                                   (2 * radius - min(height, width)) / 2)))
+            left, top = max(0, region.left-grow-6), max(0, region.top-grow-6)
+            right = min(180, region.left+width+grow+6)
+            bottom = min(100, region.top+height+grow+6)
+            original = np.zeros((bottom-top, right-left), np.uint8)
+            x, y = region.left-left, region.top-top
+            original[y:y+height, x:x+width] = region.raster
+            dy, dx = np.ogrid[-grow:grow+1, -grow:grow+1]
+            kernel = (dx*dx + dy*dy <= grow*grow).astype(np.uint8)
+            opaque = cv2.dilate(original, kernel, borderType=cv2.BORDER_CONSTANT, borderValue=0)
+            distance = cv2.distanceTransform(255-opaque, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+            amount = np.clip(distance / 6, 0, 1)
+            local_alpha = np.rint(255 * (1 - amount*amount*(3-2*amount))).astype(np.uint8)
+            area = np.s_[top:bottom, left:right]
+            np.maximum(expected_mask[area], opaque, out=expected_mask[area])
+            np.maximum(expected_alpha[area], local_alpha, out=expected_alpha[area])
+        for order in (regions, list(reversed(regions))):
+            for skin in SKINS:
+                with self.subTest(skin=skin, reverse=order is not regions):
+                    result = SkinPainter().paint(frame, order, skin=skin)
+                    np.testing.assert_array_equal(result.mask, expected_mask,
+                        err_msg='Shared irregular union must retain every individual dilation pixel')
+                    np.testing.assert_array_equal(result.alpha, expected_alpha)
+                    self.assertTrue((result.alpha[result.mask != 0] == 255).all())
+                    np.testing.assert_array_equal(result.pixels[result.alpha == 0], frame[result.alpha == 0])
+
+    def test_material_ownership_keeps_ties_extensions_and_original_order(self):
+        # These worked pixels guard composition, independently of the new
+        # owner-map implementation and its material visibility optimization.
+        source = np.full((100, 140, 3), 230, np.uint8)
+        source[25:65, 20:60] = 60
+        source[25:65, 71:111] = 180
+        left = MaskRegion(20, 25, np.full((40, 40), 255, np.uint8), 18)
+        right = MaskRegion(71, 25, np.full((40, 40), 255, np.uint8), 18)
+        # At (65,45), both opaque envelopes are two pixels away: alpha189.
+        # Replicated edge material uses grain at local (39,20)/(0,20).
+        for order, expected in [([left, right], 191), ([right, left], 105)]:
+            with self.subTest(equal_alpha_order=order[0].left):
+                result = SkinPainter().paint(source, order)
+                self.assertEqual(int(result.alpha[45, 65]), 189)
+                np.testing.assert_array_equal(result.pixels[45, 65], [expected] * 3,
+                    err_msg='Equal-alpha feather material must follow caller order')
+
+        # Smaller originals B/C replace every original A pixel. A's larger
+        # rounded envelope still owns (59,16), so A material cannot be skipped.
+        source[:] = 100
+        a = MaskRegion(20, 20, np.full((40, 80), 255, np.uint8), 18)
+        b = MaskRegion(20, 20, np.full((40, 40), 255, np.uint8), 18)
+        c = MaskRegion(60, 20, np.full((40, 40), 255, np.uint8), 18)
+        for skin, expected in [('frosted', [101, 101, 101]), ('signed', [24, 21, 18])]:
+            with self.subTest(visible_extension=skin):
+                result = SkinPainter().paint(source, [a, b, c], skin=skin)
+                self.assertEqual(int(result.mask[16, 59]), 255)
+                self.assertEqual(int(result.alpha[16, 59]), 255)
+                np.testing.assert_array_equal(result.pixels[16, 59], expected,
+                    err_msg='Visible extension must retain material when all originals are overwritten')
+
+        # At (60,40), A's Signed symbol overlaps B's original raster at its
+        # plain left edge. An irregular B still wins or loses in caller order.
+        irregular = np.full((40, 40), 255, np.uint8)
+        irregular[:3, :3] = 0
+        b = MaskRegion(60, 20, irregular, 18)
+        for order, expected in [([a, b], [24, 21, 18]), ([b, a], [151, 148, 143])]:
+            with self.subTest(mixed_signed_order=order[0].left):
+                result = SkinPainter().paint(source, order, skin='signed')
+                self.assertEqual(int(result.alpha[40, 60]), 255)
+                np.testing.assert_array_equal(result.pixels[40, 60], expected,
+                    err_msg='Mixed original Signed material must follow caller order')
+
     def test_frosted_original_paint_retains_original_cell_domain_and_grain(self):
         source = np.full((100, 160, 3), 251, np.uint8)
         source[20:60, 30:110] = 100

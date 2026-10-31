@@ -43,7 +43,7 @@ def parser():
         command.add_argument('--phone-setup', action='store_true', help='Show runtime phone credentials on /dev/tty')
         command.add_argument('--dashboard', action='store_true', help='Serve private phone controls; also enabled by --phone-setup')
         command.add_argument('--dashboard-port', type=int, default=0, help='Private dashboard port; default chooses a free port')
-        command.add_argument('--skin', default='bar', choices=('frosted', 'bar', 'signed', 'patch'))
+        command.add_argument('--skin', default='patch', choices=('frosted', 'bar', 'signed', 'patch'))
         command.add_argument('--frosted-desaturation', type=float, default=0.0, help='Optional coarse-color desaturation, 0 to 1')
         command.add_argument('--hold', action='store_true', help='Start with an independent manual HOLD')
     return root

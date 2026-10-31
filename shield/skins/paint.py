@@ -124,6 +124,66 @@ def _rounded_alpha(height, width, radius, grow):
     return alpha
 
 
+@lru_cache(maxsize=9)
+def _disk(grow):
+    # Radius <=24 bounds grow to 0..8; only these tiny binary kernels persist.
+    y, x = np.ogrid[-grow:grow + 1, -grow:grow + 1]
+    kernel = (x * x + y * y <= grow * grow).astype(np.uint8)
+    kernel.setflags(write=False)
+    return kernel
+
+
+def _bounds(region, frame_height, frame_width):
+    rh, rw = region.raster.shape
+    radius = min(24., max(6., .3 * min(rh, rw)))
+    grow = math.ceil(max(radius * (1 - 1 / math.sqrt(2)),
+                         (2 * radius - min(rh, rw)) / 2))
+    return (max(0, region.left - grow - 6), max(0, region.top - grow - 6),
+            min(frame_width, region.left + rw + grow + 6),
+            min(frame_height, region.top + rh + grow + 6), radius, grow)
+
+
+def _merged_bounds(boxes):
+    """Disjoint rectangle groups; each input already contains its 6px feather."""
+    merged = []
+    for left, top, right, bottom in boxes:
+        index = 0
+        while index < len(merged):
+            l, t, r, b = merged[index]
+            if left <= r and l <= right and top <= b and t <= bottom:
+                left, top, right, bottom = min(left, l), min(top, t), max(right, r), max(bottom, b)
+                merged.pop(index)
+                index = 0
+            else:
+                index += 1
+        merged.append((left, top, right, bottom))
+    return merged
+
+
+def _feather(opaque):
+    distance = cv2.distanceTransform(255 - opaque, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+    t = np.clip(distance / 6, 0, 1)
+    return np.rint(255 * (1 - t * t * (3 - 2 * t))).astype(np.uint8)
+
+
+def _union_alpha(mask, boxes, rectangles):
+    # Distance to a union is the minimum distance to its members. The feather
+    # is monotone in that distance. Disjoint 6px-expanded groups cannot supply
+    # each other's positive feather, so each group needs just one exact EDT.
+    alpha = np.zeros_like(mask)
+    for left, top, right, bottom in _merged_bounds(boxes):
+        alpha[top:bottom, left:right] = _feather(mask[top:bottom, left:right])
+    # mask initially contains only irregular regions. Add rectangles after the
+    # EDT so their original corner stencil supplies their exact alpha bytes.
+    for left, top, opaque, local_alpha in rectangles:
+        height, width = local_alpha.shape
+        target = alpha[top:top + height, left:left + width]
+        np.maximum(target, local_alpha, out=target)
+        target = mask[top:top + height, left:left + width]
+        np.maximum(target, opaque, out=target)
+    return alpha
+
+
 def _envelope(region, frame_height, frame_width):
     """Round outward before clipping; dilate irregular rasters, never erode.
 
@@ -132,14 +192,8 @@ def _envelope(region, frame_height, frame_width):
     diameter. Original pixels are always unioned back as a safeguard.
     """
     rh, rw = region.raster.shape
-    radius = min(24., max(6., .3 * min(rh, rw)))
-    grow = math.ceil(max(radius * (1 - 1 / math.sqrt(2)),
-                         (2 * radius - min(rh, rw)) / 2))
+    left, top, right, bottom, radius, grow = _bounds(region, frame_height, frame_width)
     feather = 6
-    left = max(0, region.left - grow - feather)
-    top = max(0, region.top - grow - feather)
-    right = min(frame_width, region.left + rw + grow + feather)
-    bottom = min(frame_height, region.top + rh + grow + feather)
     ox, oy = region.left - left, region.top - top
     if cv2.countNonZero(region.raster) == rh * rw:
         full = _rounded_alpha(rh, rw, radius, grow)
@@ -151,14 +205,46 @@ def _envelope(region, frame_height, frame_width):
     else:
         original = np.zeros((bottom - top, right - left), np.uint8)
         original[oy:oy + rh, ox:ox + rw] = region.raster
-        y, x = np.ogrid[-grow:grow + 1, -grow:grow + 1]
-        disk = (x * x + y * y <= grow * grow).astype(np.uint8)
-        opaque = cv2.dilate(original, disk, borderType=cv2.BORDER_CONSTANT, borderValue=0)
+        opaque = cv2.dilate(original, _disk(grow), borderType=cv2.BORDER_CONSTANT, borderValue=0)
         cv2.bitwise_or(opaque, original, opaque)
-        distance = cv2.distanceTransform(255 - opaque, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
-        t = np.clip(distance / feather, 0, 1)
-        alpha = np.rint(255 * (1 - t * t * (3 - 2 * t))).astype(np.uint8)
+        alpha = None
     return left, top, opaque, alpha
+
+
+def _constant_geometry(regions, height, width):
+    """Union same-radius irregular rasters before dilation; no local colors."""
+    mask = np.zeros((height, width), np.uint8)
+    groups, boxes, irregular_boxes, rectangles = {}, [], [], []
+    for region in regions:
+        nonzero = cv2.countNonZero(region.raster)
+        if not nonzero:
+            continue
+        if nonzero == region.raster.size:
+            left, top, opaque, local_alpha = _envelope(region, height, width)
+            eh, ew = opaque.shape
+            boxes.append((left, top, left + ew, top + eh))
+            rectangles.append((left, top, opaque, local_alpha))
+        else:
+            left, top, right, bottom, _, grow = _bounds(region, height, width)
+            groups.setdefault(grow, []).append((region, (left, top, right, bottom)))
+    for grow, members in groups.items():
+        for left, top, right, bottom in _merged_bounds([box for _, box in members]):
+            original = np.zeros((bottom - top, right - left), np.uint8)
+            for region, box in members:
+                if not (left <= box[0] and top <= box[1] and box[2] <= right and box[3] <= bottom):
+                    continue
+                rh, rw = region.raster.shape
+                x, y = region.left - left, region.top - top
+                target = original[y:y + rh, x:x + rw]
+                cv2.bitwise_or(target, region.raster, target)
+            opaque = cv2.dilate(original, _disk(grow), borderType=cv2.BORDER_CONSTANT, borderValue=0)
+            cv2.bitwise_or(opaque, original, opaque)
+            target = mask[top:bottom, left:right]
+            np.maximum(target, opaque, out=target)
+            boxes.append((left, top, right, bottom))
+            irregular_boxes.append((left, top, right, bottom))
+    alpha = _union_alpha(mask, irregular_boxes, rectangles)
+    return mask, alpha, boxes
 
 
 class SkinPainter:
@@ -199,31 +285,58 @@ class SkinPainter:
                 raise ValueError('Expected an in-frame binary uint8 local mask raster')
             cell_extents(raster.shape[1], raster.shape[0], region.text_height)
         pixels = frame_bgr.copy()
-        mask = np.zeros((h, w), np.uint8)
-        alpha = np.zeros((h, w), np.uint8)
         prepared = []
-        bounds = [w, h, 0, 0]
-        for region in regions:
-            if not cv2.countNonZero(region.raster):
-                continue
-            left, top, opaque, local_alpha = _envelope(region, h, w)
-            eh, ew = opaque.shape
-            area = np.s_[top:top + eh, left:left + ew]
-            np.maximum(mask[area], opaque, out=mask[area])
-            np.maximum(alpha[area], local_alpha, out=alpha[area])
-            prepared.append((region, left, top, local_alpha))
-            bounds = [min(bounds[0], left), min(bounds[1], top),
-                      max(bounds[2], left + ew), max(bounds[3], top + eh)]
-        if not prepared:
+        if skin in ('bar', 'patch'):
+            mask, alpha, boxes = _constant_geometry(regions, h, w)
+        else:
+            mask = np.zeros((h, w), np.uint8)
+            boxes, irregular_boxes, rectangles = [], [], []
+            for region in regions:
+                if not cv2.countNonZero(region.raster):
+                    continue
+                left, top, opaque, local_alpha = _envelope(region, h, w)
+                eh, ew = opaque.shape
+                prepared.append((region, left, top, opaque, local_alpha))
+                boxes.append((left, top, left + ew, top + eh))
+                if local_alpha is not None:
+                    rectangles.append((left, top, opaque, local_alpha))
+                else:
+                    target = mask[top:top + eh, left:left + ew]
+                    np.maximum(target, opaque, out=target)
+                    irregular_boxes.append((left, top, left + ew, top + eh))
+            alpha = _union_alpha(mask, irregular_boxes, rectangles)
+        if not boxes:
             return Painted(pixels, mask, alpha, skin)
-        left, top, right, bottom = bounds
+        left = min(box[0] for box in boxes)
+        top = min(box[1] for box in boxes)
+        right = max(box[2] for box in boxes)
+        bottom = max(box[3] for box in boxes)
         area = np.s_[top:bottom, left:right]
         canvas = np.zeros((bottom - top, right - left, 3), np.uint8)
         if skin == 'patch':
             cv2.rectangle(canvas, (0, 0), (right-left-1, bottom-top-1), (174, 188, 191), -1)
-        originals = []
         if skin in ('frosted', 'signed'):
-            for region, x, y, local_alpha in prepared:
+            owner = np.zeros((bottom - top, right - left), np.int32)
+            for index, (region, x, y, opaque, local_alpha) in enumerate(prepared, 1):
+                eh, ew = opaque.shape
+                target = owner[y-top:y-top+eh, x-left:x-left+ew]
+                target[opaque != 0] = index
+                local_union = alpha[y:y+eh, x:x+ew]
+                feather = (local_union != 0) & (local_union != 255)
+                if feather.any():
+                    if local_alpha is None:
+                        local_alpha = _feather(opaque)
+                    target[feather & (local_alpha == local_union)] = index
+            # Originals override extensions in supplied order, just as the
+            # previous final restore loop did. Ownership contains no color.
+            for index, (region, _, _, _, _) in enumerate(prepared, 1):
+                rh, rw = region.raster.shape
+                target = owner[region.top-top:region.top-top+rh, region.left-left:region.left-left+rw]
+                target[region.raster != 0] = index
+            visible = np.bincount(owner.ravel(), minlength=len(prepared) + 1)
+            for index, (region, x, y, opaque, _) in enumerate(prepared, 1):
+                if not visible[index]:
+                    continue
                 rh, rw = region.raster.shape
                 if skin == 'frosted':
                     # Always read original averaging cells, never painted video.
@@ -238,25 +351,18 @@ class SkinPainter:
                         vertices = np.array([[cx-radius, cy-radius], [cx+radius, cy-radius],
                                              [cx+radius, cy], [cx, cy+radius], [cx-radius, cy]], np.int32)
                         cv2.fillConvexPoly(paint, vertices, (151, 148, 143))
-                eh, ew = local_alpha.shape
+                eh, ew = opaque.shape
                 px, py = region.left - x, region.top - y
                 extended = cv2.copyMakeBorder(paint, py, eh-py-rh, px, ew-px-rw, cv2.BORDER_REPLICATE)
                 # A partial feather can never win against global alpha255.
                 # Equal-alpha winners retain the caller's supplied order.
-                winner = cv2.compare(local_alpha, alpha[y:y+eh, x:x+ew], cv2.CMP_EQ)
+                winner = cv2.compare(owner[y-top:y-top+eh, x-left:x-left+ew], index, cv2.CMP_EQ)
                 target = canvas[y-top:y-top+eh, x-left:x-left+ew]
                 cv2.copyTo(extended, winner, target)
-                originals.append((region, paint))
         weight = alpha[area].astype(np.float32) / 255
         # One native blend, with zero source weight on ALL opaque protection.
         # The explicit opaque copy also commits those bytes without blending.
         blended = cv2.blendLinear(canvas, frame_bgr[area], weight, 1 - weight)
         cv2.copyTo(blended, alpha[area], pixels[area])
         cv2.copyTo(canvas, mask[area], pixels[area])
-        # Extensions never displace an original. Constant Bar/Patch require
-        # no per-region paint arrays or restores; their canvas is identical.
-        for region, paint in originals:
-            rh, rw = region.raster.shape
-            target = pixels[region.top:region.top + rh, region.left:region.left + rw]
-            cv2.copyTo(paint, region.raster, target)
         return Painted(pixels, mask, alpha, skin)
