@@ -91,9 +91,10 @@ class Appearance:
                 shown_state, reason = 'FAILURE', 'transport'
         else:
             shown_state, reason = state, 'none' if state == 'LIVE' else 'safety_check'
-        # A hold fences the ingress high-water mark, including frames buffered
-        # ahead of this delayed output. LIVE must cross that mark after release.
-        sequence = capture_highwater if state != 'LIVE' else frame.index
+        # A control HOLD fences ingress already buffered before release. Automatic
+        # coverage checks fence only their output frame; a newer independently
+        # covered LIVE frame may resume without waiting another full delay.
+        sequence = capture_highwater if state == 'HOLD' else frame.index
         with self._lock:
             skin = self._painted_skin or self._votes.snapshot(time.monotonic())['skin']
         shown = self._presentation.render(frame.pixels, frame.mask,
