@@ -44,6 +44,9 @@ def parser():
     command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only confidence floor; default 0.5')
     command.add_argument('--mediamtx-dir', type=Path, default=ROOT / '.tmp/tools/mediamtx-v1.21.3')
     command.add_argument('--seconds', type=float)
+    command.add_argument('--demo-source', type=Path, help='Prepared source manifest; explicit loopback local-only rehearsal')
+    command.add_argument('--demo-receipt', type=Path, help='Fresh sender JSONL path; paired with --demo-source')
+    command.add_argument('--archive', type=Path, help='Opt in to a fresh relay evidence directory')
     command.add_argument('--rtmp-port', type=int, default=19350)
     command.add_argument('--rtsp-port', type=int, default=18554)
     command.add_argument('--srt-port', type=int, default=18890, help='Existing private listener only; SRT remains unqualified')
@@ -74,6 +77,13 @@ def private_host(host):
 
 
 def cli_arguments(args, host):
+    demo_options = runpy.run_path(str(Path(__file__).resolve().parents[1] / 'tools/demo_renderer/options.py'))
+    try:
+        demo_options['validate_demo'](args)
+        if args.archive is not None:
+            demo_options['fresh'](args.archive)
+    except ValueError as error:
+        raise WalkError(str(error)) from None
     if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
                                              or not 0 < args.accurate_rate_hz <= 30):
         raise WalkError('--accurate-rate-hz must be positive, finite and at most 30')
@@ -87,11 +97,17 @@ def cli_arguments(args, host):
     if not 0 <= args.dashboard_port <= 65535:
         raise WalkError('Dashboard port must be 0..65535')
     mode = '--local-only' if args.local_only else '--twitch-live' if args.twitch_live else '--twitch-bandwidth-test'
-    argv = ['run', mode, '--phone-setup', '--dashboard',
+    argv = ['run', mode, '--dashboard',
             '--host', host, '--model-cache', str(args.model_cache.expanduser().resolve()),
             '--mediamtx-dir', str(args.mediamtx_dir.expanduser().resolve()),
             '--rtmp-port', str(args.rtmp_port), '--rtsp-port', str(args.rtsp_port),
             '--srt-port', str(args.srt_port), '--dashboard-port', str(args.dashboard_port)]
+    if args.demo_source is None:
+        argv.append('--phone-setup')
+    for name in ('demo_source', 'demo_receipt', 'archive'):
+        value = getattr(args, name)
+        if value is not None:
+            argv += ['--' + name.replace('_', '-'), str(value.expanduser().resolve())]
     if args.seconds is not None:
         argv += ['--seconds', str(args.seconds)]
     if args.accurate_rate_hz is not None:
@@ -256,6 +272,9 @@ def main(argv=None, *, lock_root=LOCK_ROOT):
     try:
         if sys.platform != 'linux':
             raise WalkError('walk-linux requires Linux')
+        # Check demo mode before credentials, discovery, lease or SDK setup.
+        if args.demo_source is not None or args.demo_receipt is not None:
+            cli_arguments(args, args.host)
         if args.twitch_live or args.twitch_bandwidth_test:
             missing = [name for name in ('TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID') if not os.environ.get(name)]
             if missing:

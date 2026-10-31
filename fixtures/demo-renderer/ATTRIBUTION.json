@@ -1,0 +1,35 @@
+{
+  "schema": "irl-shield-w8-assets-v1",
+  "plate": {
+    "file": "fixtures/demo-renderer/fictional-street.png",
+    "sha256": "ddfaf72b9a30f6ffe78a1c52df357b5f9bd2e809cea95080cebbb244ee3dbcb6",
+    "reused_from": "/home/elan/.t3/worktrees/irl-shield/t3-44347854/fixtures/demo-renderer/fictional-street.png",
+    "provenance_record": "/home/elan/.t3/worktrees/irl-shield/t3-44347854/fixtures/demo-renderer/ATTRIBUTION.json",
+    "origin": "OpenAI built-in imagegen, generated in W8 submitted Codex child; existing asset reused unchanged",
+    "model_id": "not exposed",
+    "original_file": "/home/elan/.codex/generated_images/01a18dfa-931e-7220-88f0-8872ca833674/exec-24914029-8186-419f-813b-cd58ac0af55b.png",
+    "original_sha256": "e5fdd312fa52fe9f225a2a271e2ab5625002c35a3c929df99726cae1441bdb4d",
+    "normalization": "Original provenance: Pillow RGB resize to 960x540 with Lanczos; no content edited",
+    "prompt": "Use case: photorealistic-natural\nAsset type: wholly synthetic background for an IRL Shield demo fixture\nPrimary request: Create a fictional quiet street corner in a completely invented place. Wide landscape view, eye-level walking camera, ordinary anonymous low buildings, plain stucco walls, sidewalk and road. Leave a broad blank wall on the left-middle and a plain empty rectangular hanging sign near the right-middle for later programmatic fictional text. All sign faces completely blank.\nLighting: soft overcast daylight, natural texture, clear readable scene, realistic unremarkable street.\nConstraints: wholly invented scene, no references to real places. NO people, faces, cars, plates, real business designs, brands, logos, recognizable landmarks, flags, text, numbers, letters, symbols, watermarks, or music. NO readable writing anywhere. Do not add any text. Single coherent landscape image.",
+    "license": "CC0-1.0 dedication of project-owned generated asset; subject to applicable OpenAI terms",
+    "historical_author_review": "Prior W8 author recorded no text, real people, brands/logos or music; not current canonical clearance"
+  },
+  "font": {
+    "file": "fixtures/fonts/DejaVuSans-Bold.ttf",
+    "sha256": "e1d733afbbfce842a1b43dced0c9885a76a4e67290dc7e690c4e9b76ebfc7d23",
+    "license": "Bitstream Vera license; DejaVu modifications public domain",
+    "notice": "fixtures/fonts/LICENSE-DejaVu.txt"
+  },
+  "composition": {
+    "author": "Submitted Codex1 implementation session, 2026-10-31",
+    "license": "CC0-1.0 dedication of project-owned generated composition; font notice retained",
+    "fictional_labels": ["Cedar Vale", "142", "Elder Lane", "731"],
+    "controls": ["Cedar 142", "", "Unlisted 946"],
+    "new_generation": false,
+    "new_dependencies": [],
+    "source_kind": "Camera move over generated still with programmatic signs; not filmed street footage",
+    "status": "NOT CLEARED",
+    "canonical_three_judge_clearance": null,
+    "human_logo_eye": null
+  }
+}

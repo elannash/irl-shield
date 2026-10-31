@@ -62,6 +62,19 @@ snapshots and recipes are in [v2 preparation](../docs/FRESH-HELDOUT-V2.md) and
 | `paris-walk` / fresh v2 heldout | [Paris walking travel tour](https://commons.wikimedia.org/w/index.php?oldid=1031020312), [Le Monde en Vidéo](https://www.youtube.com/user/allairej1957), [YouTube O4W4X_UBRkg](https://www.youtube.com/watch?v=O4W4X_UBRkg) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `liverpool-walk` / fresh v2 heldout | [Walking in Liverpool](https://commons.wikimedia.org/w/index.php?oldid=1053656681), [POPtravel](https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA), [YouTube jKJ2zDSYns8](https://www.youtube.com/watch?v=jKJ2zDSYns8) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
+## W8 fictional demo source (NOT CLEARED)
+
+The unchanged generated plate in `demo-renderer/fictional-street.png` is a
+project-owned fictional scene dedicated to CC0-1.0, subject to applicable OpenAI
+terms. [Its provenance](demo-renderer/ATTRIBUTION.json) retains the original
+imagegen prompt, original and normalized hashes, source worktree and historical
+author review. No new image generation or external source was used.
+`tools/demo_renderer/source.py` adds fictional signs and one continuous camera
+move over this still. The intended 210-second, video-only output is synthetic
+demo material, separate from tune and held-out fixtures. Its generation and
+decoded-frame checks remain unexecuted. The current canonical three-judge brand
+clearance and separate human logo review are pending current root-owned collectors.
+
 ## Fonts
 
 The bundled, unmodified DejaVu Sans Bold, DejaVu Sans Mono Bold and DejaVu Serif

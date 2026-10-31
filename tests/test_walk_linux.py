@@ -1,9 +1,11 @@
 """Walk bootstrap boundaries. All leases are private, including subprocess leases."""
 from contextlib import contextmanager, redirect_stderr, redirect_stdout
 import fcntl
+import hashlib
 import importlib.machinery
 import importlib.util
 from io import StringIO
+import json
 import os
 from pathlib import Path
 import select
@@ -12,7 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 from lock_isolation import install_lock_guard
 
@@ -42,6 +44,65 @@ def installed_bootstrap(root):
 
 
 class WalkSelection(unittest.TestCase):
+    def test_demo_modes_and_paths_are_rejected_before_discovery_lease_or_login(self):
+        from shield.cli import execute, parser
+        import asyncio
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            manifest = root / 'source.json'
+            manifest.write_text('{}')
+            options = ['--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
+                       '--archive', str(root / 'archive'), '--seconds', '230']
+            for extra in (['--twitch-live', '--accurate-rate-hz', '15'], ['--twitch-bandwidth-test'], ['--local-only', '--host', '100.80.2.3']):
+                with self.subTest(extra=extra), patch.dict(os.environ, {}, clear=True), \
+                        patch.object(walk, 'private_host', side_effect=AssertionError('discovery')) as discovery, \
+                        patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease')) as lease, \
+                        patch('shield.app.session.login', side_effect=AssertionError('login')) as login, \
+                        redirect_stderr(StringIO()):
+                    argv = ['--host', '127.0.0.1', *options, *extra]
+                    self.assertEqual(walk.main(argv), 2)
+                    with self.assertRaises(ValueError):
+                        asyncio.run(execute(parser().parse_args(['run', *argv])))
+                    discovery.assert_not_called()
+                    lease.assert_not_called()
+                    login.assert_not_called()
+            for broken in ('receipt-missing', 'archive-exists', 'source-missing'):
+                with self.subTest(broken=broken), patch.object(walk, 'exclusive_lease') as lease, \
+                        redirect_stderr(StringIO()):
+                    args = walk.parser().parse_args(['--local-only', '--host', '127.0.0.1', *options])
+                    if broken == 'receipt-missing':
+                        args.demo_receipt = None
+                    elif broken == 'archive-exists':
+                        args.archive = root
+                    else:
+                        args.demo_source = root / 'absent.json'
+                    with self.assertRaises(walk.WalkError):
+                        walk.cli_arguments(args, args.host)
+                    lease.assert_not_called()
+
+    def test_attended_demo_preserves_live_routing_and_requires_ids_before_login(self):
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            manifest = root / 'source.json'
+            manifest.write_text('{}')
+            argv = ['--twitch-live', '--host', '100.80.2.3', '--seconds', '600',
+                    '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
+                    '--archive', str(root / 'archive')]
+            args = walk.parser().parse_args(argv)
+            command = walk.cli_arguments(args, args.host)
+            self.assertIn('--twitch-live', command)
+            self.assertNotIn('--phone-setup', command)
+            self.assertIn('--demo-source', command)
+            with patch.dict(os.environ, {}, clear=True), \
+                    patch.object(walk, 'private_host', side_effect=AssertionError('discovery')) as discovery, \
+                    patch('shield.app.session.login', side_effect=AssertionError('login')) as login, \
+                    redirect_stderr(StringIO()) as error:
+                self.assertEqual(walk.main(argv), 2)
+            self.assertIn('TWITCH_CLIENT_ID', error.getvalue())
+            self.assertIn('TWITCH_BROADCASTER_ID', error.getvalue())
+            discovery.assert_not_called()
+            login.assert_not_called()
+
     def test_modes_and_unknown_forwarding_refuse_without_echoing_private_values(self):
         sentinel = 'SYNTHETIC-PRIVATE-ARGUMENT'
         for argv in ([], ['--local-only', '--twitch-live'],
@@ -107,6 +168,10 @@ class WalkLease(unittest.TestCase):
                             patch.object(walk.fcntl, 'flock', side_effect=AssertionError('nested flock')):
                         with walk.exclusive_lease(root) as fd:
                             self.assertEqual(fd, owner.fileno())
+                            from tools.demo_renderer.lease import inherited_exclusive
+                            with patch('tools.demo_renderer.lease.runpy.run_path', return_value={
+                                    'verified_fd': walk.verified_fd, 'LOCK_ROOT': root}):
+                                self.assertEqual(inherited_exclusive(), fd)
                             self.assert_excluded_without_patch(root / 'perf.lock')
                 self.assert_excluded(root / 'perf.lock')
 
@@ -279,6 +344,143 @@ class WalkEnvironment(unittest.TestCase):
 
 
 class WalkRealCLI(unittest.TestCase):
+    def test_cancelled_demo_model_initialization_is_reaped_without_starting_sender(self):
+        import asyncio
+        import threading
+        from shield.cli import execute, parser
+        async def scenario():
+            loop = asyncio.get_running_loop()
+            building = asyncio.Event()
+            release = threading.Event()
+            events = []
+            class Engine:
+                def close(self):
+                    events.append('engine-close')
+            class Media:
+                def __init__(self, *args, **kwargs):
+                    pass
+                def __enter__(self):
+                    return self
+                def __exit__(self, *args):
+                    events.append('media-close')
+            def build(*args, **kwargs):
+                loop.call_soon_threadsafe(building.set)
+                if not release.wait(5):
+                    raise RuntimeError('Synthetic model release timeout')
+                events.append('engine-built')
+                return Engine()
+            args = parser().parse_args(['run', '--local-only', '--host', '127.0.0.1'])
+            with patch('relay.mediamtx.MediaMTX', Media), patch('relay.mediamtx.verified_binary'), \
+                    patch('relay.runtime.make_engine', side_effect=build), \
+                    patch('relay.runtime.run', side_effect=AssertionError('runtime before model ready')) as runtime, \
+                    patch('shield.app.session.login', side_effect=AssertionError('login')) as login:
+                factory = Mock(side_effect=AssertionError('sender before readiness'))
+                task = asyncio.create_task(execute(args, phone_input=factory))
+                try:
+                    await asyncio.wait_for(building.wait(), 5)
+                    task.cancel()
+                    release.set()
+                    with self.assertRaises(asyncio.CancelledError):
+                        await task
+                finally:
+                    release.set()
+                    if not task.done():
+                        task.cancel()
+                        try:
+                            await task
+                        except asyncio.CancelledError:
+                            pass
+                factory.assert_not_called()
+                runtime.assert_not_called()
+                login.assert_not_called()
+            self.assertEqual(events, ['engine-built', 'engine-close', 'media-close'])
+        asyncio.run(scenario())
+
+    def test_local_demo_reaches_actual_runtime_and_reaps_failed_sender_without_tty(self):
+        from relay.security import Credentials
+        events, runtime_phone = [], []
+        class Engine:
+            delay = 1
+            stats = {}
+            def hold(self, *args, **kwargs):
+                pass
+            def submit(self, *args, **kwargs):
+                pass
+            def poll(self, *args, **kwargs):
+                return []
+            def close(self):
+                events.append('engine-close')
+        class Output:
+            error_code = error_details = None
+            count = max_write_seconds = recovery_count = 0
+            recovery_events = ()
+            def __init__(self, *args):
+                events.append('encoder-ready')
+            def close(self):
+                events.append('output-close')
+        class Source:
+            error_code = last_failure = None
+            high_water = active_generation = 0
+            timestamp_issues = {}
+            def __init__(self, *args):
+                events.append('reader-ready')
+            def drain(self):
+                raise AssertionError('Expected sender failure before input drain')
+            def close(self):
+                events.append('input-close')
+        class Sender:
+            def __init__(self, manifest, address, phone, receipt, *, local_only):
+                self.local_only = local_only
+                runtime_phone.append((address, phone, os.environ[walk.LEASE_ENV], local_only))
+                events.append('factory')
+            def __enter__(self):
+                events.append('sender-enter')
+                return self
+            def check(self):
+                events.append('sender-check')
+                raise RuntimeError('SYNTHETIC-WORKER-FAILURE')
+            def __exit__(self, *args):
+                events.append('sender-joined')
+        phone = Credentials('synthetic-phone', 'SYNTHETIC-PHONE-PASSWORD')
+        internal = Credentials('synthetic-internal', 'SYNTHETIC-INTERNAL-PASSWORD')
+        with tempfile.TemporaryDirectory() as name, patch.dict(os.environ, {}, clear=True):
+            root = Path(name)
+            video = root / 'source.mp4'
+            video.write_bytes(b'synthetic-source-not-native-media')
+            manifest = root / 'source.json'
+            manifest.write_text(json.dumps({'schema': 'irl-shield-w8-source-v1', 'video': 'source.mp4',
+                'video_sha256': hashlib.sha256(video.read_bytes()).hexdigest(), 'fps': 30, 'seconds': 210,
+                'frames': [{'source_index': i, 'pts': f'{i}/30'} for i in range(6300)]}))
+            with installed_bootstrap(root), patch.object(walk.os, 'nice'), \
+                    patch('relay.mediamtx.MediaMTX'), patch('relay.mediamtx.verified_binary'), \
+                    patch('relay.security.Credentials.generate', side_effect=[phone, internal]), \
+                    patch('relay.runtime.make_engine', return_value=Engine()), \
+                    patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', Source), \
+                    patch('tools.demo_renderer.sender.Sender', Sender), \
+                    patch('builtins.open', side_effect=AssertionError('TTY opened')) as tty, \
+                    patch('shield.app.session.login', side_effect=AssertionError('login')) as login, \
+                    redirect_stdout(StringIO()) as output, redirect_stderr(StringIO()) as error, \
+                    self.assertRaises(SystemExit) as ended:
+                walk.main(['--local-only', '--host', '127.0.0.1', '--seconds', '230',
+                    '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
+                    '--archive', str(root / 'archive')], lock_root=root)
+            self.assertEqual(ended.exception.code, 1)
+            tty.assert_not_called()
+            login.assert_not_called()
+            self.assertIs(runtime_phone[0][1], phone)
+            self.assertEqual(runtime_phone[0][0].host, '127.0.0.1')
+            self.assertGreaterEqual(int(runtime_phone[0][2]), 3)
+            self.assertTrue(runtime_phone[0][3])
+            self.assertLess(events.index('encoder-ready'), events.index('factory'))
+            self.assertLess(events.index('reader-ready'), events.index('factory'))
+            self.assertIn('sender-check', events)
+            for closed in ('input-close', 'output-close', 'engine-close'):
+                self.assertLess(events.index('sender-joined'), events.index(closed))
+            saved = (root / 'archive/runtime.json').read_text()
+            self.assertEqual(json.loads(saved)['status'], 'failed')
+            for secret in (phone.password, internal.password, 'SYNTHETIC-WORKER-FAILURE'):
+                self.assertNotIn(secret, output.getvalue() + error.getvalue() + saved)
+
     def test_selected_routes_use_real_launcher_and_cli_with_private_tty_cleanup(self):
         for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
             with self.subTest(mode=mode):

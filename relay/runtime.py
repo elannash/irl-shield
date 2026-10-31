@@ -1,5 +1,6 @@
 """Live relay with verified TLS egress; key acquisition belongs to controls."""
 import argparse
+from contextlib import ExitStack
 import json
 import math
 from numbers import Real
@@ -50,7 +51,7 @@ def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_
 def run(engine, address, phone, internal, directory, stopped, seconds=None,
         width=1280, height=720, encoder='h264_nvenc', control_ready=None,
         publish_twitch=False, local_sink=None, twitch_live=False, live_approval=None,
-        appearance=None):
+        appearance=None, phone_input=None):
     """M3's control_ready(callbacks) gets hold/set_stream_key; key stays in memory.
 
     This function owns engine lifetime. The caller owns MediaMTX and the stop
@@ -72,6 +73,9 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
                               'input_failure': source.last_failure if source is not None else None}
 
     try:
+        if phone_input is not None and (local_sink is not None
+                or not twitch_live and (publish_twitch or address.host != '127.0.0.1')):
+            raise ValueError('Phone input callback requires local-only loopback or attended live approval')
         if twitch_live:
             from shield.app.live import LiveApproval, LiveModeError
             if not publish_twitch or not isinstance(live_approval, LiveApproval):
@@ -103,16 +107,25 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
         session = RelaySession(engine, writer.write, width=width, height=height, control=control,
                                appearance=appearance)
         source = NetworkInput(address.rtsp('camera', internal))
-        while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
-            for kind, pts, value, generation, arrived in source.drain():
-                if kind == 'video':
-                    session.video(pts, value, generation, now=arrived)
-                elif kind == 'audio':
-                    session.audio(pts, value, generation)
-                else:
-                    session.disconnected()
-            session.tick()
-            stopped.wait(.005)
+        with ExitStack() as inputs:
+            sender = None
+            if phone_input is not None and not stopped.is_set():
+                # Encoder startup has acknowledged; writer and camera reader
+                # exist. Camera arrival cannot precede starting its publisher.
+                started = time.monotonic()
+                sender = inputs.enter_context(phone_input(address, phone))
+            while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
+                if sender is not None:
+                    sender.check()
+                for kind, pts, value, generation, arrived in source.drain():
+                    if kind == 'video':
+                        session.video(pts, value, generation, now=arrived)
+                    elif kind == 'audio':
+                        session.audio(pts, value, generation)
+                    else:
+                        session.disconnected()
+                session.tick()
+                stopped.wait(.005)
         summary['status'] = 'stopped'
     except Exception as error:
         record_failure(error)
