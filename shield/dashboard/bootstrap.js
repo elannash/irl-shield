@@ -7,16 +7,23 @@
   let refreshGeneration = 0;
   let refreshing = false;
   let pairGeneration = 0;
+  let controlsObserver;
   const root = document.getElementById('root');
   const byId = id => document.getElementById(id);
   const reasons = {
     startup: 'Waiting for protected video.', manual: 'Your manual hold is active.',
     chat: 'Chat requested a hold.', shield_mode: 'Twitch Shield Mode is active.',
-    transport: 'Waiting for the stream connection.', egress: 'Waiting for safe output.',
+    transport: 'Waiting for the stream connection.', egress: 'Waiting for protected output.',
     coverage: 'Checking privacy coverage.', clear: 'Privacy coverage is current.',
     ok: 'Privacy coverage is current.', stale: 'Waiting for fresh privacy coverage.',
     unknown: 'Protection state supplied by the stream controller.'
   };
+  function controlState(state, reason) {
+    byId('control-state').textContent = state;
+    const manual = state === 'HOLD' && reason === 'manual';
+    byId('hold').classList.toggle('primary', !manual);
+    byId('resume').classList.toggle('primary', manual);
+  }
   async function request(path, options = {}) {
     const response = await fetch(path, {
       signal: AbortSignal.timeout(4000), ...options, cache: 'no-store', credentials: 'omit', redirect: 'error',
@@ -40,6 +47,7 @@
   function stale() {
     byId('state').textContent = 'Unavailable';
     byId('state').dataset.state = 'UNKNOWN';
+    controlState('Unavailable', 'unknown');
     byId('reason').textContent = 'Status connection lost. Check the relay terminal.';
     byId('connection').textContent = 'The current video state is unknown.';
     byId('clues').textContent = '—';
@@ -59,6 +67,7 @@
       if (generation !== refreshGeneration || document.hidden) return;
       byId('state').textContent = data.state;
       byId('state').dataset.state = data.state;
+      controlState(data.state, data.reason_code);
       byId('reason').textContent = reasons[data.reason_code] || reasons.unknown;
       byId('connection').textContent = 'Connected · private streamer view';
       byId('clues').textContent = data.clues_hidden === null ? '—' : data.clues_hidden.toLocaleString();
@@ -120,6 +129,12 @@
     try {
       const response = await request('/private/ui');
       root.innerHTML = await response.text();
+      controlsObserver?.disconnect();
+      controlsObserver = new ResizeObserver(() => {
+        document.documentElement.style.setProperty('--control-height',
+          `${Math.ceil(byId('controls').getBoundingClientRect().height)}px`);
+      });
+      controlsObserver.observe(byId('controls'));
       byId('hold').addEventListener('click', () => setHold(true));
       byId('resume').addEventListener('click', () => setHold(false));
       byId('pairing').addEventListener('toggle', () => {
@@ -157,6 +172,7 @@
     } else if (byId('state')) refresh();
   });
   window.addEventListener('pagehide', () => {
+    controlsObserver?.disconnect();
     clearInterval(timer);
     clearPairing();
     token = '';

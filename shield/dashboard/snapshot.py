@@ -11,7 +11,7 @@ REASONS = {
     'chat': 'Chat requested a hold.',
     'shield_mode': 'Twitch Shield Mode is active.',
     'transport': 'Waiting for the stream connection.',
-    'egress': 'Waiting for safe output.',
+    'egress': 'Waiting for protected output.',
     'coverage': 'Checking privacy coverage.',
     'clear': 'Privacy coverage is current.',
     'ok': 'Privacy coverage is current.',
