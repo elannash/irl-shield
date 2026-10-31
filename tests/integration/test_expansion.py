@@ -95,11 +95,11 @@ class Expansion(unittest.TestCase):
         from shield.presentation import PresentationRenderer, PresentationSnapshot
         raw = np.full((180, 320, 3), 211, np.uint8)
         cases = [
-            ([('transport', 'ingest-drop')], 'FAILURE'),
-            ([('chat', 'moderator'), ('transport', 'ingest-drop')], 'HOLD'),
-            ([('shield_mode', 'shield-mode'), ('transport', 'ingest-drop')], 'SHIELD_MODE'),
+            ([('transport', 'ingest-drop')], 'FAILURE', 'transport'),
+            ([('chat', 'moderator'), ('transport', 'ingest-drop')], 'HOLD', 'moderator'),
+            ([('shield_mode', 'shield-mode'), ('transport', 'ingest-drop')], 'SHIELD_MODE', 'shield_mode'),
         ]
-        for sources, shown_state in cases:
+        for sources, shown_state, shown_reason in cases:
             with self.subTest(sources=sources):
                 appearance = Appearance(width=320, height=180)
                 engine = engine_for(appearance)
@@ -110,7 +110,7 @@ class Expansion(unittest.TestCase):
                         Coverage(0,0,True,'covered'), 'HOLD', 0., 0., True, True)
                     actual = appearance.present(frame, capture_highwater=10)
                     expected = PresentationRenderer(320,180,badge=False).render(raw,
-                        np.zeros((180,320),np.uint8), PresentationSnapshot(shown_state),
+                        np.zeros((180,320),np.uint8), PresentationSnapshot(shown_state, reason_code=shown_reason),
                         source_sequence=10)
                     np.testing.assert_array_equal(actual.pixels, expected.pixels,
                         'Automatic recovery must not claim operator resume; operator holds retain their slate')

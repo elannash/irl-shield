@@ -26,8 +26,9 @@ GREEN = (126, 225, 166)
 AMBER = (244, 199, 123)
 COPY = {
     'HOLD': ('Paused for privacy', 'Back when the streamer resumes'),
-    'SHIELD_MODE': ('SHIELD MODE ON', 'Back when Shield Mode ends'),
-    'FAILURE': ('Paused while Shield\nchecks this view', 'Back on its own once it’s safe'),
+    'SHIELD_MODE': ('Paused for privacy', 'Back when Shield Mode ends'),
+    'FAILURE': ('Checking privacy coverage', 'Video resumes automatically.'),
+    'TRANSPORT': ('Paused for privacy', 'Reconnecting video. Resumes automatically.'),
 }
 
 
@@ -111,7 +112,7 @@ class PresentationRenderer:
         canvas = Image.new('RGB', (self.width, self.height), FIELD)
         draw = ImageDraw.Draw(canvas)
         center = self.width // 2
-        accent = AMBER if state == 'FAILURE' else GREEN
+        accent = AMBER if state in ('FAILURE', 'TRANSPORT') else GREEN
         # This small geometric shield is original project artwork.
         mark = [(center + round(x * self._scale), self._px(y)) for x, y in
                 ((0, 190), (26, 200), (23, 229), (0, 247), (-23, 229), (-26, 200))]
@@ -122,14 +123,14 @@ class PresentationRenderer:
         for i, line in enumerate(lines):
             draw.text((center, self._px(top + i * 68)), line,
                       font=self._font(60, 650), fill=INK, anchor='mt')
-        draw.text((center, self._px(425)), back, font=self._font(40, 450),
+        draw.text((center, self._px(425)), back, font=self._font(46, 450),
                   fill=MUTED, anchor='mt')
         return np.asarray(canvas)[:, :, ::-1].copy()
 
     def _text_tile(self, text):
-        font = self._font(40, 550)
+        font = self._font(46, 550)
         width = max(1, int(np.ceil(font.getlength(text))))
-        canvas = Image.new('RGB', (width, self._px(52)), PLATE)
+        canvas = Image.new('RGB', (width, self._px(60)), PLATE)
         ImageDraw.Draw(canvas).text((0, self._px(4)), text, font=font, fill=INK,
                                    anchor='lt')
         return np.asarray(canvas)[:, :, ::-1].copy()
@@ -140,7 +141,7 @@ class PresentationRenderer:
             prefix, suffix = self._glyphs['Shield hid '], self._glyphs[' clues']
             padding = self._px(16)
             width = 2 * padding + prefix.shape[1] + len(digits) * self._digit_width + suffix.shape[1]
-            plate = np.empty((self._px(72), width, 3), np.uint8)
+            plate = np.empty((self._px(84), width, 3), np.uint8)
             plate[:] = PLATE[::-1]
             x, y = padding, self._px(10)
             for tile, cell in [(prefix, prefix.shape[1]),
@@ -167,11 +168,14 @@ class PresentationRenderer:
             state = ('SHIELD_MODE' if snapshot.state == 'SHIELD_MODE' or
                      (snapshot.state == 'HOLD' and snapshot.reason_code == 'shield_mode')
                      else 'HOLD' if snapshot.state == 'HOLD' else 'FAILURE')
+            if state == 'FAILURE' and snapshot.reason_code in ('transport', 'starting'):
+                state = 'TRANSPORT'
             self._last_slate = state
             self._blocked_through = self._latest_sequence
         if snapshot.state != 'LIVE' or source_sequence <= self._blocked_through:
             return Presentation(self._slates[self._last_slate].copy(), self._full_mask.copy(),
-                                self._full_mask.copy(), self._last_slate, True)
+                                self._full_mask.copy(),
+                                'FAILURE' if self._last_slate == 'TRANSPORT' else self._last_slate, True)
         output = pixels.copy()
         covered = mask.copy()
         overlay = np.zeros(shape, np.uint8)

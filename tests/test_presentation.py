@@ -15,9 +15,11 @@ class PresentationPrivacy(unittest.TestCase):
 
     def test_every_slate_and_reason_swap_is_independent_of_two_random_sources(self):
         previous = None
-        for state in ('HOLD', 'SHIELD_MODE', 'PROTECT', 'FAILURE', 'HOLD'):
-            with self.subTest(state=state):
-                snapshot = PresentationSnapshot(state, clue_count=101, face_count=20)
+        for state, reason in (('HOLD', 'moderator'), ('SHIELD_MODE', 'shield_mode'),
+                              ('PROTECT', 'safety_check'), ('FAILURE', 'transport'),
+                              ('HOLD', 'moderator')):
+            with self.subTest(state=state, reason=reason):
+                snapshot = PresentationSnapshot(state, reason_code=reason, clue_count=101, face_count=20)
                 a = self.renderer.render(self.a, self.mask, snapshot, source_sequence=3)
                 b = self.renderer.render(self.b, self.mask, snapshot, source_sequence=3)
                 self.assertTrue(a.slate)
@@ -27,7 +29,7 @@ class PresentationPrivacy(unittest.TestCase):
                 self.assertGreater(np.unique(a.pixels.reshape(-1, 3), axis=0).shape[0], 10)
                 self.assertFalse(np.shares_memory(a.pixels, self.a))
                 self.assertEqual(a.state, 'FAILURE' if state == 'PROTECT' else state)
-                if previous is not None and state not in ('FAILURE',):
+                if previous is not None:
                     self.assertFalse(np.array_equal(a.pixels, previous))
                 previous = a.pixels
 
