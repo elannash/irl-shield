@@ -138,12 +138,87 @@ nice -n 10 env OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 \
   fixtures/prepare_heldout_v2.py verify
 ```
 
-The manifest's `evaluation_marker` and `evaluation_reservation` are
-**declarations, not enforced execution guards**. Main's current evaluator
-hard-codes v1 and fails closed for v2. The v2 harness follow-up must add durable
-tracked started-state, the `not_before_utc` check and final-policy binding before
-any v2 evaluation. Until that follow-up lands, this reservation is an operational
-rule, not a claim that the existing harness enforces one-shot execution.
+## Evaluation guards
+
+The explicit `bench.heldout_bench render` entry point accepts v1 and v2. V1's
+tracked spent-result check remains in place. V2 requires the manifest's exact
+one-shot reservation, three distinct original source identities and all six
+frozen pairs. Cache relocation resolves only the selected dataset's prefix;
+v2 inputs cannot resolve through v1's cache. Existing path, hash, independent
+judge/family, sealed-source, area and real-video guards still apply.
+
+V2 refuses to start before `2026-11-01T14:00:00Z`. The conductor must first
+freeze and commit the final policy and executing sources in a clean checkout.
+The explicit `--policy-commit` must be that checkout's full HEAD SHA and its
+Git committer timestamp must be at or after the reservation boundary. The
+dataset and policy must be tracked in that commit with the supplied SHA-256s.
+This is the conductor's final-policy binding, not automatic policy selection:
+do not supply Saturday's policy, amend dates or replace the supplied commit
+with a later receipt commit. No final v2 policy commit is designated by this
+harness implementation or by the preparation manifest.
+
+V2 acquires or validates its exclusive host lease before any start receipt or
+marker is created and holds that lease through the entire six-clip render loop.
+After acquiring the lease it rechecks spent receipts, closing the race with
+another checkout that started while this invocation waited.
+
+After validating the dataset, policy, source, time, all input hashes and output
+locations, the renderer reserves the host's attempt by exclusively creating
+`~/.local/state/irl-shield/fresh-heldout-v2-<datasetsha>.started`. This fixed
+host location is outside Git and output/scratch directories; neither
+`--state-directory` nor `--cache-root` relocates it. The marker binds the dataset,
+policy commit, source hashes and UTC start time, and is flushed to disk before
+the receipt commit. It stays spent after a crash or commit failure. Do not delete
+or replace it to retry.
+
+The renderer then exclusively creates
+`bench/results/fresh-heldout-v2-started.json` and commits **only that receipt**
+before the first physical render. Git hooks run. The receipt's `heldout_freeze`
+binds the original policy commit, policy/dataset hashes and actual pipeline and
+orchestrator identities. A failed commit permits no render and leaves the
+exclusive receipt for investigation. The runtime receipt commit is separate
+from source commits, which the conductor owns. This follow-up's synthetic
+tests commit only disposable temporary Git repositories.
+
+The receipt commit must have the frozen policy commit as its direct parent
+and introduce no other tracked change. Before every render the harness checks
+that receipt, HEAD and clean source tree; source hashes and frozen snapshots
+are checked after each render. `evaluation.json` retains `policy_commit` as
+the final policy SHA and records `started_receipt_commit` separately. Advancing
+HEAD to record the start never silently rebinds the policy. Output and writable
+one-shot state inside the checkout must be Git-ignored; separate external paths
+are also supported. The state marker must remain outside the output directory.
+These placement checks run before committing the start, so bookkeeping cannot
+dirty the checkout or create the output prematurely after spending the attempt.
+A read-only cache override still requires separate writable state.
+
+Restart checks read committed `bench/results` objects in every commit reachable
+from any Git ref (`git rev-list --all`) before inspecting local markers or the
+current policy HEAD. Identical JSON blobs are inspected once per scan. A receipt
+still spends the dataset when a newer commit removes it, a second linked
+worktree checks out the original policy, or HEAD is detached at that policy.
+A committed start also survives render failure, lost output/state directories,
+and a missing working copy of the receipt. Never delete or rewrite the receipt
+to retry. If no ref retains the receipt history, the independent host marker
+still refuses a repeat on that host. A fresh host with no receipt history and
+no host marker is outside this local enforcement boundary. Preserve and transfer
+the receipt commit alongside the sealed evaluation evidence.
+
+Validation uses **conductor decision: current main EX serialization (SH→EX per merged PR #11)**.
+Root runs one job at a time through the canonical EX queue, at nice 10 in
+`app-t3code-agents.slice`, with native thread limits of two and one OpenCV
+thread. Do not wrap a queued command in another global lease. Tests use
+temporary locks, including the v2 Git lifecycle fixtures. The historical
+preparation commands above retain their original argv.
+
+Linux render calls queued under EX reuse the inherited descriptor only after
+verifying its canonical inode and actual exclusive flock. An invalid descriptor
+is rejected before Git receipt/index/HEAD or marker changes, including task-local
+lock bookkeeping; it does not fall back to another lock. Standalone v2 calls
+acquire and hold their own EX lease across preflight, both durable witnesses and
+all six renders. V1 retains its per-clip lease behavior. Do not add an outer
+`host-lock` around a standalone render command without the queue's verified
+descriptor handoff.
 
 Exactly **one** future evaluation is reserved for the final policy after the
 **Sunday, November 1, 2026, 06:00 PT / 14:00 UTC** policy freeze. This preparation
@@ -151,6 +226,27 @@ does not authorize the coordinator to grade it, and it must not be used by
 Saturday's v1 walk policy. Harness support and evaluation enforcement belong
 to the quality coordinator. The manifest remains immutable `frozen-ungraded`;
 any later evaluation state belongs in separate retained receipts.
+
+`tests/test_heldout_bench.py` keeps the v1 assertions and adds disposable-Git
+v2 lifecycle fixtures. They use synthetic byte strings and a render spy to
+check committed start-before-render ordering, refusal after interrupted render
+and lost scratch, the reservation boundary, a pre-freeze policy commit, changed
+source/policy bytes, committed policy bytes even with a clean Git index,
+invalid output/state placement, and receipt-commit failure. Synthetic HOME state
+is isolated outside the temporary repositories by patching the stdlib HOME
+boundary; tests never read or write the real host marker. A disposable linked
+worktree exercises shared refs, and a detached checkout exercises a reset to
+the policy tree. A separate plain clone isolates the host-marker guard.
+Independent tests lose synthetic host state while
+retaining receipt refs, and lose receipt reachability while retaining host state,
+so neither guard can hide a missing implementation of the other. Lease tests
+reject malformed/closed/wrong-inode/nonexclusive inherited descriptors before
+any start changes, check the post-acquisition spent race, and compete for the
+standalone lock during marker writes and every render. A tiny generated-video
+fixture checks v2 sealed identity through fake judging and relocation. These
+fixtures never read real v2 media. Physical guard mutations and the unified
+Python 3.11 gate are required validation receipts; static source inspection
+alone does not establish that they pass.
 
 ## Retained verification
 
