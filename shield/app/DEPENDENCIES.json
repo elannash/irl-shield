@@ -193,6 +193,13 @@
       "version": "4.1.2",
       "license": "MIT",
       "source": "https://pypi.org/project/zipp/4.1.2/"
+    },
+    {
+      "name": "qrcode",
+      "version": "8.2",
+      "license": "BSD-3-Clause AND MIT",
+      "source": "https://pypi.org/project/qrcode/8.2/",
+      "license_file": "../dashboard/licenses/qrcode-LICENSE"
     }
   ]
 }

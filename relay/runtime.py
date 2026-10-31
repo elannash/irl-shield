@@ -19,7 +19,7 @@ from shield.engine import MaskingEngine
 from shield.lanes import DetectorLane
 
 
-def make_engine(cache, provider='cuda', faults=()):
+def make_engine(cache, provider='cuda', faults=(), appearance=None):
     from bench.onnx_detectors import create_detector
     lanes = {}
     try:
@@ -31,7 +31,8 @@ def make_engine(cache, provider='cuda', faults=()):
                                        fault_intervals=faults if name == 'accurate' else ())
         return MaskingEngine(lanes, {'fps': 30, 'delay_seconds': 1., 'before': 6, 'after': 30,
                                     'motion_mode': 'phase', 'motion_width': 320,
-                                    'motion_min_response': .05, 'padding': .3})
+                                    'motion_min_response': .05, 'padding': .3},
+                             renderer=appearance.renderer(padding=.3) if appearance is not None else None)
     except BaseException:
         for lane in lanes.values():
             lane.close()
@@ -40,7 +41,8 @@ def make_engine(cache, provider='cuda', faults=()):
 
 def run(engine, address, phone, internal, directory, stopped, seconds=None,
         width=1280, height=720, encoder='h264_nvenc', control_ready=None,
-        publish_twitch=False, local_sink=None, twitch_live=False, live_approval=None):
+        publish_twitch=False, local_sink=None, twitch_live=False, live_approval=None,
+        appearance=None):
     """M3's control_ready(callbacks) gets hold/set_stream_key; key stays in memory.
 
     This function owns engine lifetime. The caller owns MediaMTX and the stop
@@ -88,7 +90,10 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
             destinations.append(local_sink)
         output = Egress(tuple(destinations), directory, width, height, encoder)
         writer = EgressWriter(output, lambda: engine.control.state == 'HOLD')
-        session = RelaySession(engine, writer.write, width=width, height=height, control=control)
+        if appearance is not None:
+            appearance.engine = engine
+        session = RelaySession(engine, writer.write, width=width, height=height, control=control,
+                               appearance=appearance)
         source = NetworkInput(address.rtsp('camera', internal))
         while not stopped.is_set() and (seconds is None or time.monotonic() - started < seconds):
             for kind, pts, value, generation, arrived in source.drain():

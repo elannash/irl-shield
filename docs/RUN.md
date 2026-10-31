@@ -175,8 +175,23 @@ The [live guard](LIVE-GUARD.md) and [forwarder evidence](LIVE-EGRESS.md) describ
 synthetic loopback verification, including CA/hostname rejection and the
 verification-disable mutation. The [earlier TLS investigation](PR5-TLS-FOLLOWUP.md)
 remains a historical record of the direct PyAV defect, not an available runtime
-route. Real Twitch ingest acceptance is qualified only by the attended
-bandwidth test; no Twitch connection or real stream key was used here.
+route. Those automated checks use no Twitch connection or real stream key.
+
+### Attended bandwidth observation — October 30, 2026
+
+In session `attended-naie-bandwidth-2026-10-30`, the owner approved the `naie`
+device login and ran `scripts/walk-linux --twitch-bandwidth-test` from a clean
+checkout at `cd20792`. The conductor observed an established TLS connection
+through the verified forwarder to Twitch on port 443. Acknowledged bytes grew
+from approximately 1.23 MB to 1.48 MB over eight seconds of privacy-slate output.
+The run exited cleanly at 22:43:56 PT: MediaMTX stopped, the connection closed,
+and the canonical exclusive lease was released.
+
+This attended observation establishes that Twitch accepted the loopback
+`tcUrl` (`rtmp://127.0.0.1:<port>/app`) through that forwarder with the key held
+in memory. It is not an automated test or a qualification of live-video FPS,
+privacy effectiveness, phone latency, audio or SRT. Future live publication still
+requires the separate attended authorization described above.
 macOS and Windows execution of this route remain untested.
 
 ## Local integration verification

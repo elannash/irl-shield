@@ -69,3 +69,11 @@ Bold fonts come from [DejaVu Fonts](https://dejavu-fonts.github.io/). Bitstream
 Vera portions carry the Bitstream Vera font license; DejaVu changes are public
 domain. The full notice is in [fonts/LICENSE-DejaVu.txt](fonts/LICENSE-DejaVu.txt).
 These fonts are fixture rendering assets, separate from the video licenses.
+
+
+The unmodified Atkinson Hyperlegible Next variable font used by the presentation
+renderer is Copyright 2020–2024 The Atkinson Hyperlegible Next Project Authors,
+licensed under SIL Open Font License 1.1. Its [full notice](../shield/presentation/assets/OFL.txt)
+is bundled; [presentation attribution](presentation/ATTRIBUTION.json) records
+upstream provenance and exact font/license hashes. It is separate from the
+footage licenses above.

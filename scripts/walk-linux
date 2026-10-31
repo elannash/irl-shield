@@ -1,0 +1,280 @@
+#!/usr/bin/env -S python3 -I -S -B
+"""Attended Linux walk bootstrap; existing shield.cli owns the relay and secrets."""
+import argparse
+from contextlib import contextmanager
+import fcntl
+from importlib import metadata
+import ipaddress
+import math
+import os
+from pathlib import Path
+import re
+import resource
+import runpy
+import site
+import stat
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+LOCK_ROOT = Path('/tmp/agents/irl-shield')
+LEASE_ENV = 'IRL_SHIELD_PERF_QUEUE_LEASE_FD'
+
+
+class WalkError(Exception):
+    """Only fixed, credential-free diagnostics cross the bootstrap boundary."""
+
+
+class WalkParser(argparse.ArgumentParser):
+    def error(self, message):
+        # Unknown arguments might contain a credential pasted by mistake.
+        self.exit(2, 'walk-linux: select exactly one mode and supported named options; see --help\n')
+
+
+def parser():
+    command = WalkParser(description=__doc__, allow_abbrev=False)
+    mode = command.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--twitch-live', action='store_true', help='Attended naie LIVE authorization in the existing CLI')
+    mode.add_argument('--twitch-bandwidth-test', action='store_true', help='Publish to the existing Twitch test ingest')
+    mode.add_argument('--local-only', action='store_true', help='No Twitch login, controls or publication')
+    command.add_argument('--venv', type=Path, default=Path(os.environ.get('SHIELD_WALK_VENV', ROOT / '.venv')))
+    command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'), help='Own Tailscale IPv4; explicit 127.0.0.1 for local verification')
+    command.add_argument('--model-cache', type=Path, default=ROOT / 'models/cache')
+    command.add_argument('--mediamtx-dir', type=Path, default=ROOT / '.tmp/tools/mediamtx-v1.21.3')
+    command.add_argument('--seconds', type=float)
+    command.add_argument('--rtmp-port', type=int, default=19350)
+    command.add_argument('--rtsp-port', type=int, default=18554)
+    command.add_argument('--srt-port', type=int, default=18890, help='Existing private listener only; SRT remains unqualified')
+    command.add_argument('--dashboard-port', type=int, default=0)
+    return command
+
+
+def private_host(host):
+    if host is None:
+        try:
+            result = subprocess.run(['tailscale', 'ip', '-4'], capture_output=True, text=True, timeout=2, check=True)
+            addresses = result.stdout.splitlines()
+            if len(addresses) != 1:
+                raise ValueError()
+            address = ipaddress.IPv4Address(addresses[0].strip())
+            if address not in ipaddress.IPv4Network('100.64.0.0/10'):
+                raise ValueError()
+            return str(address)
+        except (OSError, ValueError, subprocess.SubprocessError):
+            raise WalkError('Own Tailscale IPv4 unavailable; set --host or SHIELD_BIND_HOST explicitly') from None
+    try:
+        address = ipaddress.IPv4Address(host)
+        if str(address) == '127.0.0.1' or address in ipaddress.IPv4Network('100.64.0.0/10'):
+            return str(address)
+    except ipaddress.AddressValueError:
+        pass
+    raise WalkError('Host must be own Tailscale IPv4 or explicit 127.0.0.1; no wildcard/public/LAN bind')
+
+
+def cli_arguments(args, host):
+    if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
+        raise WalkError('--seconds must be positive and finite')
+    if any(not 1024 <= port <= 65535 for port in (args.rtmp_port, args.rtsp_port, args.srt_port)):
+        raise WalkError('Relay ports must be unprivileged (1024..65535)')
+    if not 0 <= args.dashboard_port <= 65535:
+        raise WalkError('Dashboard port must be 0..65535')
+    mode = '--local-only' if args.local_only else '--twitch-live' if args.twitch_live else '--twitch-bandwidth-test'
+    argv = ['run', mode, '--phone-setup', '--dashboard',
+            '--host', host, '--model-cache', str(args.model_cache.expanduser().resolve()),
+            '--mediamtx-dir', str(args.mediamtx_dir.expanduser().resolve()),
+            '--rtmp-port', str(args.rtmp_port), '--rtsp-port', str(args.rtsp_port),
+            '--srt-port', str(args.srt_port), '--dashboard-port', str(args.dashboard_port)]
+    if args.seconds is not None:
+        argv += ['--seconds', str(args.seconds)]
+    return argv
+
+
+def verified_fd(fd, path):
+    actual, expected = os.fstat(fd), path.stat()
+    if not stat.S_ISREG(actual.st_mode) or (actual.st_dev, actual.st_ino) != (expected.st_dev, expected.st_ino):
+        raise WalkError('Inherited lease does not identify the canonical physical lock')
+    identity = (os.major(actual.st_dev), os.minor(actual.st_dev), actual.st_ino)
+    for line in Path(f'/proc/self/fdinfo/{fd}').read_text().splitlines():
+        words = line.split()
+        if len(words) >= 9 and words[0] == 'lock:' and words[2:5] == ['FLOCK', 'ADVISORY', 'WRITE']:
+            major, minor, inode = words[6].split(':')
+            if (int(major, 16), int(minor, 16), int(inode)) == identity:
+                return
+    raise WalkError('Inherited canonical descriptor must hold a flock WRITE lease')
+
+
+@contextmanager
+def exclusive_lease(lock_root=LOCK_ROOT):
+    path = lock_root / 'perf.lock'
+    inherited = os.environ.get(LEASE_ENV)
+    owned = None
+    previous = os.environ.get(LEASE_ENV)
+    if inherited is not None:
+        try:
+            fd = int(inherited)
+            if fd < 3:
+                raise ValueError()
+            verified_fd(fd, path)
+        except (OSError, ValueError):
+            raise WalkError('Invalid inherited canonical EX lease descriptor') from None
+    else:
+        fd = None
+        # host-lock preserves an FD without setting the queue environment name.
+        for entry in Path('/proc/self/fd').iterdir():
+            candidate = int(entry.name)
+            try:
+                verified_fd(candidate, path)
+            except (OSError, ValueError, WalkError):
+                continue
+            fd = candidate
+            break
+        if fd is None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            owned = os.open(path, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+            try:
+                fcntl.flock(owned, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                verified_fd(owned, path)
+            except BaseException:
+                os.close(owned)
+                raise WalkError('Canonical EX lease busy or invalid; another host runner may be active') from None
+            fd = owned
+    was_inheritable = os.get_inheritable(fd)
+    try:
+        os.set_inheritable(fd, True)
+        # Preserve the same verified open description across the isolated exec.
+        os.environ[LEASE_ENV] = str(fd)
+        yield fd
+    finally:
+        if previous is None:
+            os.environ.pop(LEASE_ENV, None)
+        else:
+            os.environ[LEASE_ENV] = previous
+        if owned is not None:
+            os.close(owned)
+        else:
+            os.set_inheritable(fd, was_inheritable)
+
+
+def declared_pins(path, seen=None):
+    seen = set() if seen is None else seen
+    path = path.resolve()
+    if not path.is_relative_to(ROOT) or path in seen:
+        raise WalkError('Requirements include escapes checkout or is cyclic')
+    seen.add(path)
+    pins = {}
+    for raw in path.read_text().splitlines():
+        line = raw.split('#', 1)[0].strip()
+        if not line:
+            continue
+        if line.startswith('-r '):
+            nested = declared_pins(path.parent / line[3:].strip(), seen)
+        else:
+            match = re.fullmatch(r'([A-Za-z0-9_.-]+)==([A-Za-z0-9_.+!-]+)', line)
+            if not match:
+                raise WalkError('Linux requirements must use exact pins or nested -r files')
+            nested = {re.sub(r'[-_.]+', '-', match[1]).lower(): match[2]}
+        for name, version in nested.items():
+            if name in pins and pins[name] != version:
+                raise WalkError('Conflicting declared Linux requirement pins')
+            pins[name] = version
+    seen.remove(path)
+    return pins
+
+
+def venv_paths(venv):
+    venv = venv.expanduser().resolve()
+    cfg = dict(line.lower().split('=', 1) for line in (venv / 'pyvenv.cfg').read_text().splitlines() if '=' in line)
+    cfg = {key.strip(): value.strip() for key, value in cfg.items()}
+    if cfg.get('include-system-site-packages') != 'false':
+        raise WalkError('Selected venv must disable system site packages')
+    python = venv / 'bin/python'
+    packages = venv / 'lib/python3.11/site-packages'
+    if not python.is_file() or not os.access(python, os.X_OK) or not packages.is_dir():
+        raise WalkError('Selected venv needs Python 3.11; provision requirements-check-linux.txt first')
+    libraries = sorted((packages / 'nvidia').glob('*/lib'))
+    if not libraries or any(not item.resolve().is_relative_to(venv) for item in libraries):
+        raise WalkError('Selected venv lacks private NVIDIA CUDA libraries')
+    return venv, python, packages.resolve(), libraries
+
+
+def isolated_environment(libraries):
+    env = {key: value for key, value in os.environ.items() if not key.startswith('PYTHON')
+           and key not in ('LD_PRELOAD', 'LD_LIBRARY_PATH')}
+    env.update({name: '2' for name in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
+                                    'VECLIB_MAXIMUM_THREADS', 'NUMEXPR_NUM_THREADS')})
+    env.update(OPENCV_FOR_THREADS_NUM='1', LD_LIBRARY_PATH=':'.join(str(item) for item in libraries),
+               CUDA_CACHE_PATH=str(ROOT / '.tmp/walk/cuda-cache'))
+    return env
+
+
+def verify_environment(venv, packages):
+    if sys.version_info[:2] != (3, 11) or Path(sys.prefix).resolve() != venv or sys.prefix == sys.base_prefix:
+        raise WalkError('Selected interpreter must be the isolated Python 3.11 venv')
+    if not sys.flags.isolated or site.ENABLE_USER_SITE:
+        raise WalkError('Python isolation is required; user site packages are forbidden')
+    stdlib = Path(sys.base_prefix).resolve() / 'lib'
+    allowed = {stdlib / 'python3.11', stdlib / 'python3.11/lib-dynload', stdlib / 'python311.zip', packages}
+    if any(Path(item).resolve() not in allowed for item in sys.path):
+        raise WalkError('Interpreter sys.path contains an external package overlay')
+    installed = {}
+    for distribution in metadata.distributions():
+        if Path(distribution.locate_file('')).resolve() != packages:
+            raise WalkError('Installed package metadata escapes the selected venv')
+        name = re.sub(r'[-_.]+', '-', distribution.metadata['Name']).lower()
+        if name in installed:
+            raise WalkError('Duplicate installed distribution metadata')
+        installed[name] = distribution.version
+    pins = declared_pins(ROOT / 'requirements-check-linux.txt')
+    if 'onnxruntime' in installed or any(installed.get(name) != version for name, version in pins.items()):
+        raise WalkError('Venv does not match requirements-check-linux.txt; CPU ORT is forbidden')
+
+
+def launch_cli(argv):
+    # This is the existing python -m entrypoint, in the lease-owning process.
+    # Only this checkout is added; installed packages still come from one venv.
+    import cv2
+    cv2.setNumThreads(1)
+    sys.path.insert(0, str(ROOT))
+    sys.argv = ['shield.cli', *argv]
+    runpy.run_module('shield.cli', run_name='__main__', alter_sys=True)
+
+
+def main(argv=None, *, lock_root=LOCK_ROOT):
+    args = parser().parse_args(argv)
+    try:
+        if sys.platform != 'linux':
+            raise WalkError('walk-linux requires Linux')
+        if args.twitch_live or args.twitch_bandwidth_test:
+            missing = [name for name in ('TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID') if not os.environ.get(name)]
+            if missing:
+                raise WalkError('Missing required environment: ' + ', '.join(missing))
+        host = private_host(args.host)
+        command = cli_arguments(args, host)
+        with exclusive_lease(lock_root):
+            resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+            venv, python, packages, libraries = venv_paths(args.venv)
+            environment = isolated_environment(libraries)
+            if Path(sys.prefix).resolve() != venv or not sys.flags.isolated or sys.flags.no_site:
+                os.execve(str(python), [str(python), '-I', '-B', '-u', str(Path(__file__).resolve()),
+                                      *(sys.argv[1:] if argv is None else argv)], environment)
+            os.environ.clear()
+            os.environ.update(environment)
+            verify_environment(venv, packages)
+            if not args.model_cache.expanduser().is_dir() or not args.mediamtx_dir.expanduser().is_dir():
+                raise WalkError('Existing model cache and pinned MediaMTX directory required; launcher never downloads')
+            cache = Path(environment['CUDA_CACHE_PATH'])
+            cache.mkdir(parents=True, exist_ok=True)
+            if args.local_only and args.seconds is not None:
+                os.nice(max(0, 10 - os.getpriority(os.PRIO_PROCESS, 0)))
+            launch_cli(command)
+        return 0
+    except WalkError as error:
+        print('walk-linux: ' + str(error) + '. See docs/WALK-LINUX.md.', file=sys.stderr)
+        return 2
+    except OSError:
+        print('walk-linux: required local file, interpreter or resource unavailable; see docs/WALK-LINUX.md.', file=sys.stderr)
+        return 2
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
