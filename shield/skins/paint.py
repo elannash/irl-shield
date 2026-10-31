@@ -1,21 +1,17 @@
 """Coarse-mean Frosted and source-independent opaque materials.
 
 NumPy and OpenCV use the repository's existing BSD-3-Clause and Apache-2.0
-dependencies. No geometry, detector or transport policy is implemented here.
+dependencies. Upstream geometry and detector/transport policy stay caller-owned.
 """
 from dataclasses import dataclass
 from functools import lru_cache
-import hashlib
-import json
 import math
-from pathlib import Path
 
 import cv2
 import numpy as np
 
 
-SKINS = ('frosted', 'bar', 'patch', 'signed', 'petals', 'ripple', 'confetti', 'cloud')
-PATTERNS = SKINS[4:]
+SKINS = ('frosted', 'bar', 'signed', 'patch')
 
 
 @dataclass(frozen=True)
@@ -23,7 +19,8 @@ class MaskRegion:
     """A caller-owned binary local raster at integer frame position (left, top).
 
     text_height is the caller's estimate in output pixels, before padding.
-    The raster must fit within the frame. Overlap is legal; supplied order wins.
+    The raster must fit within the frame. Original overlaps use supplied order;
+    an extension cannot displace an original region's paint.
     """
     left: int
     top: int
@@ -76,8 +73,12 @@ def _frosted(source, text_height, desaturation, seed):
     cells = cell_extents(width, height, text_height)
     nx = sum(top == 0 for _, top, _, _ in cells)
     ny = len(cells) // nx
-    means = np.array([source[t:b, l:r].mean(axis=(0, 1), dtype=np.float64)
-                      for l, t, r, b in cells], np.float32).reshape(ny, nx, 3)
+    # Native integer channel sums avoid per-pixel Python-array reductions.
+    # Float64 division before float32 conversion preserves the old means.
+    sums = np.array([cv2.sumElems(source[t:b, l:r])[:3]
+                     for l, t, r, b in cells], np.float64)
+    areas = np.array([(r-l) * (b-t) for l, t, r, b in cells], np.float64)
+    means = (sums / areas[:, None]).astype(np.float32).reshape(ny, nx, 3)
     if desaturation:
         gray = means @ np.array([.114, .587, .299], np.float32)
         means = means * (1 - desaturation) + gray[:, :, None] * desaturation
@@ -85,51 +86,95 @@ def _frosted(source, text_height, desaturation, seed):
     # Filtering this bounded intermediate avoids a wide full-frame kernel.
     smooth = cv2.resize(means, (nx * 4, ny * 4), interpolation=cv2.INTER_CUBIC)
     smooth = cv2.GaussianBlur(smooth, (0, 0), 2, borderType=cv2.BORDER_REPLICATE)
-    paint = cv2.resize(smooth, (width, height), interpolation=cv2.INTER_CUBIC)
+    # Single-channel cubic kernels use native vector lanes without changing
+    # the interpolation grid, coefficients or original averaging rectangle.
+    paint = cv2.merge([cv2.resize(channel, (width, height), interpolation=cv2.INTER_CUBIC)
+                       for channel in cv2.split(smooth)])
     paint += _grain(height, width, seed)
     return np.clip(np.rint(paint), 0, 255).astype(np.uint8)
 
 
+def _rounded_alpha(height, width, radius, grow):
+    """Exact raster-distance feather from one symmetric corner, without a cache.
+
+    Radius is bounded; straight edges have integer distances. Only a small
+    corner needs EDT. Its right/bottom edges reach the straight portions, so
+    every exterior pixel's nearest opaque pixel is present in this quadrant.
+    """
+    feather = 6
+    height, width = height + 2 * (grow + feather), width + 2 * (grow + feather)
+    size = math.ceil(radius) + feather
+    axis = np.arange(size, dtype=np.float32) + .5
+    gap = np.maximum(feather + radius - axis, 0)
+    corner = ((gap[:, None] ** 2 + gap ** 2) <= radius ** 2).astype(np.uint8) * 255
+    distance = cv2.distanceTransform(255 - corner, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+    t = np.clip(distance / feather, 0, 1)
+    corner_alpha = np.rint(255 * (1 - t * t * (3 - 2 * t))).astype(np.uint8)
+    alpha = np.full((height, width), 255, np.uint8)
+    t = np.arange(feather, 0, -1, dtype=np.float32) / feather
+    edge = np.rint(255 * (1 - t * t * (3 - 2 * t))).astype(np.uint8)
+    alpha[:feather] = edge[:, None]
+    alpha[-feather:] = edge[::-1, None]
+    np.minimum(alpha[:, :feather], edge[None, :], out=alpha[:, :feather])
+    np.minimum(alpha[:, -feather:], edge[None, ::-1], out=alpha[:, -feather:])
+    alpha[:size, :size] = corner_alpha
+    alpha[:size, -size:] = corner_alpha[:, ::-1]
+    alpha[-size:, :size] = corner_alpha[::-1]
+    alpha[-size:, -size:] = corner_alpha[::-1, ::-1]
+    return alpha
+
+
+def _envelope(region, frame_height, frame_width):
+    """Round outward before clipping; dilate irregular rasters, never erode.
+
+    Pixel centers are half-integers in half-open pixel-square bounds. Ceil
+    expansion covers original square corners; tiny boxes grow to fit the
+    diameter. Original pixels are always unioned back as a safeguard.
+    """
+    rh, rw = region.raster.shape
+    radius = min(24., max(6., .3 * min(rh, rw)))
+    grow = math.ceil(max(radius * (1 - 1 / math.sqrt(2)),
+                         (2 * radius - min(rh, rw)) / 2))
+    feather = 6
+    left = max(0, region.left - grow - feather)
+    top = max(0, region.top - grow - feather)
+    right = min(frame_width, region.left + rw + grow + feather)
+    bottom = min(frame_height, region.top + rh + grow + feather)
+    ox, oy = region.left - left, region.top - top
+    if cv2.countNonZero(region.raster) == rh * rw:
+        full = _rounded_alpha(rh, rw, radius, grow)
+        x, y = grow + feather - ox, grow + feather - oy
+        alpha = full[y:y + bottom - top, x:x + right - left]
+        opaque = cv2.compare(alpha, 255, cv2.CMP_EQ)
+        opaque[oy:oy + rh, ox:ox + rw] = 255
+        alpha[oy:oy + rh, ox:ox + rw] = 255
+    else:
+        original = np.zeros((bottom - top, right - left), np.uint8)
+        original[oy:oy + rh, ox:ox + rw] = region.raster
+        y, x = np.ogrid[-grow:grow + 1, -grow:grow + 1]
+        disk = (x * x + y * y <= grow * grow).astype(np.uint8)
+        opaque = cv2.dilate(original, disk, borderType=cv2.BORDER_CONSTANT, borderValue=0)
+        cv2.bitwise_or(opaque, original, opaque)
+        distance = cv2.distanceTransform(255 - opaque, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+        t = np.clip(distance / feather, 0, 1)
+        alpha = np.rint(255 * (1 - t * t * (3 - 2 * t))).astype(np.uint8)
+    return left, top, opaque, alpha
+
+
 class SkinPainter:
-    """Atomic full-coverage paint with immutable cached pattern assets.
+    """Outward-only rounded paint; global opaque protection gates every feather.
 
     HOLD and PROTECT return a source-independent opaque field. A presentation
     layer can replace that field with its own safe slate. Skin changes happen
     at the render call, never by fading through unpainted source pixels.
     """
-    def __init__(self, assets=None, desaturation=0.0, grain_seed=913):
+    def __init__(self, desaturation=0.0, grain_seed=913):
         if not math.isfinite(desaturation) or not 0 <= desaturation <= 1:
             raise ValueError('Desaturation must be finite in [0, 1]')
         if type(grain_seed) is not int or not 0 <= grain_seed < 2**32:
             raise ValueError('Grain seed must be a uint32 integer')
         self.desaturation = desaturation
         self.grain_seed = grain_seed
-        self.textures = {}
-        self.asset_errors = {}
-        directory = Path(assets) if assets is not None else Path(__file__).resolve().parents[2] / 'fixtures/skins'
-        try:
-            manifest = json.loads((directory / 'attribution.json').read_text())
-            entries = {row['name']: row for row in manifest['assets']}
-        except (OSError, ValueError, KeyError, TypeError) as error:
-            self.asset_errors = {name: f'Asset manifest unavailable: {type(error).__name__}' for name in PATTERNS}
-            return
-        for name in PATTERNS:
-            try:
-                entry = entries[name]
-                path = directory / f'{name}.png'
-                raw = path.read_bytes()
-                if hashlib.sha256(raw).hexdigest() != entry['sha256']:
-                    raise ValueError('asset hash mismatch')
-                texture = cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_UNCHANGED)
-                if (texture is None or texture.dtype != np.uint8 or texture.ndim != 3
-                        or texture.shape[2] not in (3, 4) or min(texture.shape[:2]) < 1
-                        or (texture.shape[2] == 4 and not (texture[:, :, 3] == 255).all())):
-                    raise ValueError('asset is not opaque BGR/BGRA')
-                texture = texture[:, :, :3].copy()
-                texture.setflags(write=False)
-                self.textures[name] = texture
-            except (OSError, KeyError, TypeError, ValueError, cv2.error) as error:
-                self.asset_errors[name] = f'Asset unavailable: {type(error).__name__}'
 
     def paint(self, frame_bgr, regions, *, state='LIVE', skin='frosted'):
         if (not isinstance(frame_bgr, np.ndarray) or frame_bgr.dtype != np.uint8
@@ -148,44 +193,70 @@ class SkinPainter:
             if (type(region.left) is not int or type(region.top) is not int
                     or not isinstance(raster, np.ndarray) or raster.dtype != np.uint8
                     or raster.ndim != 2 or min(raster.shape) < 1
-                    or not np.isin(raster, (0, 255)).all()
+                    or cv2.countNonZero(cv2.inRange(raster, 1, 254))
                     or region.left < 0 or region.top < 0
                     or region.left + raster.shape[1] > w or region.top + raster.shape[0] > h):
                 raise ValueError('Expected an in-frame binary uint8 local mask raster')
             cell_extents(raster.shape[1], raster.shape[0], region.text_height)
-        reason = self.asset_errors.get(skin) if skin in PATTERNS else None
-        effective = 'bar' if reason else skin
         pixels = frame_bgr.copy()
         mask = np.zeros((h, w), np.uint8)
+        alpha = np.zeros((h, w), np.uint8)
+        prepared = []
+        bounds = [w, h, 0, 0]
         for region in regions:
+            if not cv2.countNonZero(region.raster):
+                continue
+            left, top, opaque, local_alpha = _envelope(region, h, w)
+            eh, ew = opaque.shape
+            area = np.s_[top:top + eh, left:left + ew]
+            np.maximum(mask[area], opaque, out=mask[area])
+            np.maximum(alpha[area], local_alpha, out=alpha[area])
+            prepared.append((region, left, top, local_alpha))
+            bounds = [min(bounds[0], left), min(bounds[1], top),
+                      max(bounds[2], left + ew), max(bounds[3], top + eh)]
+        if not prepared:
+            return Painted(pixels, mask, alpha, skin)
+        left, top, right, bottom = bounds
+        area = np.s_[top:bottom, left:right]
+        canvas = np.zeros((bottom - top, right - left, 3), np.uint8)
+        if skin == 'patch':
+            cv2.rectangle(canvas, (0, 0), (right-left-1, bottom-top-1), (174, 188, 191), -1)
+        originals = []
+        if skin in ('frosted', 'signed'):
+            for region, x, y, local_alpha in prepared:
+                rh, rw = region.raster.shape
+                if skin == 'frosted':
+                    # Always read original averaging cells, never painted video.
+                    paint = _frosted(frame_bgr[region.top:region.top + rh, region.left:region.left + rw],
+                                     region.text_height, self.desaturation, self.grain_seed)
+                else:
+                    paint = np.empty((rh, rw, 3), np.uint8)
+                    cv2.rectangle(paint, (0, 0), (rw-1, rh-1), (24, 21, 18), -1)
+                    if min(rh, rw) >= 40:
+                        cx, cy = rw // 2, rh // 2
+                        radius = min(8, rh // 6, rw // 6)
+                        vertices = np.array([[cx-radius, cy-radius], [cx+radius, cy-radius],
+                                             [cx+radius, cy], [cx, cy+radius], [cx-radius, cy]], np.int32)
+                        cv2.fillConvexPoly(paint, vertices, (151, 148, 143))
+                eh, ew = local_alpha.shape
+                px, py = region.left - x, region.top - y
+                extended = cv2.copyMakeBorder(paint, py, eh-py-rh, px, ew-px-rw, cv2.BORDER_REPLICATE)
+                # A partial feather can never win against global alpha255.
+                # Equal-alpha winners retain the caller's supplied order.
+                winner = cv2.compare(local_alpha, alpha[y:y+eh, x:x+ew], cv2.CMP_EQ)
+                target = canvas[y-top:y-top+eh, x-left:x-left+ew]
+                cv2.copyTo(extended, winner, target)
+                originals.append((region, paint))
+        weight = alpha[area].astype(np.float32) / 255
+        # One native blend, with zero source weight on ALL opaque protection.
+        # The explicit opaque copy also commits those bytes without blending.
+        blended = cv2.blendLinear(canvas, frame_bgr[area], weight, 1 - weight)
+        cv2.copyTo(blended, alpha[area], pixels[area])
+        cv2.copyTo(canvas, mask[area], pixels[area])
+        # Extensions never displace an original. Constant Bar/Patch require
+        # no per-region paint arrays or restores; their canvas is identical.
+        for region, paint in originals:
             rh, rw = region.raster.shape
-            left, top = region.left, region.top
-            target = pixels[top:top + rh, left:left + rw]
-            selected = region.raster != 0
-            if effective == 'frosted':
-                # Always read the original frame, including in overlapping masks.
-                paint = _frosted(frame_bgr[top:top + rh, left:left + rw],
-                                 region.text_height, self.desaturation, self.grain_seed)
-            elif effective in PATTERNS:
-                texture = self.textures[effective]
-                # Frame-anchored repeat; neither source color nor detector order
-                # changes pattern phase. Texture is decoded only at startup.
-                ys = np.arange(top, top + rh) % texture.shape[0]
-                xs = np.arange(left, left + rw) % texture.shape[1]
-                paint = texture[ys[:, None], xs]
-            elif effective == 'patch':
-                paint = np.full((rh, rw, 3), (174, 188, 191), np.uint8)
-            elif effective == 'signed':
-                paint = np.full((rh, rw, 3), (24, 21, 18), np.uint8)
-                if min(rh, rw) >= 40:
-                    cx, cy = rw // 2, rh // 2
-                    radius = min(8, rh // 6, rw // 6)
-                    vertices = np.array([[cx-radius, cy-radius], [cx+radius, cy-radius],
-                                         [cx+radius, cy], [cx, cy+radius], [cx-radius, cy]], np.int32)
-                    cv2.fillConvexPoly(paint, vertices, (151, 148, 143))
-            else:
-                paint = np.zeros((rh, rw, 3), np.uint8)
-            np.copyto(target, paint, where=selected[:, :, None])
-            np.maximum(mask[top:top + rh, left:left + rw], region.raster,
-                       out=mask[top:top + rh, left:left + rw])
-        return Painted(pixels, mask, mask.copy(), effective, reason)
+            target = pixels[region.top:region.top + rh, region.left:region.left + rw]
+            cv2.copyTo(paint, region.raster, target)
+        return Painted(pixels, mask, alpha, skin)

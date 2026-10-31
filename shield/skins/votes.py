@@ -7,6 +7,11 @@ import re
 from .paint import SKINS
 
 
+# Only Bar has a passing native runtime receipt. Rendering choices can be
+# broader than remotely selectable choices; configuration remains explicit.
+CHAT_SKINS = ('bar',)
+
+
 @dataclass(frozen=True)
 class ChatEvent:
     id: str
@@ -23,7 +28,7 @@ class SkinVotes:
     in the same clock domain as event timestamps. No parsing of user-claimed
     roles, network calls or OAuth scopes occurs here.
     """
-    def __init__(self, session_started_at, incumbent='frosted'):
+    def __init__(self, session_started_at, incumbent='bar'):
         if not math.isfinite(session_started_at) or incumbent not in SKINS:
             raise ValueError('Expected a finite session start and known incumbent')
         self.session_started_at = session_started_at
@@ -76,7 +81,7 @@ class SkinVotes:
         privileged = bool(event.roles & {'moderator', 'broadcaster'})
         control_order = (event.timestamp, event.id)
         if lock_name:
-            if privileged and lock_name in SKINS and control_order >= self._control_order:
+            if privileged and lock_name in CHAT_SKINS and control_order >= self._control_order:
                 self.locked = lock_name
                 self.incumbent = lock_name
                 self._control_order = control_order
@@ -84,7 +89,7 @@ class SkinVotes:
             if privileged and control_order >= self._control_order:
                 self.locked = None
                 self._control_order = control_order
-        elif name in SKINS:
+        elif name in CHAT_SKINS:
             previous = self._votes.get(event.user_id)
             if previous is None or (event.timestamp, event.id) >= (previous[1], previous[2]):
                 self._votes[event.user_id] = (name, event.timestamp, event.id)

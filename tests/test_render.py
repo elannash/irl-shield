@@ -101,15 +101,22 @@ class PrivacyRendering(unittest.TestCase):
             cv2.fillConvexPoly(polygon, np.asarray(quad, np.int32), 255)
         painter = SkinPainter()
         skin = ['frosted']
+        materials = []
         def paint(pixels, regions, state):
-            return painter.paint(pixels, [MaskRegion(*r) for r in regions], state=state, skin=skin[0])
+            material = painter.paint(pixels, [MaskRegion(*r) for r in regions], state=state, skin=skin[0])
+            materials.append(material)
+            return material
         renderer = Renderer(paint=paint)
         baseline = Renderer().render(frame, quads, 'LIVE', 2)
         frosted = renderer.render(frame, quads, 'LIVE', 2)
-        np.testing.assert_array_equal(frosted.mask, baseline.mask)
+        self.assertTrue((frosted.mask[baseline.mask > 0] == 255).all())
+        self.assertGreater(np.count_nonzero(frosted.mask), np.count_nonzero(baseline.mask))
+        self.assertTrue((materials[-1].alpha[baseline.mask > 0] == 255).all())
         self.assertTrue((frosted.mask[polygon > 0] == 255).all())
-        self.assertTrue(((frosted.pixels[polygon > 0] > 0) & (frosted.pixels[polygon > 0] < 255)).all())
-        np.testing.assert_array_equal(frosted.pixels[frosted.mask == 0], frame[frosted.mask == 0])
+        self.assertTrue(((frosted.pixels[baseline.mask > 0] > 0) & (frosted.pixels[baseline.mask > 0] < 255)).all())
+        untouched = materials[-1].alpha == 0
+        np.testing.assert_array_equal(frosted.pixels[untouched], frame[untouched])
+        np.testing.assert_array_equal(Renderer().render(frame, quads, 'LIVE', 2).mask, baseline.mask)
         skin[0] = 'bar'
         bar = renderer.render(frame, quads, 'LIVE', 2)
         np.testing.assert_array_equal(bar.mask, frosted.mask)

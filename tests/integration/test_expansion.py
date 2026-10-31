@@ -34,8 +34,8 @@ class Expansion(unittest.TestCase):
             clock.monotonic.return_value = 20
             _, events = adapter(on_chat=appearance.chat)
             generation = events.generation
-            self.assertEqual(events.accept(notification('viewer', '!skin cloud', badge=None), generation=generation), 'skin-chat')
-            self.assertEqual(appearance.snapshot()['votes'], {'cloud': 1})
+            self.assertEqual(events.accept(notification('viewer', '!skin bar', badge=None), generation=generation), 'skin-chat')
+            self.assertEqual(appearance.snapshot()['votes'], {'bar': 1})
             self.assertEqual(events.accept(notification('viewer-lock', '!skin lock bar', badge=None, at=START+2), generation=generation), 'skin-chat')
             self.assertFalse(appearance.snapshot()['skin_locked'])
             events.accept(notification('mod-lock', '!skin lock bar', at=START+3), generation=generation)
@@ -48,8 +48,9 @@ class Expansion(unittest.TestCase):
             self.assertTrue(appearance.snapshot()['skin_locked'])
             events.accept(notification('owner-unlock', '!skin unlock', actor='1', at=START+5), generation=generation)
             self.assertFalse(appearance.snapshot()['skin_locked'])
-            events.accept(notification('viewer', '!skin petals', badge=None, at=START+6), generation=generation)
-            self.assertEqual(appearance.snapshot()['votes'], {'cloud': 1}, 'Replay must not become another vote')
+            events.accept(notification('viewer', '!skin bar', badge=None, at=START+6), generation=generation)
+            clock.monotonic.return_value = 72
+            self.assertEqual(appearance.snapshot()['votes'], {}, 'Replay must not extend the authenticated vote lifetime')
 
     def test_actual_relay_keeps_poll_identity_and_ingress_highwater_through_hold_release(self):
         appearance = Appearance(width=320, height=180)
@@ -179,6 +180,7 @@ class DashboardCLI(unittest.IsolatedAsyncioTestCase):
                     response = await client.get(origin+'/private/snapshot', headers=headers)
                     data = await response.json()
                     self.assertEqual((data['state'], data['reason_code']), ('HOLD','chat'))
+                    self.assertEqual(data['skin'], 'bar', 'The real CLI must start the measured default material')
                     self.assertEqual((data['clues_hidden'],data['faces_hidden']), (None,None))
                     self.assertNotIn(server._token, str(data))
                     self.assertIn('/#token=', terminal.getvalue())

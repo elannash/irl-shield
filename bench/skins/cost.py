@@ -46,8 +46,7 @@ def main():
                      'samples_ms': durations})
     root = Path(__file__).resolve().parents[2]
     paths = list((root/'shield/skins').glob('*.py')) + list((root/'bench/skins').glob('*.py'))
-    paths += list((root/'fixtures/skins').glob('*'))
-    card = {'scope': 'Paint only, uint8 BGR 1280x720, 24 opaque 160x48 masks, text-height 24, no detector/transport. Static scene, warmed caches.',
+    card = {'scope': 'Paint only, uint8 BGR 1280x720, 24 original 160x48 masks plus outward rounding and outside feather, text-height 24, no detector/transport. Static scene, warmed caches.',
             'host': platform.node(), 'platform': platform.platform(), 'opencv': cv2.__version__,
             'opencv_threads': cv2.getNumThreads(), 'warmup_frames': args.warmup,
             'rss_bytes_after': psutil.Process().memory_info().rss, 'rows': rows,

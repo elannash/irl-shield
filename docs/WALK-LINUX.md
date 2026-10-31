@@ -126,8 +126,26 @@ a fallback interpreter. See [RUN.md](RUN.md) for underlying runtime requirements
 
 ## Qualification
 
-This is a launch wrapper. Privacy, walking suitability, 30 fps cadence, A/V
-synchronization and real Twitch ingest acceptance remain separate qualifications.
+The launcher starts rounded Bar masks by default. In the licensed-clip local
+comparison it delivered 29.975 fps with no steady-window slates; rounded
+Frosted delivered 14.992 fps with 334 slates and is not the default. These
+are local observations, not phone-to-Twitch qualification. The full
+[mask runtime comparison](MASK-RUNTIME.md) retains latency, CPU and queue
+accounting limitations. Saturday's planned walk was cancelled; the launcher
+remains available for attended local and Twitch operation.
+
+On October 30, 2026, the owner-attended `naie` session
+`attended-naie-bandwidth-2026-10-30` ran this launcher in bandwidth-test mode
+from clean commit `cd20792`. The conductor observed established TLS to Twitch
+through the verified forwarder and acknowledged bytes increasing from about
+1.23 MB to 1.48 MB over eight seconds of slate output. The run stopped cleanly
+at 22:43:56 PT with MediaMTX gone, the connection closed and the exclusive lease
+released. Twitch accepted the loopback `tcUrl`
+`rtmp://127.0.0.1:<port>/app` with the key held in memory. This is an attended
+operational observation, not an automated test. See [RUN.md](RUN.md#attended-bandwidth-observation--october-30-2026).
+
+This is a launch wrapper. Privacy, walking suitability, 30 fps cadence and A/V
+synchronization remain separate from the attended ingest observation above.
 A dashboard or an all-slate output does not prove readable text was protected.
 The implementation hand-back carries root-only focused, native and full-gate
 execution packets; absent root receipts, those layers remain unverified.
