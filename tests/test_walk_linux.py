@@ -1,5 +1,5 @@
 """Walk bootstrap boundaries. All leases are private, including subprocess leases."""
-from contextlib import redirect_stderr, redirect_stdout
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
 import fcntl
 import importlib.machinery
 import importlib.util
@@ -12,7 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from lock_isolation import install_lock_guard
 
@@ -25,10 +25,28 @@ loader.exec_module(walk)
 install_lock_guard()
 
 
+@contextmanager
+def installed_bootstrap(root):
+    # Exercise main without provisioning an SDK or replacing its CLI handoff.
+    (root / 'models/cache').mkdir(parents=True)
+    (root / '.tmp/tools/mediamtx-v1.21.3').mkdir(parents=True)
+    prefix = Path(sys.prefix).resolve()
+    original_flags = sys.flags
+    flags = type('Flags', (), {'isolated': 1, 'no_site': 0,
+        '__getattr__': lambda self, name: getattr(original_flags, name)})()
+    with patch.object(walk, 'ROOT', root), patch.object(sys, 'flags', flags), patch.object(sys, 'path', sys.path.copy()), \
+            patch.object(walk, 'venv_paths', return_value=(prefix, Path(sys.executable), root, [])), \
+            patch.object(walk, 'verify_environment'), patch.object(walk.resource, 'setrlimit'), \
+            patch.object(walk.os, 'execve', side_effect=AssertionError('unexpected interpreter exec')):
+        yield
+
+
 class WalkSelection(unittest.TestCase):
     def test_modes_and_unknown_forwarding_refuse_without_echoing_private_values(self):
         sentinel = 'SYNTHETIC-PRIVATE-ARGUMENT'
-        for argv in ([], ['--local-only', '--twitch-live'], ['--local-only', '--remember'],
+        for argv in ([], ['--local-only', '--twitch-live'],
+                     ['--local-only', '--twitch-bandwidth-test'], ['--twitch-live', '--twitch-bandwidth-test'],
+                     ['--local-only', '--twitch-live', '--twitch-bandwidth-test'], ['--local-only', '--remember'],
                      ['--local-only', '--mock-origin', sentinel], ['--local'],
                      ['--local-only', '--', '--twitch-live'], ['--local-only', '--stream-key', sentinel]):
             with self.subTest(argv=argv), redirect_stderr(StringIO()) as error, redirect_stdout(StringIO()) as output:
@@ -51,14 +69,15 @@ class WalkSelection(unittest.TestCase):
         with patch.object(walk.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '100.80.4.5\n')):
             self.assertEqual(walk.private_host(None), '100.80.4.5')
         from shield.cli import parser, validate
-        for mode in ('--local-only', '--twitch-live'):
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
             args = walk.parser().parse_args([mode, '--host', '127.0.0.1', '--seconds', '12', '--dashboard-port', '12345'])
             routed = parser().parse_args(walk.cli_arguments(args, walk.private_host(args.host)))
             validate(routed)
             self.assertEqual(routed.command, 'run')
-            self.assertEqual((routed.local_only, routed.twitch_live), (mode == '--local-only', mode == '--twitch-live'))
+            self.assertEqual((routed.local_only, routed.twitch_live, routed.twitch_bandwidth_test),
+                             (mode == '--local-only', mode == '--twitch-live', mode == '--twitch-bandwidth-test'))
             self.assertTrue(routed.phone_setup and routed.dashboard)
-            self.assertFalse(routed.remember or routed.twitch_bandwidth_test)
+            self.assertFalse(routed.remember)
             self.assertIsNone(routed.mock_origin)
             self.assertEqual((routed.seconds, routed.dashboard_port), (12, 12345))
 
@@ -140,6 +159,59 @@ with m.exclusive_lease(Path(sys.argv[2])):
 
 
 class WalkEnvironment(unittest.TestCase):
+    def test_authenticated_ids_stop_before_host_lease_interpreter_or_cli(self):
+        client, broadcaster = 'TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID'
+        for mode in ('--twitch-live', '--twitch-bandwidth-test'):
+            for environment, missing in (({}, [client, broadcaster]),
+                    ({broadcaster: '123456789'}, [client]),
+                    ({client: 'SYNTHETIC-CLIENT'}, [broadcaster]),
+                    ({client: '', broadcaster: '123456789'}, [client]),
+                    ({client: 'SYNTHETIC-CLIENT', broadcaster: ''}, [broadcaster]),
+                    ({client: '', broadcaster: ''}, [client, broadcaster])):
+                with self.subTest(mode=mode, missing=missing, empty=bool(environment)), \
+                        tempfile.TemporaryDirectory() as name, patch.dict(os.environ, environment, clear=True), \
+                        patch.object(walk, 'private_host', side_effect=walk.WalkError('SYNTHETIC-SETUP-STOP')) as host, \
+                        patch.object(walk, 'exclusive_lease') as lease, patch.object(walk, 'venv_paths') as venv, \
+                        patch.object(walk.os, 'execve') as execute, patch.object(walk, 'launch_cli') as launch, \
+                        patch.object(walk.runpy, 'run_module') as module, \
+                        redirect_stderr(StringIO()) as error, redirect_stdout(StringIO()) as output:
+                    try:
+                        result = walk.main([mode], lock_root=Path(name))
+                    except SystemExit as stopped:
+                        self.fail(f'Selected mode {mode} refused with exit {stopped.code}')
+                    self.assertEqual(result, 2)
+                    self.assertIn('Missing required environment: ' + ', '.join(missing), error.getvalue())
+                    for key in (client, broadcaster):
+                        self.assertEqual(key in error.getvalue(), key in missing)
+                    for value in ('SYNTHETIC-CLIENT', '123456789', 'SYNTHETIC-SETUP-STOP'):
+                        self.assertNotIn(value, error.getvalue() + output.getvalue())
+                    for boundary in (host, lease, venv, execute, launch, module):
+                        boundary.assert_not_called()
+
+    def test_priority_changes_only_for_bounded_local_verification(self):
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
+            for seconds in ([], ['--seconds', '12']):
+                for inherited in (0, 15):
+                    with self.subTest(mode=mode, seconds=seconds, inherited=inherited), \
+                            tempfile.TemporaryDirectory() as name, \
+                            patch.dict(os.environ, {'TWITCH_CLIENT_ID': 'SYNTHETIC-CLIENT',
+                                'TWITCH_BROADCASTER_ID': '123456789'}, clear=True), \
+                            installed_bootstrap(Path(name)), \
+                            patch.object(walk.os, 'getpriority', return_value=inherited) as priority, \
+                            patch.object(walk.os, 'nice') as nice, patch.object(walk, 'launch_cli') as launch:
+                        try:
+                            result = walk.main([mode, '--host', '127.0.0.1', *seconds], lock_root=Path(name))
+                        except SystemExit as stopped:
+                            self.fail(f'Selected mode {mode} refused with exit {stopped.code}')
+                        self.assertEqual(result, 0)
+                        launch.assert_called_once()
+                        if mode == '--local-only' and seconds:
+                            priority.assert_called_once_with(os.PRIO_PROCESS, 0)
+                            nice.assert_called_once_with(10 if inherited == 0 else 0)
+                        else:
+                            priority.assert_not_called()
+                            nice.assert_not_called()
+
     def test_declared_nested_requirements_drive_rejection_without_package_imports(self):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
@@ -205,7 +277,12 @@ class WalkEnvironment(unittest.TestCase):
 
 
 class WalkRealCLI(unittest.TestCase):
-    def test_selected_local_route_uses_real_cli_no_twitch_and_private_tty_cleanup(self):
+    def test_selected_routes_use_real_launcher_and_cli_with_private_tty_cleanup(self):
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
+            with self.subTest(mode=mode):
+                self.check_route(mode)
+
+    def check_route(self, mode):
         from relay.security import Credentials
         records = {}
         terminal = StringIO()
@@ -233,21 +310,42 @@ class WalkRealCLI(unittest.TestCase):
             engine.close()
         phone = Credentials('synthetic-phone-user', 'SYNTHETIC-PHONE-PASSWORD')
         internal = Credentials('synthetic-internal-user', 'SYNTHETIC-INTERNAL-PASSWORD')
-        argv = walk.cli_arguments(walk.parser().parse_args(['--local-only', '--host', '127.0.0.1', '--seconds', '12']), '127.0.0.1')
-        with tempfile.TemporaryDirectory() as name, patch.dict(os.environ, {}, clear=True), \
-                walk.exclusive_lease(Path(name)), patch('relay.mediamtx.MediaMTX'), \
+        authenticated = mode != '--local-only'
+        environment = {'TWITCH_CLIENT_ID': 'SYNTHETIC-CLIENT', 'TWITCH_BROADCASTER_ID': '123456789'} if authenticated else {}
+        approval = object()
+        with tempfile.TemporaryDirectory() as name, patch.dict(os.environ, environment, clear=True), \
+                installed_bootstrap(Path(name)), patch.object(walk.os, 'nice'), patch('relay.mediamtx.MediaMTX'), \
                 patch('relay.mediamtx.verified_binary'), patch('relay.security.Credentials.generate', side_effect=[phone, internal]), \
                 patch('relay.runtime.make_engine', return_value=Engine()), patch('relay.runtime.run', side_effect=runtime), \
                 patch('shield.dashboard.DashboardServer', Dashboard), patch('builtins.open', return_value=Terminal()), \
-                patch('shield.app.session.login', side_effect=AssertionError('Twitch login in local mode')), \
-                patch('shield.app.live.authorize_live', side_effect=AssertionError('LIVE auth in local mode')), \
+                patch('shield.app.session.login', return_value=object()) as login, \
+                patch('shield.app.session.TwitchControls') as controls, \
+                patch('shield.app.live.authorize_live', return_value=approval) as authorize, \
                 patch('shield.twitch.http.TwitchHTTP.request', side_effect=AssertionError('Twitch HTTP')), \
                 redirect_stdout(StringIO()) as output, redirect_stderr(StringIO()) as error:
-            with patch.object(sys, 'argv', ['walk-linux']):
-                with self.assertRaises(SystemExit) as stopped:
-                    walk.launch_cli(argv)
+            controls.return_value.prepare = AsyncMock()
+            controls.return_value.close = AsyncMock()
+            controls.return_value.failure = False
+            with patch.object(sys, 'argv', ['walk-linux']), self.assertRaises(SystemExit) as stopped:
+                walk.main([mode, '--host', '127.0.0.1', '--seconds', '12'], lock_root=Path(name))
             self.assertEqual(stopped.exception.code, 0)
-        self.assertFalse(records['route']['publish_twitch'] or records['route']['twitch_live'])
+            self.assertNotIn('TWITCH_STREAM_KEY', os.environ)
+        self.assertEqual(records['route']['publish_twitch'], authenticated)
+        self.assertEqual(records['route']['twitch_live'], mode == '--twitch-live')
+        self.assertIs(records['route']['live_approval'], approval if mode == '--twitch-live' else None)
+        if authenticated:
+            login.assert_awaited_once()
+            self.assertEqual(login.call_args.args[1:3], ('SYNTHETIC-CLIENT', '123456789'))
+            self.assertFalse(login.call_args.kwargs['remember'])
+            controls.return_value.prepare.assert_awaited_once()
+            controls.return_value.close.assert_awaited_once()
+        else:
+            login.assert_not_called()
+            controls.assert_not_called()
+        if mode == '--twitch-live':
+            authorize.assert_awaited_once()
+        else:
+            authorize.assert_not_called()
         self.assertIsNone(records['route']['local_sink'])
         self.assertEqual(records['seconds'], 12)
         self.assertIsNone(records['archive'])

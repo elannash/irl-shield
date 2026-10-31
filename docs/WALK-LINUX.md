@@ -9,16 +9,23 @@ invocation; there is no default.
 # Local phone → shielded OBS output, with no Twitch login or connection:
 scripts/walk-linux --local-only
 
+# Authenticated Twitch test ingest, without going live:
+infisical run -- scripts/walk-linux --twitch-bandwidth-test
+
 # Only during the owner's authorized, attended Saturday/Sunday session:
 infisical run -- scripts/walk-linux --twitch-live
 ```
 
 LIVE retains the existing fresh validation of the exact broadcaster `naie` and
 requires typing `LIVE naie` on `/dev/tty`. `TWITCH_CLIENT_ID` and
-`TWITCH_BROADCASTER_ID` come from Infisical. This launcher does not request new
-scopes, fetch a key, save a login, or remember approval. Tokens and the runtime
-stream key remain in the existing CLI's memory. Development verification must
-use `--local-only`; it does not connect to Twitch.
+`TWITCH_BROADCASTER_ID` come from Infisical for both authenticated modes. Missing
+or empty IDs stop the launcher before host discovery, interpreter setup or login;
+the diagnostic names only missing variables. Local-only mode needs neither ID.
+Bandwidth-test mode routes to the existing CLI's test ingest; it still requires
+authentication and connects to Twitch. This launcher does not request new scopes,
+fetch a key, save a login, or remember approval. Tokens and the runtime stream key
+remain in the existing CLI's memory; do not supply a stream key in the environment.
+Development verification must use `--local-only`; it does not connect to Twitch.
 
 The launcher always enables phone setup and the private dashboard. Phone RTMP
 credentials, the dashboard invitation and LIVE confirmation use the existing
@@ -54,10 +61,14 @@ consistency; native CUDA inference and NVENC encoding need their own probe.
 `LD_LIBRARY_PATH` is replaced with the selected venv's private NVIDIA wheel
 library directories. Inherited `LD_PRELOAD` and CUDA library paths are removed.
 The declared Linux pins retain ORT GPU 1.20.2 / CUDA 12.4 / cuDNN 9.3 for Pascal.
-Native thread pools are limited to two and OpenCV to one; core dumps are disabled
-and the process runs at niceness at least 10. The only launcher-created runtime
-cache is `.tmp/walk/cuda-cache`. Model files and the hash-pinned MediaMTX binary
-are read from the supplied directories; no model is copied or provisioned.
+Native thread pools are limited to two and OpenCV to one; core dumps are disabled.
+Only bounded local verification (`--local-only --seconds ...`) lowers priority to
+niceness at least 10. Attended live, bandwidth-test and unbounded local runs retain
+the caller's inherited niceness: a default nice-0 terminal stays at 0, while a
+lower-priority caller stays lower-priority. The launcher never elevates priority.
+The only launcher-created runtime cache is `.tmp/walk/cuda-cache`. Model files
+and the hash-pinned MediaMTX binary are read from the supplied directories; no
+model is copied or provisioned.
 
 ## Private phone connection
 
@@ -86,8 +97,9 @@ scripts/walk-linux --local-only --host 127.0.0.1 --seconds 15 \
 Named options also include `--rtmp-port`, `--rtsp-port`, `--srt-port` and
 `--dashboard-port`. Relay ports must be 1024–65535; dashboard port 0 selects a
 free port. `--seconds` must be positive and finite. Arbitrary CLI forwarding,
-remembered credentials, archive output, mock controls and bandwidth-test mode
-are deliberately absent from this attended launcher.
+remembered credentials, archive output and mock controls are deliberately absent
+from this attended launcher. Publication modes are mutually exclusive and never
+fall back to another mode.
 
 ## Lease and stopping
 
