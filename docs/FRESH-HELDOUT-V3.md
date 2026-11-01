@@ -7,7 +7,7 @@ frozen-ungraded dataset manifest after verifying the originals and all six
 inputs. A source-selection seal or prepared dataset is not an evaluation.
 V2 remains spent; its receipt, host marker, cache and reservation are not reused.
 
-Original seal: `738b738`; re-seal commit: the commit adding `preparation-plan.json`; selection and all six inputs are unchanged.
+Original seal: `738b738`; re-seal commit: `37a265ca19cb21a9e169f6c29aed79e935fb71fa`; selection and all six inputs are unchanged.
 `tools/check_v3_reseal.py` asserts equality to that seal; reservation remains not started, not before `2026-11-02T12:00Z`.
 
 V3 accepts exactly three distinct source identities and all six natural and
