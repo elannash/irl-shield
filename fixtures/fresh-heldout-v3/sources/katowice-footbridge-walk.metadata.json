@@ -1,0 +1,459 @@
+{
+  "kind": "lossless-page-object-extract-from-raw-api-json",
+  "raw_response": "raw/selected-three-verification.json",
+  "raw_response_sha256": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+  "request_url": "https://commons.wikimedia.org/w/api.php?format=json&formatversion=2&action=query&titles=File%3A%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F+-+%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5+%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv%7CFile%3ARecall+Election+Day+-+Madison%2C+WI.webm%7CFile%3AWalking+across+the+footbridge+in+Katowice%2C+20240808.webm&redirects=1&prop=imageinfo%7Crevisions%7Cinfo&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&iilimit=50&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main&inprop=url",
+  "retrieved_at_utc": "2026-11-01T21:10:49.853919+00:00",
+  "page": {
+    "pageid": 151771704,
+    "ns": 6,
+    "title": "File:Walking across the footbridge in Katowice, 20240808.webm",
+    "imagerepository": "local",
+    "imageinfo": [
+      {
+        "timestamp": "2024-08-24T17:38:29Z",
+        "user": "Abzeronow",
+        "size": 348348906,
+        "width": 1920,
+        "height": 1080,
+        "duration": 180.866,
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Walking_across_the_footbridge_in_Katowice%2C_20240808.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "descriptionurl": "https://commons.wikimedia.org/wiki/File:Walking_across_the_footbridge_in_Katowice,_20240808.webm",
+        "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=151771704",
+        "sha1": "554e54b8f1dda6aaa4b7efcdae2a175edbf3b4b6",
+        "metadata": [
+          {
+            "name": "GETID3_VERSION",
+            "value": "1.9.23-202310190849"
+          },
+          {
+            "name": "filesize",
+            "value": 348348906
+          },
+          {
+            "name": "avdataoffset",
+            "value": 0
+          },
+          {
+            "name": "avdataend",
+            "value": 348348906
+          },
+          {
+            "name": "fileformat",
+            "value": "webm"
+          },
+          {
+            "name": "audio",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "A_OPUS"
+              },
+              {
+                "name": "sample_rate",
+                "value": 48000
+              },
+              {
+                "name": "channels",
+                "value": 1
+              },
+              {
+                "name": "language",
+                "value": "eng"
+              },
+              {
+                "name": "bits_per_sample",
+                "value": 32
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": "829503ff8705cea8",
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "A_OPUS"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "sample_rate",
+                        "value": 48000
+                      },
+                      {
+                        "name": "channels",
+                        "value": 1
+                      },
+                      {
+                        "name": "language",
+                        "value": "eng"
+                      },
+                      {
+                        "name": "bits_per_sample",
+                        "value": 32
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "channelmode",
+                "value": "mono"
+              }
+            ]
+          },
+          {
+            "name": "video",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "V_VP9"
+              },
+              {
+                "name": "resolution_x",
+                "value": 1920
+              },
+              {
+                "name": "resolution_y",
+                "value": 1080
+              },
+              {
+                "name": "display_unit",
+                "value": "pixels"
+              },
+              {
+                "name": "display_x",
+                "value": 1920
+              },
+              {
+                "name": "display_y",
+                "value": 1080
+              },
+              {
+                "name": "frame_rate",
+                "value": 30
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": "1e0fe3e1130538bb",
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "V_VP9"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "resolution_x",
+                        "value": 1920
+                      },
+                      {
+                        "name": "resolution_y",
+                        "value": 1080
+                      },
+                      {
+                        "name": "display_unit",
+                        "value": "pixels"
+                      },
+                      {
+                        "name": "display_x",
+                        "value": 1920
+                      },
+                      {
+                        "name": "display_y",
+                        "value": 1080
+                      },
+                      {
+                        "name": "frame_rate",
+                        "value": 30
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "warning",
+            "value": [
+              {
+                "name": 0,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 63"
+              },
+              {
+                "name": 1,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [1 bytes]) at 77"
+              },
+              {
+                "name": 2,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [2 bytes]) at 91"
+              },
+              {
+                "name": 3,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:627] (5036::SeekPosition [4 bytes]) at 106"
+              },
+              {
+                "name": 4,
+                "value": "Unhandled track.video element [module.audio-video.matroska.php:712] (5552::15b0 [24 bytes]) at 334"
+              },
+              {
+                "name": 5,
+                "value": "Unhandled track element [module.audio-video.matroska.php:819] (5802::16aa [3 bytes]) at 402"
+              },
+              {
+                "name": 6,
+                "value": "Unhandled track element [module.audio-video.matroska.php:819] (5819::16bb [4 bytes]) at 408"
+              },
+              {
+                "name": 7,
+                "value": "Unhandled audio type \"A_OPUS\""
+              }
+            ]
+          },
+          {
+            "name": "encoding",
+            "value": "UTF-8"
+          },
+          {
+            "name": "mime_type",
+            "value": "video/webm"
+          },
+          {
+            "name": "matroska",
+            "value": [
+              {
+                "name": "comments",
+                "value": [
+                  {
+                    "name": "muxingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf60.16.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "writingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf60.16.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "major_brand",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "mp42"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "compatible_brands",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "isommp42"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "com.android.version",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "12"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "encoder",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf60.16.100"
+                      },
+                      {
+                        "name": 1,
+                        "value": "Lavc60.31.102 libvpx-vp9"
+                      },
+                      {
+                        "name": 2,
+                        "value": "Lavc60.31.102 libopus"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "handler_name",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "VideoHandle"
+                      },
+                      {
+                        "name": 1,
+                        "value": "SoundHandle"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "vendor_id",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "[0][0][0][0]"
+                      },
+                      {
+                        "name": 1,
+                        "value": "[0][0][0][0]"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "duration",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "00:03:00.866000000�"
+                      },
+                      {
+                        "name": 1,
+                        "value": "00:03:00.862000000�"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "playtime_seconds",
+            "value": 180.866
+          },
+          {
+            "name": "bitrate",
+            "value": 15408043.789324692
+          },
+          {
+            "name": "playtime_string",
+            "value": "3:01"
+          },
+          {
+            "name": "version",
+            "value": 2
+          }
+        ],
+        "extmetadata": {
+          "DateTime": {
+            "value": "2024-08-24 17:38:29",
+            "source": "mediawiki-metadata",
+            "hidden": ""
+          },
+          "ObjectName": {
+            "value": "Walking across the footbridge in Katowice, 20240808",
+            "source": "mediawiki-metadata"
+          },
+          "CommonsMetadataExtension": {
+            "value": 1.2,
+            "source": "extension",
+            "hidden": ""
+          },
+          "Categories": {
+            "value": "Roździeńskiego Street in Katowice|Uploaded with video2commons|Katowice during Wikimania 2024|Footbridge over Roździeńskiego street in Katowice",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "Assessments": {
+            "value": "",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "ImageDescription": {
+            "value": "Video of a walk I took across the footbridge near the ICC and Silesian Museum in Katowice, Poland on Day 2 of Wikimania",
+            "source": "commons-desc-page"
+          },
+          "DateTimeOriginal": {
+            "value": "2024-08-08",
+            "source": "commons-desc-page"
+          },
+          "Credit": {
+            "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+            "source": "commons-desc-page"
+          },
+          "Artist": {
+            "value": "<a href=\"//commons.wikimedia.org/wiki/User:Abzeronow\" title=\"User:Abzeronow\">User:Abzeronow</a>",
+            "source": "commons-desc-page"
+          },
+          "LicenseShortName": {
+            "value": "CC BY 4.0",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "UsageTerms": {
+            "value": "Creative Commons Attribution 4.0",
+            "source": "commons-desc-page"
+          },
+          "AttributionRequired": {
+            "value": "true",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "LicenseUrl": {
+            "value": "https://creativecommons.org/licenses/by/4.0",
+            "source": "commons-desc-page"
+          },
+          "Copyrighted": {
+            "value": "True",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Restrictions": {
+            "value": "",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "License": {
+            "value": "cc-by-4.0",
+            "source": "commons-templates",
+            "hidden": ""
+          }
+        },
+        "mime": "video/webm"
+      }
+    ],
+    "revisions": [
+      {
+        "revid": 1261664289,
+        "parentid": 1068325892,
+        "timestamp": "2026-08-15T14:46:14Z",
+        "slots": {
+          "main": {
+            "contentmodel": "wikitext",
+            "contentformat": "text/x-wiki",
+            "content": "=={{int:filedesc}}==\n{{Information\n|description=Video of a walk I took across the footbridge near the ICC and Silesian Museum in Katowice, Poland on Day 2 of Wikimania\n|date=2024-08-08\n|source={{own}}\n|author=[[User:Abzeronow]]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{CC-BY 4.0}}\n\n\n[[Category:Uploaded with video2commons]]\n[[Category:Katowice during Wikimania 2024]]\n[[Category:Footbridge over Roździeńskiego street in Katowice]]\n[[Category:Roździeńskiego Street in Katowice]]"
+          }
+        }
+      }
+    ],
+    "contentmodel": "wikitext",
+    "pagelanguage": "en",
+    "pagelanguagehtmlcode": "en",
+    "pagelanguagedir": "ltr",
+    "touched": "2026-10-04T20:53:57Z",
+    "lastrevid": 1261664289,
+    "length": 518,
+    "fullurl": "https://commons.wikimedia.org/wiki/File:Walking_across_the_footbridge_in_Katowice,_20240808.webm",
+    "editurl": "https://commons.wikimedia.org/w/index.php?title=File:Walking_across_the_footbridge_in_Katowice,_20240808.webm&action=edit",
+    "canonicalurl": "https://commons.wikimedia.org/wiki/File:Walking_across_the_footbridge_in_Katowice,_20240808.webm"
+  }
+}

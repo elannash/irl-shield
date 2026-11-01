@@ -1,0 +1,407 @@
+{
+  "kind": "lossless-page-object-extract-from-raw-api-json",
+  "raw_response": "raw/selected-three-verification.json",
+  "raw_response_sha256": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+  "request_url": "https://commons.wikimedia.org/w/api.php?format=json&formatversion=2&action=query&titles=File%3A%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F+-+%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5+%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv%7CFile%3ARecall+Election+Day+-+Madison%2C+WI.webm%7CFile%3AWalking+across+the+footbridge+in+Katowice%2C+20240808.webm&redirects=1&prop=imageinfo%7Crevisions%7Cinfo&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&iilimit=50&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main&inprop=url",
+  "retrieved_at_utc": "2026-11-01T21:10:49.853919+00:00",
+  "page": {
+    "pageid": 71344314,
+    "ns": 6,
+    "title": "File:Англия - почтовое отделение.ogv",
+    "imagerepository": "local",
+    "imageinfo": [
+      {
+        "timestamp": "2018-08-04T17:52:16Z",
+        "user": "Gone Postal",
+        "size": 122439920,
+        "width": 1280,
+        "height": 720,
+        "duration": 92.8,
+        "url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "descriptionurl": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv",
+        "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=71344314",
+        "sha1": "4ca9bd97a7f0dca2ed35174b134e2c4c5a212e9c",
+        "metadata": [
+          {
+            "name": "version",
+            "value": 2
+          },
+          {
+            "name": "streams",
+            "value": [
+              {
+                "name": 689313196,
+                "value": [
+                  {
+                    "name": "serial",
+                    "value": 689313196
+                  },
+                  {
+                    "name": "group",
+                    "value": 0
+                  },
+                  {
+                    "name": "type",
+                    "value": "Theora"
+                  },
+                  {
+                    "name": "vendor",
+                    "value": "Lavf58.2.0"
+                  },
+                  {
+                    "name": "length",
+                    "value": 92.7927
+                  },
+                  {
+                    "name": "size",
+                    "value": 121500385
+                  },
+                  {
+                    "name": "header",
+                    "value": [
+                      {
+                        "name": "VMAJ",
+                        "value": 3
+                      },
+                      {
+                        "name": "VMIN",
+                        "value": 2
+                      },
+                      {
+                        "name": "VREV",
+                        "value": 1
+                      },
+                      {
+                        "name": "FMBW",
+                        "value": 80
+                      },
+                      {
+                        "name": "FMBH",
+                        "value": 45
+                      },
+                      {
+                        "name": "PICW",
+                        "value": 1280
+                      },
+                      {
+                        "name": "PICH",
+                        "value": 720
+                      },
+                      {
+                        "name": "PICX",
+                        "value": 0
+                      },
+                      {
+                        "name": "PICY",
+                        "value": 0
+                      },
+                      {
+                        "name": "FRN",
+                        "value": 30000
+                      },
+                      {
+                        "name": "FRD",
+                        "value": 1001
+                      },
+                      {
+                        "name": "PARN",
+                        "value": 1
+                      },
+                      {
+                        "name": "PARD",
+                        "value": 1
+                      },
+                      {
+                        "name": "CS",
+                        "value": 0
+                      },
+                      {
+                        "name": "NOMBR",
+                        "value": 0
+                      },
+                      {
+                        "name": "QUAL",
+                        "value": 50
+                      },
+                      {
+                        "name": "KFGSHIFT",
+                        "value": 6
+                      },
+                      {
+                        "name": "PF",
+                        "value": 0
+                      },
+                      {
+                        "name": "NSBS",
+                        "value": 1400
+                      },
+                      {
+                        "name": "NBS",
+                        "value": 21600
+                      },
+                      {
+                        "name": "NMBS",
+                        "value": 3600
+                      }
+                    ]
+                  },
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "MAJOR_BRAND",
+                        "value": "dash"
+                      },
+                      {
+                        "name": "MINOR_VERSION",
+                        "value": "0"
+                      },
+                      {
+                        "name": "COMPATIBLE_BRANDS",
+                        "value": "iso6avc1mp41"
+                      },
+                      {
+                        "name": "CREATION_TIME",
+                        "value": "2018-04-19 12:47:25"
+                      },
+                      {
+                        "name": "encoder",
+                        "value": "Lavf58.2.0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": 605329806,
+                "value": [
+                  {
+                    "name": "serial",
+                    "value": 605329806
+                  },
+                  {
+                    "name": "group",
+                    "value": 0
+                  },
+                  {
+                    "name": "type",
+                    "value": "Vorbis"
+                  },
+                  {
+                    "name": "vendor",
+                    "value": "Lavf58.2.0"
+                  },
+                  {
+                    "name": "length",
+                    "value": 92.8
+                  },
+                  {
+                    "name": "size",
+                    "value": 939535
+                  },
+                  {
+                    "name": "header",
+                    "value": [
+                      {
+                        "name": "vorbis_version",
+                        "value": 0
+                      },
+                      {
+                        "name": "audio_channels",
+                        "value": 2
+                      },
+                      {
+                        "name": "audio_sample_rate",
+                        "value": 48000
+                      },
+                      {
+                        "name": "bitrate_maximum",
+                        "value": 0
+                      },
+                      {
+                        "name": "bitrate_nominal",
+                        "value": 112000
+                      },
+                      {
+                        "name": "bitrate_minimum",
+                        "value": 0
+                      },
+                      {
+                        "name": "blocksize_0",
+                        "value": 8
+                      },
+                      {
+                        "name": "blocksize_1",
+                        "value": 11
+                      },
+                      {
+                        "name": "framing_flag",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "comments",
+                    "value": [
+                      {
+                        "name": "MAJOR_BRAND",
+                        "value": "dash"
+                      },
+                      {
+                        "name": "MINOR_VERSION",
+                        "value": "0"
+                      },
+                      {
+                        "name": "COMPATIBLE_BRANDS",
+                        "value": "iso6avc1mp41"
+                      },
+                      {
+                        "name": "CREATION_TIME",
+                        "value": "2018-04-19 12:47:25"
+                      },
+                      {
+                        "name": "encoder",
+                        "value": "Lavf58.2.0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "length",
+            "value": 92.8
+          },
+          {
+            "name": "offset",
+            "value": 0
+          }
+        ],
+        "extmetadata": {
+          "DateTime": {
+            "value": "2018-08-04 17:52:16",
+            "source": "mediawiki-metadata",
+            "hidden": ""
+          },
+          "ObjectName": {
+            "value": "Англия - почтовое отделение",
+            "source": "mediawiki-metadata"
+          },
+          "CommonsMetadataExtension": {
+            "value": 1.2,
+            "source": "extension",
+            "hidden": ""
+          },
+          "Categories": {
+            "value": "Media from YouTube|Post offices on the Isle of Wight|Buildings with addresses|Video display resolution 1280 x 720|Red brick buildings|Videos of 2018 from the United Kingdom|April 2018 on the Isle of Wight|License reviewed by YouTubeReviewBot|Files with coordinates missing SDC location of creation (50° N, 2° W)|First-person videos on foot|Videos in Russian",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "Assessments": {
+            "value": "",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "GPSLatitude": {
+            "value": "50.719801",
+            "source": "commons-desc-page"
+          },
+          "GPSLongitude": {
+            "value": "-1.147270",
+            "source": "commons-desc-page"
+          },
+          "GPSMapDatum": {
+            "value": "WGS-84",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "ImageDescription": {
+            "value": "England, Walking further. Today I will show you English post offices.",
+            "source": "commons-desc-page"
+          },
+          "DateTimeOriginal": {
+            "value": "Upload date:  19 April 2018, 12:47:25",
+            "source": "commons-desc-page"
+          },
+          "Credit": {
+            "value": "Extracted from: <bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=HH12SK6GpXE\"><bdi lang=\"\">Англия // почтовые отделения // земельные участки // немного об английских мужчинах</bdi></a> – View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=HH12SK6GpXE\">archive.org</a></bdi> (0:03:40.2 - 0:05:13)",
+            "source": "commons-desc-page"
+          },
+          "Artist": {
+            "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCgtCvzMIdFR0fHDa7wwN7jg\">Жизнь на юге Англии</a>",
+            "source": "commons-desc-page"
+          },
+          "Permission": {
+            "value": "<div class=\"licensetpl_wrapper\" style=\"clear:both; margin:0.5em auto; background-color:var(--background-color-interactive,#eaecf0); color:inherit; border:2px solid var(--border-color-subtle,#c8ccd1); padding:8px;\">\n<div style=\"text-align:center;\" lang=\"en\" dir=\"ltr\">\n<figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"//commons.wikimedia.org/wiki/File:YouTube_full-color_icon_(2024).svg\" class=\"mw-file-description\"><img src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/YouTube_full-color_icon_%282024%29.svg/120px-YouTube_full-color_icon_%282024%29.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"80\" height=\"55\" class=\"mw-file-element\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/YouTube_full-color_icon_%282024%29.svg/250px-YouTube_full-color_icon_%282024%29.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail 2x\" data-file-width=\"1184\" data-file-height=\"816\"></a><figcaption></figcaption></figure>\n<div><i>This video, screenshot or audio excerpt was released under the Creative Commons license option on <a href=\"https://en.wikipedia.org/wiki/YouTube\" class=\"extiw\" title=\"en:YouTube\">YouTube</a> <b>before August 2025</b>. (YouTube changed the license version from CC BY 3.0 to 4.0 on August 1; this was not retroactive.)</i></div>\n<div>For videos uploaded or licensed after July 2025 use <a href=\"//commons.wikimedia.org/wiki/Template:YouTube_CC-BY_4.0\" title=\"Template:YouTube CC-BY 4.0\"><span style=\"font-family:monospace,monospace;\">{{YouTube CC-BY 4.0}}</span></a></div>\n<div style=\"font-size:smaller; margin:0.75em 0;\"><b><u>To the uploader</u></b>: You must provide a link (URL) to the original file and the authorship information if available.</div>\n</div>\n<div class=\"responsive-license-cc layouttemplate licensetpl\" dir=\"ltr\" lang=\"en\"><div class=\"rlicense-icons\"><span class=\"skin-invert\" typeof=\"mw:File\"><span title=\"w:en:Creative Commons\"><img alt=\"w:en:Creative Commons\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/CC_some_rights_reserved.svg/120px-CC_some_rights_reserved.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"90\" height=\"36\" class=\"mw-file-element\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/CC_some_rights_reserved.svg/250px-CC_some_rights_reserved.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail 2x\" data-file-width=\"744\" data-file-height=\"300\"></span></span><br>\n<span class=\"skin-invert\" typeof=\"mw:File\"><span title=\"attribution\"><img alt=\"attribution\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Cc-by_new_white.svg/40px-Cc-by_new_white.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"24\" height=\"24\" class=\"mw-file-element\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Cc-by_new_white.svg/60px-Cc-by_new_white.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail 2x\" data-file-width=\"64\" data-file-height=\"64\"></span></span></div><div class=\"rlicense-text\"><div class=\"rlicense-declaration\">This file is licensed under the <a href=\"https://en.wikipedia.org/wiki/en:Creative_Commons\" class=\"extiw\" title=\"w:en:Creative Commons\">Creative Commons</a> <a href=\"//creativecommons.org/licenses/by/3.0/deed.en\" class=\"extiw\" title=\"creativecommons:by/3.0/deed.en\">Attribution 3.0 Unported</a> license.</div><div class=\"rlicense-attr\" style=\"font-weight: bold;\">Attribution: <div style=\"display:inline;font-size:larger;\" class=\"licensetpl_attr\">Жизнь на юге Англии</div></div><div class=\"rlicense-desc\" style=\"text-align:start;\" dir=\"ltr\" lang=\"en\">\n<dl><dd>You are free:\n<ul><li><b>to share</b> – to copy, distribute and transmit the work</li>\n<li><b>to remix</b> – to adapt the work</li></ul></dd>\n<dd>Under the following conditions:\n<ul><li><b>attribution</b> – You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.</li></ul></dd></dl>\n</div><span class=\"licensetpl_link\" style=\"display:none;\">https://creativecommons.org/licenses/by/3.0</span><span class=\"licensetpl_short\" style=\"display:none;\">CC BY 3.0 </span><span class=\"licensetpl_long\" style=\"display:none;\">Creative Commons Attribution 3.0 </span><span class=\"licensetpl_link_req\" style=\"display:none;\">true</span><span class=\"licensetpl_attr_req\" style=\"display:none;\">true</span></div></div>\n</div>\n<style data-mw-deduplicate=\"TemplateStyles:r892700814\">.mw-parser-output .license-review-passed{width:100%;margin:0.5em auto;background:var(--background-color-success-subtle,#d5fdf4);padding:5px;border:1px solid var(--border-color-base,#a2a9b1)}.mw-parser-output .license-review-failed{width:100%;margin:0.5em auto;background:var(--background-color-error-subtle,#fee7e6);padding:5px;border:1px solid var(--border-color-base,#a2a9b1)}.mw-parser-output .license-review-needed{width:100%;margin:0.5em auto;background:var(--background-color-warning-subtle,#fef6e7);padding:5px;border:1px solid var(--border-color-base,#a2a9b1)}</style>\n<table class=\"license-review-passed\" lang=\"en\" dir=\"ltr\">\n\n<tbody><tr>\n<td><span typeof=\"mw:File\"><span><img alt=\"YouTube logo\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/YouTube_2024.svg/120px-YouTube_2024.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"120\" height=\"26\" class=\"mw-file-element\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/YouTube_2024.svg/250px-YouTube_2024.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail 2x\" data-file-width=\"1469\" data-file-height=\"317\"></span></span>\n</td>\n<td rowspan=\"2\" style=\"width:100%; padding-left:0.5em;\">This file, which was originally posted to <bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=HH12SK6GpXE\"><bdi lang=\"\">245. Англия // почтовые  отделения //  земельные участки // немного об английских  мужчинах</bdi></a></bdi> (<a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/20200214035135/https://www.youtube.com/watch?v=HH12SK6GpXE\">archive</a>), was reviewed on 14 February 2020 by the automatic software <a href=\"//commons.wikimedia.org/wiki/User:YouTubeReviewBot\" title=\"User:YouTubeReviewBot\">YouTubeReviewBot</a>, which confirmed that this video was available there under the stated Creative Commons license on that date. This file should not be deleted if the license has changed in the meantime. The Creative Commons license is irrevocable.\n<p>The bot <b>only</b> checks for the license, human review is still required to check if the video is a <a href=\"//commons.wikimedia.org/wiki/Special:MyLanguage/Commons:Derivative_works\" title=\"Special:MyLanguage/Commons:Derivative works\">derivative work</a>, has <a href=\"//commons.wikimedia.org/wiki/Special:MyLanguage/Commons:Freedom_of_panorama\" title=\"Special:MyLanguage/Commons:Freedom of panorama\">freedom of panorama</a> related issues and other copyright problems that might be present in the video. Visit <a href=\"//commons.wikimedia.org/wiki/Special:MyLanguage/Commons:Licensing\" title=\"Special:MyLanguage/Commons:Licensing\">licensing</a> for more information. If you are a <a href=\"//commons.wikimedia.org/wiki/Special:MyLanguage/Commons:License_review\" title=\"Special:MyLanguage/Commons:License review\">license reviewer</a>, you can review this file by manually appending <code>|reviewer={{subst:REVISIONUSER}}</code> to this template.\n</p>\n</td></tr>\n<tr>\n<td style=\"padding-top:5px;\"><span class=\"skin-invert\" typeof=\"mw:File\"><span><img alt=\"Creative Commons logo\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/CC-logo.svg/120px-CC-logo.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"120\" height=\"29\" class=\"mw-file-element\" srcset=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/CC-logo.svg/250px-CC-logo.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail 2x\" data-file-width=\"512\" data-file-height=\"123\"></span></span>\n</td></tr></tbody></table>",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "LicenseShortName": {
+            "value": "CC BY 3.0",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "UsageTerms": {
+            "value": "Creative Commons Attribution 3.0",
+            "source": "commons-desc-page"
+          },
+          "AttributionRequired": {
+            "value": "true",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Attribution": {
+            "value": "Жизнь на юге Англии",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "LicenseUrl": {
+            "value": "https://creativecommons.org/licenses/by/3.0",
+            "source": "commons-desc-page"
+          },
+          "Copyrighted": {
+            "value": "True",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Restrictions": {
+            "value": "",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "License": {
+            "value": "cc-by-3.0",
+            "source": "commons-templates",
+            "hidden": ""
+          }
+        },
+        "mime": "application/ogg"
+      }
+    ],
+    "revisions": [
+      {
+        "revid": 1189685130,
+        "parentid": 732174987,
+        "timestamp": "2026-03-31T17:20:10Z",
+        "slots": {
+          "main": {
+            "contentmodel": "wikitext",
+            "contentformat": "text/x-wiki",
+            "content": "=={{int:filedesc}}==\n{{Information\n|description={{ru|Англия, Гуляем дальше. Сегодня я покажу вам английские почтовые отделения.}}{{en|England, Walking further. Today I will show you English post offices.}}\n{{building address\n|House number=33-35\n|Street name=Somerset road\n|City=Ryde\n|Postal code=PO33 1BU\n|Country=GB\n}}\n|date={{uploaded on|2018-04-19 12:47:25}}\n|source=Extracted from: {{From YouTube|1=HH12SK6GpXE|2=Англия // почтовые отделения // земельные участки // немного об английских мужчинах}} (0:03:40.2 - 0:05:13)\n|author=[https://www.youtube.com/channel/UCgtCvzMIdFR0fHDa7wwN7jg Жизнь на юге Англии]\n|permission={{YouTube CC-BY|Жизнь на юге Англии}}\n{{YouTubeReview|id=HH12SK6GpXE|ChannelName=Жизнь на юге Англии|ChannelID=UCgtCvzMIdFR0fHDa7wwN7jg|title=245. Англия // почтовые  отделения //  земельные участки // немного об английских  мужчинах |archive=https://web.archive.org/web/20200214035135/https://www.youtube.com/watch?v=HH12SK6GpXE|date=2020-02-14}}\n|other_versions=\n|other_fields=\n}}\n{{object location|50.719801|-1.147270|source:Google maps search.}}\n\n[[Category:Post offices on the Isle of Wight]]\n[[Category:Videos of 2018 from the United Kingdom|0419]]\n[[Category:April 2018 on the Isle of Wight]]\n[[Category:Red brick buildings]]\n[[Category:First-person videos on foot]]\n[[Category:Video display resolution 1280 x 720]]\n[[Category:Videos in Russian]]"
+          }
+        }
+      }
+    ],
+    "contentmodel": "wikitext",
+    "pagelanguage": "en",
+    "pagelanguagehtmlcode": "en",
+    "pagelanguagedir": "ltr",
+    "touched": "2026-10-04T22:49:00Z",
+    "lastrevid": 1189685130,
+    "length": 1619,
+    "fullurl": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv",
+    "editurl": "https://commons.wikimedia.org/w/index.php?title=File:%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv&action=edit",
+    "canonicalurl": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv"
+  }
+}

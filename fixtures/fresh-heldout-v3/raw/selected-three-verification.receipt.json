@@ -1,0 +1,20 @@
+{
+  "operation": 9,
+  "label": "selected-three-verification",
+  "request_url": "https://commons.wikimedia.org/w/api.php?format=json&formatversion=2&action=query&titles=File%3A%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F+-+%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5+%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv%7CFile%3ARecall+Election+Day+-+Madison%2C+WI.webm%7CFile%3AWalking+across+the+footbridge+in+Katowice%2C+20240808.webm&redirects=1&prop=imageinfo%7Crevisions%7Cinfo&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&iilimit=50&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main&inprop=url",
+  "requested_at_utc": "2026-11-01T21:10:49.460370+00:00",
+  "method": "GET",
+  "media_payload_authorized": false,
+  "http_status": 200,
+  "response_headers": {
+    "date": "Sun, 01 Nov 2026 21:10:49 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "x-cache-status": "miss",
+    "x-request-id": "dc63a788-5092-4f19-a213-5783bac3ef13"
+  },
+  "success": true,
+  "raw_path": "raw/selected-three-verification.json",
+  "raw_bytes": 31466,
+  "raw_sha256": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+  "completed_at_utc": "2026-11-01T21:10:49.853919+00:00"
+}

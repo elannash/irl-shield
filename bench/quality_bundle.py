@@ -17,8 +17,10 @@ import sys
 import zipfile
 
 DATASET_CACHE_PREFIXES = {'fresh-heldout-v1': 'fixtures/cache/fresh-heldout',
-                          'fresh-heldout-v2': 'fixtures/cache/fresh-heldout-v2'}
+                          'fresh-heldout-v2': 'fixtures/cache/fresh-heldout-v2',
+                          'fresh-heldout-v3': 'fixtures/cache/fresh-heldout-v3'}
 V2_NOT_BEFORE_UTC = '2026-11-01T14:00:00Z'
+V3_NOT_BEFORE_UTC = '2026-11-02T12:00:00Z'
 
 
 def digest(path):
@@ -46,15 +48,25 @@ def frozen_dataset(path):
             or len(ids) != 3 or len(set(ids)) != 3
             or any(clip['split'] != 'heldout' for clip in clips)):
         raise ValueError('Fresh heldout dataset must freeze exactly three unique heldout clips')
-    if manifest['dataset_id'] == 'fresh-heldout-v2':
+    if manifest['dataset_id'] in ('fresh-heldout-v2', 'fresh-heldout-v3'):
+        version = 'v2' if manifest['dataset_id'] == 'fresh-heldout-v2' else 'v3'
+        not_before = V2_NOT_BEFORE_UTC if version == 'v2' else V3_NOT_BEFORE_UTC
         reservation = manifest.get('evaluation_reservation', {})
         if (reservation.get('maximum_evaluations') != 1 or reservation.get('evaluation_started') is not False
-                or reservation.get('not_before_utc') != V2_NOT_BEFORE_UTC):
-            raise ValueError('Fresh heldout v2 requires its immutable one-shot reservation')
+                or reservation.get('not_before_utc') != not_before):
+            raise ValueError('Fresh heldout ' + version + ' requires its immutable one-shot reservation')
         for key in ('source_sha256', 'source_path', 'source_url'):
             values = [clip.get(key) for clip in clips]
             if any(not isinstance(value, str) or not value for value in values) or len(set(values)) != 3:
-                raise ValueError('Fresh heldout v2 must retain three distinct source identities')
+                raise ValueError('Fresh heldout ' + version + ' must retain three distinct source identities')
+        if version == 'v3':
+            if type(reservation['maximum_evaluations']) is not int:
+                raise ValueError('Fresh heldout v3 requires its immutable one-shot reservation')
+            if manifest.get('evaluation_marker') != 'fixtures/cache/fresh-heldout-v3/EVALUATION.started.json':
+                raise ValueError('Fresh heldout v3 requires its explicit one-shot marker path')
+            if any(not clip_id or Path(clip_id).name != clip_id or clip_id in ('.', '..')
+                   or '\\' in clip_id for clip_id in ids):
+                raise ValueError('Fresh heldout v3 clip IDs must be safe output basenames')
     expected = {(clip, variant) for clip in ids for variant in (False, True)}
     rows = manifest['inputs']
     actual = [(row['clip'], row['synthetic_variant']) for row in rows]
@@ -64,7 +76,7 @@ def frozen_dataset(path):
     for row in rows:
         for key in ('source', 'truth'):
             checked_file(Path(path).parent, row[key])
-            if manifest['dataset_id'] == 'fresh-heldout-v2':
+            if manifest['dataset_id'] in ('fresh-heldout-v2', 'fresh-heldout-v3'):
                 dataset_file(Path(path).parent, row[key], Path(path).parent,
                              dataset_id=manifest['dataset_id'])
         for key in ('source_sha256', 'truth_sha256'):
@@ -181,7 +193,8 @@ def clip_lease(root, host, *, lock_root=None):
             yield
 
 
-def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, cache_root=None):
+def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, cache_root=None,
+           model_cache=None, resource_binding=None, started_receipt=None):
     """Write one encoded clip and actual masks; privacy remains ungraded."""
     quality = modules(root)
     import cv2
@@ -189,7 +202,8 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
     cv2.setNumThreads(1)
     data, input_snapshot = entries(root, inputs, dataset=dataset)
     row = next(r for r in data['clips'] if (r['clip'], r['synthetic_variant']) == (clip, synthetic))
-    config = json.loads(Path(config).read_text())
+    config_snapshot = Path(config).read_bytes()
+    config = json.loads(config_snapshot)
     candidate, options = config['candidate'], dict(config['options'])
     quality.validate_area_ceiling(options.get('area_ceiling'), options.get('area_ceiling_basis'), required=True)
     from bench.independence import policy_metadata
@@ -197,6 +211,26 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
     if cache_root is not None and dataset is None:
         raise ValueError('Cache override requires an explicit frozen heldout dataset')
     manifest = frozen_dataset(dataset)[0] if dataset is not None else None
+    if manifest is not None and manifest['dataset_id'] == 'fresh-heldout-v3':
+        from bench import heldout_resources
+        from bench import heldout_bench
+        actual = heldout_resources.preflight(root, config, manifest, model_cache)
+        if actual != resource_binding:
+            raise ValueError('Heldout render resources differ from the committed start binding')
+        if started_receipt is None:
+            raise ValueError('Fresh heldout v3 render requires its committed started receipt')
+        identity = started_receipt['identity']
+        if (identity.get('dataset_id') != 'fresh-heldout-v3'
+                or identity['dataset_sha256'] != digest(dataset)
+                or identity['policy_sha256'] != hashlib.sha256(config_snapshot).hexdigest()
+                or identity['resource_binding'] != actual):
+            raise ValueError('Fresh heldout v3 render differs from its committed started identity')
+        heldout_bench.verify_started_commit(identity, started_receipt['commit'], started_receipt['receipt'])
+        current = heldout_bench.source_identity(root)
+        if current != {key: identity[key] for key in current}:
+            raise ValueError('Heldout source changed before rendering')
+    elif model_cache is not None or resource_binding is not None or started_receipt is not None:
+        raise ValueError('Explicit model cache binding requires fresh heldout v3')
     source_original, truth_original = (dataset_file(root, row[key], cache_root, dataset_id=manifest['dataset_id'])
                                        if dataset is not None else Path(row[key])
                                        for key in ('source', 'truth'))
@@ -223,7 +257,12 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
     orchestrator = digest(__file__)
     backends, capture, process = {}, None, None
     try:
-        backends = quality._make_backends(candidate, options, media['resolution'])
+        if resource_binding is None:
+            backends = quality._make_backends(candidate, options, media['resolution'])
+        else:
+            from bench import heldout_resources
+            with heldout_resources.model_cache_binding(resource_binding):
+                backends = quality._make_backends(candidate, options, media['resolution'])
         if set(backends) != {'fast', 'accurate'}:
             raise ValueError('Quality policy must construct both detector lanes')
         width, height = media['resolution']
@@ -233,7 +272,8 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
                  'libx264': ['-preset', 'ultrafast', '-tune', 'zerolatency', '-threads', '2']}
         if encoder not in flags:
             raise ValueError('Unsupported quality encoder')
-        command = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
+        ffmpeg = 'ffmpeg' if resource_binding is None else resource_binding['executables']['ffmpeg']['path']
+        command = [ffmpeg, '-hide_banner', '-loglevel', 'error', '-nostdin', '-y',
                    '-filter_threads', '1', '-f', 'rawvideo', '-pix_fmt', 'bgr24',
                    '-s', f'{width}x{height}', '-r', str(media['fps']), '-i', 'pipe:0',
                    '-an', '-c:v', encoder, *flags[encoder], '-bf', '0', '-b:v', '10M',
@@ -275,6 +315,8 @@ def render(root, inputs, config, directory, clip, synthetic, *, dataset=None, ca
         if dataset is not None:
             plan['dataset_identity'] = {'dataset_id': manifest['dataset_id'], 'split': 'heldout',
                                         'manifest_sha256': digest(directory / 'dataset.json')}
+        if resource_binding is not None:
+            plan['resource_binding'] = resource_binding
         write_json(directory / 'bundle.json', plan)
         (directory / 'bundle.sha256').write_text(digest(directory / 'bundle.json') + '\n')
         verify(directory)
@@ -354,6 +396,8 @@ def aggregate(root, directory, run_id, *, dataset=None):
             if identity['dataset_identity'] != {'dataset_id': manifest['dataset_id'], 'split': 'heldout',
                                                  'manifest_sha256': digest(dataset)}:
                 raise ValueError('Quality bundles differ from the frozen heldout dataset')
+            if manifest['dataset_id'] == 'fresh-heldout-v3':
+                identity['resource_binding'] = plan['resource_binding']
         if run_identity is None:
             run_identity = identity
         elif identity != run_identity:

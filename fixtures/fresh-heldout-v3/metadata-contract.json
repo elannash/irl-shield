@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "dataset_id": "fresh-heldout-v3",
+  "status": "metadata-sealed-payload-unprepared",
+  "files": {
+    "selection.json": "0dbb14bb2da57364c6b1ca131c29619e9270297298abb4222aa277d633c5f1df",
+    "ACCEPTANCE.json": "efe5742366d6fc5f240f43beb68212a61e91f960614cfa7748946a8b9141b02e",
+    "nonreuse-comparisons.json": "133e42bf9adce754b1734e760a315d232f94f04e51da8ec94b1ce8ab9d3f888f",
+    "baseline-metadata.json": "08b29c84e2e8e27d0d58858cd7cdf006e2c4cc77534c23a9c998c75fde4e269b",
+    "raw/selected-three-verification.json": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+    "raw/selected-three-verification.receipt.json": "5ac5861f74e57aa7e77f02517b0a296f52f12f4378085bc928f9d72a43ff48fc",
+    "sources/katowice-footbridge-walk.metadata.json": "065b71c5014898f9bc46e4ccf855656af859dfadfd46fb634a35daeac93e3896",
+    "sources/madison-state-street-walk.metadata.json": "450f322a75f224b76151e2cf93baf8590a94f17dbb81171173a738f780bd39a1",
+    "sources/ryde-somerset-walk.metadata.json": "59e1aedeae51a571255a0c430caa34fd90e607bf84e376790cfb657de1d5f771"
+  },
+  "source_pins": {
+    "fixtures/prepare_heldout_v2.py": "05664329ce1416b64bac477d605e90ff3baee21fe59fd15383bee2066f6a38ff",
+    "fixtures/heldout_prepare.py": "0cedc35016dc3aacb1249cae51ac0ba0c097139bc4820c217abae9cee8f8cf6c",
+    "bench/synthetic.py": "566d58d7002f47d9c3bc68f8b95ac67be84b4b7f03abf43ddf3f4c12382352ea",
+    "scripts/perf-queue": "a01a17a954f779b87a97180c15e1afcf13d4dae3725850140e320b5e2d60477d",
+    "bench/perf_queue.py": "ecc9a90d79069ab6c0494144729601d0e95e593351349d0b0986fe3a262dc4e6",
+    "scripts/bounded.py": "b45b32d17550c8b3b28acb1d90efb183c79a465cb045d0f43435406e27fddeaf"
+  },
+  "font_paths": [
+    "fixtures/fonts/DejaVuSans-Bold.ttf",
+    "fixtures/fonts/DejaVuSansMono-Bold.ttf",
+    "fixtures/fonts/DejaVuSerif-Bold.ttf"
+  ],
+  "not_before_utc": "2026-11-02T12:00:00Z",
+  "final_manifest": null,
+  "actual_root_argv": null,
+  "original_and_derived_sha256": null
+}

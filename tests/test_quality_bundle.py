@@ -236,6 +236,57 @@ class QualityBundle(unittest.TestCase):
         self.assertEqual((self.base / 'snapshot/inputs.json').read_bytes(), original)
 
 
+    def test_v3_bound_model_cache_reaches_session_and_restores_default_on_failure(self):
+        from bench import heldout_bench, heldout_resources, onnx_detectors
+        cache = self.base / 'fixtures/cache/fresh-heldout-v3'
+        cache.mkdir(parents=True)
+        shutil.copyfile(self.source, cache / 'source.mp4')
+        shutil.copyfile(self.truth, cache / 'truth.json')
+        dataset = self.base / 'dataset.json'
+        ids = ['synthetic-a', 'synthetic-b', 'synthetic-c']
+        rows = [{'clip': clip, 'synthetic_variant': variant,
+                 'source': 'fixtures/cache/fresh-heldout-v3/source.mp4',
+                 'truth': 'fixtures/cache/fresh-heldout-v3/truth.json',
+                 'source_sha256': bundle.digest(self.source), 'truth_sha256': bundle.digest(self.truth)}
+                for clip in ids for variant in (False, True)]
+        bundle.write_json(dataset, {'schema_version': 1, 'dataset_id': 'fresh-heldout-v3',
+            'status': 'frozen-ungraded', 'split': 'heldout',
+            'evaluation_marker': 'fixtures/cache/fresh-heldout-v3/EVALUATION.started.json',
+            'evaluation_reservation': {'maximum_evaluations': 1, 'evaluation_started': False,
+                                     'not_before_utc': '2026-11-02T12:00:00Z'},
+            'clips': [{'id': clip, 'split': 'heldout', 'source_sha256': str(index) * 64,
+                       'source_path': f'original-{index}.webm', 'source_url': f'https://example.invalid/{index}'}
+                      for index, clip in enumerate(ids)], 'inputs': rows})
+        inputs = self.base / 'heldout-inputs.json'
+        bundle.write_json(inputs, {'fixture_manifest_sha256': bundle.digest(dataset), 'clips': rows})
+        model_cache = self.base / 'separate-model-cache'
+        model_cache.mkdir()
+        binding = {'model_cache': str(model_cache), 'files': {'ppocr-v6-tiny': {'synthetic': True}}}
+        identity = {'dataset_id': 'fresh-heldout-v3', 'dataset_sha256': bundle.digest(dataset),
+                    'policy_sha256': bundle.digest(self.config), 'resource_binding': binding,
+                    **heldout_bench.source_identity(ROOT)}
+        started = {'identity': identity, 'commit': 'a' * 40, 'receipt': {'synthetic': True}}
+        previous = onnx_detectors.DEFAULT_CACHE
+        seen = []
+        def model_path(name, cache_dir):
+            seen.append((name, Path(cache_dir)))
+            self.assertEqual(Path(cache_dir), model_cache)
+            raise RuntimeError('synthetic model-session boundary')
+        # Resource validation and Git have their own real-file/temp-Git tests.
+        # This encoded fixture owns wiring through the actual lane factory and
+        # _session; stop at model payload lookup before constructing a session.
+        with patch.object(heldout_resources, 'preflight', return_value=binding), \
+                patch.object(heldout_bench, 'verify_started_commit') as receipt_check, \
+                patch.object(onnx_detectors, 'verified_path', side_effect=model_path):
+            with self.assertRaisesRegex(RuntimeError, '^synthetic model-session boundary$'):
+                bundle.render(self.base, inputs, self.config, self.base / 'bound-render', ids[0], False,
+                              dataset=dataset, model_cache=model_cache, resource_binding=binding, started_receipt=started)
+        self.assertEqual(seen, [('ppocr-v6-tiny', model_cache)])
+        receipt_check.assert_called_once_with(identity, 'a' * 40, started['receipt'])
+        self.assertEqual(onnx_detectors.DEFAULT_CACHE, previous)
+        self.assertFalse((self.base / 'bound-render/bundle.json').exists())
+
+
 if __name__ == '__main__':
     unittest.main()
 

@@ -1,0 +1,693 @@
+{
+  "status": "ACCEPTED METADATA SOURCE CHOICES ONLY",
+  "at_utc": "2026-11-01T21:16:48.966079+00:00",
+  "selection_sha256": "0dbb14bb2da57364c6b1ca131c29619e9270297298abb4222aa277d633c5f1df",
+  "raw_primary_response_sha256": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+  "baseline_files_rehashed": 19,
+  "candidate_to_prior_checks": [
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "sf-market",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "ljubljana-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "ljubljana-traffic",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "london-croydon",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "london-bus-pov",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "illinois-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "mazatlan-aquiles",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "sf-lombard",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "london-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "illinois-snow",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "zurich-spiegelgasse",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "chicago-wells",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "manchester-portland",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "london-westminster",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "paris-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "prior": "liverpool-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "sf-market",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "ljubljana-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "ljubljana-traffic",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "london-croydon",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "london-bus-pov",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "illinois-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "mazatlan-aquiles",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "sf-lombard",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "london-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "illinois-snow",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "zurich-spiegelgasse",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "chicago-wells",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "manchester-portland",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "london-westminster",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "paris-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "prior": "liverpool-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "sf-market",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "ljubljana-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "ljubljana-traffic",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "london-croydon",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "london-bus-pov",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "illinois-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "mazatlan-aquiles",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "sf-lombard",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "london-night",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "illinois-snow",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "zurich-spiegelgasse",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "chicago-wells",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "manchester-portland",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "london-westminster",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "paris-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "prior": "liverpool-walk",
+      "checks": {
+        "pageid": true,
+        "source_url": true,
+        "download_url": true,
+        "sha1": true,
+        "origin_work": true,
+        "youtube": true,
+        "vimeo": true,
+        "author_url": true
+      }
+    }
+  ],
+  "pairwise_candidates_distinct": 3,
+  "licensed_originals_bytes_advertised": 474788034,
+  "no_pixels_or_payloads_accessed_by_root": true,
+  "final_v3_sealed": false,
+  "tuning_release": false,
+  "caveats": [
+    "Katowice is a pedestrian bridge, not pavement-level.",
+    "Madison only0.712s beyond fixed end; actual duration/frames must verify, strip all audio.",
+    "CC BY4 supported explicitly in new v3 preparer; no weakening v2 license validator.",
+    "Original payload SHA256/dimensions/PTS not verified until preparation.",
+    "CPU encoder selected before pixels as explicit owner requirement; benchmark-only, not demo assets."
+  ]
+}
