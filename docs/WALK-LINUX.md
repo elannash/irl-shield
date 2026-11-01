@@ -1,4 +1,4 @@
-# Saturday Linux walk launcher
+# Linux walk launcher
 
 `scripts/walk-linux` starts the existing `python -m shield.cli run` entrypoint
 from one isolated Python 3.11 venv, under the canonical Linux exclusive lease.
@@ -12,7 +12,7 @@ scripts/walk-linux --local-only
 # Authenticated Twitch test ingest, without going live:
 infisical run -- scripts/walk-linux --twitch-bandwidth-test
 
-# Only during the owner's authorized, attended Saturday/Sunday session:
+# During an owner-authorized, attended live session:
 infisical run -- scripts/walk-linux --twitch-live
 ```
 

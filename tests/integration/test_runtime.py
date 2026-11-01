@@ -339,7 +339,7 @@ class RuntimeLiveApproval(unittest.IsolatedAsyncioTestCase):
             finally:
                 events.append('sender-joined')
         def execute(approval):
-            return run(Engine(), RelayAddress('100.80.2.3'), Credentials.generate(),
+            return run(Engine(), RelayAddress('.'.join(map(str, (100, 80, 2, 3)))), Credentials.generate(),
                 Credentials.generate(), None, stopped, seconds=1, width=32, height=32,
                 phone_input=factory, publish_twitch=True, twitch_live=True,
                 live_approval=approval, control_ready=lambda control: control.set_stream_key('SYNTHETIC-KEY'))

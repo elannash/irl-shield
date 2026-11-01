@@ -43,13 +43,17 @@ class MediaMTXDiagnostics(unittest.TestCase):
                    for protocol, port in (('tcp', address.rtmp_port), ('udp', address.srt_port),
                                           ('tcp', address.rtsp_port))]
         with tempfile.TemporaryDirectory() as directory, \
-                patch('relay.mediamtx.subprocess.Popen', return_value=Process(logs)), \
+                patch('relay.mediamtx.subprocess.Popen', return_value=Process(logs)) as spawn, \
                 patch('relay.mediamtx.linux_bound_sockets', return_value=sockets):
             with MediaMTX(address, Credentials('phone', secret), Credentials('internal', secret),
                           binary='/synthetic/mediamtx', archive=directory):
                 pass
             text = (Path(directory) / 'mediamtx.json').read_text()
             saved = json.loads(text)
+        queue = int(spawn.call_args.kwargs['env']['MTX_WRITEQUEUESIZE'])
+        self.assertGreaterEqual(queue, 1024, 'MediaMTX runtime queue violates burst-safety floor')
+        self.assertEqual(queue & (queue - 1), 0, 'MediaMTX runtime queue must be a power of two')
+        self.assertEqual(saved['write_queue_size'], queue)
         self.assertEqual(saved['warning_counts'],
                          {'slow-reader': 70, 'write-queue-full': 1, 'other-warning': 2})
         self.assertEqual(len(saved['recent_warnings']), 64)

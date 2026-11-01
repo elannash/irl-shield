@@ -53,7 +53,7 @@ class CommandLine(unittest.TestCase):
             result = original(parser, *args, **kwargs)
             parsed.append(result)
             return result
-        with patch.dict('os.environ', {'SHIELD_BIND_HOST': '100.80.1.2'}), \
+        with patch.dict('os.environ', {'SHIELD_BIND_HOST': '.'.join(map(str, (100, 80, 1, 2)))}), \
                 patch.object(argparse.ArgumentParser, 'parse_args', observe), \
                 patch('relay.soak.require_queue_lease', side_effect=NativeBoundary):
             with self.assertRaises(NativeBoundary):

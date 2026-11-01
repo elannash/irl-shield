@@ -374,11 +374,11 @@ one-shot evaluation and report it without further tuning on that split.
 
 The separate lane artifacts are retained without a code merge:
 
-- GStreamer: `/home/elan/.t3/worktrees/irl-shield/t3-ae5d7088/.tmp/gst/HAND_BACK.md`;
+- GStreamer: `WORKTREE_t3-ae5d7088/.tmp/gst/HAND_BACK.md`;
   <t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A3d408788-9494-4f24-96dd-9cc912db980d%3Adelegate-task%3Afc9fe6f7-02ea-46b8-b4a3-0e1c30a80d6c>.
-- OpenVINO: `/home/elan/.t3/worktrees/irl-shield/t3-14dc4ccc/.tmp/openvino/handback.json`;
+- OpenVINO: `WORKTREE_t3-14dc4ccc/.tmp/openvino/handback.json`;
   <t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A3d408788-9494-4f24-96dd-9cc912db980d%3Adelegate-task%3A31d78287-84e1-459f-a446-28c31f60b6c4>.
-- FAST: `/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/out/fast-handback.json`;
+- FAST: `WORKTREE_t3-1b7da09d/out/fast-handback.json`;
   <t3-thread://v2/a3857748-9579-4ce2-b37e-5d3cd3faad44/thread:delegated-task:command%3Amcp%3A3d408788-9494-4f24-96dd-9cc912db980d%3Adelegate-task%3A1c712348-2ce6-4780-b349-c6c9699b0175>.
 
 Root audit is `.tmp/m1/merit-lane-audit.json`. The three-branch result summary

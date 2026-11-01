@@ -7,7 +7,7 @@ implementation defect was demonstrated by these traces. This is a bounded safety
 not a proof of the complete transport, video pipeline, or every possible envelope.
 
 Implementation child: `m3-model`. Prepared checkout:
-`/home/elan/.t3/worktrees/irl-shield/t3-c162e57f`, branch `t3/c162e57f`, HEAD
+`WORKTREE_t3-c162e57f`, branch `t3/c162e57f`, HEAD
 `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. The first operation ran `pwd`,
 `git branch --show-current`, `git rev-parse HEAD`, and `git status --short`;
 the checkout was clean and at that HEAD. The parent's current `docs/model/` was copied
@@ -108,7 +108,7 @@ had sent Shield Mode changes around the replay cache; that shortcut was removed.
 
 ## Mapping to the current parent implementation
 
-Source checkout: `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`. These are the parent's
+Source checkout: `WORKTREE_t3-3bb00dac`. These are the parent's
 uncommitted M3 files at the hashes below, not a claim that base HEAD already contains
 them. All four hashes matched before modeling and immediately after the Python replay;
 see [initial hashes](evidence/source-hashes.initial.json) and
@@ -126,32 +126,32 @@ was refreshed from that later source; no transport execution or test result is c
 
 | Model state/action | Concrete implementation and mapping |
 | --- | --- |
-| `Init` | `Control.__init__` starts PROTECT; constructing `ShieldEvents` synchronously asserts the connection hold. The model begins after both calls. [control.py:11](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:11), [events.py:33](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:33). |
-| `mode`, `Settle` | `Control.state` and `_settle`: any hold has priority, then coverage chooses LIVE/PROTECT. [control.py:42](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:42). Reasons and ledger entries are abstracted out. |
-| `coverage`, `Coverage(c)` | `Control.update_coverage(c, reason, at)` updates coverage and settles. [control.py:37](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:37). |
-| `local`, `LocalHold(h)` | `Control.set_hold(h, source='local', ...)` changes only that named hold. [control.py:31](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:31). |
-| `chat`, `shield`, `connection` | Presence of `chat`, `shield-mode`, `twitch-connection` in Control's hold dictionary. Each callback alters only its source. No transport action releases chat, shield, or local. [events.py:52](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:52), [events.py:123](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:123). |
-| `phase`, `revoked`, `Welcome`, `Ready` | `ShieldEvents.phase`, `_revoked`, `welcome(valid_session_id)`, `ready()`. Valid welcomes are permitted in any nonrevoked phase; a welcome does not itself release the connection hold. [events.py:55](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:55). |
-| `Reconnect` | `reconnect(approved_url)` enters reconnecting and asserts a connection hold. With restored flags it preserves cache, floor, timestamps, and revocation latch. It can run even after revocation; revocation still prevents `ready()`. [events.py:68](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:68). |
-| `Fault(r)` | `fault(..., revoked=r)`, also used by invalid welcomes and rejected reconnect URLs. The latch is monotonic; subsequent faults cannot undo it. [events.py:78](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:78). |
-| `now`, `Tick` | Injected `clock` callable advanced by the environment; it alone does not prune IDs. [events.py:94](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:94). |
-| `seen`, `floor`, first half of `Deliver` | `_seen` as insertion-ordered ID sequence, `_floor` as scalar. Purge, metadata validity, duplicate rejection, oldest-insertion eviction, and conservative floor rejection occur in Python order. [events.py:95](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:95). |
-| `chatTime`, `shieldTime`, latter half of `Deliver` | `_chat_time`, `_shield_time`, identity/badge authority, shared-chat guard, and command callbacks. [events.py:116](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:116). |
+| `Init` | `Control.__init__` starts PROTECT; constructing `ShieldEvents` synchronously asserts the connection hold. The model begins after both calls. [control.py:11](WORKTREE_t3-3bb00dac/shield/control.py:11), [events.py:33](WORKTREE_t3-3bb00dac/shield/twitch/events.py:33). |
+| `mode`, `Settle` | `Control.state` and `_settle`: any hold has priority, then coverage chooses LIVE/PROTECT. [control.py:42](WORKTREE_t3-3bb00dac/shield/control.py:42). Reasons and ledger entries are abstracted out. |
+| `coverage`, `Coverage(c)` | `Control.update_coverage(c, reason, at)` updates coverage and settles. [control.py:37](WORKTREE_t3-3bb00dac/shield/control.py:37). |
+| `local`, `LocalHold(h)` | `Control.set_hold(h, source='local', ...)` changes only that named hold. [control.py:31](WORKTREE_t3-3bb00dac/shield/control.py:31). |
+| `chat`, `shield`, `connection` | Presence of `chat`, `shield-mode`, `twitch-connection` in Control's hold dictionary. Each callback alters only its source. No transport action releases chat, shield, or local. [events.py:52](WORKTREE_t3-3bb00dac/shield/twitch/events.py:52), [events.py:123](WORKTREE_t3-3bb00dac/shield/twitch/events.py:123). |
+| `phase`, `revoked`, `Welcome`, `Ready` | `ShieldEvents.phase`, `_revoked`, `welcome(valid_session_id)`, `ready()`. Valid welcomes are permitted in any nonrevoked phase; a welcome does not itself release the connection hold. [events.py:55](WORKTREE_t3-3bb00dac/shield/twitch/events.py:55). |
+| `Reconnect` | `reconnect(approved_url)` enters reconnecting and asserts a connection hold. With restored flags it preserves cache, floor, timestamps, and revocation latch. It can run even after revocation; revocation still prevents `ready()`. [events.py:68](WORKTREE_t3-3bb00dac/shield/twitch/events.py:68). |
+| `Fault(r)` | `fault(..., revoked=r)`, also used by invalid welcomes and rejected reconnect URLs. The latch is monotonic; subsequent faults cannot undo it. [events.py:78](WORKTREE_t3-3bb00dac/shield/twitch/events.py:78). |
+| `now`, `Tick` | Injected `clock` callable advanced by the environment; it alone does not prune IDs. [events.py:94](WORKTREE_t3-3bb00dac/shield/twitch/events.py:94). |
+| `seen`, `floor`, first half of `Deliver` | `_seen` as insertion-ordered ID sequence, `_floor` as scalar. Purge, metadata validity, duplicate rejection, oldest-insertion eviction, and conservative floor rejection occur in Python order. [events.py:95](WORKTREE_t3-3bb00dac/shield/twitch/events.py:95). |
+| `chatTime`, `shieldTime`, latter half of `Deliver` | `_chat_time`, `_shield_time`, identity/badge authority, shared-chat guard, and command callbacks. [events.py:116](WORKTREE_t3-3bb00dac/shield/twitch/events.py:116). |
 | `executed`, `replayed`, `resumedBy` | Verification-only history of actual command callbacks. They have no production storage counterpart. The scratch Python harness observes these through the constructor's public `hold` callback. |
 
 The public Python interface matches the existing adapter in
-[tests/m3/test_events.py:23](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py:23):
+[tests/m3/test_events.py:23](WORKTREE_t3-3bb00dac/tests/m3/test_events.py:23):
 `ShieldEvents` calls `hold(..., now=...)`; the adapter passes that time positionally into
 `Control.set_hold(..., at)`. No engine/control fork or signature change is needed.
 
 The transport owns network I/O and calls this same policy instance: `_connect` faults
-before connecting ([transport.py:45](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:45));
-welcome/ready map subscription setup ([transport.py:55](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:55));
-reconnect validates policy before transport migration ([transport.py:65](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:65));
-known subscription notifications call `accept()` ([transport.py:80](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:80));
-revocation and disconnect call `fault()` ([transport.py:87](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:87)).
+before connecting ([transport.py:45](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:45));
+welcome/ready map subscription setup ([transport.py:55](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:55));
+reconnect validates policy before transport migration ([transport.py:65](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:65));
+known subscription notifications call `accept()` ([transport.py:80](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:80));
+revocation and disconnect call `fault()` ([transport.py:87](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:87)).
 The later idle-validation failure also maps to `Fault(TRUE)`
-([transport.py:164](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:164));
+([transport.py:164](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:164));
 the redirect refusal added inside `_connect` and task cleanup remain outside this model.
 This mapping does not execute or verify the private upstream hooks, subscriptions,
 async/thread ordering, or transport cleanup. The harness imports only Control and
@@ -341,17 +341,20 @@ This difference is an internal TLC header versus distribution tag, not a substit
 
 | Artifact | SHA-256 | License/source receipt |
 | --- | --- | --- |
-| `/home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar` | `936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88` | MIT, extracted from its `META-INF/LICENSE.txt` to [TLC-LICENSE.txt](evidence/TLC-LICENSE.txt). |
-| `/home/elan/.local/share/mise/installs/java/temurin-25/bin/java` | `1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25` | Installed `legal/java.base/LICENSE`, GPL v2 with Classpath Exception (exception begins at line 326). Java is not redistributed here. |
-| `/home/elan/.agents/skills/statechart/scripts/statechart` | `aeffb7077850fd4c225e3d18049ca6ed7b988cf48e88cd8463526a7feaa74d13` | Existing local helper, reused read-only. No license grant or redistribution assumed. |
-| `/home/elan/.agents/skills/statechart/scripts/run.ts` | `f330e0a3b0a9f8181c2e52252c4a47db3f0a64f79a7cca5490263e33a5f13c72` | Existing local helper implementation; pins one TLC worker and continuation behavior. |
+| `OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar` | `936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88` | MIT, extracted from its `META-INF/LICENSE.txt` to [TLC-LICENSE.txt](evidence/TLC-LICENSE.txt). |
+| `OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java` | `1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25` | Installed `legal/java.base/LICENSE`, GPL v2 with Classpath Exception (exception begins at line 326). Java is not redistributed here. |
+| `OWNER_HOME/.agents/skills/statechart/scripts/statechart` | `aeffb7077850fd4c225e3d18049ca6ed7b988cf48e88cd8463526a7feaa74d13` | Existing local helper, reused read-only. No license grant or redistribution assumed. |
+| `OWNER_HOME/.agents/skills/statechart/scripts/run.ts` | `f330e0a3b0a9f8181c2e52252c4a47db3f0a64f79a7cca5490263e33a5f13c72` | Existing local helper implementation; pins one TLC worker and continuation behavior. |
 
 The Java argv wrapper only records nonsensitive tool arguments and executes the pinned
 Java binary. Its [source](evidence/java-wrapper.sh) is original work in this child.
 The model, view, and replay harness are original project code; no third-party model,
-dataset, or media asset was introduced. [SHA256SUMS](SHA256SUMS) covers every delivered
-file except itself and this report to avoid a circular hash; this report's hash is given
-in the final hand-back.
+dataset, or media asset was introduced. [SHA256SUMS](SHA256SUMS) now identifies
+its listed current delivered bytes. Its original membership excludes itself
+and this report; the parent [model manifest](../SHA256SUMS) includes this report
+and the historical manifest. Historical proof JSON digest values refer to
+original bytes at pre-scrub commit `8f12891db2e7347477bfd96329346ba9fd011231`.
+Regenerating delivery checksums provides no new historical execution proof.
 
 ## Reproduction
 
@@ -364,12 +367,12 @@ in this child's test budget.
 work=/tmp/agents/irl-shield/m3-model-recheck
 mkdir -p "$work"
 cp docs/model/TwitchControl.tla docs/model/TwitchControl.cfg docs/model/view.mjs "$work/"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
-  env JAVA=/home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  TLA2TOOLS=/home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
+  env JAVA=OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
+  TLA2TOOLS=OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
   JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
-  /home/elan/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
+  OWNER_HOME/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
   --config "$work/TwitchControl.cfg" --view "$work/view.mjs" --out "$work/restored-new"
 ```
 
@@ -382,10 +385,10 @@ To replay the preserved shortest paths through the parent's public interfaces:
 ```sh
 cp docs/model/replay_counterexamples.py "$work/"
 cp -a docs/model/evidence "$work/evidence"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env PYTHONDONTWRITEBYTECODE=1 python3 "$work/replay_counterexamples.py" \
-  --source /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac --evidence "$work/evidence"
+  --source WORKTREE_t3-3bb00dac --evidence "$work/evidence"
 ```
 
 Use the source-hash receipts before treating a replay against a later parent revision as

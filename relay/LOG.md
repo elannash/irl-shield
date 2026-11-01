@@ -49,7 +49,7 @@ Conductor raised ceiling40->52 withouttimeboxreset. Invocations38through43 inclu
 
 Integrated one internalRTSP/TCP camera read; authenticatedloopback18554explicitlistener, RTMP/SRTphonepublishpathsunchanged. Capture nowreadsRTSP/TCP andnativeSRT via existinglibsrt, without crashing directRTMP decoder. Both publishers andcapture useopaque decoder templates forcopy, preservekeyframeflags. Added SRTsender mode. Sender sourceaudio discarded/generatedtoneonly. Noengine/scorer/cache/rootrequirements/rootREADME touched. Sourcefrozen afterqueue submission; docs only maychange.
 
-Freshcentralqueue /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1 submitted3jobsandSEALED:
+Freshcentralqueue REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1 submitted3jobsandSEALED:
 - m2-rtmp-av359c4d901f1a4d35b5152a7132be0a0b:30sec RTMPpublish,RTSP+SRTcapture.
 - m2-srt-av ecab6ba5f532409291ee08a32cbe7a8f:30sec SRTpublish,RTSP+SRTcapture.
 - m2-soak b33563fb522d46bbb49dd4c6d6a302f8:1200sec RTMPpublish,RTSP+SRTcapture,faultinjection.
@@ -90,7 +90,7 @@ Added bounded in-memory MediaMTX fixed-code close reader; no rawlogs.54 realRTMP
 
 SRTsideRTSPcapturelastvideoDTS83970->83229/90000 beforeValueError.59 exactDTSsequence replaywithrealarchivevideo intoMatroska reproducesValueError22 atsamepoint; no timestampclamp. Helper .tmp/m2/repro-capture-dts.py; command env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n10 .tmp/m2/py311/bin/python .tmp/m2/repro-capture-dts.py /tmp/agents/irl-shield/m2-relay/59-capture-dts-repro.json; stdout/stderr59-capture-dts-repro.log. RawRTPpayloadnotreconstructed. ReplacementSRTsenderfailsafter8frames, originatingwhyunverified. Mainreaderdecodes(notremuxes) cameraRTSP,processedgen1/701LIVE;17mapped-indexdrops(cannotidentifyrawDTS,RTMPhas175). No mainrawpacketmanifest. All684outputsafter44sHOLDreleaseareHOLD,soSRTrecoveryNOTqualifiedforwalk. Answeredconductorfromsealeddata,nonewexecutiononmainreaderquestion.
 
-ConductorauthorizedRTMP20min+realACLmatrixthen seal; watchesmaxonecontendedsoakretry(rootstopsbeforethird). Submittedsoak5457243dcb624b4fbffa927fad880bc2 andACL046a95aa58364472a2318e26947c457c toqueue2; SEALEDfinalset. Exactargv session2-final-commands.json; enqueue/sealreceiptsinparentreceiptdir. ACLdriverhash acl-driver-sha256.json;onecommandchecksrealRTMP/SRTpublish/authenticatedRTSPread/negativeACL/bindingsonboth127.0.0.1and100.109.49.77,validatesinheritedEX,no nestedflock. Budget59/62beforenativeexecutions,threeavailableincludingoneretry. Noobservercreated;conductorwatching. SourceFROZENunchanged. Handbackrewrittenwithcurrentpercriterionpending/partial/failedstatusesandknownlimits,nopassclaimed. Repo/private,secrets/Twitchunchanged.
+ConductorauthorizedRTMP20min+realACLmatrixthen seal; watchesmaxonecontendedsoakretry(rootstopsbeforethird). Submittedsoak5457243dcb624b4fbffa927fad880bc2 andACL046a95aa58364472a2318e26947c457c toqueue2; SEALEDfinalset. Exactargv session2-final-commands.json; enqueue/sealreceiptsinparentreceiptdir. ACLdriverhash acl-driver-sha256.json;onecommandchecksrealRTMP/SRTpublish/authenticatedRTSPread/negativeACL/bindingsonboth127.0.0.1and<tailnet-ip>,validatesinheritedEX,no nestedflock. Budget59/62beforenativeexecutions,threeavailableincludingoneretry. Noobservercreated;conductorwatching. SourceFROZENunchanged. Handbackrewrittenwithcurrentpercriterionpending/partial/failedstatusesandknownlimits,nopassclaimed. Repo/private,secrets/Twitchunchanged.
 
 
 ## 2026-10-30 — long native failure and hypothesis checks

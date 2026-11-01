@@ -8,13 +8,13 @@ Root OCR/Q qualification remains pending.
 
 ## Checkout and scope
 
-- CWD: `/home/elan/.t3/worktrees/irl-shield/t3-adf5298f`.
+- CWD: `WORKTREE_t3-adf5298f`.
 - Branch renamed in place from `t3/adf5298f` to `elannash/m2-recovery-tests`.
 - HEAD: `d4a28a99bdda0bc44a685f31cd971babf1263781`, the exact assigned checkpoint.
   Original project base supplied by the packet:
   `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`.
 - First operation verified CWD, branch, HEAD and clean status. This checkout is
-  neither `/home/elan/code/irl-shield` nor the parent `t3-ae860af9` checkout.
+  neither `REPO_ROOT` nor the parent `t3-ae860af9` checkout.
 - Writes: `tests/m2/test_recovery.py`, `tests/m2/recovery_fixture.py`, this
   hand-back, and ignored `.tmp/m2-recovery/` only.
 - No stage, commit, push, PR, merge, worktree creation/removal, installation,
@@ -65,19 +65,19 @@ One unittest/native invocation, accounting **70**. Start
 `Ran 3 tests in 35.590s`, `FAILED (failures=3)`, exit **1**, not timeout.
 
 Actual command, executed with CWD
-`/home/elan/.t3/worktrees/irl-shield/t3-ae860af9`:
+`WORKTREE_t3-ae860af9`:
 
 ```bash
 env PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
-  TMPDIR=/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/tests-tmp \
-  M2_RECOVERY_RECEIPTS=/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/receipts \
+  TMPDIR=WORKTREE_t3-adf5298f/.tmp/m2-recovery/tests-tmp \
+  M2_RECOVERY_RECEIPTS=WORKTREE_t3-adf5298f/.tmp/m2-recovery/receipts \
   PYTHONPATH=. nice -n 10 timeout --signal=TERM --kill-after=4s 115s \
-  /home/elan/code/irl-shield/scripts/host-lock exclusive \
-  /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python \
+  REPO_ROOT/scripts/host-lock exclusive \
+  WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python \
   -m unittest discover \
-  -s /home/elan/.t3/worktrees/irl-shield/t3-adf5298f/tests/m2 \
+  -s WORKTREE_t3-adf5298f/tests/m2 \
   -p test_recovery.py -v \
-  > /home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/run70.log 2>&1
+  > WORKTREE_t3-adf5298f/.tmp/m2-recovery/run70.log 2>&1
 ```
 
 The Perl canonical host lock was exclusive, without a nested queue lock.
@@ -134,13 +134,13 @@ failure, so it could not exercise those assertions. No green claim is made.
 
 ## Receipts, cleanup and dependencies
 
-- [Raw sanitized unittest log](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/run70.log)
-- [Full/fragmented control receipt](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/receipts/test_full_ping_is_valid_then_fragmented_ping_recovers_without_replay.json)
-- [Backpressure/hold receipt](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/receipts/test_saturated_media_pause_preserves_moderator_hold_across_reconnect.json)
-- [Refusal receipt](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/receipts/test_refused_loopback_connection_exhausts_five_reconnects_without_hanging.json)
-- [Final process/listener cleanup](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/cleanup.txt)
-- [Inherited cgroup](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/cgroup.txt)
-- [Uncommitted test-file diff](/home/elan/.t3/worktrees/irl-shield/t3-adf5298f/.tmp/m2-recovery/tests.diff)
+- [Raw sanitized unittest log](WORKTREE_t3-adf5298f/.tmp/m2-recovery/run70.log)
+- [Full/fragmented control receipt](WORKTREE_t3-adf5298f/.tmp/m2-recovery/receipts/test_full_ping_is_valid_then_fragmented_ping_recovers_without_replay.json)
+- [Backpressure/hold receipt](WORKTREE_t3-adf5298f/.tmp/m2-recovery/receipts/test_saturated_media_pause_preserves_moderator_hold_across_reconnect.json)
+- [Refusal receipt](WORKTREE_t3-adf5298f/.tmp/m2-recovery/receipts/test_refused_loopback_connection_exhausts_five_reconnects_without_hanging.json)
+- [Final process/listener cleanup](WORKTREE_t3-adf5298f/.tmp/m2-recovery/cleanup.txt)
+- [Inherited cgroup](WORKTREE_t3-adf5298f/.tmp/m2-recovery/cgroup.txt)
+- [Uncommitted test-file diff](WORKTREE_t3-adf5298f/.tmp/m2-recovery/tests.diff)
 
 MediaMTX PIDs **4103473**, **4103676**, **4103911** exited **0** via owned
 MediaMTX context shutdown/wait. Encoder worker PIDs **4103486**, **4103686**,

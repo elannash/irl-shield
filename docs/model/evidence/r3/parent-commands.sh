@@ -2,7 +2,7 @@
 # Historical parent commands; this is a receipt, not an authorized rerun.
 # Budget extension: conductor granted exactly two calls, total ceiling46.
 # Input hashes verified before08; finalTLC is currently running.
-# cwd=/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac
+# cwd=WORKTREE_t3-3bb00dac
 bash /tmp/agents/irl-shield/m3-r3/08-final-tlc.command.sh > /tmp/agents/irl-shield/m3-r3/08-final-tlc.log 2>&1
 # 09 is authorized only after08 exits0. It has not been run yet.
 # 08 returned exit0: 73,263,001 generated /7,380,396 distinct /0queued, depth43.

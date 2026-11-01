@@ -8,7 +8,7 @@
       "license": "SIL-OFL-1.1",
       "copyright": "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors",
       "upstream": "https://github.com/googlefonts/atkinson-hyperlegible-next",
-      "local_source": "/tmp/claude-1000/agents/twitchcon-hackathon/design/fonts/AtkinsonHyperlegibleNext-wght.ttf",
+      "local_source": "OWNER_TMP/agents/twitchcon-hackathon/design/fonts/AtkinsonHyperlegibleNext-wght.ttf",
       "modifications": "none",
       "prompt": null,
       "model": null
@@ -19,7 +19,7 @@
       "license": "SIL-OFL-1.1",
       "copyright": "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors",
       "upstream": "https://github.com/googlefonts/atkinson-hyperlegible-next",
-      "local_source": "/tmp/claude-1000/agents/twitchcon-hackathon/design/fonts/OFL.txt",
+      "local_source": "OWNER_TMP/agents/twitchcon-hackathon/design/fonts/OFL.txt",
       "modifications": "trailing whitespace removed, wording unchanged",
       "prompt": null,
       "model": null

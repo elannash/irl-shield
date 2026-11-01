@@ -1,7 +1,7 @@
 # M3 implementation ledger
 
 This lane started 2026-10-29 PT in the assigned dedicated worktree
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`. First command was exactly
+`WORKTREE_t3-3bb00dac`. First command was exactly
 `pwd`, `git branch --show-current`, `git rev-parse HEAD`, `git status --short`.
 It returned isolated path, branch `t3/m3-twitch`, clean status, and HEAD
 `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. Branch renamed in place with
@@ -99,7 +99,7 @@ Exact final parent commands (from this checkout):
 
 ```sh
 nice -n 10 .tmp/m3/py311/bin/python .tmp/m3/reconcile_mutation.py
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --unit=irl-shield-m3-final-gate \
   --slice=app-t3code-agents.slice -p CPUQuota=200% \
   env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
@@ -131,7 +131,7 @@ media egress. Corrected independent OCR grading remains root's responsibility.
 
 Conductor committed the milestone as `bb6948b9793e1bbb505e84e8042357818ddb9608`
 on `elannash/m3-twitch`, then assigned nine accepted blockers from
-`/tmp/claude-1000/agents/twitchcon-hackathon/conductor/pr2-triage-r1.json`.
+`OWNER_TMP/agents/twitchcon-hackathon/conductor/pr2-triage-r1.json`.
 This round uses the same dedicated worktree and leaves changes unstaged and
 uncommitted. New budget: 30 test/TLC invocations; deadline Fri Oct 30 03:00 PT.
 

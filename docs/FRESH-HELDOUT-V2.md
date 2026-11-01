@@ -70,12 +70,12 @@ privacy mask or quality score is produced by this preparer.
 ## Frozen locations and retention
 
 The full canonical cache, including the original WebM downloads, is retained at
-`/home/elan/.t3/worktrees/irl-shield/t3-8679bc10/fixtures/cache/fresh-heldout-v2/`.
+`WORKTREE_t3-8679bc10/fixtures/cache/fresh-heldout-v2/`.
 That worktree remains locked through the one-shot evaluation and submission;
 **do not unlock it or remove its cache**.
 
 A durable copy of the derived MP4s, truth and preparation receipts is also at
-`/home/elan/code/irl-shield/fixtures/cache/fresh-heldout-v2/`. This copy does not
+`REPO_ROOT/fixtures/cache/fresh-heldout-v2/`. This copy does not
 replace the canonical originals. The conductor rehashed the twelve
 manifest-pinned video/truth files after copying them and found no mismatches.
 

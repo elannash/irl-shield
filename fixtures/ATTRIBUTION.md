@@ -99,9 +99,11 @@ paid generation fallback, native guard pass or visual acceptance is implied
 by the manifests. The conductor cleared the later 40-frame/48-observation
 three-judge branding sample after visually rejecting a Tesseract texture
 hallucination. That ruling does not certify all 6,300 frames; owner visual
-acceptance and complete native masking remain unverified. The local
-playback-aligned preview also exposes native horizontal corruption, described
-in `docs/DEMO-RENDERER.md`. Existing fallback media and sealed
+acceptance and complete native masking remain unverified. The earlier local
+playback-aligned preview exposed horizontal corruption; the later controlled
+queue comparison found matching whole/lower pixels at 1,024 entries, as
+described in `docs/DEMO-RENDERER.md`. The earlier recordings remain historical
+evidence and must not be presented as clean video. Existing fallback media and sealed
 receipts remain unchanged; its public attribution omits machine-local
 paths while retaining original hashes, exact prompt, model note and license.
 

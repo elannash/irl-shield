@@ -44,7 +44,7 @@ are therefore **superseded evidence**, preserved with their exact checked inputs
 
 The first command was exactly `pwd; git branch --show-current; git rev-parse
 HEAD; git status --short`. It returned isolated worktree
-`/home/elan/.t3/worktrees/irl-shield/t3-39e664cc`, branch
+`WORKTREE_t3-39e664cc`, branch
 `t3/r3-raw-timestamp-model`, exact requested HEAD
 `9cb8e812af152833f97adc2ce1cdd4858c5efdf3`, empty status.
 `git worktree list --porcelain` confirmed the parent has a different path.
@@ -65,7 +65,7 @@ Writes are confined to `docs/model/` and owned scratch
 | Public Control, unchanged at base | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
 
 The integrated implementation is in the **parent** checkout at
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py` and
+`WORKTREE_t3-3bb00dac/shield/twitch/events.py` and
 `shield/twitch/transport.py`. This child's production files remain at the base
 because its write fence is only `docs/model/`; that does not describe the
 parent's integrated source as old. Parent files were read/copied, never edited.
@@ -316,7 +316,7 @@ was byte-compared to preserved [TLC-MIT-LICENSE.txt](evidence/r2/TLC-MIT-LICENSE
 its bundled EPL 2.0/GPL notices remain in
 [the existing dependency notice](historical/evidence/TLC-LICENSE.txt).
 Temurin 25 is GPL v2 with Classpath Exception, recorded in installed
-`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
+`OWNER_HOME/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
 System Python's PSF license chain is `/usr/share/doc/python3/copyright`.
 Tool binaries were not changed or redistributed.
 

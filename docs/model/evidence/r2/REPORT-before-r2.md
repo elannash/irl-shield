@@ -15,7 +15,7 @@ three are structural sanity checks, not independent transport safety evidence.
 
 ## Source and model identity
 
-Prepared checkout: `/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3`, branch
+Prepared checkout: `WORKTREE_t3-a33f9dc3`, branch
 `t3/verify-control-channel-model`, clean starting HEAD
 `bb6948b9793e1bbb505e84e8042357818ddb9608`. The first command verified all four.
 Only `docs/model/` and `/tmp/agents/irl-shield/m3-r1-model/` were written. Nothing
@@ -32,7 +32,7 @@ was staged, committed, pushed, published, or changed in production code.
 | `shield/control.py`, identical old/fixed | `806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d` |
 
 The fixed source was confirmed in the parent's integrated checkout
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac` and copied to owned scratch before
+`WORKTREE_t3-3bb00dac` and copied to owned scratch before
 the fixed check. The replay refuses any source with a different hash.
 [Pre-fix source hashes](evidence/r1/source-pre.sha256),
 [fixed source/read-context hashes](evidence/r1/source-fixed.sha256), and
@@ -187,13 +187,13 @@ to that ledger, and makes no claim about later parent/sibling consumption.
 Every Java/Python invocation used `systemd-run --user --scope`, slice
 `app-t3code-agents.slice`, `MemoryMax=2G`, `CPUQuota=200%`, `nice -n 10`,
 `JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2'`,
-`XDG_RUNTIME_DIR=/run/user/1000`, and
-`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus`.
+`XDG_RUNTIME_DIR=RUNTIME_DIR`, and
+`DBUS_SESSION_BUS_ADDRESS=unix:path=RUNTIME_DIR/bus`.
 Existing Java/TLC were read-only. TLC used one worker, `-fp 0 -lncheck final`.
 The reused TLC distribution is MIT; its extracted notice remains in
 [TLC-LICENSE.txt](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2
 with Classpath Exception, recorded in the installed
-`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
+`OWNER_HOME/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
 Exact Java/JAR hashes are in [model-and-tool.sha256](evidence/r1/model-and-tool.sha256).
 Neither tool is redistributed or newly installed by this round. The statechart
 helper was not executed in R1; these are direct TLC runs.

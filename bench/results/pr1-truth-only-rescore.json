@@ -67,7 +67,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-vision-union-a30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-vision-union-a30/scorecard.json"
     },
     {
       "run_id": "auto-final-offline-ppocr-v5-mobile-a30",
@@ -135,7 +135,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v5-mobile-a30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v5-mobile-a30/scorecard.json"
     },
     {
       "run_id": "auto-final-offline-ppocr-v6-small-a30",
@@ -203,7 +203,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-small-a30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-small-a30/scorecard.json"
     },
     {
       "run_id": "auto-final-offline-ppocr-v6-tiny-a30",
@@ -271,7 +271,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-tiny-a30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/auto-final-offline-ppocr-v6-tiny-a30/scorecard.json"
     },
     {
       "run_id": "e1-small-phase-050",
@@ -339,7 +339,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-050/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-050/scorecard.json"
     },
     {
       "run_id": "e1-small-phase-020",
@@ -407,7 +407,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-020/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-020/scorecard.json"
     },
     {
       "run_id": "e1-small-phase-005",
@@ -475,7 +475,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-005/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/e1-small-phase-005/scorecard.json"
     },
     {
       "run_id": "e1-small-orb-050",
@@ -543,7 +543,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e1-small-orb-050/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/e1-small-orb-050/scorecard.json"
     },
     {
       "run_id": "e2-small-box060",
@@ -611,7 +611,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/e2-small-box060/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/e2-small-box060/scorecard.json"
     },
     {
       "run_id": "h3-small-fast30",
@@ -679,7 +679,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/h3-small-fast30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/h3-small-fast30/scorecard.json"
     },
     {
       "run_id": "v1-vision-phase005",
@@ -747,7 +747,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/v1-vision-phase005/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/v1-vision-phase005/scorecard.json"
     },
     {
       "run_id": "v2-vision-fast30",
@@ -815,7 +815,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/v2-vision-fast30/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/v2-vision-fast30/scorecard.json"
     },
     {
       "run_id": "linux-static-small-tune",
@@ -883,7 +883,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/linux-static-small-tune/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/linux-static-small-tune/scorecard.json"
     },
     {
       "run_id": "linux-cuda-medium-tune-contended",
@@ -951,7 +951,7 @@
         "total": 54,
         "unreadable": 0
       },
-      "scorecard": "/home/elan/code/irl-shield/out/pr1-r1-truth-only-rescore-v2/linux-cuda-medium-tune-contended/scorecard.json"
+      "scorecard": "REPO_ROOT/out/pr1-r1-truth-only-rescore-v2/linux-cuda-medium-tune-contended/scorecard.json"
     }
   ]
 }

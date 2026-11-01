@@ -396,12 +396,18 @@ existing canonical EX runner, not standalone shell commands. The runner must
 supply its inherited `IRL_SHIELD_PERF_QUEUE_LEASE_FD`, nice 10, native thread
 limits of two, and `OPENCV_FOR_THREADS_NUM=1`. Use a provisioned Python 3.11
 environment and fresh output directories, preserve failures, and cap each job
-at one execution. The W8b source must already be built at the specified path.
+at one execution. The W8b source must already be built. `--w8b-source-dir`
+selects its render directory containing `source.json`; the default is
+`out/w8b/render-01`, matching the W8b build command above. Relative paths are
+resolved under `--root`; absolute paths are accepted. Use the same source
+directory for prepare and run; existing manifest/video seals still apply.
 
 ```bash
 .venv/bin/python -I -B bench/keyframe_probe.py prepare --root "$PWD" \
+  --w8b-source-dir out/w8b/render-01 \
   --fixtures /tmp/agents/irl-shield/keyframe-proof/fixtures
 .venv/bin/python -I -B bench/keyframe_probe.py run --root "$PWD" \
+  --w8b-source-dir out/w8b/render-01 \
   --fixtures /tmp/agents/irl-shield/keyframe-proof/fixtures \
   --results /tmp/agents/irl-shield/keyframe-proof/current-queue
 ```

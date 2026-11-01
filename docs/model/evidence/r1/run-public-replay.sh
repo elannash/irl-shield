@@ -3,7 +3,7 @@ set -u
 task_root=/tmp/agents/irl-shield/m3-r1-model
 model_root=$(cd "$(dirname "$0")/../.." && pwd)
 printf '%s\n' 'public-replay Python old/fixed public API' >> "$task_root/invocations.log"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
 systemd-run --user --scope --unit=m3-r1-model-public-replay --slice=app-t3code-agents.slice \
   -p MemoryMax=2G -p CPUQuota=200% nice -n 10 \
   env JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2' \

@@ -118,13 +118,13 @@ cross-checkout source overlays:
 
 ```sh
 scripts/host-lock shared env \
-  XDG_RUNTIME_DIR=/run/user/1000 \
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+  XDG_RUNTIME_DIR="/run/user/$(id -u)" \
+  DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --quiet --slice=app-t3code-agents.slice \
   nice -n 10 env PYTHONDONTWRITEBYTECODE=1 \
   OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
   NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 OPENCV_FOR_THREADS_NUM=1 \
-  /home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python \
+  WORKTREE_t3-7cba93a7/.tmp/integration/venv/bin/python \
   -W error::ResourceWarning - <<'PY'
 import sys
 import unittest

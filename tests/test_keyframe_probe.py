@@ -60,3 +60,26 @@ class KeyframeIdentity(unittest.TestCase):
         self.assertIn('rtsp-packet-unassociated', result['failures'])
         self.assertIn('rtsp-frame-unassociated', result['failures'])
         self.assertEqual([row['source_index'] for row in result['associated']], [1, 2, 3])
+
+    def test_timed_truncated_vcl_is_rejected_with_intact_pixel_summaries(self):
+        source, received = self.sample()
+        # These are synthetic NAL bytes and digest summaries, not decodable video.
+        complete = b'\x65\x80\x81\x82'
+        source[2]['vcl_sha256'] = hashlib.sha256(len(complete).to_bytes(4, 'big') + complete).hexdigest()
+        received['packets'][2]['vcl_sha256'] = source[2]['vcl_sha256']
+        self.assertEqual(assess(source, received)['failures'], [])
+        truncated = complete[:-1]
+        received['packets'][2]['vcl_sha256'] = hashlib.sha256(
+            len(truncated).to_bytes(4, 'big') + truncated).hexdigest()
+        result = assess(source, received)
+        self.assertEqual(result['failures'], ['wrong-vcl-bytes-source-2'])
+        self.assertEqual(result['associated'][2]['association'], 'anchored-clock')
+        self.assertFalse(result['associated'][2]['vcl_equal'])
+
+    def test_lower_image_mismatch_is_rejected_independently_of_full_summary(self):
+        source, received = self.sample()
+        self.assertEqual(assess(source, received)['failures'], [])
+        # Isolate the lower-summary guard; real lower damage also changes full pixels.
+        received['frames'][2]['pixels']['lower'] = 'ff' * 32
+        result = assess(source, received)
+        self.assertEqual(result['failures'], ['wrong-lower-pixels-source-2'])

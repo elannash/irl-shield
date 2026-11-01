@@ -71,7 +71,7 @@ existing public media downloads, **one clip per root quality lease**. This is
 a historical command record, not an instruction to recreate the spent set:
 
 ```bash
-q_root=/home/elan/code/irl-shield
+q_root="$PWD"
 q_python="$q_root/.tmp/linux-probe/.venv/bin/python"
 for clip in zurich-spiegelgasse chicago-wells manchester-portland; do
   "$q_root/scripts/q-run" "$PWD" exec -- "$q_python" \
@@ -105,7 +105,7 @@ ceiling and its explicit basis were part of the frozen policy.
 
 The two physical stages formed one evaluation. Linux ran the
 `bench.heldout_bench render` entry point with a read-only cache override at
-`/home/elan/.t3/worktrees/irl-shield/t3-dbc6f7a0/fixtures/cache/fresh-heldout`
+`WORKTREE_t3-dbc6f7a0/fixtures/cache/fresh-heldout`
 and writable state at `.tmp/q/fresh-heldout-once-state/`. It spent the
 `46a4461ca50ac54a4cac564ad81e1bba5c2d990b0cb9976eb473a82e5fcc3cad.started.json`
 marker before rendering into `out/q-fresh-heldout-once/`. The root launch

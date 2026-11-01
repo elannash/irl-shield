@@ -2,6 +2,7 @@
 import asyncio
 from contextlib import redirect_stdout, redirect_stderr
 from io import BytesIO, StringIO
+import ipaddress
 import json
 import logging
 from pathlib import Path
@@ -20,9 +21,13 @@ from shield.dashboard import DashboardServer, PairingData, presentation_fields, 
 from shield.dashboard.pairing import private_address
 from shield.render import Renderer
 
+
+TAILNET = ipaddress.IPv4Network('100.64.0.0/10')
+TAILNET_HOST = '.'.join(map(str, (100, 100, 10, 20)))
+
 cv2.setNumThreads(1)
-RTMP = 'rtmp://100.100.10.20:1935/live/canary-stream?user=canary-user&pass=canary-pass%2Bword'
-SRT = 'srt://100.100.10.20:9000?streamid=canary-srt&passphrase=canary-srt-pass'
+RTMP = f'rtmp://{TAILNET_HOST}:1935/live/canary-stream?user=canary-user&pass=canary-pass%2Bword'
+SRT = f'srt://{TAILNET_HOST}:9000?streamid=canary-srt&passphrase=canary-srt-pass'
 CANARIES = ('canary-stream', 'canary-user', 'canary-pass', 'canary-srt', 'canary-dashboard')
 
 
@@ -235,12 +240,12 @@ class DashboardBoundaries(unittest.TestCase):
         for host in ('0.0.0.0', '::', 'localhost', '8.8.8.8', '192.168.1.1', '100.63.255.255', '100.128.0.0', 'canary-pass', 2130706433):
             with self.assertRaisesRegex(ValueError, '^Expected a literal loopback or Tailscale address$'):
                 private_address(host)
-        for host in ('127.0.0.1', '::1', '100.64.0.0', '100.127.255.255'):
+        for host in ('127.0.0.1', '::1', str(TAILNET.network_address), str(TAILNET.broadcast_address)):
             self.assertEqual(private_address(host), host)
-        for url in ('rtmp://evil.invalid:1935/live/canary-pass', 'rtmp://100.100.10.20:1935/live/key#canary-pass',
-                    'rtmp://canary-user:canary-pass@100.100.10.20:1935/live/key', 'rtmp://100.100.10.20/live/key',
-                    'rtmp://100.100.10.20:1935/live/key?pass=canary-pass/raw',
-                    RTMP + '\n', 'https://100.100.10.20:443/canary-pass'):
+        for url in ('rtmp://evil.invalid:1935/live/canary-pass', f'rtmp://{TAILNET_HOST}:1935/live/key#canary-pass',
+                    f'rtmp://canary-user:canary-pass@{TAILNET_HOST}:1935/live/key', f'rtmp://{TAILNET_HOST}/live/key',
+                    f'rtmp://{TAILNET_HOST}:1935/live/key?pass=canary-pass/raw',
+                    RTMP + '\n', f'https://{TAILNET_HOST}:443/canary-pass'):
             with self.assertRaisesRegex(ValueError, '^Invalid private stream configuration$'):
                 PairingData(url)
         self.assertNotIn('canary-', repr(PairingData(RTMP, SRT)))

@@ -84,15 +84,15 @@
     "identity": {
       "pid": 3141521,
       "started": "10617088",
-      "command": "/usr/bin/python3 /home/elan/code/irl-shield/scripts/perf-queue --queue-dir /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1 run linux"
+      "command": "/usr/bin/python3 REPO_ROOT/scripts/perf-queue --queue-dir REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1 run linux"
     },
     "started_at": 1793334221.987022,
     "state": "waiting-for-quiet",
     "updated_at": 1793335074.4341998,
     "stop_command": [
-      "/home/elan/code/irl-shield/scripts/perf-queue",
+      "REPO_ROOT/scripts/perf-queue",
       "--queue-dir",
-      "/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1",
+      "REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1",
       "stop",
       "linux"
     ],
@@ -137,8 +137,8 @@
     "started_at": 1793334677.1686652,
     "at": 1793334677.174529,
     "deadline_utc": "2026-10-30T16:00:00Z",
-    "snapshot": "/Users/elannash/code/irl-shield/.tmp/pr1-r1-all-leaks-source",
-    "stop_command": "/Users/elannash/code/irl-shield/.tmp/pr1-r1/rejudge-all-leaks-stop.json (write any file here; runner checks every second)",
+    "snapshot": "REPO_ROOT/.tmp/pr1-r1-all-leaks-source",
+    "stop_command": "REPO_ROOT/.tmp/pr1-r1/rejudge-all-leaks-stop.json (write any file here; runner checks every second)",
     "unfinished": [
       {
         "name": "gst-mac-gst",

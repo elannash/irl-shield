@@ -1,6 +1,6 @@
 {
-  "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py": "806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d",
-  "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py": "12331861c469d9f9e3cb5c8a1acb2cfa2b7a6f7ddfddf302a5e1983f1d696c29",
-  "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py": "a5526f02c9369ab1273cacab1b00d10b4217b56885f4164eb7961bf67aeb3081",
-  "/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py": "1ea7550f101ddc7e15e53c4f8bf631b4ff691ee64497b9b036f3951c5f9e8a4b"
+  "WORKTREE_t3-3bb00dac/shield/control.py": "806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d",
+  "WORKTREE_t3-3bb00dac/shield/twitch/events.py": "12331861c469d9f9e3cb5c8a1acb2cfa2b7a6f7ddfddf302a5e1983f1d696c29",
+  "WORKTREE_t3-3bb00dac/shield/twitch/transport.py": "a5526f02c9369ab1273cacab1b00d10b4217b56885f4164eb7961bf67aeb3081",
+  "WORKTREE_t3-3bb00dac/tests/m3/test_events.py": "1ea7550f101ddc7e15e53c4f8bf631b4ff691ee64497b9b036f3951c5f9e8a4b"
 }
