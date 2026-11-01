@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "started",
+  "dataset_id": "fresh-heldout-v2",
+  "started_at_utc": "2026-11-01T14:19:55.192983+00:00",
+  "directory": "/home/elan/code/irl-shield/.tmp/fresh-v2-oneshot/out",
+  "heldout_freeze": {
+    "dataset_sha256": "bb284c1cc701eadf3e7b4dc463e8bf6f46cc6cd606436e033d8cbee3fbf43093",
+    "policy_sha256": "dcbc96c88b0a3c1545a5a04c668446eee1afeb730e901179ffc78063cb91ad5f",
+    "policy_commit": "482cd1fc834680a72f23da515360836a81fdcbf9",
+    "pipeline_sha256": "d9c3352acfb47b0ada0766d74c3242210422e5003a793fd6305bd3309e8f8b2c",
+    "orchestrator_sha256": "e9ffc726d9c63e73d24b9d7f876b8a7e819971c38af9467cada0d51009cd9978",
+    "heldout_orchestrator_sha256": "6aaea23a7a21096f910ebed905ffcd261c47606a5a1f4d648307a7ab9abe5106"
+  }
+}
