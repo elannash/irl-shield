@@ -29,18 +29,11 @@
     "overlay": "bench.synthetic.overlay; v2 camera tracking; deterministic v3 seed"
   },
   "code_identity": {
-    "fixtures/prepare_heldout_v2.py": "05664329ce1416b64bac477d605e90ff3baee21fe59fd15383bee2066f6a38ff",
-    "fixtures/heldout_prepare.py": "0cedc35016dc3aacb1249cae51ac0ba0c097139bc4820c217abae9cee8f8cf6c",
     "bench/synthetic.py": "566d58d7002f47d9c3bc68f8b95ac67be84b4b7f03abf43ddf3f4c12382352ea",
-    "scripts/perf-queue": "a01a17a954f779b87a97180c15e1afcf13d4dae3725850140e320b5e2d60477d",
-    "bench/perf_queue.py": "ecc9a90d79069ab6c0494144729601d0e95e593351349d0b0986fe3a262dc4e6",
-    "scripts/bounded.py": "b45b32d17550c8b3b28acb1d90efb183c79a465cb045d0f43435406e27fddeaf",
     "fixtures/fonts/DejaVuSans-Bold.ttf": "e1d733afbbfce842a1b43dced0c9885a76a4e67290dc7e690c4e9b76ebfc7d23",
     "fixtures/fonts/DejaVuSansMono-Bold.ttf": "2d67eed9b325ee2e69f906ce4f3f6264d5105230a13352c8494daad4f17b12c8",
     "fixtures/fonts/DejaVuSerif-Bold.ttf": "3f704f75238454f68a8202e5098cb0687887480dd63d3dc20b34bdbdfa9d9f3f",
-    "fixtures/prepare_heldout_v3.py": "bf83c283b408c719126fe50977657983ed2f006747399d2372f536e5ced973da",
-    "bench/heldout_bench.py": "fa8b81371ddc3a92bddf64873e805750136e09499a754ed17f094f9d9c0c0b52",
-    "bench/quality_bundle.py": "3e12b127cac49bfac04ec21b5dccec6e320093473437d089a6f777a1d8981c60"
+    "fixtures/prepare_heldout_v3.py": "cd2344c74d5f9bd1cca4e717df5fb686f732272abe0f9037c454b683ea41c80b"
   },
   "clips": [
     {

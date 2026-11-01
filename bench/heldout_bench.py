@@ -166,31 +166,52 @@ def receipt_commit_preflight(identity):
         signing = 'false'
     if signing != 'false':
         raise ValueError('Heldout receipt commits require commit.gpgsign=false before reservation')
-    hooks = Path(git('rev-parse', '--git-path', 'hooks').decode().strip())
-    if not hooks.is_absolute():
-        hooks = CODE_ROOT / hooks
+    def git_path(name):
+        path = Path(git('rev-parse', '--git-path', name).decode().strip())
+        return path if path.is_absolute() else CODE_ROOT / path
+
+    for name in ('CHERRY_PICK_HEAD', 'MERGE_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply'):
+        path = git_path(name)
+        if path.exists() or path.is_symlink():
+            raise ValueError('Heldout receipt Git operation in progress: ' + name)
+    hooks = git_path('hooks')
     for name in ('pre-commit', 'prepare-commit-msg', 'commit-msg', 'post-commit', 'reference-transaction'):
         path = hooks / name
         if os.access(path, os.X_OK):
             raise ValueError('Heldout receipt commit has an unqualified executable hook: ' + name)
     refs = ['index', 'HEAD', 'packed-refs', started_ref(identity)]
+    reflogs = ['logs/HEAD']
     try:
-        refs.append(git('symbolic-ref', '--quiet', 'HEAD').decode().strip())
+        branch = git('symbolic-ref', '--quiet', 'HEAD').decode().strip()
+        refs.append(branch)
+        reflogs.append('logs/' + branch)
     except subprocess.CalledProcessError as error:
         if error.returncode != 1:
             raise
     for name in refs:
-        path = Path(git('rev-parse', '--git-path', name).decode().strip())
-        if not path.is_absolute():
-            path = CODE_ROOT / path
+        path = git_path(name)
         lock = path.with_name(path.name + '.lock')
         if lock.exists() or lock.is_symlink():
             raise FileExistsError('Heldout receipt Git lock already exists: ' + name)
         resources.writable_destination(path, 1)
+    for name in reflogs:
+        path = git_path(name)
+        if path.exists() or path.is_symlink():
+            if (path.is_symlink() or not path.is_file() or not path.stat().st_mode & 0o222
+                    or not os.access(path, os.W_OK)):
+                raise ValueError('Heldout receipt Git reflog is not writable: ' + name)
+            try:
+                fd = os.open(path, os.O_WRONLY | os.O_APPEND)
+            except OSError as error:
+                raise ValueError('Heldout receipt Git reflog is not writable: ' + name) from error
+            else:
+                os.close(fd)
+        try:
+            resources.writable_destination(path, 1)
+        except (OSError, ValueError) as error:
+            raise ValueError('Heldout receipt Git reflog is not writable: ' + name) from error
     for name in ('objects', 'refs', 'logs'):
-        path = Path(git('rev-parse', '--git-path', name).decode().strip())
-        if not path.is_absolute():
-            path = CODE_ROOT / path
+        path = git_path(name)
         resources.writable_destination(path / '.irl-shield-write-probe', 1)
 
 

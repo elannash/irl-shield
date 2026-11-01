@@ -939,6 +939,62 @@ class HeldoutV3Start(unittest.TestCase):
                 self.git('config', 'user.email', 'test@example.invalid')
                 objects.chmod(mode)
 
+    def _git_operation_path(self, name):
+        path = Path(self.git('rev-parse', '--git-path', name))
+        return path if path.is_absolute() else self.base / path
+
+    def _assert_git_operation_refused(self, name, *, readonly=False):
+        path = self._git_operation_path(name)
+        if readonly:
+            mode = path.stat().st_mode & 0o777
+            path.chmod(0o444)
+            self.addCleanup(path.chmod, mode)
+        elif name.startswith('rebase-'):
+            path.mkdir()
+            for entry, value in (('head-name', self.git('symbolic-ref', 'HEAD')),
+                                 ('orig-head', self.commit), ('onto', self.commit)):
+                (path / entry).write_text(value + '\n')
+        else:
+            path.write_text(self.commit + '\n')
+        git_dir = self._git_operation_path('HEAD').parent
+        def snapshot():
+            return {p.relative_to(git_dir).as_posix(): (p.read_bytes(), p.stat().st_mode & 0o777)
+                    for p in git_dir.rglob('*') if p.is_file()}
+        before = snapshot()
+        error = None
+        with patch.object(bundle, 'render') as render:
+            try:
+                self.start()
+            except Exception as caught:
+                error = caught
+            self.assertIsInstance(error, ValueError, 'Missing pre-reservation refusal: ' + name)
+            expected = ('Git reflog is not writable: ' if readonly else 'Git operation in progress: ') + name
+            self.assertIn(expected, str(error))
+            render.assert_not_called()
+        self.assert_unspent()
+        self.assertEqual(snapshot(), before, 'Git state changed while refusing ' + name)
+
+    def test_cherry_pick_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('CHERRY_PICK_HEAD')
+
+    def test_merge_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('MERGE_HEAD')
+
+    def test_revert_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('REVERT_HEAD')
+
+    def test_rebase_merge_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('rebase-merge')
+
+    def test_rebase_apply_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('rebase-apply')
+
+    def test_readonly_head_reflog_refuses_before_reservation(self):
+        self._assert_git_operation_refused('logs/HEAD', readonly=True)
+
+    def test_readonly_branch_reflog_refuses_before_reservation(self):
+        self._assert_git_operation_refused('logs/' + self.git('symbolic-ref', 'HEAD'), readonly=True)
+
     def test_bad_selected_resources_leave_head_index_refs_and_markers_unchanged(self):
         from bench import heldout_resources as resources
         tiny = self.model_cache / 'ppocr-v6-tiny.onnx'

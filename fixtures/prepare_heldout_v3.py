@@ -30,6 +30,8 @@ CACHE = 'fixtures/cache/fresh-heldout-v3'
 SELECTION_SHA256 = '0dbb14bb2da57364c6b1ca131c29619e9270297298abb4222aa277d633c5f1df'
 CONTRACT_SHA256 = '21db67a6797db123f040cd4405d8632245df4247f4c44f382e194a8e17eb9d7b'
 NOT_BEFORE = '2026-11-02T12:00:00Z'
+PREPARATION_PLAN_SHA256 = '81a12ac87818497a1fd3b2a0928bf7610b0200b256bfee4296fde95816e4db9d'
+ORIGINAL_MANIFEST_SHA256 = '700a7730111cf6e2b87a46ef0fac9721c3410dba10ee85dd38b75b96d036ff2b'
 PERF_LOCK = Path('/tmp/agents/irl-shield/perf.lock')
 THREAD_ENV = ('OMP_NUM_THREADS', 'OMP_THREAD_LIMIT', 'OPENBLAS_NUM_THREADS',
               'MKL_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS')
@@ -176,14 +178,41 @@ def selection():
 
 def code_identity():
     contract = metadata_contract()
-    for name, expected in contract['source_pins'].items():
-        if sha256(checked_path(ROOT, name)) != expected:
-            raise ValueError('Recipe or queue source pin changed: ' + name)
-    # Harness files are pinned at root release, after the disjoint harness patch
-    # is applied. The older v2 recipe and overlay source pins stay fixed here.
-    names = [*contract['source_pins'], *contract['font_paths'], 'fixtures/prepare_heldout_v3.py',
-             'bench/heldout_bench.py', 'bench/quality_bundle.py']
+    # Only the overlay, its fonts and this preparer determine input/manifest
+    # bytes. Queue provenance is recorded separately; evaluation code is not
+    # imported by preparation and may change without changing the input seal.
+    overlay = 'bench/synthetic.py'
+    if sha256(checked_path(ROOT, overlay)) != contract['source_pins'][overlay]:
+        raise ValueError('Preparation overlay source pin changed: ' + overlay)
+    names = [overlay, *contract['font_paths'], 'fixtures/prepare_heldout_v3.py']
     return {name: sha256(checked_path(ROOT, name)) for name in names}
+
+
+def preparation_plan(plan):
+    """Keep executed preparation evidence bound to its original sealed plan."""
+    path = METADATA / 'preparation-plan.json'
+    if sha256(path) != PREPARATION_PLAN_SHA256:
+        raise ValueError('Original v3 preparation plan changed')
+    original = json.loads(path.read_text())
+    if dict(plan, code_identity=original['code_identity']) != original:
+        raise ValueError('V3 reseal changed more than preparation code identity')
+    return original
+
+
+def load_sealed_metadata():
+    """Validate the committed seal without opening media or loading native code."""
+    plan_path = METADATA / 'plan.json'
+    plan = load_plan(plan_path)
+    original = preparation_plan(plan)
+    manifest = json.loads((METADATA / 'manifest.json').read_text())
+    if manifest != manifest_value(plan, sha256(plan_path), manifest['inputs'], manifest['receipts']):
+        raise ValueError('Committed v3 manifest differs from live plan/code identity')
+    previous = dict(manifest, code_identity=original['code_identity'],
+                    plan_sha256=PREPARATION_PLAN_SHA256)
+    encoded = (json.dumps(previous, indent=2, allow_nan=False) + '\n').encode()
+    if hashlib.sha256(encoded).hexdigest() != ORIGINAL_MANIFEST_SHA256:
+        raise ValueError('V3 reseal changed selection, inputs, reservation or other sealed metadata')
+    return plan, manifest
 
 
 def cache_file(cache_root, name):
@@ -565,8 +594,12 @@ def verify_inputs(plan, plan_hash, context, *, decode=False):
         receipt_name = clip['id'] + '.prepared.json'
         path = checked_path(context['cache_root'], receipt_name)
         receipt = json.loads(path.read_text())
-        if (receipt['clip'] != clip or receipt['plan_sha256'] != plan_hash
-                or receipt['code_identity'] != code_identity() or receipt['recipe'] != RECIPE
+        evidence_plan, evidence_hash = plan, plan_hash
+        if receipt['plan_sha256'] != plan_hash or receipt['code_identity'] != plan['code_identity']:
+            evidence_plan = preparation_plan(plan)
+            evidence_hash = PREPARATION_PLAN_SHA256
+        if (receipt['clip'] != clip or receipt['plan_sha256'] != evidence_hash
+                or receipt['code_identity'] != evidence_plan['code_identity'] or receipt['recipe'] != RECIPE
                 or not is_hash(receipt['root_release_sha256']) or receipt['ungraded'] is not True
                 or receipt['queue']['exclusive'] is not True or receipt['queue']['execution_attempt'] != 1
                 or receipt['tools'] != context['tools'] or receipt['packages'] != context['release']['packages']):
@@ -585,7 +618,7 @@ def verify_inputs(plan, plan_hash, context, *, decode=False):
         resource_name = f"{CACHE}/provenance/resource-check.{released['resource_check_sha256']}.json"
         if (receipt['provenance'].get(resource_name) != released['resource_check_sha256']
                 or released['status'] != 'root-authorized-v3-preparation' or released['root_owned'] is not True
-                or released['code_identity'] != plan['code_identity'] or released['recipe'] != RECIPE
+                or released['code_identity'] != evidence_plan['code_identity'] or released['recipe'] != RECIPE
                 or released['queue_sources'] != context['release']['queue_sources']
                 or released['tools'] != context['tools']):
             raise ValueError('Archived root code, recipe, queue or tool pins differ')
@@ -661,6 +694,8 @@ def main():
     for path in (args.plan, args.output):
         if path.parent.resolve() != METADATA.resolve() or path.is_symlink():
             parser.error('Plan and final manifest must stay in the v3 metadata directory')
+    if args.action == 'verify':
+        load_sealed_metadata()
     context = root_context(args)
     if args.action == 'download':
         download_originals(context)

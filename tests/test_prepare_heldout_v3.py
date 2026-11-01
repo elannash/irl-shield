@@ -24,6 +24,18 @@ class SelectionContract(unittest.TestCase):
     def setUp(self):
         self.selected = json.loads((ROOT / 'fixtures/fresh-heldout-v3/selection.json').read_text())
 
+    def test_committed_plan_and_manifest_match_live_preparation_identity(self):
+        try:
+            plan = prep.load_plan(ROOT / 'fixtures/fresh-heldout-v3/plan.json')
+            loaded_plan, manifest = prep.load_sealed_metadata()
+        except (ValueError, FileNotFoundError) as error:
+            self.fail('Committed v3 metadata cannot load against live code: ' + str(error))
+        self.assertEqual(loaded_plan, plan)
+        self.assertEqual(manifest['code_identity'], prep.code_identity())
+        self.assertEqual(manifest['plan_sha256'], prep.sha256(ROOT / 'fixtures/fresh-heldout-v3/plan.json'))
+        self.assertEqual(manifest['evaluation_reservation']['evaluation_started'], False)
+        self.assertEqual(manifest['evaluation_reservation']['not_before_utc'], '2026-11-02T12:00:00Z')
+
     def test_three_mixed_by_licenses_are_accepted_with_original_metadata(self):
         clips = prep.selection()['clips']
         self.assertEqual([c['license'] for c in clips], ['CC BY 3.0', 'CC BY 3.0', 'CC BY 4.0'])
@@ -260,6 +272,34 @@ class TruthAndRelease(unittest.TestCase):
                 manifest_path.write_text(json.dumps(frozen))
                 with self.assertRaisesRegex(ValueError, 'final manifest differs'):
                     prep.verify(plan_path, manifest_path, context)
+                # The re-seal must accept historical preparation evidence
+                # without rewriting its receipts or archived root releases.
+                originals = {name: (base / name.removeprefix(prefix)).read_bytes()
+                             for name in prepared | set(provenance)}
+                metadata = base / 'metadata'
+                metadata.mkdir()
+                contract = json.loads((prep.METADATA / 'metadata-contract.json').read_text())
+                for name in ['metadata-contract.json', *contract['files']]:
+                    target = metadata / name
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes((prep.METADATA / name).read_bytes())
+                (metadata / 'preparation-plan.json').write_bytes(plan_path.read_bytes())
+                later_identity = {**identity, 'fixtures/prepare_heldout_v3.py': 'f' * 64}
+                later_plan = dict(plan, code_identity=later_identity)
+                plan_path.write_text(json.dumps(later_plan))
+                resealed = base / 'resealed.json'
+                with patch.object(prep, 'METADATA', metadata), \
+                        patch.object(prep, 'PREPARATION_PLAN_SHA256', plan_hash), \
+                        patch.object(prep, 'code_identity', return_value=later_identity):
+                    prep.freeze(plan_path, resealed, context)
+                    prep.verify(plan_path, resealed, context)
+                    self.assertEqual(json.loads(resealed.read_text())['code_identity'], later_identity)
+                    self.assertEqual(decode.call_count, 18)
+                    changed = dict(later_plan, root_release_sha256='e' * 64)
+                    with self.assertRaisesRegex(ValueError, 'changed more than preparation code identity'):
+                        prep.preparation_plan(changed)
+                for name, data in originals.items():
+                    self.assertEqual((base / name.removeprefix(prefix)).read_bytes(), data)
 
     def test_root_release_cannot_change_codec_or_authorize_tuning_or_retries(self):
         header = {'status': 'root-authorized-v3-preparation', 'root_owned': True,
