@@ -1,4 +1,6 @@
 """Production egress routing seam: fake transport, actual runtime/key callback."""
+from contextlib import redirect_stderr
+from io import StringIO
 import json
 from pathlib import Path
 import tempfile
@@ -60,21 +62,34 @@ class RuntimeDestination(unittest.TestCase):
 
     def test_legacy_runtime_cli_propagates_cpu_delay_and_preserves_defaults(self):
         from relay.runtime import main
-        for extra, expected, run_options in (([], {}, {}), (['--cpu'], {'provider': 'cpu', 'delay_seconds': 2.5}, {'encoder': 'libx264'}),
-                (['--cpu', '--delay-seconds', '0'], {'provider': 'cpu', 'delay_seconds': 0.}, {'encoder': 'libx264'}),
-                (['--delay-seconds', '3.25'], {'delay_seconds': 3.25}, {})):
+        defaults = (([], {}, {}), (['--cpu'], {'provider': 'cpu', 'delay_seconds': 2.5}, {'encoder': 'libx264'}))
+        overrides = [([*cpu, '--delay-seconds', str(delay)],
+                      {**({'provider': 'cpu'} if cpu else {}), 'delay_seconds': delay},
+                      {'encoder': 'libx264'} if cpu else {})
+                     for cpu in ([], ['--cpu']) for delay in (.5, 2.5, 3.25, 10)]
+        for extra, expected, run_options in (*defaults, *overrides):
             with self.subTest(extra=extra), patch('sys.argv', ['relay.runtime', '--host', '127.0.0.1', *extra]), \
                     patch('relay.runtime.MediaMTX'), patch('relay.runtime.make_engine') as factory, \
                     patch('relay.runtime.run') as runtime, patch('relay.runtime.signal.signal'):
                 main()
                 self.assertEqual(factory.call_args.kwargs, expected)
                 self.assertEqual(runtime.call_args.kwargs, run_options)
-        for value in ('nan', 'inf', '-.1'):
-            with self.subTest(value=value), patch('sys.argv', ['relay.runtime', '--cpu', '--delay-seconds', value]), \
-                    patch('relay.runtime.MediaMTX') as media, self.assertRaises(SystemExit) as ended:
-                main()
-            self.assertEqual(ended.exception.code, 2)
-            media.assert_not_called()
+        for cpu in ([], ['--cpu']):
+            for value in ('nan', 'inf', '-inf', '-.1', '0', '.25', '10.000001'):
+                with self.subTest(cpu=cpu, value=value), \
+                        patch('sys.argv', ['relay.runtime', '--host', '127.0.0.1', *cpu, f'--delay-seconds={value}']), \
+                        patch('relay.runtime.Credentials.generate') as credentials, \
+                        patch('relay.runtime.MediaMTX') as media, patch('relay.runtime.make_engine') as factory, \
+                        patch('relay.runtime.run') as runtime, patch('relay.runtime.signal.signal'), \
+                        redirect_stderr(StringIO()) as error:
+                    with self.assertRaises(SystemExit) as ended:
+                        main()
+                    self.assertEqual(ended.exception.code, 2)
+                    self.assertIn('Presentation delay', error.getvalue())
+                    credentials.assert_not_called()
+                    media.assert_not_called()
+                    factory.assert_not_called()
+                    runtime.assert_not_called()
 
     def test_callback_key_is_consumed_by_production_bandwidthtest_route_in_memory(self):
         captured = []

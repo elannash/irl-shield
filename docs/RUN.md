@@ -72,11 +72,14 @@ skips the NVIDIA library-directory requirement, hides CUDA devices and retains
 its existing environment isolation and exclusive lease.
 
 CPU mode defaults to a 2.5-second engine presentation delay.
-`--delay-seconds N` overrides the delay in either mode, and an explicit zero is
-preserved. This delay is only one component of end-to-end latency; shortening
-it can leave less time for detections. Without CPU or delay flags, the existing
-CUDA/NVENC path and 1-second engine delay remain unchanged. Both modes retain
-fast 8 Hz, accurate 4 Hz, widths 640/960, an accurate box confidence floor of
+`--delay-seconds N` overrides the delay in either mode and accepts only finite
+values from 0.5 through 10 seconds inclusive, without clamping. The 0.5-second
+lower bound is a privacy floor that gives asynchronous detections time to
+arrive; it does not guarantee privacy across all scenes and processing latencies.
+The 10-second upper bound limits delay-related frame and audio buffer growth.
+This delay is only one component of end-to-end latency. Without CPU or delay
+flags, the existing CUDA/NVENC path and 1-second engine delay remain unchanged.
+Both modes retain fast 8 Hz, accurate 4 Hz, widths 640/960, an accurate box confidence floor of
 0.5, and 1280 by 720 output at 30 fps. Configured cadence is not measured output.
 Patch appearance, chat PatchBar, authentication, publication approval and HOLD
 behavior are unchanged. The direct CLI accepts these options on `run` or
@@ -95,9 +98,20 @@ For a phone connection, use the machine's own Tailscale IPv4 address with
 Existing authorization and terminal confirmation still apply when selecting a
 Twitch publication mode.
 
-To reproduce a bounded local CPU collection with the measured W8b source,
-follow the W8b build in [DEMO-RENDERER.md](DEMO-RENDERER.md#w8b-opt-in-richer-source).
-Then run this command with fresh output paths:
+The attended command above runs CPU mode without NVENC, generated plates or a
+W8b clip. For a bounded CPU reproduction, append `--seconds 230` and send input
+from an attended phone over Tailscale, or from a local RTMP broadcaster UI with
+`--local-only --host 127.0.0.1`. Enter the runtime camera URL only in the private
+broadcaster UI, using the existing private dashboard or `/dev/tty` phone setup.
+Keep credentials out of command arguments, logs, receipts and fixtures. Read the
+shielded output in OBS as described below; no Twitch credentials or publication
+are needed for this local reproduction.
+
+Replaying the measured W8b source is optional. Its clip build needs NVENC and
+cached generated plates, as described in
+[DEMO-RENDERER.md](DEMO-RENDERER.md#w8b-opt-in-richer-source); that build and clip
+are not required to run CPU mode. With that source already prepared, use fresh
+output paths:
 
 ```sh
 scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
@@ -113,6 +127,28 @@ plus `configuration.encoder` and `configuration.delay_seconds`. Those fields
 describe the effective configuration, not a privacy score or achieved throughput.
 
 ### Observed CPU collection and limits
+
+**CPU privacy is NOT independently graded.** Root builder inspection of saved
+CPU native unit 2 output found the engraved **NERALIN LANE** plaque readable
+and unmasked at source frame 2700. GPU native unit 26 output also intermittently
+missed this plaque; these observations do not establish a provider regression.
+This is an observed detection miss, with no detector tuning in this change.
+
+A separate frozen offline provider check used the same source weights and graphs,
+changing only CPUExecutionProvider versus CUDAExecutionProvider. Across seven
+natural clips with 150 frames each (1,050 frames total), CPU and CUDA masks were
+pixel-identical. Every clip had mask IoU p50/minimum 1.000, zero unmatched
+provider detections, and CPU-minus-CUDA mask-area p50/p95 deltas of 0 percentage
+points. The CUDA replay matched the previously graded baseline125 path exactly,
+including all 71 empty, 43 full and 936 nontrivial mask frames.
+
+This comparison used an offline 1-second delay and accurate width 1280, rather
+than native CPU mode's 2.5-second delay and accurate width 960. It establishes
+provider parity for that frozen offline setup; it does not independently grade
+CPU privacy or qualify native privacy, W5, performance or walking use. The
+native NERALIN LANE miss above remains. The root-inspected provider-parity
+receipt is identified by SHA-256
+`af536e062e88ef22157d2504154097032d313eb91e9428ab012d7a0664a754e6`.
 
 The root-inspected local collection on November 1, 2026 UTC used an Intel i7-7700K
 at 4.20 GHz with 8 logical CPUs, the GPU hidden, native threads set to 2 and

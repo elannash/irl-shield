@@ -102,7 +102,9 @@ class DetectorOptions(unittest.TestCase):
 
     def test_native_routes_override_without_changing_defaults_or_starting_workers(self):
         for provider, floor, rate, delay in ((None, None, None, None), ('cpu', None, None, 2.5),
-                                            ('cpu', .73, 15, 0), ('cpu', .73, 7.5, 3.25)):
+                                            ('cpu', .73, 15, .5), ('cpu', .73, 7.5, 3.25),
+                                            ('cpu', None, None, 10), ('cuda', None, None, .5),
+                                            ('cuda', None, None, 2.5), ('cuda', None, None, 10)):
             with self.subTest(provider=provider, floor=floor, rate=rate, delay=delay), \
                  patch('bench.onnx_detectors.create_detector', side_effect=lambda *args: EmptyDetector()) as factory, \
                  patch('relay.runtime.DetectorLane') as lane, patch('relay.runtime.MaskingEngine') as engine:
@@ -129,11 +131,14 @@ class DetectorOptions(unittest.TestCase):
                 self.assertEqual(engine.call_args.args[1]['fps'], 30)
 
     def test_native_invalid_delay_stops_before_backend_construction(self):
-        for delay in (True, False, '2.5', [], -.1, 10**1000, float('nan'), float('inf')):
-            with self.subTest(delay=delay), patch('bench.onnx_detectors.create_detector') as factory:
-                with self.assertRaisesRegex(ValueError, 'delay_seconds'):
-                    make_engine('/unused', delay_seconds=delay)
-                factory.assert_not_called()
+        for provider in ('cpu', 'cuda'):
+            for delay in (True, False, '2.5', [], -.1, 0, .25, 10.000001, 10**1000,
+                          float('nan'), float('inf'), float('-inf')):
+                with self.subTest(provider=provider, delay=delay), patch('bench.onnx_detectors.create_detector') as factory, \
+                        patch('relay.runtime.DetectorLane'), patch('relay.runtime.MaskingEngine'):
+                    with self.assertRaisesRegex(ValueError, 'delay_seconds'):
+                        make_engine('/unused', provider=provider, delay_seconds=delay)
+                    factory.assert_not_called()
 
     def test_native_invalid_rate_stops_before_backend_construction(self):
         for rate in (True, False, '15', [], 0, -.1, 30.1, 10**1000, float('nan'), float('inf')):

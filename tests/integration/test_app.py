@@ -29,23 +29,37 @@ class EngineControl:
 
 class CommandLine(unittest.TestCase):
     def test_invalid_delay_and_login_only_cpu_options_fail_before_authentication(self):
-        for arguments in (['run', '--cpu', '--delay-seconds', 'nan'], ['run', '--delay-seconds', 'inf'],
-                          ['run', '--delay-seconds', '-.1'], ['login', '--cpu'], ['login', '--delay-seconds', '2.5']):
+        modes = (['run', '--local-only'], ['run'], ['run', '--twitch-live'],
+                 ['run', '--twitch-bandwidth-test'], ['login', '--run'])
+        invalid = [[*mode, *cpu, f'--delay-seconds={value}']
+                   for mode in modes for cpu in ([], ['--cpu'])
+                   for value in ('nan', 'inf', '-inf', '-.1', '0', '.25', '10.000001')]
+        for arguments in (*invalid, ['login', '--cpu'], ['login', '--delay-seconds', '2.5']):
             with self.subTest(arguments=arguments):
                 args = parser().parse_args([*arguments, '--host', '127.0.0.1'])
                 with self.assertRaisesRegex(ValueError, 'delay|CPU'):
                     validate(args)
                 with patch('aiohttp.ClientSession') as network, \
                         patch('shield.app.session.login', new_callable=AsyncMock, return_value=None) as login, \
+                        patch('relay.security.Credentials.generate') as credentials, \
+                        patch('relay.mediamtx.MediaMTX') as media, \
+                        patch('relay.runtime.make_engine') as factory, \
                         patch('shield.cli.resource.setrlimit'):
                     with self.assertRaisesRegex(ValueError, 'delay|CPU'):
                         asyncio.run(execute(args))
                     login.assert_not_awaited()
                     network.assert_not_called()
-        args = parser().parse_args(['login', '--run', '--cpu', '--host', '127.0.0.1', '--delay-seconds', '0'])
-        validate(args)
-        self.assertTrue(args.cpu)
-        self.assertEqual(args.delay_seconds, 0)
+                    credentials.assert_not_called()
+                    media.assert_not_called()
+                    factory.assert_not_called()
+        for mode in modes:
+            for cpu in ([], ['--cpu']):
+                for value in ('.5', '2.5', '10'):
+                    with self.subTest(mode=mode, cpu=cpu, accepted=value):
+                        args = parser().parse_args([*mode, *cpu, '--host', '127.0.0.1', '--delay-seconds', value])
+                        validate(args)
+                        self.assertEqual(args.cpu, bool(cpu))
+                        self.assertEqual(args.delay_seconds, float(value))
 
     def test_missing_bind_is_actionable_before_any_authentication(self):
         for arguments in (['run', '--local-only'], ['login', '--run']):

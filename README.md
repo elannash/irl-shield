@@ -36,7 +36,10 @@ The live application supports Linux only. Windows is unsupported. NVIDIA is
 recommended for the default CUDA detector lanes and NVENC encoding. `--cpu`
 selects ONNX CPUExecutionProvider for both lanes and libx264 encoding, using the
 same pinned environment and cached models. Its default engine presentation
-delay is 2.5 seconds; `--delay-seconds` overrides it, including an explicit zero.
+delay is 2.5 seconds; `--delay-seconds` accepts 0.5 through 10 seconds inclusive.
+The 0.5-second privacy floor gives detections time to arrive; it does not
+guarantee privacy in every scene or at every processing latency. The 10-second
+cap bounds delay-related frame and audio buffering; invalid values are refused.
 Without these flags, the existing CUDA/NVENC and 1-second delay defaults remain.
 Mac OCR grading tools are development tools, not live application support.
 
@@ -71,11 +74,19 @@ scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
 
 The root-inspected local CPU collection on an i7-7700K with 8 logical CPUs
 observed 3,598 LIVE frames in a complete 120-second steady window, 29.9833 fps,
-with no PROTECT, HOLD or slate frames in that window. The full archive includes
-protection and HOLD. These hardware-specific observations add no privacy grade
-or walking qualification. [CPU mode and measurement limits](docs/RUN.md#cpu-mode)
+at a 2.5-second engine delay and 378.426% observed CPU usage (one core = 100%;
+partial process accounting including instrumentation). **CPU privacy is NOT
+independently graded.** There were no PROTECT, HOLD or slate frames in that
+window; the full archive includes protection and HOLD. These hardware-specific
+observations do not establish a privacy pass or walking qualification.
+[CPU mode and measurement limits](docs/RUN.md#cpu-mode)
 include decoder latency, partial CPU accounting, unknowns and the failed clock
 guard.
+
+A frozen offline check found CPU and CUDA masks pixel-identical on seven natural
+clips (1,050 frames). Its 1-second delay and accurate width of 1280 differ from
+native CPU mode; it is not an independent CPU privacy grade. The known native
+plaque miss and the comparison's scope are documented in the CPU run instructions.
 
 The bind address must be supplied with `--host` or `SHIELD_BIND_HOST`. Use
 IPv4 loopback for local operation, or the detected Tailscale address for a phone, as described in [docs/RUN.md](docs/RUN.md). Credentials printed for

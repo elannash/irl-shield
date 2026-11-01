@@ -27,8 +27,8 @@ def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_
             or not 0 < accurate_rate_hz <= 30 or not math.isfinite(accurate_rate_hz)):
         raise ValueError('accurate_rate_hz must be a finite number greater than 0 and at most 30')
     if (isinstance(delay_seconds, bool) or not isinstance(delay_seconds, Real)
-            or not 0 <= delay_seconds <= sys.float_info.max):
-        raise ValueError('delay_seconds must be a finite nonnegative number')
+            or not .5 <= delay_seconds <= 10 or not math.isfinite(delay_seconds)):
+        raise ValueError('delay_seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     from bench.detector_options import lane_detector_options
     lane_options = {lane: lane_detector_options({'accurate_box_thresh': accurate_box_thresh}, lane)
                     for lane in ('fast', 'accurate')}
@@ -188,12 +188,12 @@ def main():
     parser.add_argument('--archive', type=Path, help='Opt in to full diagnostic evidence')
     parser.add_argument('--model-cache', type=Path, default=Path('models/cache'))
     parser.add_argument('--cpu', action='store_true', help='Use ONNX CPU for both lanes and libx264 encoding')
-    parser.add_argument('--delay-seconds', type=float, help='Presentation delay; default 1 second, or 2.5 with --cpu')
+    parser.add_argument('--delay-seconds', type=float, help='Presentation delay, 0.5..10 seconds inclusive (privacy floor 0.5); default 1, or 2.5 with --cpu')
     parser.add_argument('--phone-setup', action='store_true')
     parser.add_argument('--seconds', type=float)
     args = parser.parse_args()
-    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or args.delay_seconds < 0):
-        parser.error('Presentation delay must be nonnegative and finite')
+    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or not .5 <= args.delay_seconds <= 10):
+        parser.error('Presentation delay must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
         parser.error('A positive finite run duration is required')
     if args.phone_setup and not (sys.stdin.isatty() and sys.stdout.isatty()):

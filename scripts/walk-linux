@@ -41,7 +41,7 @@ def parser():
     command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'), help='Own Tailscale IPv4; explicit 127.0.0.1 for local verification')
     command.add_argument('--model-cache', type=Path, default=ROOT / 'models/cache')
     command.add_argument('--cpu', action='store_true', help='Use ONNX CPU for both lanes and libx264 encoding')
-    command.add_argument('--delay-seconds', type=float, help='Presentation delay; default 1 second, or 2.5 with --cpu')
+    command.add_argument('--delay-seconds', type=float, help='Presentation delay, 0.5..10 seconds inclusive (privacy floor 0.5); default 1, or 2.5 with --cpu')
     command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate cadence; default 4 Hz')
     command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only confidence floor; default 0.5')
     command.add_argument('--mediamtx-dir', type=Path, default=ROOT / '.tmp/tools/mediamtx-v1.21.3')
@@ -86,8 +86,8 @@ def cli_arguments(args, host):
             demo_options['fresh'](args.archive)
     except ValueError as error:
         raise WalkError(str(error)) from None
-    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or args.delay_seconds < 0):
-        raise WalkError('--delay-seconds must be nonnegative and finite')
+    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or not .5 <= args.delay_seconds <= 10):
+        raise WalkError('--delay-seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
                                              or not 0 < args.accurate_rate_hz <= 30):
         raise WalkError('--accurate-rate-hz must be positive, finite and at most 30')
@@ -284,9 +284,8 @@ def main(argv=None, *, lock_root=LOCK_ROOT):
     try:
         if sys.platform != 'linux':
             raise WalkError('walk-linux requires Linux')
-        # Check demo mode before credentials, discovery, lease or SDK setup.
-        if args.demo_source is not None or args.demo_receipt is not None:
-            cli_arguments(args, args.host)
+        # Validate options before credentials, discovery, lease or SDK setup.
+        cli_arguments(args, args.host)
         if args.twitch_live or args.twitch_bandwidth_test:
             missing = [name for name in ('TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID') if not os.environ.get(name)]
             if missing:

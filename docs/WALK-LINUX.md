@@ -58,17 +58,29 @@ declared package version from installed metadata before importing OpenCV or the
 CLI. The checkout is added only after those checks. This verifies installation
 consistency; native CUDA inference and NVENC encoding need their own probe.
 
-`LD_LIBRARY_PATH` is replaced with the selected venv's private NVIDIA wheel
-library directories. Inherited `LD_PRELOAD` and CUDA library paths are removed.
+By default, `LD_LIBRARY_PATH` is replaced with the selected venv's private
+NVIDIA wheel library directories. `--cpu` skips this private NVIDIA library
+requirement, hides CUDA devices and uses only CPUExecutionProvider for both
+detector lanes plus libx264 encoding. It uses the CPU provider in the existing
+pinned onnxruntime-gpu distribution; do not install a second ONNX Runtime.
+Inherited `LD_PRELOAD` and CUDA library paths are removed in either mode.
 The declared Linux pins retain ORT GPU 1.20.2 / CUDA 12.4 / cuDNN 9.3 for Pascal.
 Native thread pools are limited to two and OpenCV to one; core dumps are disabled.
 Only bounded local verification (`--local-only --seconds ...`) lowers priority to
 niceness at least 10. Attended live, bandwidth-test and unbounded local runs retain
 the caller's inherited niceness: a default nice-0 terminal stays at 0, while a
 lower-priority caller stays lower-priority. The launcher never elevates priority.
-The only launcher-created runtime cache is `.tmp/walk/cuda-cache`. Model files
-and the hash-pinned MediaMTX binary are read from the supplied directories; no
-model is copied or provisioned.
+The default GPU path creates `.tmp/walk/cuda-cache`; `--cpu` neither requires nor
+creates a CUDA cache. Model files and the hash-pinned MediaMTX binary are read
+from the supplied directories; no model is copied or provisioned.
+
+`--delay-seconds` accepts finite values from 0.5 through 10 seconds inclusive in
+CPU and GPU modes, including local-only and Twitch modes. Values outside that
+range are refused before credential checks, discovery or runtime setup, without
+clamping. The 0.5-second lower bound is a privacy floor for detector time, not a
+guarantee for all scenes or processing latencies; the 10-second cap bounds
+delay-related frame and audio buffering. Omitting it retains the 1-second GPU
+or 2.5-second CPU default.
 
 ## Private phone connection
 

@@ -152,6 +152,27 @@ class WalkSelection(unittest.TestCase):
             with self.subTest(extra=extra), patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease reached')):
                 with redirect_stderr(StringIO()):
                     self.assertEqual(walk.main(['--local-only', '--host', '127.0.0.1', *extra]), 2)
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
+            for cpu in ([], ['--cpu']):
+                for value in ('nan', 'inf', '-inf', '-.1', '0', '.25', '10.000001'):
+                    argv = [mode, *cpu, '--host', '127.0.0.1', f'--delay-seconds={value}']
+                    with self.subTest(mode=mode, cpu=cpu, delay=value):
+                        args = walk.parser().parse_args(argv)
+                        with self.assertRaisesRegex(walk.WalkError, '--delay-seconds'):
+                            walk.cli_arguments(args, args.host)
+                        with patch.dict(os.environ, {}, clear=True), \
+                                patch.object(walk.os.environ, 'get', wraps=walk.os.environ.get) as environment, \
+                                patch.object(walk, 'private_host', side_effect=AssertionError('discovery reached')) as discovery, \
+                                patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease reached')) as lease, \
+                                patch.object(walk, 'launch_cli', side_effect=AssertionError('SDK reached')) as launch, \
+                                redirect_stderr(StringIO()) as error:
+                            self.assertEqual(walk.main(argv), 2)
+                            self.assertIn('--delay-seconds', error.getvalue())
+                            self.assertFalse(any(call.args[0] in ('TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID')
+                                                 for call in environment.call_args_list))
+                            discovery.assert_not_called()
+                            lease.assert_not_called()
+                            launch.assert_not_called()
 
 
 @unittest.skipUnless(sys.platform == 'linux', 'Linux kernel flock FD proof')
@@ -545,9 +566,12 @@ class WalkRealCLI(unittest.TestCase):
         for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
             with self.subTest(mode=mode):
                 self.check_route(mode, cpu=True)
-        for delay in (0, 3.25):
-            with self.subTest(delay=delay):
-                self.check_route('--local-only', cpu=True, delay_seconds=delay)
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
+            for cpu in (False, True):
+                for delay in (.5, 2.5, 10):
+                    with self.subTest(mode=mode, cpu=cpu, delay=delay):
+                        self.check_route(mode, cpu=cpu, delay_seconds=delay)
+        self.check_route('--local-only', cpu=True, delay_seconds=3.25)
         self.check_route('--local-only', delay_seconds=1.75)
 
     def check_route(self, mode, detector_options=None, *, cpu=False, delay_seconds=None):
