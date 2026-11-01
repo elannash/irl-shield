@@ -146,6 +146,7 @@ class WalkSelection(unittest.TestCase):
 
     def test_bad_duration_or_port_is_refused_before_any_lease_or_sdk(self):
         for extra in (['--seconds', 'nan'], ['--seconds', '0'], ['--rtmp-port', '80'], ['--dashboard-port', '65536'],
+                      ['--cpu', '--delay-seconds', 'nan'], ['--delay-seconds', 'inf'], ['--delay-seconds', '-.1'],
                       ['--accurate-rate-hz', '0'], ['--accurate-rate-hz', 'nan'], ['--accurate-rate-hz', '31'],
                       ['--accurate-box-thresh', '-.1'], ['--accurate-box-thresh', '1.1'], ['--accurate-box-thresh', 'nan']):
             with self.subTest(extra=extra), patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease reached')):
@@ -228,6 +229,28 @@ with m.exclusive_lease(Path(sys.argv[2])):
 
 
 class WalkEnvironment(unittest.TestCase):
+    def test_cpu_venv_needs_no_nvidia_libraries_and_hides_cuda(self):
+        with tempfile.TemporaryDirectory() as name:
+            root = Path(name)
+            (root / 'pyvenv.cfg').write_text('include-system-site-packages = false\n')
+            (root / 'bin').mkdir()
+            python = root / 'bin/python'
+            python.write_text('synthetic interpreter, never executed')
+            python.chmod(0o700)
+            packages = root / 'lib/python3.11/site-packages'
+            packages.mkdir(parents=True)
+            self.assertEqual(walk.venv_paths(root, cpu=True), (root, python, packages, []))
+            with self.assertRaisesRegex(walk.WalkError, 'NVIDIA'):
+                walk.venv_paths(root)
+            with patch.dict(os.environ, {'CUDA_VISIBLE_DEVICES': '0', 'LD_LIBRARY_PATH': '/external/cuda',
+                                        'LD_PRELOAD': '/external/preload', 'CUDA_CACHE_PATH': '/external/cache'}):
+                env = walk.isolated_environment([], cpu=True)
+            self.assertEqual(env['CUDA_VISIBLE_DEVICES'], '-1')
+            self.assertEqual(env['LD_LIBRARY_PATH'], '')
+            self.assertNotIn('LD_PRELOAD', env)
+            self.assertNotIn('CUDA_CACHE_PATH', env)
+            self.assertEqual((env['OMP_NUM_THREADS'], env['OPENCV_FOR_THREADS_NUM']), ('2', '1'))
+
     def test_authenticated_ids_stop_before_host_lease_interpreter_or_cli(self):
         client, broadcaster = 'TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID'
         for mode in ('--twitch-live', '--twitch-bandwidth-test'):
@@ -410,6 +433,11 @@ class WalkRealCLI(unittest.TestCase):
         asyncio.run(scenario())
 
     def test_local_demo_reaches_actual_runtime_and_reaps_failed_sender_without_tty(self):
+        for cpu in (False, True):
+            with self.subTest(cpu=cpu):
+                self.check_local_demo(cpu)
+
+    def check_local_demo(self, cpu):
         from relay.security import Credentials
         events, runtime_phone = [], []
         class Engine:
@@ -428,6 +456,7 @@ class WalkRealCLI(unittest.TestCase):
             count = max_write_seconds = recovery_count = 0
             recovery_events = ()
             def __init__(self, *args):
+                self_test.assertEqual(args[-1], 'libx264' if cpu else 'h264_nvenc')
                 events.append('encoder-ready')
             def close(self):
                 events.append('output-close')
@@ -457,6 +486,7 @@ class WalkRealCLI(unittest.TestCase):
         phone = Credentials('synthetic-phone', 'SYNTHETIC-PHONE-PASSWORD')
         internal = Credentials('synthetic-internal', 'SYNTHETIC-INTERNAL-PASSWORD')
         original_open = open
+        self_test = self
         tty = Mock(side_effect=AssertionError('TTY opened'))
         def open_without_tty(path, *args, **kwargs):
             if isinstance(path, (str, bytes, os.PathLike)) and os.fsdecode(path) == '/dev/tty':
@@ -473,17 +503,19 @@ class WalkRealCLI(unittest.TestCase):
             with installed_bootstrap(root), patch.object(walk.os, 'nice'), \
                     patch('relay.mediamtx.MediaMTX') as media, patch('relay.mediamtx.verified_binary'), \
                     patch('relay.security.Credentials.generate', side_effect=[phone, internal]), \
-                    patch('relay.runtime.make_engine', return_value=Engine()), \
+                    patch('relay.runtime.make_engine', return_value=Engine()) as factory, \
                     patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', Source), \
                     patch('tools.demo_renderer.sender.Sender', Sender), \
                     patch('builtins.open', side_effect=open_without_tty), \
                     patch('shield.app.session.login', side_effect=AssertionError('login')) as login, \
                     redirect_stdout(StringIO()) as output, redirect_stderr(StringIO()) as error, \
                     self.assertRaises(SystemExit) as ended:
-                walk.main(['--local-only', '--host', '127.0.0.1', '--seconds', '230',
+                walk.main(['--local-only', *(['--cpu'] if cpu else []), '--host', '127.0.0.1', '--seconds', '230',
                     '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                     '--archive', str(root / 'archive')], lock_root=root)
             self.assertEqual(ended.exception.code, 1)
+            self.assertEqual({key: value for key, value in factory.call_args.kwargs.items() if key != 'appearance'},
+                             {'provider': 'cpu', 'delay_seconds': 2.5} if cpu else {})
             self.assertEqual(media.call_args.kwargs['archive'], root / 'archive')
             tty.assert_not_called()
             login.assert_not_called()
@@ -509,7 +541,16 @@ class WalkRealCLI(unittest.TestCase):
     def test_measurement_policy_reaches_real_cli_engine_factory(self):
         self.check_route('--local-only', {'accurate_rate_hz': 15., 'accurate_box_thresh': .73})
 
-    def check_route(self, mode, detector_options=None):
+    def test_cpu_and_explicit_delay_reach_real_cli_without_changing_auth_routes(self):
+        for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
+            with self.subTest(mode=mode):
+                self.check_route(mode, cpu=True)
+        for delay in (0, 3.25):
+            with self.subTest(delay=delay):
+                self.check_route('--local-only', cpu=True, delay_seconds=delay)
+        self.check_route('--local-only', delay_seconds=1.75)
+
+    def check_route(self, mode, detector_options=None, *, cpu=False, delay_seconds=None):
         from relay.security import Credentials
         records = {}
         terminal = StringIO()
@@ -555,12 +596,24 @@ class WalkRealCLI(unittest.TestCase):
             controls.return_value.failure = False
             extra = [arg for key, value in (detector_options or {}).items()
                      for arg in ('--' + key.replace('_', '-'), str(value))]
+            expected_options = dict(detector_options or {})
+            if cpu:
+                extra.append('--cpu')
+                expected_options.update(provider='cpu', delay_seconds=2.5)
+            if delay_seconds is not None:
+                extra += ['--delay-seconds', str(delay_seconds)]
+                expected_options['delay_seconds'] = delay_seconds
             with patch.object(sys, 'argv', ['walk-linux']), self.assertRaises(SystemExit) as stopped:
                 walk.main([mode, '--host', '127.0.0.1', '--seconds', '12', *extra], lock_root=Path(name))
             self.assertEqual(stopped.exception.code, 0)
             self.assertNotIn('TWITCH_STREAM_KEY', os.environ)
             self.assertEqual({key: value for key, value in engine_factory.call_args.kwargs.items()
-                              if key != 'appearance'}, detector_options or {})
+                              if key != 'appearance'}, expected_options)
+            if cpu:
+                self.assertEqual(os.environ['CUDA_VISIBLE_DEVICES'], '-1')
+                self.assertEqual(records['route']['encoder'], 'libx264')
+            else:
+                self.assertNotIn('encoder', records['route'])
         self.assertEqual(records['route']['publish_twitch'], authenticated)
         self.assertEqual(records['route']['twitch_live'], mode == '--twitch-live')
         self.assertIs(records['route']['live_approval'], approval if mode == '--twitch-live' else None)

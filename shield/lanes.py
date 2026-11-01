@@ -97,6 +97,6 @@ class DetectorLane:
 
     @property
     def stats(self):
-        return {'offered':self.offered,'completed':self.completed,'failed':self.failed,
+        return {'rate_hz':1/self.period,'offered':self.offered,'completed':self.completed,'failed':self.failed,
                 'service_seconds':list(self.service_seconds),'thread_cpu_seconds':list(self.thread_cpu_seconds),
                 'sample_capacity':4096,'backend':getattr(self.backend,'metadata',{})}

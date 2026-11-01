@@ -6,11 +6,76 @@ import threading
 import unittest
 from unittest.mock import patch
 
-from relay.runtime import run
+from relay.runtime import make_engine, run
 from relay.security import Credentials, RelayAddress
 
 
 class RuntimeDestination(unittest.TestCase):
+    def test_runtime_receipt_uses_effective_lane_settings_and_actual_encoder_and_delay(self):
+        artifact = {'sha256': '0' * 64, 'license': 'CC0-1.0', 'license_source': 'synthetic',
+                    'source': 'synthetic', 'url': 'not-downloaded',
+                    'preprocess': {'mean': [0., 0., 0.], 'std': [1., 1., 1.]}}
+        class Output:
+            error_code = error_details = None
+            count = max_write_seconds = recovery_count = 0
+            recovery_events = ()
+            def close(self):
+                pass
+        class Source:
+            error_code = last_failure = None
+            high_water = active_generation = 0
+            timestamp_issues = {}
+            def close(self):
+                pass
+        for provider, encoder, delay, options, rate, floor in (
+                ('cuda', 'h264_nvenc', 1., {}, 4., .5),
+                ('cpu', 'libx264', 2.5, {}, 4., .5),
+                ('cpu', 'libx264', 3.25, {'accurate_rate_hz': 7.5, 'accurate_box_thresh': .73}, 7.5, .73)):
+            active = ['CPUExecutionProvider'] if provider == 'cpu' else ['CUDAExecutionProvider', 'CPUExecutionProvider']
+            with self.subTest(provider=provider, options=options), tempfile.TemporaryDirectory() as directory, \
+                    patch('bench.onnx_detectors.verified_path', return_value=('/synthetic/not-read.onnx', artifact)), \
+                    patch('bench.onnx_detectors.ort.get_available_providers', return_value=['CPUExecutionProvider', 'CUDAExecutionProvider']), \
+                    patch('bench.onnx_detectors.ort.InferenceSession') as session, \
+                    patch('bench.onnx_detectors.TextDetector'), \
+                    patch('relay.runtime.Egress', return_value=Output()) as output, \
+                    patch('relay.runtime.NetworkInput', return_value=Source()):
+                session.return_value.get_providers.return_value = active
+                engine = make_engine('/synthetic-cache', provider=provider, delay_seconds=delay, **options)
+                stopped = threading.Event()
+                stopped.set()
+                summary = run(engine, RelayAddress('127.0.0.1'), Credentials.generate(), Credentials.generate(),
+                              directory, stopped, encoder=encoder)
+                saved = json.loads((Path(directory) / 'runtime.json').read_text())
+                self.assertEqual(saved, summary)
+                self.assertEqual(saved['status'], 'stopped')
+                configuration = saved['configuration']
+                self.assertEqual(configuration['encoder'], encoder)
+                self.assertEqual(output.call_args.args[-1], encoder)
+                self.assertEqual(configuration['delay_seconds'], delay)
+                for name, expected_rate, expected_floor in (('fast', 8., .5), ('accurate', rate, floor)):
+                    self.assertEqual(configuration['lanes'][name], {
+                        'rate_hz': expected_rate, 'box_thresh': expected_floor,
+                        'execution_provider': active[0], 'active_execution_providers': active})
+                    self.assertEqual(saved['engine']['lanes'][name]['rate_hz'], expected_rate)
+
+    def test_legacy_runtime_cli_propagates_cpu_delay_and_preserves_defaults(self):
+        from relay.runtime import main
+        for extra, expected, run_options in (([], {}, {}), (['--cpu'], {'provider': 'cpu', 'delay_seconds': 2.5}, {'encoder': 'libx264'}),
+                (['--cpu', '--delay-seconds', '0'], {'provider': 'cpu', 'delay_seconds': 0.}, {'encoder': 'libx264'}),
+                (['--delay-seconds', '3.25'], {'delay_seconds': 3.25}, {})):
+            with self.subTest(extra=extra), patch('sys.argv', ['relay.runtime', '--host', '127.0.0.1', *extra]), \
+                    patch('relay.runtime.MediaMTX'), patch('relay.runtime.make_engine') as factory, \
+                    patch('relay.runtime.run') as runtime, patch('relay.runtime.signal.signal'):
+                main()
+                self.assertEqual(factory.call_args.kwargs, expected)
+                self.assertEqual(runtime.call_args.kwargs, run_options)
+        for value in ('nan', 'inf', '-.1'):
+            with self.subTest(value=value), patch('sys.argv', ['relay.runtime', '--cpu', '--delay-seconds', value]), \
+                    patch('relay.runtime.MediaMTX') as media, self.assertRaises(SystemExit) as ended:
+                main()
+            self.assertEqual(ended.exception.code, 2)
+            media.assert_not_called()
+
     def test_callback_key_is_consumed_by_production_bandwidthtest_route_in_memory(self):
         captured = []
         class Engine:

@@ -32,6 +32,14 @@ The Linux integration command is `python -m shield.cli login|run|doctor`.
 memory-only Twitch authorization, EventSub controls and explicit Twitch publication modes. Native Twitch publishing is not part of local verification. SRT and
 walking use remain unqualified; this is not a production relay.
 
+The live application supports Linux only. Windows is unsupported. NVIDIA is
+recommended for the default CUDA detector lanes and NVENC encoding. `--cpu`
+selects ONNX CPUExecutionProvider for both lanes and libx264 encoding, using the
+same pinned environment and cached models. Its default engine presentation
+delay is 2.5 seconds; `--delay-seconds` overrides it, including an explicit zero.
+Without these flags, the existing CUDA/NVENC and 1-second delay defaults remain.
+Mac OCR grading tools are development tools, not live application support.
+
 **Twitch egress verifies its TLS peer.** PyAV sends RTMP only to a runtime-owned
 `127.0.0.1` listener. A standard-library TLS forwarder connects to Twitch on
 port 443 with system CAs, certificate verification and hostname checking.
@@ -54,6 +62,21 @@ For a local attended terminal after setup:
 .venv/bin/python -m shield.cli run --local-only --host 127.0.0.1 --phone-setup
 ```
 
+For CPU mode after the same setup, from the repository root:
+
+```sh
+scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
+```
+
+The root-inspected local CPU collection on an i7-7700K with 8 logical CPUs
+observed 3,598 LIVE frames in a complete 120-second steady window, 29.9833 fps,
+with no PROTECT, HOLD or slate frames in that window. The full archive includes
+protection and HOLD. These hardware-specific observations add no privacy grade
+or walking qualification. [CPU mode and measurement limits](docs/RUN.md#cpu-mode)
+include decoder latency, partial CPU accounting, unknowns and the failed clock
+guard.
+
 The bind address must be supplied with `--host` or `SHIELD_BIND_HOST`. Use
 IPv4 loopback for local operation, or the detected Tailscale address for a phone, as described in [docs/RUN.md](docs/RUN.md). Credentials printed for
 phone setup go only to the private terminal; do not capture or share them.
@@ -61,23 +84,22 @@ phone setup go only to the private terminal; do not capture or share them.
 Run archives are off by default. Add `--archive <dir>` only when diagnostic
 evidence is needed; a low-disk guard stops evidence without stopping the relay.
 
-Gate 1 has not passed. Sustained timing is qualified on the M1 Pro and Linux,
+Gate 1 has not passed. Historical timing results cover the M1 Pro and Linux,
 including Linux CPU detection with libx264, but no tune policy meets all privacy
 and real-video guards. The frozen held-out evaluation is queued separately;
 [the hand-back](docs/M1-HANDBACK.md) distinguishes finished and pending evidence.
 
 The engine accepts timestamped in-memory BGR frames independently of transport.
-Apple Vision is available on macOS; PP-OCR models use ONNX Runtime on CPU, Core ML
-or CUDA. Linux CPU/CUDA execution has been exercised; Windows remains untested.
+Apple Vision is available for macOS grading; PP-OCR models use ONNX Runtime on
+CPU, Core ML or CUDA in development tools. The live application runs on Linux;
+Windows is unsupported.
 The selected configuration and its hardware requirements will be recorded with
 the final M1 scorecard. A configured 30fps source is never treated as measured
 30fps output.
 
-From the Linux checkout, the Mac wrapper synchronizes source and provisioned
-assets, runs a bounded command and leaves all generated media out of git:
-
-Run this reproduction after the overnight queues drain or are cooperatively
-stopped; queued timing has priority over new quality work.
+For OCR grading development, the Mac wrapper synchronizes source and provisioned
+assets, runs a bounded command and leaves generated media out of git. This is a
+bench reproduction, not a live application command:
 
 ```sh
 scripts/mac --seconds 14400 scripts/host-lock exclusive scripts/bench \
