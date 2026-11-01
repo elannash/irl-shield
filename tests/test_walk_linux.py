@@ -369,13 +369,24 @@ class WalkRealCLI(unittest.TestCase):
                     raise RuntimeError('Synthetic model release timeout')
                 events.append('engine-built')
                 return Engine()
-            args = parser().parse_args(['run', '--local-only', '--host', '127.0.0.1'])
+            temporary = tempfile.TemporaryDirectory()
+            self.addCleanup(temporary.cleanup)
+            root = Path(temporary.name)
+            video = root / 'source.mp4'
+            video.write_bytes(b'synthetic-source-not-native-media')
+            manifest = root / 'source.json'
+            manifest.write_text(json.dumps({'schema': 'irl-shield-w8-source-v1', 'video': 'source.mp4',
+                'video_sha256': hashlib.sha256(video.read_bytes()).hexdigest(), 'fps': 30, 'seconds': 210,
+                'frames': [{'source_index': i, 'pts': f'{i}/30'} for i in range(6300)]}))
+            args = parser().parse_args(['run', '--local-only', '--host', '127.0.0.1', '--seconds', '230',
+                '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
+                '--archive', str(root / 'archive')])
             with patch('relay.mediamtx.MediaMTX', Media), patch('relay.mediamtx.verified_binary'), \
                     patch('relay.runtime.make_engine', side_effect=build), \
                     patch('relay.runtime.run', side_effect=AssertionError('runtime before model ready')) as runtime, \
+                    patch('tools.demo_renderer.sender.Sender', side_effect=AssertionError('sender before readiness')) as factory, \
                     patch('shield.app.session.login', side_effect=AssertionError('login')) as login:
-                factory = Mock(side_effect=AssertionError('sender before readiness'))
-                task = asyncio.create_task(execute(args, phone_input=factory))
+                task = asyncio.create_task(execute(args))
                 try:
                     await asyncio.wait_for(building.wait(), 5)
                     task.cancel()
@@ -443,6 +454,12 @@ class WalkRealCLI(unittest.TestCase):
                 events.append('sender-joined')
         phone = Credentials('synthetic-phone', 'SYNTHETIC-PHONE-PASSWORD')
         internal = Credentials('synthetic-internal', 'SYNTHETIC-INTERNAL-PASSWORD')
+        original_open = open
+        tty = Mock(side_effect=AssertionError('TTY opened'))
+        def open_without_tty(path, *args, **kwargs):
+            if isinstance(path, (str, bytes, os.PathLike)) and os.fsdecode(path) == '/dev/tty':
+                return tty(path, *args, **kwargs)
+            return original_open(path, *args, **kwargs)
         with tempfile.TemporaryDirectory() as name, patch.dict(os.environ, {}, clear=True):
             root = Path(name)
             video = root / 'source.mp4'
@@ -452,12 +469,12 @@ class WalkRealCLI(unittest.TestCase):
                 'video_sha256': hashlib.sha256(video.read_bytes()).hexdigest(), 'fps': 30, 'seconds': 210,
                 'frames': [{'source_index': i, 'pts': f'{i}/30'} for i in range(6300)]}))
             with installed_bootstrap(root), patch.object(walk.os, 'nice'), \
-                    patch('relay.mediamtx.MediaMTX'), patch('relay.mediamtx.verified_binary'), \
+                    patch('relay.mediamtx.MediaMTX') as media, patch('relay.mediamtx.verified_binary'), \
                     patch('relay.security.Credentials.generate', side_effect=[phone, internal]), \
                     patch('relay.runtime.make_engine', return_value=Engine()), \
                     patch('relay.runtime.Egress', Output), patch('relay.runtime.NetworkInput', Source), \
                     patch('tools.demo_renderer.sender.Sender', Sender), \
-                    patch('builtins.open', side_effect=AssertionError('TTY opened')) as tty, \
+                    patch('builtins.open', side_effect=open_without_tty), \
                     patch('shield.app.session.login', side_effect=AssertionError('login')) as login, \
                     redirect_stdout(StringIO()) as output, redirect_stderr(StringIO()) as error, \
                     self.assertRaises(SystemExit) as ended:
@@ -465,6 +482,7 @@ class WalkRealCLI(unittest.TestCase):
                     '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                     '--archive', str(root / 'archive')], lock_root=root)
             self.assertEqual(ended.exception.code, 1)
+            self.assertEqual(media.call_args.kwargs['archive'], root / 'archive')
             tty.assert_not_called()
             login.assert_not_called()
             self.assertIs(runtime_phone[0][1], phone)

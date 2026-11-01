@@ -8,8 +8,9 @@ import socket
 import subprocess
 import threading
 import time
-from collections import deque
+from collections import Counter, deque
 
+from relay.archive import Archive
 from relay.security import mediamtx_environment
 
 VERSION = 'v1.21.3'
@@ -26,13 +27,18 @@ def verified_binary(directory=TOOL_DIR):
 
 
 class MediaMTX:
-    def __init__(self, address, phone, internal, binary=None):
+    def __init__(self, address, phone, internal, binary=None, archive=None):
         self.address, self.phone, self.internal = address, phone, internal
         self.binary = binary or verified_binary()
         self.process = None
         self.close_events = deque(maxlen=64)
         self.diagnostic_drops = 0
         self._diagnostic_thread = None
+        self._archive = Archive(archive)
+        self.warning_events = deque(maxlen=64)
+        self.warning_counts = Counter()
+        self._warning_lock = threading.Lock()
+        self._write_queue_size = None
 
     def _diagnostics(self):
         # Only fixed classifications cross this boundary. Never retain a raw
@@ -49,6 +55,22 @@ class MediaMTX:
                 continue
             line = raw.decode('utf-8', errors='replace')
             connection = re.search(r'\[(RTMP|RTSP|SRT)\] \[(conn|session) ([A-Za-z0-9.:_-]{1,80})\]', line)
+            warning = None
+            if 'reader is too slow' in line:
+                warning = 'slow-reader'
+            elif 'write queue is full' in line:
+                warning = 'write-queue-full'
+            elif re.search(r'(?:^|\s)WAR\s', line):
+                warning = 'other-warning'
+            if warning is not None:
+                identity = connection.groups() if connection else None
+                with self._warning_lock:
+                    self.warning_counts[warning] += 1
+                    if len(self.warning_events) == self.warning_events.maxlen:
+                        self.diagnostic_drops += 1
+                    self.warning_events.append({'at_monotonic': time.monotonic(),
+                        'protocol': identity[0] if identity else None,
+                        'path': connections.get(identity), 'code': warning})
             if not connection:
                 continue
             identity = connection.groups()
@@ -83,6 +105,7 @@ class MediaMTX:
         # can contain authenticated URL/query strings, including rejected clients.
         env = {k: v for k, v in os.environ.items() if not k.startswith('MTX_')}
         env.update(mediamtx_environment(self.address, self.phone, self.internal))
+        self._write_queue_size = int(env['MTX_WRITEQUEUESIZE'])
         env['MTX_LOGLEVEL'] = 'info'
         users = json.loads(env.pop('MTX_AUTHINTERNALUSERS'))
         try:
@@ -138,6 +161,16 @@ class MediaMTX:
                 self.process.wait(timeout=3)
             if self._diagnostic_thread is not None:
                 self._diagnostic_thread.join(timeout=2)
+                with self._warning_lock:
+                    self._archive.text('mediamtx.json', json.dumps({
+                        'write_queue_size': self._write_queue_size,
+                        'warning_counts': dict(self.warning_counts),
+                        'recent_warnings': list(self.warning_events),
+                        'recent_closes': list(self.close_events),
+                        'diagnostic_drops': self.diagnostic_drops,
+                        'diagnostic_reader_stopped': not self._diagnostic_thread.is_alive(),
+                        'process_returncode': self.process.returncode,
+                    }, indent=2) + '\n', 'w')
                 if self._diagnostic_thread.is_alive():
                     raise RuntimeError('MediaMTX diagnostic reader did not stop')
             if self.process.stdout is not None:
