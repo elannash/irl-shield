@@ -1,0 +1,89 @@
+{
+  "schema": "irl-shield-w8b-assets-v1",
+  "status": "NOT CLEARED",
+  "origin": "Built-in image_gen in submitted IRL Shield Codex session; four root-owned generated plates",
+  "model": "not exposed",
+  "license": "CC0-1.0 dedication of project-owned generated assets; subject to applicable OpenAI terms",
+  "source_asset_manifest_sha256": "183b04a667e83c05b065ea51c30e9f5faf0f363cdbb044ef35fd35b8530b5598",
+  "source_prompts_sha256": "afac1752fc0da01d8966c491061402643b25cc0078ace615cc20871603972a91",
+  "prompts": "fixtures/demo-renderer/w8b/prompts.json",
+  "prompts_sha256": "499079519558b8d7210327259c1eb6abbba1777e266ca78ec96230e7ca210c52",
+  "assets": [
+    {
+      "id": "shops",
+      "file": "fixtures/cache/demo-w8b/shops-v1.png",
+      "source_asset_sha256": "1d70b875e3045714b320dd35f9e837ebc9f49b6a7cd269da1f0b8ca847eeeb70",
+      "sha256": "1d70b875e3045714b320dd35f9e837ebc9f49b6a7cd269da1f0b8ca847eeeb70",
+      "size": [
+        1536,
+        1024
+      ],
+      "modifications": "none; original PNG bytes retained"
+    },
+    {
+      "id": "homes",
+      "file": "fixtures/cache/demo-w8b/homes-v1.png",
+      "source_asset_sha256": "d849d1c61d2d9eb1fb7541fad961fd5488599e139c9999574a84d780bd8fa89f",
+      "sha256": "d849d1c61d2d9eb1fb7541fad961fd5488599e139c9999574a84d780bd8fa89f",
+      "size": [
+        1536,
+        1024
+      ],
+      "modifications": "none; original PNG bytes retained"
+    },
+    {
+      "id": "car",
+      "file": "fixtures/cache/demo-w8b/car-v1.png",
+      "source_asset_sha256": "3e92d766ee3aa85ad5a6d62cabdca06ddda307736c4690c0c70440602b5fd489",
+      "sha256": "3e92d766ee3aa85ad5a6d62cabdca06ddda307736c4690c0c70440602b5fd489",
+      "size": [
+        1536,
+        1024
+      ],
+      "modifications": "none; original PNG bytes retained"
+    },
+    {
+      "id": "corner",
+      "file": "fixtures/cache/demo-w8b/corner-v1.png",
+      "source_asset_sha256": "d4a2b297d803d46635ed7cca85940ef7f64c2c7eacb3930cb692b33ef83a5f59",
+      "sha256": "d4a2b297d803d46635ed7cca85940ef7f64c2c7eacb3930cb692b33ef83a5f59",
+      "size": [
+        1536,
+        1024
+      ],
+      "modifications": "none; original PNG bytes retained"
+    }
+  ],
+  "intended_labels": [
+    "TAVREN BINDERY",
+    "MORROWFEN REPAIRS",
+    "38",
+    "142",
+    "731",
+    "NERALIN LANE",
+    "TV 4827",
+    "86",
+    "TAVREN ROW",
+    "27"
+  ],
+  "composition": "Four native photographic plates in a static atlas; three clones of corner pole shaft pixels with manual matte and native-scale translations cover static joins; one continuous pan with opening upward scan. No painted lettering.",
+  "limitations": "Manual shaft matte and source geometry only, not a photographic/physical-occlusion verdict. Repeated poles, edge halos and mismatched curb geometry require assembled preview. No native/mask/brand result.",
+  "audio": "none",
+  "canonical_three_judge_clearance": null,
+  "human_logo_eye": null,
+  "visual_join_acceptance": null,
+  "native_evidence": null,
+  "asset_availability": "Gitignored cache; exact regeneration from prompts is not guaranteed. Free checksummed payload hosting remains root-owned and pending.",
+  "reproducibility": "Exact video rebuild requires all four sealed cached PNGs and matching environment; no silent download, generation or paid fallback.",
+  "foreground_cutout": {
+    "source_asset_sha256": "d4a2b297d803d46635ed7cca85940ef7f64c2c7eacb3930cb692b33ef83a5f59",
+    "source_file": "fixtures/cache/demo-w8b/corner-v1.png",
+    "source_box": [
+      504,
+      240,
+      560,
+      1024
+    ],
+    "destinations": "Exact translations and matte scanlines in scene-plan.json; three reused instances, no new generated PNGs"
+  }
+}

@@ -134,17 +134,14 @@ def terminal_setup(address, phone):
         terminal.flush()
 
 
-async def execute(args, *, phone_input=None):
+async def execute(args):
     from aiohttp import ClientSession
     from shield.app.live import authorize_live
     from shield.app.session import TwitchControls, login
     from shield.twitch.http import TwitchHTTP
     validate(args)
-    if phone_input is not None and not args.twitch_live and (not args.local_only or args.host != '127.0.0.1'):
-        raise ValueError('Phone input callback requires local-only loopback or attended live mode')
+    phone_input = None
     if args.demo_source is not None:
-        if phone_input is not None:
-            raise ValueError('Choose one phone input factory')
         from tools.demo_renderer.sender import Sender, source_manifest
         source_manifest(args.demo_source)
         args.demo_receipt.expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
@@ -202,7 +199,7 @@ async def execute(args, *, phone_input=None):
                 loop.add_signal_handler(signum, manual, active)
             try:
                 binary = verified_binary(args.mediamtx_dir) if args.mediamtx_dir else verified_binary()
-                with MediaMTX(address, phone, internal, binary=binary):
+                with MediaMTX(address, phone, internal, binary=binary, archive=args.archive):
                     if args.phone_setup:
                         terminal_setup(address, phone)
                     detector_options = {}

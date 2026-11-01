@@ -67,13 +67,43 @@ snapshots and recipes are in [v2 preparation](../docs/FRESH-HELDOUT-V2.md) and
 The unchanged generated plate in `demo-renderer/fictional-street.png` is a
 project-owned fictional scene dedicated to CC0-1.0, subject to applicable OpenAI
 terms. [Its provenance](demo-renderer/ATTRIBUTION.json) retains the original
-imagegen prompt, original and normalized hashes, source worktree and historical
-author review. No new image generation or external source was used.
+imagegen prompt, original and normalized hashes, model note and license.
+No new image generation or external source was used for this fallback.
 `tools/demo_renderer/source.py` adds fictional signs and one continuous camera
 move over this still. The intended 210-second, video-only output is synthetic
-demo material, separate from tune and held-out fixtures. Its generation and
-decoded-frame checks remain unexecuted. The current canonical three-judge brand
-clearance and separate human logo review are pending current root-owned collectors.
+demo material, separate from tune and held-out fixtures. The source build and
+full decode verified 6,300 distinct frames at 30 fps over 210 seconds, with no
+audio. PP-OCR, Tesseract 5.5.4 and Apple Vision checked 12 raw frames plus three
+controls per judge. The conductor cleared that sample and performed a logo eye
+review; this does not establish full-clip or owner visual acceptance. The clip
+remains the fallback. Native rehearsal clock-join and unmatched-frame limits
+are described in `docs/DEMO-RENDERER.md`.
+
+## W8b richer fictional demo (sample cleared)
+
+Four original generated PNGs live only in the gitignored
+`fixtures/cache/demo-w8b/` cache. [W8b attribution](demo-renderer/w8b/ATTRIBUTION.json)
+records their full SHA-256 hashes, the built-in imagegen model-not-exposed
+note, applicable license dedication and cache availability limitation.
+[Exact prompts](demo-renderer/w8b/prompts.json) and the
+[motion/source recipe](demo-renderer/w8b/scene-plan.json) are source-controlled.
+No new generation occurred in the implementation child. Original image
+bytes are unchanged; the video recipe spatially blends their edges and pans
+over the static result, with no code-painted signs or music.
+
+The project-owned generated assets are dedicated to CC0-1.0, subject to
+applicable OpenAI terms. Prompt replay cannot guarantee identical pixels;
+exact rebuild requires the sealed cached originals. A freely accessible,
+checksummed judge asset payload is pending root provisioning. No download,
+paid generation fallback, native guard pass or visual acceptance is implied
+by the manifests. The conductor cleared the later 40-frame/48-observation
+three-judge branding sample after visually rejecting a Tesseract texture
+hallucination. That ruling does not certify all 6,300 frames; owner visual
+acceptance and complete native masking remain unverified. The local
+playback-aligned preview also exposes native horizontal corruption, described
+in `docs/DEMO-RENDERER.md`. Existing fallback media and sealed
+receipts remain unchanged; its public attribution omits machine-local
+paths while retaining original hashes, exact prompt, model note and license.
 
 ## Fonts
 

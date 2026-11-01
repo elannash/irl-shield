@@ -186,7 +186,7 @@ def main():
     stopped = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stopped.set())
-    with MediaMTX(address, phone, internal):
+    with MediaMTX(address, phone, internal, archive=args.archive):
         engine = make_engine(args.model_cache)
         if args.phone_setup:
             # Exactly once, only by this explicit interactive action. Never put

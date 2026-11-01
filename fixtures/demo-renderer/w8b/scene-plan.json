@@ -1,0 +1,637 @@
+{
+  "schema": "irl-shield-w8b-mosaic-v1",
+  "fps": 30,
+  "seconds": 210,
+  "output": [
+    1280,
+    720
+  ],
+  "canvas": [
+    5760,
+    1024
+  ],
+  "assets": [
+    {
+      "id": "shops",
+      "file": "shops-v1.png",
+      "sha256": "1d70b875e3045714b320dd35f9e837ebc9f49b6a7cd269da1f0b8ca847eeeb70",
+      "size": [
+        1536,
+        1024
+      ],
+      "origin": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "homes",
+      "file": "homes-v1.png",
+      "sha256": "d849d1c61d2d9eb1fb7541fad961fd5488599e139c9999574a84d780bd8fa89f",
+      "size": [
+        1536,
+        1024
+      ],
+      "origin": [
+        1408,
+        0
+      ]
+    },
+    {
+      "id": "car",
+      "file": "car-v1.png",
+      "sha256": "3e92d766ee3aa85ad5a6d62cabdca06ddda307736c4690c0c70440602b5fd489",
+      "size": [
+        1536,
+        1024
+      ],
+      "origin": [
+        2816,
+        0
+      ]
+    },
+    {
+      "id": "corner",
+      "file": "corner-v1.png",
+      "sha256": "d4a2b297d803d46635ed7cca85940ef7f64c2c7eacb3930cb692b33ef83a5f59",
+      "size": [
+        1536,
+        1024
+      ],
+      "origin": [
+        4224,
+        0
+      ]
+    }
+  ],
+  "camera": {
+    "left": [
+      32,
+      4448
+    ],
+    "top": [
+      264,
+      50
+    ],
+    "width": [
+      1344,
+      1280
+    ],
+    "opening_scan_frames": 240
+  },
+  "joins": [
+    {
+      "pair": [
+        "shops",
+        "homes"
+      ],
+      "feather": [
+        1518,
+        1522
+      ],
+      "method": "Four-pixel static blend behind copied foreground pole shaft; manual matte, visual acceptance pending"
+    },
+    {
+      "pair": [
+        "homes",
+        "car"
+      ],
+      "feather": [
+        2926,
+        2930
+      ],
+      "method": "Four-pixel static blend behind copied foreground pole shaft; manual matte, visual acceptance pending"
+    },
+    {
+      "pair": [
+        "car",
+        "corner"
+      ],
+      "feather": [
+        4334,
+        4338
+      ],
+      "method": "Four-pixel static blend behind copied foreground pole shaft; manual matte, visual acceptance pending"
+    }
+  ],
+  "transition_checks": [
+    {
+      "pair": [
+        "shops",
+        "homes"
+      ],
+      "nominal_center_frame": 1172,
+      "overlap_visible_envelope": [
+        46,
+        2146
+      ]
+    },
+    {
+      "pair": [
+        "homes",
+        "car"
+      ],
+      "nominal_center_frame": 3195,
+      "overlap_visible_envelope": [
+        2084,
+        4154
+      ]
+    },
+    {
+      "pair": [
+        "car",
+        "corner"
+      ],
+      "nominal_center_frame": 5219,
+      "overlap_visible_envelope": [
+        4122,
+        6163
+      ]
+    }
+  ],
+  "raw_samples": [
+    0,
+    90,
+    150,
+    300,
+    500,
+    600,
+    900,
+    1171,
+    1173,
+    1300,
+    1500,
+    1700,
+    1800,
+    2100,
+    2250,
+    2340,
+    3000,
+    3194,
+    3196,
+    3400,
+    3500,
+    3700,
+    3900,
+    4200,
+    4500,
+    4550,
+    4700,
+    4800,
+    4900,
+    5100,
+    5218,
+    5220,
+    5400,
+    5500,
+    5600,
+    5700,
+    5800,
+    6000,
+    6200,
+    6299
+  ],
+  "attribution_sha256": "223a40d3ffd34107c1ee4b08526a763c0225a1e964a096500eaf6434c3043822",
+  "prompts_sha256": "499079519558b8d7210327259c1eb6abbba1777e266ca78ec96230e7ca210c52",
+  "status": "NOT CLEARED",
+  "motion_note": "p=i/6299; x=32+4416p; width=1344-64p; top=50+214*(1-min(i/240,1))^2. Opening upward scan settles with zero vertical velocity; rest is a continuous horizontal pan/approach.",
+  "normalization": "No input raster normalization or enlargement; four native plates and three translated cutouts of the original corner pole shaft",
+  "guard_policy": "Frozen baseline accurate4Hz/floor0.5/fast8Hz/Patch; no recall changes",
+  "asset_cache_binding": "fixtures/cache/demo-w8b; passed explicitly using --asset-base",
+  "region_basis": "Approximate human visual rectangles, not CV/OCR ground truth; >=3s planned full-view windows need actual encoded confirmation",
+  "readability_regions": [
+    {
+      "asset": "shops",
+      "label": "TAVREN BINDERY board",
+      "bounds": [
+        266,
+        55,
+        555,
+        258
+      ],
+      "full_view_frames": [
+        240,
+        330
+      ]
+    },
+    {
+      "asset": "shops",
+      "label": "MORROWFEN REPAIRS awning",
+      "bounds": [
+        920,
+        140,
+        1335,
+        425
+      ],
+      "full_view_frames": [
+        240,
+        330
+      ]
+    },
+    {
+      "asset": "shops",
+      "label": "38",
+      "bounds": [
+        838,
+        450,
+        875,
+        495
+      ],
+      "full_view_frames": [
+        0,
+        90
+      ]
+    },
+    {
+      "asset": "homes",
+      "label": "142",
+      "bounds": [
+        220,
+        208,
+        310,
+        280
+      ],
+      "full_view_frames": [
+        1800,
+        1890
+      ]
+    },
+    {
+      "asset": "homes",
+      "label": "731",
+      "bounds": [
+        1042,
+        312,
+        1095,
+        355
+      ],
+      "full_view_frames": [
+        1800,
+        1890
+      ]
+    },
+    {
+      "asset": "homes",
+      "label": "NERALIN LANE plaque",
+      "bounds": [
+        1265,
+        295,
+        1410,
+        356
+      ],
+      "full_view_frames": [
+        2250,
+        2340
+      ]
+    },
+    {
+      "asset": "car",
+      "label": "TV 4827 physical plate",
+      "bounds": [
+        884,
+        670,
+        1100,
+        738
+      ],
+      "full_view_frames": [
+        3900,
+        3990
+      ]
+    },
+    {
+      "asset": "car",
+      "label": "86",
+      "bounds": [
+        1180,
+        155,
+        1235,
+        214
+      ],
+      "full_view_frames": [
+        3900,
+        3990
+      ]
+    },
+    {
+      "asset": "corner",
+      "label": "TAVREN ROW blade",
+      "bounds": [
+        270,
+        136,
+        553,
+        250
+      ],
+      "full_view_frames": [
+        5700,
+        5790
+      ]
+    },
+    {
+      "asset": "corner",
+      "label": "NERALIN LANE blade",
+      "bounds": [
+        548,
+        102,
+        704,
+        214
+      ],
+      "full_view_frames": [
+        5700,
+        5790
+      ]
+    },
+    {
+      "asset": "corner",
+      "label": "27",
+      "bounds": [
+        802,
+        375,
+        849,
+        425
+      ],
+      "full_view_frames": [
+        5700,
+        5790
+      ]
+    }
+  ],
+  "raw_detail_regions": [
+    {
+      "asset": "shops",
+      "bounds": [
+        486,
+        414,
+        626,
+        671
+      ],
+      "reason": "unplanned window glyph-like detail; inspect whenever visible"
+    },
+    {
+      "asset": "shops",
+      "bounds": [
+        500,
+        630,
+        551,
+        671
+      ],
+      "reason": "small glyph subset; preserve raw unknowns"
+    },
+    {
+      "asset": "corner",
+      "bounds": [
+        1381,
+        486,
+        1487,
+        509
+      ],
+      "reason": "far fascia glyph-like detail; inspect whenever visible"
+    },
+    {
+      "asset": "car",
+      "bounds": [
+        490,
+        716,
+        548,
+        793
+      ],
+      "reason": "wheel center detail; not a positive logo finding"
+    },
+    {
+      "asset": "corner",
+      "bounds": [
+        504,
+        240,
+        560,
+        1024
+      ],
+      "reason": "Source of three cloned foreground pole shafts; manual matte must be checked for incidental glyphs and edge halos at every destination"
+    }
+  ],
+  "independent_static_review_sha256": "cde11abd3efd999e045c8d765f7518251effd3db87eb15f42e8080afc139eefa",
+  "per_plate_samples": {
+    "shops": [
+      0,
+      90,
+      150,
+      300,
+      600,
+      900,
+      1171,
+      1173,
+      1300,
+      1500,
+      1700,
+      1800
+    ],
+    "homes": [
+      500,
+      900,
+      1171,
+      1173,
+      1500,
+      1800,
+      2100,
+      2250,
+      2340,
+      3000,
+      3194,
+      3196
+    ],
+    "car": [
+      3400,
+      3500,
+      3700,
+      3900,
+      4200,
+      4500,
+      4800,
+      5100,
+      5218,
+      5220,
+      5500,
+      5700
+    ],
+    "corner": [
+      4550,
+      4700,
+      4900,
+      5100,
+      5218,
+      5220,
+      5400,
+      5600,
+      5800,
+      6000,
+      6200,
+      6299
+    ]
+  },
+  "sample_count_basis": {
+    "per_plate": 12,
+    "plate_frame_observations": 48,
+    "planned_unique_full_frame_pngs": 40,
+    "note": "Static geometry revision before encode: twelve observations per plate, new join-center bracketing samples, shared files counted once. Actual visibility/physical count remains unobserved."
+  },
+  "foreground_poles": [
+    {
+      "join": 0,
+      "source_asset": "corner",
+      "source_box": [
+        504,
+        240,
+        560,
+        1024
+      ],
+      "opaque_rows": [
+        [
+          240,
+          512,
+          550
+        ],
+        [
+          420,
+          514,
+          551
+        ],
+        [
+          600,
+          519,
+          550
+        ],
+        [
+          820,
+          523,
+          552
+        ],
+        [
+          1024,
+          527,
+          553
+        ]
+      ],
+      "translation": [
+        980,
+        -196
+      ],
+      "provenance": "Original corner PNG; shaft below readable blade lettering, with possible lower mounting edge at crop top; manual matte pending assembled inspection. Native pixels translated only, no resize, lettering, generated fill or new asset.",
+      "raw_inspection": "Inspect every visible copy for incidental shaft/sticker/scratch glyphs and mounting-edge pixels. Same source pixels repeat three times; no text/brand clearance is inferred."
+    },
+    {
+      "join": 1,
+      "source_asset": "corner",
+      "source_box": [
+        504,
+        240,
+        560,
+        1024
+      ],
+      "opaque_rows": [
+        [
+          240,
+          512,
+          550
+        ],
+        [
+          420,
+          514,
+          551
+        ],
+        [
+          600,
+          519,
+          550
+        ],
+        [
+          820,
+          523,
+          552
+        ],
+        [
+          1024,
+          527,
+          553
+        ]
+      ],
+      "translation": [
+        2388,
+        -196
+      ],
+      "provenance": "Original corner PNG; shaft below readable blade lettering, with possible lower mounting edge at crop top; manual matte pending assembled inspection. Native pixels translated only, no resize, lettering, generated fill or new asset.",
+      "raw_inspection": "Inspect every visible copy for incidental shaft/sticker/scratch glyphs and mounting-edge pixels. Same source pixels repeat three times; no text/brand clearance is inferred."
+    },
+    {
+      "join": 2,
+      "source_asset": "corner",
+      "source_box": [
+        504,
+        240,
+        560,
+        1024
+      ],
+      "opaque_rows": [
+        [
+          240,
+          512,
+          550
+        ],
+        [
+          420,
+          514,
+          551
+        ],
+        [
+          600,
+          519,
+          550
+        ],
+        [
+          820,
+          523,
+          552
+        ],
+        [
+          1024,
+          527,
+          553
+        ]
+      ],
+      "translation": [
+        3796,
+        -196
+      ],
+      "provenance": "Original corner PNG; shaft below readable blade lettering, with possible lower mounting edge at crop top; manual matte pending assembled inspection. Native pixels translated only, no resize, lettering, generated fill or new asset.",
+      "raw_inspection": "Inspect every visible copy for incidental shaft/sticker/scratch glyphs and mounting-edge pixels. Same source pixels repeat three times; no text/brand clearance is inferred."
+    }
+  ],
+  "entry_reference_regions": [
+    {
+      "asset": "shops",
+      "label": "TAVREN BINDERY board",
+      "edge": "top",
+      "initially_outside": true
+    },
+    {
+      "asset": "homes",
+      "label": "142",
+      "edge": "right",
+      "initially_outside": true
+    },
+    {
+      "asset": "car",
+      "label": "TV 4827 physical plate",
+      "edge": "right",
+      "initially_outside": true
+    },
+    {
+      "asset": "corner",
+      "label": "TAVREN ROW blade",
+      "edge": "right",
+      "initially_outside": true
+    }
+  ],
+  "geometry_revision": {
+    "id": "occlusion-v2",
+    "supersedes_scene_plan_sha256": "964f7e60f03425eabb0d56ebe2e866aec2846125ea91a40641d4d6b885494b65",
+    "reason": "New foreground-occlusion and one-frame-edge-entry-per-plate requirements; no SUT or encoding results used in revision"
+  }
+}

@@ -81,7 +81,9 @@ def mediamtx_environment(address, phone, internal):
         'MTX_LOGLEVEL': 'error', 'MTX_LOGDESTINATIONS': 'stdout',
         # Connection liveness is separate from frame privacy. Tolerate a short
         # cellular/host pause; the engine's deadlines still select PROTECT/HOLD.
-        'MTX_READTIMEOUT': '10s', 'MTX_WRITETIMEOUT': '10s', 'MTX_WRITEQUEUESIZE': '128',
+        # A large IDR arrives as hundreds of RTP packets in one burst. This
+        # bounds burst capacity; it does not add a steady-state playout delay.
+        'MTX_READTIMEOUT': '10s', 'MTX_WRITETIMEOUT': '10s', 'MTX_WRITEQUEUESIZE': '1024',
     }
 
 
