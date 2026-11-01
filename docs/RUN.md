@@ -135,9 +135,8 @@ missed this plaque; these observations do not establish a provider regression.
 This is an observed detection miss, with no detector tuning in this change.
 
 A separate frozen offline provider check used the same source weights and graphs,
-changing only CPUExecutionProvider versus CUDAExecutionProvider. Across seven
-natural clips with 150 frames each (1,050 frames total), CPU and CUDA masks were
-pixel-identical. Every clip had mask IoU p50/minimum 1.000, zero unmatched
+changing only CPUExecutionProvider versus CUDAExecutionProvider. Each clip used
+150 frames. Every clip had mask IoU p50/minimum 1.000, zero unmatched
 provider detections, and CPU-minus-CUDA mask-area p50/p95 deltas of 0 percentage
 points. The CUDA replay matched the previously graded baseline125 path exactly,
 including all 71 empty, 43 full and 936 nontrivial mask frames.
