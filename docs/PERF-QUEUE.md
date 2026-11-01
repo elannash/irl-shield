@@ -333,7 +333,7 @@ using the new arithmetic.
 
 The root policy is frozen before held-out in `bench/gate-1-policy.json` (15%
 median-area proposal; no passing tune winner). The Mac source is retained at
-`/Users/elannash/code/irl-shield/.tmp/m1-final-source-v2`, pipeline fingerprint
+`REPO_ROOT/.tmp/m1-final-source-v2`, pipeline fingerprint
 `264dcc9b4abfd0c7ca5d7dc0a75143bc0f165a23a18a28e003e801b55d60706f`.
 Both held-out jobs migrated before first execution, retaining their original
 cwd/source revision in queue metadata. The earlier snapshot remains untouched.

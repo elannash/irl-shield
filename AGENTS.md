@@ -39,7 +39,7 @@ Every change keeps the entry eligible:
 
 ## Machines
 
-- The repo lives on elan-linux. Apple Vision, Core Image and VideoToolbox
+- The repo lives on the Linux host. Apple Vision, Core Image and VideoToolbox
   exist only on the MacBook Pro (M1 Pro, macOS 27, Xcode 27): build, run and
   bench there over `ssh mac` (use `bash -lc` for the login PATH).
 - The phone reaches the Mac over Tailscale. The Mac's ffmpeg has RTMP and

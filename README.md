@@ -1,14 +1,26 @@
 # IRL Shield
 
 Published historical records use path placeholders: `REPO_ROOT` is the
-repository root, `WORKTREE_t3-<id>` identifies the original isolated checkout,
-and `OWNER_HOME` is the operator's home directory. Those references describe
-historical locations, including private scratch that is not shipped here;
-substitute local paths before using a command. Recorded hashes still identify
-the original artifacts, not these path-sanitized text copies. Immutable v2
-nonreuse evidence retains its sealed bytes under the conductor's pre-public
+repository root, `WORKTREE_<id>` identifies the original isolated checkout,
+and `OWNER_HOME` is the operator's home directory. `OWNER_TMP` identifies the
+original operator-specific scratch root; `RUNTIME_DIR` identifies the user
+runtime directory, normally `/run/user/$(id -u)`. `<tailnet-ip>` means the
+operator-selected Tailscale IPv4 address. Substitute local values for these
+metadata placeholders before using a historical command. Executable scripts
+use `$HOME` and UID-derived runtime paths. Historical proof JSON digest values
+refer to original bytes at pre-scrub commit `8f12891db2e7347477bfd96329346ba9fd011231`.
+The three maintained `SHA256SUMS` files instead identify current delivered
+bytes with their original membership, excluding self-hashes. Regenerating those
+manifests provides no new evidence that historical commands ran. Immutable v2
+`fixtures/fresh-heldout-v2/nonreuse.json` retains its sealed bytes under the conductor's pre-public
 exception until the one-shot completes; a later authorized change will record
 the old and new hashes.
+
+The repository privacy unittest in `tests/test_repository_privacy.py` scans
+Git-tracked text, including symlink target text, for private owner paths and
+Tailscale host addresses. It allows only the sealed ledger above. The complete
+public policy CIDR `100.64.0.0/10` is permitted; bare host addresses are not.
+The existing `scripts/check` gate discovers this test.
 
 IRL Shield is an experimental privacy relay for IRL video. Its masking engine
 looks for readable location clues and covers them before presentation. A delayed
@@ -29,8 +41,8 @@ stays in memory and crosses plaintext only on loopback.
 Twitch publication remains off unless selected explicitly.
 `--twitch-bandwidth-test` is the default Twitch test mode; `--twitch-live`
 requires fresh authorization as `naie` and an attended `LIVE naie` confirmation
-each session. Only the owner's Sat/Sun test-channel sessions are authorized for
-live use. Omitting both flags keeps authenticated controls without publishing.
+each session. Start live publication only in an owner-authorized, attended
+session. Omitting both flags keeps authenticated controls without publishing.
 [Verified route and loopback proofs](docs/LIVE-EGRESS.md) document the limits:
 real Twitch ingest acceptance still requires the owner's attended bandwidth
 test, and privacy/walking qualification remains separate.

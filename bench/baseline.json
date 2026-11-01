@@ -37,7 +37,7 @@
     "name": "ppocr-v5-english",
     "detector": {
       "name": "ppocr-v5-mobile",
-      "model_path": "/Users/elannash/code/irl-shield/models/cache/ch_PP-OCRv5_det_mobile.onnx",
+      "model_path": "REPO_ROOT/models/cache/ch_PP-OCRv5_det_mobile.onnx",
       "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
       "license": "Apache-2.0",
       "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det/blob/0d63e78e2b680928f6b1747d76a08db6e645efb7/README.md",
@@ -74,7 +74,7 @@
     },
     "recognizer": {
       "name": "ppocr-v5-english-rec",
-      "model_path": "/Users/elannash/code/irl-shield/models/cache/en_PP-OCRv5_rec_mobile.onnx",
+      "model_path": "REPO_ROOT/models/cache/en_PP-OCRv5_rec_mobile.onnx",
       "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
       "license": "Apache-2.0",
       "license_source": "https://huggingface.co/PaddlePaddle/en_PP-OCRv5_mobile_rec/blob/267c36e24c331595590fe7bd72bde2436fd286f2/README.md",

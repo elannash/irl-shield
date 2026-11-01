@@ -118,8 +118,8 @@ cross-checkout source overlays:
 
 ```sh
 scripts/host-lock shared env \
-  XDG_RUNTIME_DIR=/run/user/1000 \
-  DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+  XDG_RUNTIME_DIR="/run/user/$(id -u)" \
+  DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --quiet --slice=app-t3code-agents.slice \
   nice -n 10 env PYTHONDONTWRITEBYTECODE=1 \
   OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \

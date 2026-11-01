@@ -19,6 +19,8 @@ from unittest.mock import AsyncMock, Mock, patch
 from lock_isolation import install_lock_guard
 
 ROOT = Path(__file__).resolve().parents[1]
+TAILNET_HOST = '.'.join(map(str, (100, 80, 2, 3)))
+DISCOVERED_TAILNET_HOST = '.'.join(map(str, (100, 80, 4, 5)))
 SCRIPT = ROOT / 'scripts/walk-linux'
 loader = importlib.machinery.SourceFileLoader('walk_linux', str(SCRIPT))
 spec = importlib.util.spec_from_loader(loader.name, loader)
@@ -53,7 +55,7 @@ class WalkSelection(unittest.TestCase):
             manifest.write_text('{}')
             options = ['--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                        '--archive', str(root / 'archive'), '--seconds', '230']
-            for extra in (['--twitch-live', '--accurate-rate-hz', '15'], ['--twitch-bandwidth-test'], ['--local-only', '--host', '100.80.2.3']):
+            for extra in (['--twitch-live', '--accurate-rate-hz', '15'], ['--twitch-bandwidth-test'], ['--local-only', '--host', TAILNET_HOST]):
                 with self.subTest(extra=extra), patch.dict(os.environ, {}, clear=True), \
                         patch.object(walk, 'private_host', side_effect=AssertionError('discovery')) as discovery, \
                         patch.object(walk, 'exclusive_lease', side_effect=AssertionError('lease')) as lease, \
@@ -85,7 +87,7 @@ class WalkSelection(unittest.TestCase):
             root = Path(name)
             manifest = root / 'source.json'
             manifest.write_text('{}')
-            argv = ['--twitch-live', '--host', '100.80.2.3', '--seconds', '600',
+            argv = ['--twitch-live', '--host', TAILNET_HOST, '--seconds', '600',
                     '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                     '--archive', str(root / 'archive')]
             args = walk.parser().parse_args(argv)
@@ -117,18 +119,18 @@ class WalkSelection(unittest.TestCase):
                 self.assertNotIn(sentinel, error.getvalue() + output.getvalue())
 
     def test_host_source_fails_closed_and_mode_cannot_be_negated(self):
-        with patch.dict(os.environ, {'SHIELD_BIND_HOST': '100.80.2.3', 'SHIELD_WALK_VENV': '/private/venv'}):
+        with patch.dict(os.environ, {'SHIELD_BIND_HOST': TAILNET_HOST, 'SHIELD_WALK_VENV': '/private/venv'}):
             args = walk.parser().parse_args(['--local-only'])
         self.assertEqual(args.venv, Path('/private/venv'))
-        self.assertEqual(walk.private_host(args.host), '100.80.2.3')
+        self.assertEqual(walk.private_host(args.host), TAILNET_HOST)
         for bad in ('0.0.0.0', '192.168.1.2', '8.8.8.8', '::1', 'unavailable', '', '127.0.0.2'):
             with self.subTest(host=bad), self.assertRaises(walk.WalkError):
                 walk.private_host(bad)
         with patch.object(walk.subprocess, 'run', side_effect=FileNotFoundError()):
             with self.assertRaises(walk.WalkError):
                 walk.private_host(None)
-        with patch.object(walk.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '100.80.4.5\n')):
-            self.assertEqual(walk.private_host(None), '100.80.4.5')
+        with patch.object(walk.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, DISCOVERED_TAILNET_HOST + '\n')):
+            self.assertEqual(walk.private_host(None), DISCOVERED_TAILNET_HOST)
         from shield.cli import parser, validate
         for mode in ('--local-only', '--twitch-live', '--twitch-bandwidth-test'):
             args = walk.parser().parse_args([mode, '--host', '127.0.0.1', '--seconds', '12', '--dashboard-port', '12345'])

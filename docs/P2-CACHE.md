@@ -13,7 +13,7 @@ labels and detector policies are unchanged.
 - HEAD/base: `631dc5b9bf7cb90c84f0d4aebf430fdcf24eb89c`, initially clean;
   `git diff 631dc5b 0648e0f64d599b223d101f6643ed7d75a36331e3` was empty.
 - Finding: `claude:judge-cache-omits-opencv-tessdata` in
-  `/tmp/claude-1000/agents/twitchcon-hackathon/conductor/pr1-review-claude-r2.json`.
+  `OWNER_TMP/agents/twitchcon-hackathon/conductor/pr1-review-claude-r2.json`.
   Source SHA256: `2ce576b4fe509c13e92ad17432efc42631b8a4cd35d20651728d89c0d0d1cbbf`.
 - Read the original `bench/judges.py:20–35`: its runtime identity included
   binary/package versions and macOS, but no OpenCV or traineddata identity.

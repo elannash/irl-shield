@@ -36,7 +36,7 @@ Logs are `.tmp/q/quality-final-{linux,mac}-gate.log`; hashes and source pins are
 in `bench/results/q-retained-proof.json`. Five main tests belong to the separate
 experimental harness; these followups alone bring committed discovery to 133.
 Linux adds the existing `.tmp/m2/linux-venv` site-packages for PyAV; no install
-was needed. The Mac gate uses its own `~/code/irl-shield-q-quality` mirror and
+was needed. The Mac gate uses its own `WORKTREE_q-quality` mirror and
 the shared performance lease, preserving the old running Mac queue source.
 
 An intermediate Linux gate exposed the existing retry fixture's ten-second

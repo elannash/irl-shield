@@ -67,8 +67,8 @@ with this child's checkout as cwd and its root plus `tests/m3` on `PYTHONPATH`.
 Bytecode writes are disabled. The execution prefix is:
 
 ```sh
-XDG_RUNTIME_DIR=/run/user/1000 \
-DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" \
+DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
 systemd-run --user --scope --slice=app-t3code-agents.slice \
   --unit=<receipt-specific-unit> -p MemoryMax=2G -p CPUQuota=200% \
   nice -n10 env PYTHONPATH=<child-root>:<child-root>/tests/m3 \

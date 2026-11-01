@@ -214,7 +214,7 @@ watching the retry limit. New explicitly authorized foreground jobs:
 
 - RTMP20min `5457243dcb624b4fbffa927fad880bc2`; output
   `.tmp/m2/gate2-v2/m2-v2-soak/attempt-N/`.
-- Real RTMP/SRT publish/read-ACL matrix on loopback and100.109.49.77
+- Real RTMP/SRT publish/read-ACL matrix on loopback and `<tailnet-ip>`
   `046a95aa58364472a2318e26947c457c`; output
   `.tmp/m2/gate2-v2/m2-v2-read-acl/attempt-N/`.
 

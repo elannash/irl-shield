@@ -52,7 +52,7 @@ All commands ran from this checkout. Logs, repro scripts, native JSON, parent-re
 
 Both final host receipts show:
 
-- Exactly TCP 19450 plus UDP 18950, each bound only to its requested host (loopback in one receipt, 100.109.49.77 in the other), using child-specific inode proof.
+- Exactly TCP 19450 plus UDP 18950, each bound only to its requested host (loopback in one receipt, <tailnet-ip> in the other), using child-specific inode proof.
 - Both occupied-port startup attempts rejected and their children exited.
 - Credentials absent from process environment/argv; both diagnostic fds `/dev/null`.
 - **SRT**: all five publish denials pass; anonymous, phone and bad camera reads denied; valid phone camera/internal read receives three MPEG-TS messages; valid internal shielded/anonymous read receives three MPEG-TS messages. Camera publisher sent 150 H.264 packets; shielded publisher sent 16. Both publishers ended cleanly.

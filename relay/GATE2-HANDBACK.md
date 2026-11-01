@@ -85,7 +85,7 @@ pending after PR1 merge, including for an eventual successful functional run.
 ## Guards, cleanup and sealing
 
 - Fixed assigned ports: RTMP 19550 / SRT 19050. Listener host is restricted
-  to `127.0.0.1` (default) or `100.109.49.77`; observed MediaMTX sockets are
+  to `127.0.0.1` (default) or `<tailnet-ip>`; observed MediaMTX sockets are
   checked against that address/port set.
 - Timed mode requires `IRL_SHIELD_PERF_QUEUE_LEASE_FD` to identify the canonical
   `/tmp/agents/irl-shield/perf.lock` device/inode and have a kernel-reported

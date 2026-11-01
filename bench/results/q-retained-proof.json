@@ -65,7 +65,7 @@
       "platform_skips": 1,
       "compilation": true,
       "swift": true,
-      "mirror": "~/code/irl-shield-q-quality",
+      "mirror": "WORKTREE_q-quality",
       "log": ".tmp/q/quality-final-mac-gate.log",
       "sha256": "73f6269438e8e66684c9dd51cd2ce0c055b196bd97b62db0b688994fea96da4c"
     }

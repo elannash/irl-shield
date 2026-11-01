@@ -1,8 +1,13 @@
 """Relay auth/config contracts; scripts/m2-native proves real socket enforcement."""
+import ipaddress
 import json
 import unittest
 
 from relay.security import Credentials, RelayAddress, TwitchDestination, mediamtx_environment
+
+
+TAILNET = ipaddress.IPv4Network('100.64.0.0/10')
+TAILNET_HOST = '.'.join(map(str, (100, 80, 90, 100)))
 
 
 class Security(unittest.TestCase):
@@ -10,7 +15,7 @@ class Security(unittest.TestCase):
         for host in ('0.0.0.0', '::', '::1', '100.63.255.255', '100.128.0.0', 'localhost', '8.8.8.8'):
             with self.subTest(host=host), self.assertRaises(ValueError):
                 RelayAddress(host)
-        for host in ('127.0.0.1', '127.255.255.254', '100.64.0.0', '100.127.255.255', '100.80.90.100'):
+        for host in ('127.0.0.1', '127.255.255.254', str(TAILNET.network_address), str(TAILNET.broadcast_address), TAILNET_HOST):
             self.assertEqual(RelayAddress(host).host, host)
         address = RelayAddress('127.0.0.1', 19350, 18890)
         phone, internal = Credentials.generate(), Credentials.generate()
@@ -57,16 +62,16 @@ class OperatorBind(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate(parser().parse_args(['run', '--local-only']))
             validate(parser().parse_args(['run', '--local-only', '--host', '127.0.0.1']))
-        with patch.dict('os.environ', {'SHIELD_BIND_HOST': '100.80.90.100'}, clear=True):
+        with patch.dict('os.environ', {'SHIELD_BIND_HOST': TAILNET_HOST}, clear=True):
             args = parser().parse_args(['run', '--local-only'])
             validate(args)
-            self.assertEqual(args.host, '100.80.90.100')
+            self.assertEqual(args.host, TAILNET_HOST)
 
     def test_doctor_reports_detected_ip_and_explicit_absence(self):
         from types import SimpleNamespace
         from unittest.mock import patch
         from shield.cli import doctor
-        with patch('subprocess.run', return_value=SimpleNamespace(returncode=0, stdout='100.80.90.100\n')):
-            self.assertEqual(doctor()['tailscale_ipv4'], '100.80.90.100')
+        with patch('subprocess.run', return_value=SimpleNamespace(returncode=0, stdout=TAILNET_HOST + '\n')):
+            self.assertEqual(doctor()['tailscale_ipv4'], TAILNET_HOST)
         with patch('subprocess.run', side_effect=FileNotFoundError):
             self.assertEqual(doctor()['tailscale_ipv4'], 'unavailable')

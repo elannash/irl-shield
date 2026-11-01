@@ -63,8 +63,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -102,7 +102,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 57,
       "natural": {
@@ -167,8 +167,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -206,7 +206,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 101,
       "natural": {
@@ -271,8 +271,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -310,7 +310,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 17,
       "natural": {
@@ -375,8 +375,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -414,7 +414,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 41,
       "natural": {
@@ -479,8 +479,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -518,7 +518,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 17,
       "natural": {
@@ -583,8 +583,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -622,7 +622,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 38,
       "natural": {
@@ -687,8 +687,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -726,7 +726,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 13,
       "natural": {
@@ -791,8 +791,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -830,7 +830,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 31,
       "natural": {
@@ -895,8 +895,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -934,7 +934,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 64,
       "natural": {
@@ -999,8 +999,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -1038,7 +1038,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 96,
       "natural": {
@@ -1103,8 +1103,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -1142,7 +1142,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 3,
       "natural": {
@@ -1207,8 +1207,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -1246,7 +1246,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 18,
       "natural": {
@@ -1311,8 +1311,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -1350,7 +1350,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 16,
       "natural": {
@@ -1415,8 +1415,8 @@
         "encoder": "h264_videotoolbox",
         "control": null
       },
-      "source": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-input.mp4",
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
+      "source": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-input.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
       "frames": 150,
       "source_fps": 30.0,
       "judges": [
@@ -1454,7 +1454,7 @@
         "10M",
         "-pix_fmt",
         "yuv420p",
-        "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4"
+        "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4"
       ],
       "excluded_unstable_natural_intervals": 25,
       "natural": {
@@ -1499,72 +1499,72 @@
   "protected_frames": 172,
   "per_clip_protected": [
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-natural-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/sf-market-synthetic-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-natural-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-walk-synthetic-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-natural-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/ljubljana-traffic-synthetic-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-natural-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-croydon-synthetic-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-natural-masked.mp4",
       "protected_fraction": 0.3466666666666667,
       "pass": false
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/london-bus-pov-synthetic-masked.mp4",
       "protected_fraction": 0.35333333333333333,
       "pass": false
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-natural-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/illinois-night-synthetic-masked.mp4",
       "protected_fraction": 0.0,
       "pass": true
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-natural-masked.mp4",
       "protected_fraction": 0.24,
       "pass": false
     },
     {
-      "output": "/Users/elannash/code/irl-shield/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
+      "output": "REPO_ROOT/.tmp/m1-quality-v1/out/offline-vision-union-a30/mazatlan-aquiles-synthetic-masked.mp4",
       "protected_fraction": 0.20666666666666667,
       "pass": false
     }

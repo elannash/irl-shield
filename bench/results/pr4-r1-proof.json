@@ -524,7 +524,7 @@
       },
       "compilation": true,
       "swift_build": true,
-      "mirror": "~/code/irl-shield-q-quality",
+      "mirror": "WORKTREE_q-quality",
       "command": "bash .tmp/q/mac-quality scripts/check"
     }
   },

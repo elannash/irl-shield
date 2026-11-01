@@ -274,14 +274,14 @@ work=/tmp/agents/irl-shield/m3-reconcile-model/reproduction-new
 mkdir -p "$work"
 cp docs/model/TwitchControl.tla docs/model/TwitchControl.cfg docs/model/view.mjs "$work/"
 cp docs/model/evidence/reconciliation/release-clobber.cfg "$work/"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env TMPDIR="$work" JAVA=OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
   TLA2TOOLS=OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
   JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
   OWNER_HOME/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
   --config "$work/TwitchControl.cfg" --view "$work/view.mjs" --out "$work/pass-new"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
   OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
@@ -318,6 +318,11 @@ temporary directories were tool-managed; their paths are visible in the Java led
 `git status --short` contains only `?? docs/model/`; staged diff is empty. The model,
 config, view and report are new/untracked, so `git ls-files --error-unmatch` exits 1,
 as expected for this unstaged hand-back. The conductor must copy/review/stage them.
-[SHA256SUMS](SHA256SUMS) covers all delivered files except itself and this report;
-the report hash is supplied separately in the hand-back. Remaining work is the
+This archived report originally referred to the manifest preserved as
+[SHA256SUMS-before-r1.txt](SHA256SUMS-before-r1.txt). That snapshot describes
+pre-scrub bytes, not the delivered sanitized copies. The maintained
+[model manifest](../../SHA256SUMS) covers its listed current delivered bytes,
+including this report. Historical proof JSON digest values refer to original
+bytes at pre-scrub commit `8f12891db2e7347477bfd96329346ba9fd011231`; the regenerated
+manifest does not establish a new historical execution. Remaining work is the
 parent's concrete Python replay, production mutation, functional gate, and review.

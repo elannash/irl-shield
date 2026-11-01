@@ -137,8 +137,8 @@
     "started_at": 1793334677.1686652,
     "at": 1793334677.174529,
     "deadline_utc": "2026-10-30T16:00:00Z",
-    "snapshot": "/Users/elannash/code/irl-shield/.tmp/pr1-r1-all-leaks-source",
-    "stop_command": "/Users/elannash/code/irl-shield/.tmp/pr1-r1/rejudge-all-leaks-stop.json (write any file here; runner checks every second)",
+    "snapshot": "REPO_ROOT/.tmp/pr1-r1-all-leaks-source",
+    "stop_command": "REPO_ROOT/.tmp/pr1-r1/rejudge-all-leaks-stop.json (write any file here; runner checks every second)",
     "unfinished": [
       {
         "name": "gst-mac-gst",

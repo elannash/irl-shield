@@ -112,8 +112,8 @@ The invocation ledger is `out/followups/invocations.jsonl`; the helper
 UTC times, exits, log names, and thread limits. Call 1 failed before executing
 any test because the shell lacked the existing user-bus environment; its log
 is retained and it counts against the 16-call limit. Calls 2 onward use
-`XDG_RUNTIME_DIR=/run/user/1000` and
-`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus`.
+`XDG_RUNTIME_DIR=RUNTIME_DIR` and
+`DBUS_SESSION_BUS_ADDRESS=unix:path=RUNTIME_DIR/bus`.
 
 Every test invocation checks the canonical queue for pending/running work and
 holds `/tmp/agents/irl-shield/perf.lock` shared and nonblocking. Functional

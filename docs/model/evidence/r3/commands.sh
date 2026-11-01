@@ -43,7 +43,7 @@ sha256sum /tmp/agents/irl-shield/m3-r3-model/events-fixed.py /tmp/agents/irl-shi
 # The stronger final model/replay were authored after the four-run cap was spent.
 
 # Read-only live scope evidence, after setting the user-bus address explicitly:
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
 systemctl --user show m3-r3-model-fixed-raw-pass.scope -p ActiveState -p Slice -p MemoryMax -p CPUQuotaPerSecUSec -p ControlGroup
 # The first property read lacked these two variables and failed to connect to
 # the user bus; it did not launch TLC/Python. The corrected property read worked.

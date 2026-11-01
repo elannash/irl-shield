@@ -12,7 +12,7 @@ cp "$model_root/BootstrapEnvironment.tla" "$task_root/$name/"
 cp "$config" "$task_root/$name/model.cfg"
 printf '%s\n' "$name direct TLC $spec $config" >> "$task_root/invocations.log"
 cd "$task_root/$name" || exit 91
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
 systemd-run --user --scope --unit="m3-r3-model-$name" --slice=app-t3code-agents.slice \
   -p MemoryMax=2G -p CPUQuota=200% nice -n 10 \
   env JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2' \

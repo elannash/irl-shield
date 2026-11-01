@@ -16,7 +16,7 @@ The worktree started clean at merge commit
 `elannash/q-p2-gates`. Changes remain uncommitted.
 
 The reviewed finding is `claude:independent-judges-gate-untested` in
-`/tmp/claude-1000/agents/twitchcon-hackathon/conductor/pr1-review-claude-r2.json`.
+`OWNER_TMP/agents/twitchcon-hackathon/conductor/pr1-review-claude-r2.json`.
 Before edits, `git grep -n independent_judges -- tests` returned no matches.
 Source inspection reproduced the existing, untested enforcement at
 `bench/clocked_bench.py:417-432`, `bench/offline_quality.py:426-442`,

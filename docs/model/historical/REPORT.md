@@ -349,9 +349,12 @@ This difference is an internal TLC header versus distribution tag, not a substit
 The Java argv wrapper only records nonsensitive tool arguments and executes the pinned
 Java binary. Its [source](evidence/java-wrapper.sh) is original work in this child.
 The model, view, and replay harness are original project code; no third-party model,
-dataset, or media asset was introduced. [SHA256SUMS](SHA256SUMS) covers every delivered
-file except itself and this report to avoid a circular hash; this report's hash is given
-in the final hand-back.
+dataset, or media asset was introduced. [SHA256SUMS](SHA256SUMS) now identifies
+its listed current delivered bytes. Its original membership excludes itself
+and this report; the parent [model manifest](../SHA256SUMS) includes this report
+and the historical manifest. Historical proof JSON digest values refer to
+original bytes at pre-scrub commit `8f12891db2e7347477bfd96329346ba9fd011231`.
+Regenerating delivery checksums provides no new historical execution proof.
 
 ## Reproduction
 
@@ -364,7 +367,7 @@ in this child's test budget.
 work=/tmp/agents/irl-shield/m3-model-recheck
 mkdir -p "$work"
 cp docs/model/TwitchControl.tla docs/model/TwitchControl.cfg docs/model/view.mjs "$work/"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env JAVA=OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
   TLA2TOOLS=OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
@@ -382,7 +385,7 @@ To replay the preserved shortest paths through the parent's public interfaces:
 ```sh
 cp docs/model/replay_counterexamples.py "$work/"
 cp -a docs/model/evidence "$work/evidence"
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env PYTHONDONTWRITEBYTECODE=1 python3 "$work/replay_counterexamples.py" \
   --source WORKTREE_t3-3bb00dac --evidence "$work/evidence"

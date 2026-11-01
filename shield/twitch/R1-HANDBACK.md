@@ -103,7 +103,7 @@ as a test invocation.
 The actual final gate command, run from the assigned worktree, was:
 
 ```sh
-XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+XDG_RUNTIME_DIR="/run/user/$(id -u)" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
 systemd-run --user --scope --unit=m3-r1-combined-gate-final \
   --slice=app-t3code-agents.slice -p MemoryMax=2G -p CPUQuota=200% \
   env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 \

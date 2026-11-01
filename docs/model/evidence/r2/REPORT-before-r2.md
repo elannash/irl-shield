@@ -187,8 +187,8 @@ to that ledger, and makes no claim about later parent/sibling consumption.
 Every Java/Python invocation used `systemd-run --user --scope`, slice
 `app-t3code-agents.slice`, `MemoryMax=2G`, `CPUQuota=200%`, `nice -n 10`,
 `JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2'`,
-`XDG_RUNTIME_DIR=/run/user/1000`, and
-`DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus`.
+`XDG_RUNTIME_DIR=RUNTIME_DIR`, and
+`DBUS_SESSION_BUS_ADDRESS=unix:path=RUNTIME_DIR/bus`.
 Existing Java/TLC were read-only. TLC used one worker, `-fp 0 -lncheck final`.
 The reused TLC distribution is MIT; its extracted notice remains in
 [TLC-LICENSE.txt](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2

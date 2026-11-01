@@ -144,8 +144,8 @@ Twitch publication requires one explicit, mutually exclusive mode:
   attended `/dev/tty`. `nale` and every other login are refused. This approval
   lasts for one runtime session and cannot be saved or reused.
 
-Only live sessions the owner starts on Saturday/Sunday are authorized by the
-current owner decision. A stored login or key never turns publication on.
+Start live publication only in an owner-authorized, attended session.
+A stored login or key never turns publication on.
 Omit both publication flags to retain authenticated EventSub controls and
 local OBS output without publishing. `--local-only` instead disables Twitch
 login and controls, and cannot be combined with `login`.
@@ -156,7 +156,7 @@ session. They have **not** been run as part of local verification:
 ```sh
 # The owner qualifies real ingest acceptance with this attended test first.
 infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-bandwidth-test
-# Only during an owner-started Sat/Sun live session on naie:
+# During an owner-authorized, attended live session:
 infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-live
 ```
 
