@@ -257,7 +257,10 @@ def commit_v2_start(identity, directory):
         if v3:
             try:
                 if git('rev-parse', 'HEAD') == head:
-                    git('reset', '-q', '--', name)
+                    try:
+                        git('reset', '-q', '--', name)
+                    except BaseException as cleanup:
+                        error.add_note('V3 receipt unstage incomplete: ' + repr(cleanup))
                     current = path.lstat()
                     if (current.st_dev, current.st_ino) == (created.st_dev, created.st_ino):
                         path.unlink()
@@ -279,12 +282,27 @@ def commit_v2_start(identity, directory):
 
 def exclusive_json(path, value):
     """Write and fsync a create-only receipt or marker, returning file identity."""
-    with Path(path).open('x') as stream:
-        stream.write(json.dumps(value, indent=2) + '\n')
-        stream.flush()
-        import os
-        os.fsync(stream.fileno())
-        return os.fstat(stream.fileno())
+    path = Path(path)
+    created = None
+    try:
+        with path.open('x') as stream:
+            created = os.fstat(stream.fileno())
+            stream.write(json.dumps(value, indent=2) + '\n')
+            stream.flush()
+            os.fsync(stream.fileno())
+    except BaseException as error:
+        # Open failures did not create a file. A failed write owns only its inode.
+        if created is not None:
+            try:
+                current = path.lstat()
+                if (current.st_dev, current.st_ino) == (created.st_dev, created.st_ino):
+                    path.unlink()
+                else:
+                    error.add_note('Receipt path was replaced; its new file was retained')
+            except BaseException as cleanup:
+                error.add_note('Exclusive JSON write cleanup incomplete: ' + repr(cleanup))
+        raise
+    return created
 
 
 def source_identity(root):
@@ -315,11 +333,15 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
         if reserved:
             # Another checkout may have started while this lease waited.
             committed_v2_spent(dataset_sha256)
-        # Tracked scorecards retain spent state when scratch markers are absent.
-        tracked = subprocess.check_output(
-            ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True)
+        # V3 spend evidence is committed content, never an uncommitted index entry.
+        # Earlier corpus versions retain their existing tracked-result behavior.
+        tracked = (git('ls-tree', '-r', '--name-only', '-z', 'HEAD', '--', 'bench/results').decode()
+                   if v3 else subprocess.check_output(
+                       ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True))
         for name in filter(None, tracked.split('\0')):
-            result = json.loads((CODE_ROOT / name).read_text())
+            if v3 and not name.endswith('.json'):
+                continue
+            result = json.loads(git('show', 'HEAD:' + name) if v3 else (CODE_ROOT / name).read_text())
             if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
                 raise ValueError('Heldout dataset already spent by tracked result: ' + name)
         commit = subprocess.check_output(['git', '-C', str(CODE_ROOT), 'rev-parse', 'HEAD'], text=True).strip()

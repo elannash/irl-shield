@@ -891,11 +891,20 @@ class HeldoutV3Start(unittest.TestCase):
 
     def git_state(self):
         return {'head': self.git('rev-parse', 'HEAD'),
-                'index': self.git('ls-files', '--stage'),
+                'index': self._git_operation_path('index').read_bytes(),
+                'staged': self.git('ls-files', '--stage'),
                 'refs': self.git('for-each-ref', '--format=%(refname) %(objectname)')}
 
-    def assert_unspent(self):
-        self.assertEqual(self.git_state(), self.before)
+    def assert_git_unchanged(self, *, staged_content=False):
+        actual, expected = self.git_state(), dict(self.before)
+        if staged_content:
+            # Git reset may refresh stat data while restoring the same entries.
+            actual.pop('index')
+            expected.pop('index')
+        self.assertEqual(actual, expected)
+
+    def assert_unspent(self, *, staged_content=False):
+        self.assert_git_unchanged(staged_content=staged_content)
         self.assertFalse((self.base / heldout_bench.V3_STARTED).exists())
         self.assertFalse((self.base / heldout_bench.V2_STARTED).exists())
         self.assertFalse(self.state.exists())
@@ -1039,7 +1048,7 @@ class HeldoutV3Start(unittest.TestCase):
                 render.assert_not_called()
             self.assertFalse(self.host_marker.exists(), 'Failed commit spent the host marker')
             self.assertFalse(receipt.exists(), 'Failed commit left its receipt in the tree')
-            self.assert_unspent()
+            self.assert_unspent(staged_content=True)
             self.assertEqual(self.git('rev-parse', branch), branch_before)
             self.assertEqual(tree(), original_tree)
             self.assertEqual(self.git('status', '--porcelain'), '')
@@ -1051,6 +1060,132 @@ class HeldoutV3Start(unittest.TestCase):
                 path.chmod(mode)
             elif fault == 'excluded':
                 path.write_bytes(original)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def _assert_receipt_write_failure_is_retryable(self, fault):
+        receipt = self.base / heldout_bench.V3_STARTED
+        injected = OSError(5, 'Synthetic receipt ' + fault + ' failure')
+        real_open, real_fsync = Path.open, os.fsync
+        @contextmanager
+        def partial_writer(path, *args, **kwargs):
+            with real_open(path, *args, **kwargs) as stream:
+                def write(value):
+                    stream.write(value[:8])
+                    stream.flush()
+                    raise injected
+                yield SimpleNamespace(write=write, flush=stream.flush, fileno=stream.fileno)
+        def open_file(path, *args, **kwargs):
+            if Path(path) == receipt and args == ('x',):
+                return partial_writer(path, *args, **kwargs)
+            return real_open(path, *args, **kwargs)
+        def fsync(fd):
+            if receipt.exists():
+                opened, current = os.fstat(fd), receipt.stat()
+                if (opened.st_dev, opened.st_ino) == (current.st_dev, current.st_ino):
+                    raise injected
+            return real_fsync(fd)
+        override = (patch.object(Path, 'open', open_file) if fault == 'write'
+                    else patch.object(os, 'fsync', side_effect=fsync))
+        with override, patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertFalse(receipt.exists(), 'Failed write orphaned its unspent receipt')
+        self.assert_unspent()
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_receipt_write_failure_removes_own_inode_and_can_retry(self):
+        self._assert_receipt_write_failure_is_retryable('write')
+
+    def test_receipt_fsync_failure_removes_own_inode_and_can_retry(self):
+        self._assert_receipt_write_failure_is_retryable('fsync')
+
+    def test_failed_receipt_write_preserves_replacement_inode(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        replacement = b'Synthetic replacement belongs to another caller.\n'
+        injected = OSError(5, 'Synthetic fsync failure after receipt replacement')
+        real_fsync = os.fsync
+        def fsync(fd):
+            if receipt.exists():
+                opened, current = os.fstat(fd), receipt.stat()
+                if (opened.st_dev, opened.st_ino) == (current.st_dev, current.st_ino):
+                    receipt.rename(receipt.with_suffix('.other-caller-saved'))
+                    receipt.write_bytes(replacement)
+                    raise injected
+            return real_fsync(fd)
+        with patch.object(os, 'fsync', side_effect=fsync), patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertTrue(receipt.exists(), 'Write cleanup deleted another caller replacement')
+        self.assertEqual(receipt.read_bytes(), replacement)
+        self.assertTrue(any('replaced' in note for note in caught.exception.__notes__))
+        self.assert_git_unchanged()
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+
+    def test_reset_failure_unlinks_receipt_and_refuses_dirty_not_spent(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        real_git = heldout_bench.git
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-commit-failure'])
+        def fail_commit_and_reset(*args):
+            if 'commit' in args:
+                raise injected
+            if 'reset' in args:
+                raise subprocess.CalledProcessError(128, ['git', 'synthetic-reset-failure'])
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=fail_commit_and_reset), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            self.assertTrue(any('reset' in note for note in caught.exception.__notes__))
+            render.assert_not_called()
+        self.assertFalse(receipt.exists(), 'Reset failure skipped inode-checked unlink')
+        self.assertEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertEqual(self.git('diff', '--cached', '--name-only'), heldout_bench.V3_STARTED)
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        self.assertEqual(self.git('for-each-ref', '--format=%(refname)',
+                                 heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
+        heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+        with patch.object(bundle, 'render') as render:
+            with self.assertRaisesRegex(ValueError, 'requires a clean committed source and policy checkout'):
+                self.start()
+            render.assert_not_called()
+        self.git('reset', '-q', '--', heldout_bench.V3_STARTED)
+        self.assert_unspent(staged_content=True)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_staged_receipt_is_dirty_checkout_not_committed_spend(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        receipt.write_text(json.dumps({'heldout_freeze': {'dataset_sha256': bundle.digest(self.dataset)}}))
+        self.git('add', '--', heldout_bench.V3_STARTED)
+        staged = self.git_state()
+        with patch.object(bundle, 'render') as render:
+            with self.assertRaisesRegex(ValueError, 'requires a clean committed source and policy checkout'):
+                self.start()
+            render.assert_not_called()
+        self.assertEqual(self.git_state(), staged, 'Refusal changed the existing staged receipt')
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        self.git('reset', '-q', '--', heldout_bench.V3_STARTED)
+        receipt.unlink()
+        self.assert_unspent(staged_content=True)
         with patch.object(bundle, 'render') as render:
             state = self.start()
         self.assertEqual(render.call_count, 6)
@@ -1107,7 +1242,7 @@ class HeldoutV3Start(unittest.TestCase):
             render.assert_not_called()
         self.assertTrue(receipt.is_file(), 'Rollback deleted another caller replacement')
         self.assertEqual(receipt.read_bytes(), replacement)
-        self.assertEqual(self.git_state(), self.before)
+        self.assert_git_unchanged(staged_content=True)
         self.assertFalse(self.host_marker.exists())
 
     def test_bad_selected_resources_leave_head_index_refs_and_markers_unchanged(self):

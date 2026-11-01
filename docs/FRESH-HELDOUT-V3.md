@@ -96,10 +96,11 @@ Only after the preceding checks succeed does the harness:
    `refs/irl-shield/fresh-heldout-v3/<dataset-sha256>/started` using an all-zero
    expected old object ID. An existing ref is never overwritten. This create-only
    ref is the normal spend point.
-3. Exclusively create and fsync the host marker outside Git/scratch. It is a
-   secondary cross-checkout guard, written only after the ref exists.
-4. Verify HEAD, policy parent, sole receipt diff, receipt contents, clean source
-   state and ref target. Then create the evaluation marker and output snapshots.
+3. Verify HEAD, policy parent, sole receipt diff, receipt contents, clean source
+   state and ref target.
+4. Exclusively create and fsync the host marker outside Git/scratch. It is a
+   secondary cross-checkout guard, written only after the ref is verified. Then
+   create the evaluation marker and output snapshots.
 5. Recheck the committed receipt and ref before every render. The v3 bundle
    entry also requires that receipt and checks its dataset, policy and resource
    identity before copying/decoding media. Resource availability is rechecked.
