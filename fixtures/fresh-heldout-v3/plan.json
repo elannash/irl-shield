@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "dataset_id": "fresh-heldout-v3",
+  "status": "planned-ungraded",
+  "selection_sha256": "0dbb14bb2da57364c6b1ca131c29619e9270297298abb4222aa277d633c5f1df",
+  "metadata_contract_sha256": "21db67a6797db123f040cd4405d8632245df4247f4c44f382e194a8e17eb9d7b",
+  "recipe": {
+    "encoder": "libx264",
+    "preset": "medium",
+    "bitrate": "10M",
+    "pixel_format": "yuv420p",
+    "threads": 2,
+    "filter_threads": 1,
+    "opencv_threads": 1,
+    "opencl": false,
+    "excerpt_start": 2.0,
+    "excerpt_end_exclusive": 7.0,
+    "frames": 150,
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "duration": 5.0,
+    "filter": "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,fps=30:start_time=0,setsar=1",
+    "audio": false,
+    "subtitles": false,
+    "data": false,
+    "source_metadata": false,
+    "chapters": false,
+    "overlay": "bench.synthetic.overlay; v2 camera tracking; deterministic v3 seed"
+  },
+  "code_identity": {
+    "fixtures/prepare_heldout_v2.py": "05664329ce1416b64bac477d605e90ff3baee21fe59fd15383bee2066f6a38ff",
+    "fixtures/heldout_prepare.py": "0cedc35016dc3aacb1249cae51ac0ba0c097139bc4820c217abae9cee8f8cf6c",
+    "bench/synthetic.py": "566d58d7002f47d9c3bc68f8b95ac67be84b4b7f03abf43ddf3f4c12382352ea",
+    "scripts/perf-queue": "a01a17a954f779b87a97180c15e1afcf13d4dae3725850140e320b5e2d60477d",
+    "bench/perf_queue.py": "ecc9a90d79069ab6c0494144729601d0e95e593351349d0b0986fe3a262dc4e6",
+    "scripts/bounded.py": "b45b32d17550c8b3b28acb1d90efb183c79a465cb045d0f43435406e27fddeaf",
+    "fixtures/fonts/DejaVuSans-Bold.ttf": "e1d733afbbfce842a1b43dced0c9885a76a4e67290dc7e690c4e9b76ebfc7d23",
+    "fixtures/fonts/DejaVuSansMono-Bold.ttf": "2d67eed9b325ee2e69f906ce4f3f6264d5105230a13352c8494daad4f17b12c8",
+    "fixtures/fonts/DejaVuSerif-Bold.ttf": "3f704f75238454f68a8202e5098cb0687887480dd63d3dc20b34bdbdfa9d9f3f",
+    "fixtures/prepare_heldout_v3.py": "bf83c283b408c719126fe50977657983ed2f006747399d2372f536e5ced973da",
+    "bench/heldout_bench.py": "fa8b81371ddc3a92bddf64873e805750136e09499a754ed17f094f9d9c0c0b52",
+    "bench/quality_bundle.py": "3e12b127cac49bfac04ec21b5dccec6e320093473437d089a6f777a1d8981c60"
+  },
+  "clips": [
+    {
+      "id": "ryde-somerset-walk",
+      "label": "Ryde, Somerset Road post-office walk",
+      "title": "File:\u0410\u043d\u0433\u043b\u0438\u044f - \u043f\u043e\u0447\u0442\u043e\u0432\u043e\u0435 \u043e\u0442\u0434\u0435\u043b\u0435\u043d\u0438\u0435.ogv",
+      "commons_pageid": 71344314,
+      "source_url": "https://commons.wikimedia.org/wiki/File:%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv",
+      "download_url_advertised": "https://upload.wikimedia.org/wikipedia/commons/c/c3/%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F_-_%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5_%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "revision_id": 1189685130,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1189685130",
+      "revision_timestamp_utc": "2026-03-31T17:20:10Z",
+      "file_timestamp_utc": "2018-08-04T17:52:16Z",
+      "file_uploader": "Gone Postal",
+      "source_size_bytes": 122439920,
+      "source_sha1": "4ca9bd97a7f0dca2ed35174b134e2c4c5a212e9c",
+      "source_sha256": "88a88fda5b00d303803184fb4779c3d7767eeda51c2a03068b878f9682a44ad3",
+      "source_width": 1280,
+      "source_height": 720,
+      "source_duration_seconds": 92.8,
+      "source_mime": "application/ogg",
+      "author": "\u0416\u0438\u0437\u043d\u044c \u043d\u0430 \u044e\u0433\u0435 \u0410\u043d\u0433\u043b\u0438\u0438",
+      "author_html": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/channel/UCgtCvzMIdFR0fHDa7wwN7jg\">\u0416\u0438\u0437\u043d\u044c \u043d\u0430 \u044e\u0433\u0435 \u0410\u043d\u0433\u043b\u0438\u0438</a>",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UCgtCvzMIdFR0fHDa7wwN7jg"
+      ],
+      "credit_html": "Extracted from: <bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=HH12SK6GpXE\"><bdi lang=\"\">\u0410\u043d\u0433\u043b\u0438\u044f // \u043f\u043e\u0447\u0442\u043e\u0432\u044b\u0435 \u043e\u0442\u0434\u0435\u043b\u0435\u043d\u0438\u044f // \u0437\u0435\u043c\u0435\u043b\u044c\u043d\u044b\u0435 \u0443\u0447\u0430\u0441\u0442\u043a\u0438 // \u043d\u0435\u043c\u043d\u043e\u0433\u043e \u043e\u0431 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0445 \u043c\u0443\u0436\u0447\u0438\u043d\u0430\u0445</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=HH12SK6GpXE\">archive.org</a></bdi> (0:03:40.2 - 0:05:13)",
+      "origin_video_ids": {
+        "youtube": [
+          "HH12SK6GpXE"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:HH12SK6GpXE"
+      ],
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "license_identity": {
+        "work": [
+          "youtube:HH12SK6GpXE"
+        ],
+        "licensor_urls": [
+          "https://www.youtube.com/channel/UCgtCvzMIdFR0fHDa7wwN7jg"
+        ],
+        "licensor_name": "\u0416\u0438\u0437\u043d\u044c \u043d\u0430 \u044e\u0433\u0435 \u0410\u043d\u0433\u043b\u0438\u0438",
+        "license_url": "https://creativecommons.org/licenses/by/3.0"
+      },
+      "license_evidence": {
+        "metadata_license_key": "cc-by-3.0",
+        "revision_templates": [
+          "|permission={{YouTube CC-BY|\u0416\u0438\u0437\u043d\u044c \u043d\u0430 \u044e\u0433\u0435 \u0410\u043d\u0433\u043b\u0438\u0438}}",
+          "{{YouTubeReview|id=HH12SK6GpXE|ChannelName=\u0416\u0438\u0437\u043d\u044c \u043d\u0430 \u044e\u0433\u0435 \u0410\u043d\u0433\u043b\u0438\u0438|ChannelID=UCgtCvzMIdFR0fHDa7wwN7jg|title=245. \u0410\u043d\u0433\u043b\u0438\u044f // \u043f\u043e\u0447\u0442\u043e\u0432\u044b\u0435  \u043e\u0442\u0434\u0435\u043b\u0435\u043d\u0438\u044f //  \u0437\u0435\u043c\u0435\u043b\u044c\u043d\u044b\u0435 \u0443\u0447\u0430\u0441\u0442\u043a\u0438 // \u043d\u0435\u043c\u043d\u043e\u0433\u043e \u043e\u0431 \u0430\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0445  \u043c\u0443\u0436\u0447\u0438\u043d\u0430\u0445 |archive=https://web.archive.org/web/20200214035135/https://www.youtube.com/watch?v=HH12SK6GpXE|date=2020-02-14}}"
+        ],
+        "youtube_license_review_recorded": true,
+        "raw_receipt": "raw/selected-three-verification.receipt.json",
+        "page_extract": "sources/ryde-somerset-walk.metadata.json",
+        "page_extract_sha256": "59e1aedeae51a571255a0c430caa34fd90e607bf84e376790cfb657de1d5f771"
+      },
+      "metadata_quote": "England, Walking further. Today I will show you English post offices.",
+      "selection_rationale": "The page identifies Somerset Road, Ryde and categorizes this as a first-person video on foot. The Commons file is already an excerpt of YouTube work HH12SK6GpXE, 220.2\u2013313.0 seconds; proposed file-relative 2\u20137 seconds corresponds to origin-relative 222.2\u2013227.2 seconds.",
+      "file_history_entries_returned": 1,
+      "advertised_fields_only": true,
+      "payload_verified": false,
+      "source_path": "fixtures/cache/fresh-heldout-v3/ryde-somerset-walk.ogv",
+      "split": "heldout",
+      "excerpt_start": 2.0,
+      "excerpt_end_exclusive": 7.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "frames": 150,
+      "seed": 1719557649,
+      "preparation_argv": null,
+      "origin_excerpt_mapping": {
+        "commons_source_origin_start_seconds": 220.2,
+        "commons_source_origin_end_seconds": 313.0,
+        "proposed_origin_start_seconds": 222.2,
+        "proposed_origin_end_seconds": 227.2,
+        "basis": "Commons description-page source field; not independently decoded"
+      }
+    },
+    {
+      "id": "madison-state-street-walk",
+      "label": "Madison walk toward State Street stairs",
+      "title": "File:Recall Election Day - Madison, WI.webm",
+      "commons_pageid": 73732818,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Recall_Election_Day_-_Madison,_WI.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Recall_Election_Day_-_Madison%2C_WI.webm",
+      "download_url_advertised": "https://upload.wikimedia.org/wikipedia/commons/6/60/Recall_Election_Day_-_Madison%2C_WI.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "revision_id": 1031922187,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1031922187",
+      "revision_timestamp_utc": "2025-05-15T11:49:50Z",
+      "file_timestamp_utc": "2018-10-19T23:32:54Z",
+      "file_uploader": "SecretName101",
+      "source_size_bytes": 3999208,
+      "source_sha1": "88cfcf878b6416ce13e6ecf1e29b85e72aff0f44",
+      "source_sha256": "236aa1910fce0f3ddbbe5163f24f55e9f7c8448117a2a161e8b99cc0a7b9ce6e",
+      "source_width": 1280,
+      "source_height": 720,
+      "source_duration_seconds": 7.712,
+      "source_mime": "video/webm",
+      "author": "teaching kristin",
+      "author_html": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/user/teachingkristin\">teaching kristin</a>",
+      "author_identity_urls": [
+        "https://www.youtube.com/user/teachingkristin"
+      ],
+      "credit_html": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=qrBEe6JOzMY\"><bdi lang=\"\">Recall Election Day - Madison, WI</bdi></a> \u2013 View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=qrBEe6JOzMY\">archive.org</a></bdi>",
+      "origin_video_ids": {
+        "youtube": [
+          "qrBEe6JOzMY"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:qrBEe6JOzMY"
+      ],
+      "license": "CC BY 3.0",
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "license_identity": {
+        "work": [
+          "youtube:qrBEe6JOzMY"
+        ],
+        "licensor_urls": [
+          "https://www.youtube.com/user/teachingkristin"
+        ],
+        "licensor_name": "teaching kristin",
+        "license_url": "https://creativecommons.org/licenses/by/3.0"
+      },
+      "license_evidence": {
+        "metadata_license_key": "cc-by-3.0",
+        "revision_templates": [
+          "{{YouTube CC-BY|teaching kristin}}",
+          "{{YouTubeReview|id=qrBEe6JOzMY|ChannelName=teaching kristin|ChannelID=UCYRMx3QGg36ZLHy0xRO074g|title=Recall Election Day - Madison, WI |archive=https://web.archive.org/web/20200212234217/https://www.youtube.com/watch?v=qrBEe6JOzMY|date=2020-02-12}}"
+        ],
+        "youtube_license_review_recorded": true,
+        "raw_receipt": "raw/selected-three-verification.receipt.json",
+        "page_extract": "sources/madison-state-street-walk.metadata.json",
+        "page_extract_sha256": "450f322a75f224b76151e2cf93baf8590a94f17dbb81171173a738f780bd39a1"
+      },
+      "metadata_quote": "Just a few seconds of video while walking to the State Street Stairs at Capitol Square.",
+      "selection_rationale": "The description explicitly identifies walking toward State Street stairs at Capitol Square. At 7.712 seconds advertised duration, the fixed 2\u20137 second excerpt fits with 0.712 seconds remaining. The description mentions a sing-along; no audio was fetched, and future derivatives must strip all audio. Not approved for demo use.",
+      "file_history_entries_returned": 1,
+      "advertised_fields_only": true,
+      "payload_verified": false,
+      "source_path": "fixtures/cache/fresh-heldout-v3/madison-state-street-walk.webm",
+      "split": "heldout",
+      "excerpt_start": 2.0,
+      "excerpt_end_exclusive": 7.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "frames": 150,
+      "seed": 3526077847,
+      "preparation_argv": null
+    },
+    {
+      "id": "katowice-footbridge-walk",
+      "label": "Katowice pedestrian bridge over Ro\u017adzie\u0144skiego Street",
+      "title": "File:Walking across the footbridge in Katowice, 20240808.webm",
+      "commons_pageid": 151771704,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_across_the_footbridge_in_Katowice,_20240808.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Walking_across_the_footbridge_in_Katowice%2C_20240808.webm",
+      "download_url_advertised": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Walking_across_the_footbridge_in_Katowice%2C_20240808.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "revision_id": 1261664289,
+      "revision_url": "https://commons.wikimedia.org/w/index.php?oldid=1261664289",
+      "revision_timestamp_utc": "2026-08-15T14:46:14Z",
+      "file_timestamp_utc": "2024-08-24T17:38:29Z",
+      "file_uploader": "Abzeronow",
+      "source_size_bytes": 348348906,
+      "source_sha1": "554e54b8f1dda6aaa4b7efcdae2a175edbf3b4b6",
+      "source_sha256": "5d0a02e46d4d4c8224ede6a6186be4cc21eb21f0abd52c9eef82c270891dc2b1",
+      "source_width": 1920,
+      "source_height": 1080,
+      "source_duration_seconds": 180.866,
+      "source_mime": "video/webm",
+      "author": "User:Abzeronow",
+      "author_html": "<a href=\"//commons.wikimedia.org/wiki/User:Abzeronow\" title=\"User:Abzeronow\">User:Abzeronow</a>",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:Abzeronow"
+      ],
+      "credit_html": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:151771704"
+      ],
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0",
+      "license_identity": {
+        "work": [
+          "commons-own:pageid:151771704"
+        ],
+        "licensor_urls": [
+          "https://commons.wikimedia.org/wiki/User:Abzeronow"
+        ],
+        "licensor_name": "User:Abzeronow",
+        "license_url": "https://creativecommons.org/licenses/by/4.0"
+      },
+      "license_evidence": {
+        "metadata_license_key": "cc-by-4.0",
+        "revision_templates": [
+          "{{CC-BY 4.0}}"
+        ],
+        "youtube_license_review_recorded": false,
+        "raw_receipt": "raw/selected-three-verification.receipt.json",
+        "page_extract": "sources/katowice-footbridge-walk.metadata.json",
+        "page_extract_sha256": "065b71c5014898f9bc46e4ccf855656af859dfadfd46fb634a35daeac93e3896"
+      },
+      "metadata_quote": "Video of a walk I took across the footbridge near the ICC and Silesian Museum in Katowice, Poland on Day 2 of Wikimania",
+      "selection_rationale": "Own-work urban pedestrian bridge walk; the page places it over Ro\u017adzie\u0144skiego Street. This is a footbridge rather than a pavement-level street walk. No claim about camera framing or readable street text follows from this metadata.",
+      "file_history_entries_returned": 1,
+      "advertised_fields_only": true,
+      "payload_verified": false,
+      "source_path": "fixtures/cache/fresh-heldout-v3/katowice-footbridge-walk.webm",
+      "split": "heldout",
+      "excerpt_start": 2.0,
+      "excerpt_end_exclusive": 7.0,
+      "duration": 5.0,
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "frames": 150,
+      "seed": 3583983650,
+      "preparation_argv": null
+    }
+  ],
+  "root_release_sha256": "5fe8e9db0095f0beb36177ddd019b9f9a52672b1086a2af34660bb586c80052f"
+}
