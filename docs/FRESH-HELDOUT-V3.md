@@ -8,7 +8,7 @@ inputs. A source-selection seal or prepared dataset is not an evaluation.
 V2 remains spent; its receipt, host marker, cache and reservation are not reused.
 
 Original seal: `738b738`; re-seal commit: `37a265ca19cb21a9e169f6c29aed79e935fb71fa`; selection and all six inputs are unchanged.
-`tools/check_v3_reseal.py` asserts equality to that seal; reservation remains not started, not before `2026-11-02T12:00Z`.
+The [metadata-only load test](../tests/test_prepare_heldout_v3.py), `SelectionContract.test_committed_plan_and_manifest_match_live_preparation_identity`, asserts equality to that seal; reservation remains not started, not before `2026-11-02T12:00Z`.
 
 V3 accepts exactly three distinct source identities and all six natural and
 synthetic pairs. Its dataset ID is `fresh-heldout-v3`, its frozen cache prefix is
@@ -87,23 +87,32 @@ access. Receipt and host-state destinations are checked as well.
 
 Only after the preceding checks succeed does the harness:
 
-1. Exclusively create and fsync the host's v3 spent marker outside Git/scratch.
-2. Exclusively write and commit `bench/results/fresh-heldout-v3-started.json` as
-   the sole child change of the exact original policy commit, with hooks enabled.
-3. Exclusively create the fsynced Git ref
+1. Exclusively write `bench/results/fresh-heldout-v3-started.json`, then add and
+   commit it as the sole child change of the exact policy commit. Hooks run.
+   If add or commit fails without advancing HEAD, unstage only that receipt path
+   with Git and unlink it only if its file identity still matches this call.
+   The original Git error is re-raised; cleanup failures are attached as notes.
+2. Exclusively create the fsynced Git ref
    `refs/irl-shield/fresh-heldout-v3/<dataset-sha256>/started` using an all-zero
-   expected old object ID. An existing ref is never overwritten.
+   expected old object ID. An existing ref is never overwritten. This create-only
+   ref is the normal spend point.
+3. Exclusively create and fsync the host marker outside Git/scratch. It is a
+   secondary cross-checkout guard, written only after the ref exists.
 4. Verify HEAD, policy parent, sole receipt diff, receipt contents, clean source
-   state and ref target. Then create the local spent marker and output snapshots.
+   state and ref target. Then create the evaluation marker and output snapshots.
 5. Recheck the committed receipt and ref before every render. The v3 bundle
    entry also requires that receipt and checks its dataset, policy and resource
    identity before copying/decoding media. Resource availability is rechecked.
 
-The ref retains the receipt even when a detached HEAD moves or resets; linked
-worktrees share it and the existing `rev-list --all` scan finds it. Failed commits
-or ref creation permit no render. The host marker remains spent, including if
-repository reachability is later lost. There is no alternate host-state path or
-retry/unspend command.
+The attempt is spent when the started ref exists or a committed started receipt
+exists in history. The normal spend point is the create-only ref, and the history
+guard covers the exceptional ref-create failure. A receipt committed on the
+branch counts as spent through the history guard, even without the ref, and it
+gets no host marker and no history rewind. A host-marker write failure after the
+ref also aborts without rendering. Linked worktrees share the ref, and the
+`rev-list --all` scan retains the committed receipt. The host marker is a
+secondary cross-checkout guard if repository reachability is later lost.
+There is no alternate host-state path or retry/unspend command for a spent attempt.
 
 The verified model-cache path reaches the actual ONNX session constructor. The
 legacy lane factory filters out `cache_dir`, so the bundle scopes the ONNX module's
@@ -115,7 +124,7 @@ options and the original `policy_commit` are preserved.
 
 ## Receipt-commit readiness
 
-Before the v3 host reservation, the harness checks author and committer
+Before the v3 receipt transaction, the harness checks author and committer
 identities, requires commit signing to be disabled, and rejects executable
 commit or reference-transaction hooks. It also checks Git lock files and
 exercises write/fsync in the actual index, HEAD, object, ref and reflog ancestors.
@@ -123,9 +132,11 @@ It does not disable hooks or signing on the operator's behalf. Unsupported
 configuration must be resolved before the final run. The frozen policy commit
 remains the receipt's parent; readiness never substitutes a later HEAD.
 
-These checks refuse known environmental failures before spending the attempt.
-A failure or environmental change after reservation still fails closed; no
-render is permitted without the committed, referenced start receipt.
+These checks are fast named refusals, not the transaction boundary. The tracked
+`bench/results/` directory must already exist; v3 creates no receipt directory.
+A failed add or commit is retryable after rollback if HEAD has not advanced.
+If HEAD did advance, the committed evidence stays spent. No render is permitted
+without the committed, referenced start receipt.
 
 ## Grading readiness
 

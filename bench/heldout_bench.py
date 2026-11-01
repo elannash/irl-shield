@@ -80,8 +80,8 @@ def committed_v2_spent(dataset_sha256):
 
 
 def reserve_v2_host(identity):
-    # Outside Git/scratch: a lost receipt ref or failed commit still spends this
-    # host's attempt. There is no caller-selected alternate state location.
+    # V2 reserves before commit. V3 calls this after its started ref exists,
+    # as a secondary cross-checkout guard. There is no alternate state location.
     dataset_id = identity.get('dataset_id', 'fresh-heldout-v2')
     if dataset_id not in ('fresh-heldout-v2', 'fresh-heldout-v3'):
         raise ValueError('Unsupported reserved heldout host identity')
@@ -156,6 +156,8 @@ def started_path(identity):
 
 def receipt_commit_preflight(identity):
     """Refuse known commit failures before reserving the v3 attempt."""
+    if not (CODE_ROOT / V3_STARTED).parent.is_dir():
+        raise ValueError('Heldout receipt directory is missing: bench/results')
     for name in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
         git('var', name)
     try:
@@ -240,17 +242,35 @@ def commit_v2_start(identity, directory):
                'started_at_utc': datetime.now(timezone.utc).isoformat(),
                'directory': str(directory.resolve()), 'heldout_freeze': identity}
     path = CODE_ROOT / name
-    path.parent.mkdir(parents=True, exist_ok=True)
-    exclusive_json(path, receipt)
-    # The operator invokes this once from the reviewed final checkout. Hooks run;
-    # a failed commit leaves the exclusive receipt in place and permits no render.
-    git('add', '--', name)
-    git('-c', 'core.fsync=committed', 'commit', '--only', '-m',
-        'docs(bench): record ' + dataset_id.replace('-', ' ') + ' started', '--', name)
+    v3 = dataset_id == 'fresh-heldout-v3'
+    head = git('rev-parse', 'HEAD') if v3 else None
+    if not v3:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    created = exclusive_json(path, receipt)
+    # Hooks run. Before a v3 receipt commits, failure must undo only this call's
+    # staging and exclusively created file. V2 retains its spent-on-failure rule.
+    try:
+        git('add', '--', name)
+        git('-c', 'core.fsync=committed', 'commit', '--only', '-m',
+            'docs(bench): record ' + dataset_id.replace('-', ' ') + ' started', '--', name)
+    except BaseException as error:
+        if v3:
+            try:
+                if git('rev-parse', 'HEAD') == head:
+                    git('reset', '-q', '--', name)
+                    current = path.lstat()
+                    if (current.st_dev, current.st_ino) == (created.st_dev, created.st_ino):
+                        path.unlink()
+                    else:
+                        error.add_note('Receipt path was replaced; its new file was retained')
+            except BaseException as cleanup:
+                error.add_note('V3 receipt rollback incomplete: ' + repr(cleanup))
+        raise
     receipt_commit = git('rev-parse', 'HEAD').decode().strip()
-    if dataset_id == 'fresh-heldout-v3':
+    if v3:
         # An all-zero old value means create-only, including detached HEAD.
-        # Failure leaves the host marker and committed receipt spent; no render.
+        # Ref creation is the normal spend point. On failure, the committed
+        # receipt remains spent through history, without a host marker or rewind.
         git('-c', 'core.fsync=loose-object,reference', 'update-ref', '--create-reflog',
             started_ref(identity), receipt_commit, '0' * len(receipt_commit))
     verify_started_commit(identity, receipt_commit, receipt)
@@ -258,12 +278,13 @@ def commit_v2_start(identity, directory):
 
 
 def exclusive_json(path, value):
-    """Persist the spent attempt before the first heldout render or OCR call."""
+    """Write and fsync a create-only receipt or marker, returning file identity."""
     with Path(path).open('x') as stream:
         stream.write(json.dumps(value, indent=2) + '\n')
         stream.flush()
         import os
         os.fsync(stream.fileno())
+        return os.fstat(stream.fileno())
 
 
 def source_identity(root):
@@ -337,8 +358,11 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
             if v3:
                 v3_output_preflight(directory, marker, identity)
                 receipt_commit_preflight(identity)
-            reserve_v2_host(identity)
+            if not v3:
+                reserve_v2_host(identity)
             receipt_commit, receipt = commit_v2_start(identity, directory)
+            if v3:
+                reserve_v2_host(identity)
             current = source_identity(root)
             if current != {key: identity[key] for key in current}:
                 raise ValueError('Heldout source changed while committing started receipt')

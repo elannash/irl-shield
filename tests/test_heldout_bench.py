@@ -871,6 +871,9 @@ class HeldoutV3Start(unittest.TestCase):
                 row[key] = row[key].replace('fresh-heldout-v2/', 'fresh-heldout-v3/')
         bundle.write_json(self.dataset, manifest)
         (self.base / '.gitignore').write_text('out/\n.tmp/\nfixtures/cache/\nmodels/cache/\n__pycache__/\n')
+        receipts = self.base / 'bench/results'
+        receipts.mkdir()
+        (receipts / '.gitkeep').write_text('Synthetic tracked receipt destination.\n')
         contract = ResourceFixture.provision_resources(self, self.base)
         config = json.loads(self.policy.read_text())
         config['options']['encoder'] = 'libx264'
@@ -888,7 +891,7 @@ class HeldoutV3Start(unittest.TestCase):
 
     def git_state(self):
         return {'head': self.git('rev-parse', 'HEAD'),
-                'index': (self.base / '.git/index').read_bytes(),
+                'index': self.git('ls-files', '--stage'),
                 'refs': self.git('for-each-ref', '--format=%(refname) %(objectname)')}
 
     def assert_unspent(self):
@@ -994,6 +997,118 @@ class HeldoutV3Start(unittest.TestCase):
 
     def test_readonly_branch_reflog_refuses_before_reservation(self):
         self._assert_git_operation_refused('logs/' + self.git('symbolic-ref', 'HEAD'), readonly=True)
+
+    def _assert_commit_failure_is_retryable(self, fault):
+        receipt = self.base / heldout_bench.V3_STARTED
+        branch = self.git('symbolic-ref', 'HEAD')
+        branch_before = self.git('rev-parse', branch)
+        def tree():
+            names = self.git('--no-optional-locks', 'ls-files', '-z', '--cached', '--others',
+                             '--exclude-standard').split('\0')
+            return {name: ((self.base / name).read_bytes(), (self.base / name).stat().st_mode & 0o777)
+                    for name in names if name}
+        original_tree = tree()
+        override = nullcontext()
+        injected = (BlockingIOError(11, 'Synthetic commit process launch failure') if fault == 'launch'
+                    else subprocess.CalledProcessError(73, ['git', 'synthetic-commit-failure']))
+        if fault == 'editmsg':
+            path = self._git_operation_path('COMMIT_EDITMSG')
+            mode = path.stat().st_mode & 0o777
+            path.chmod(0o444)
+        elif fault == 'excluded':
+            path = self._git_operation_path('info/exclude')
+            original = path.read_bytes()
+            path.write_bytes(original + ('\n' + heldout_bench.V3_STARTED + '\n').encode())
+        else:
+            real_git = heldout_bench.git
+            def fail_commit(*args):
+                if 'commit' in args:
+                    raise injected
+                return real_git(*args)
+            override = patch.object(heldout_bench, 'git', side_effect=fail_commit)
+        try:
+            error = None
+            with override, patch.object(bundle, 'render') as render:
+                try:
+                    self.start()
+                except Exception as caught:
+                    error = caught
+                self.assertIsInstance(error, OSError if fault == 'launch' else subprocess.CalledProcessError)
+                if fault in ('injected', 'launch'):
+                    self.assertIs(error, injected, 'Rollback replaced the original Git error')
+                render.assert_not_called()
+            self.assertFalse(self.host_marker.exists(), 'Failed commit spent the host marker')
+            self.assertFalse(receipt.exists(), 'Failed commit left its receipt in the tree')
+            self.assert_unspent()
+            self.assertEqual(self.git('rev-parse', branch), branch_before)
+            self.assertEqual(tree(), original_tree)
+            self.assertEqual(self.git('status', '--porcelain'), '')
+            self.assertEqual(self.git('for-each-ref', '--format=%(objectname)',
+                                     heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+        finally:
+            if fault == 'editmsg':
+                path.chmod(mode)
+            elif fault == 'excluded':
+                path.write_bytes(original)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_readonly_commit_editmsg_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('editmsg')
+
+    def test_ignored_receipt_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('excluded')
+
+    def test_arbitrary_commit_failure_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('injected')
+
+    def test_commit_launch_error_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('launch')
+
+    def test_git_error_after_commit_keeps_spent_history(self):
+        real_git = heldout_bench.git
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-post-commit-failure'])
+        def fail_after_commit(*args):
+            result = real_git(*args)
+            if 'commit' in args:
+                raise injected
+            return result
+        with patch.object(heldout_bench, 'git', side_effect=fail_after_commit), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertNotEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertTrue((self.base / heldout_bench.V3_STARTED).is_file())
+        self.assertFalse(self.host_marker.exists())
+        with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+
+    def test_commit_failure_does_not_unlink_a_replaced_receipt(self):
+        real_git = heldout_bench.git
+        receipt = self.base / heldout_bench.V3_STARTED
+        replacement = b'Synthetic other caller owns this replacement.\n'
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-replacement-race'])
+        def replace_then_fail(*args):
+            if 'commit' in args:
+                receipt.rename(receipt.with_suffix('.saved-by-other-caller'))
+                receipt.write_bytes(replacement)
+                raise injected
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=replace_then_fail), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertTrue(receipt.is_file(), 'Rollback deleted another caller replacement')
+        self.assertEqual(receipt.read_bytes(), replacement)
+        self.assertEqual(self.git_state(), self.before)
+        self.assertFalse(self.host_marker.exists())
 
     def test_bad_selected_resources_leave_head_index_refs_and_markers_unchanged(self):
         from bench import heldout_resources as resources
@@ -1176,7 +1291,7 @@ class HeldoutV3Start(unittest.TestCase):
         self.assertFalse((linked / 'out').exists())
         self.assertFalse(self.host_marker.exists())
 
-    def test_ref_failure_retains_host_spent_state_and_never_renders(self):
+    def test_ref_failure_retains_committed_spent_state_and_never_renders(self):
         real_git = heldout_bench.git
         def fail_ref(*args):
             if 'update-ref' in args:
@@ -1187,8 +1302,11 @@ class HeldoutV3Start(unittest.TestCase):
                 self.start()
             self.assertEqual(failure.exception.returncode, 73)
             physical.assert_not_called()
-        self.assertTrue(self.host_marker.is_file())
+        self.assertFalse(self.host_marker.exists())
         self.assertTrue((self.base / heldout_bench.V3_STARTED).is_file())
+        self.assertNotEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertEqual(self.git('for-each-ref', '--format=%(refname)',
+                                 heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
         self.assertFalse(self.directory.exists())
         self.assertFalse(self.state.exists())
         with patch.object(bundle, 'render') as physical:
@@ -1236,9 +1354,27 @@ class HeldoutV3Start(unittest.TestCase):
             physical.assert_not_called()
         self.assertEqual(raced, [ref])
         self.assertEqual(self.git('rev-parse', ref), self.commit)
-        self.assertTrue(self.host_marker.is_file())
+        self.assertFalse(self.host_marker.exists())
         self.assertFalse(self.directory.exists())
         self.assertFalse(self.state.exists())
+
+    def test_host_marker_failure_after_ref_keeps_spent_state_without_render(self):
+        failure = OSError('Synthetic host marker failure after ref')
+        with patch.object(heldout_bench, 'reserve_v2_host', side_effect=failure), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, failure)
+            render.assert_not_called()
+        head = self.git('rev-parse', 'HEAD')
+        self.assertNotEqual(head, self.commit)
+        ref = heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})
+        self.assertEqual(self.git('rev-parse', ref), head)
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
 
     def test_valid_resources_render_six_pairs_with_one_committed_referenced_start(self):
         seen = []
