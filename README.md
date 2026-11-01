@@ -83,10 +83,12 @@ observations do not establish a privacy pass or walking qualification.
 include decoder latency, partial CPU accounting, unknowns and the failed clock
 guard.
 
-A frozen offline check found CPU and CUDA masks pixel-identical on seven natural
-clips (1,050 frames). Its 1-second delay and accurate width of 1280 differ from
-native CPU mode; it is not an independent CPU privacy grade. The known native
-plaque miss and the comparison's scope are documented in the CPU run instructions.
+On the 7 natural tune clips (1,050 frames, offline configuration with the
+accurate lane at width 1280), CPU and CUDA produced pixel-identical masks. CPU
+mode therefore inherits the GPU path's graded results for that configuration.
+The native CPU run used width 960 at a 2.5 s delay and is not separately graded.
+The known native plaque miss and the comparison's scope are documented in the
+CPU run instructions.
 
 The bind address must be supplied with `--host` or `SHIELD_BIND_HOST`. Use
 IPv4 loopback for local operation, or the detected Tailscale address for a phone, as described in [docs/RUN.md](docs/RUN.md). Credentials printed for

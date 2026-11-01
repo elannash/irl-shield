@@ -142,11 +142,17 @@ provider detections, and CPU-minus-CUDA mask-area p50/p95 deltas of 0 percentage
 points. The CUDA replay matched the previously graded baseline125 path exactly,
 including all 71 empty, 43 full and 936 nontrivial mask frames.
 
-This comparison used an offline 1-second delay and accurate width 1280, rather
-than native CPU mode's 2.5-second delay and accurate width 960. It establishes
-provider parity for that frozen offline setup; it does not independently grade
-CPU privacy or qualify native privacy, W5, performance or walking use. The
-native NERALIN LANE miss above remains. The root-inspected provider-parity
+On the 7 natural tune clips (1,050 frames, offline configuration with the
+accurate lane at width 1280), CPU and CUDA produced pixel-identical masks. CPU
+mode therefore inherits the GPU path's graded results for that configuration.
+The native CPU run used width 960 at a 2.5 s delay and is not separately graded.
+The offline comparison used a 1-second delay; it does not qualify native privacy,
+W5, performance or walking use.
+
+Across six saved inputs from the NERALIN LANE plaque interval, the fast lane
+proposed the plaque in 0/6 samples and the accurate lane in 1/6 samples on each
+provider. The engraved-plaque miss is a detector limit, not a CPU-specific one.
+No detector tuning is included in this change. The root-inspected provider-parity
 receipt is identified by SHA-256
 `af536e062e88ef22157d2504154097032d313eb91e9428ab012d7a0664a754e6`.
 
