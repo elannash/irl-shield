@@ -41,7 +41,7 @@ class ResourceFixture:
             pins[name] = {'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'bytes': path.stat().st_size}
         self.resource_contract = {'schema_version': 1, 'model_manifest_sha256': hashlib.sha256(manifest.read_bytes()).hexdigest(),
             'distributions': dict(self.versions), 'executables': pins, 'derived_models': {},
-            'option_files': {}, 'minimum_free_bytes': 1}
+            'minimum_free_bytes': 1}
         def version(name):
             if name not in self.versions:
                 raise metadata.PackageNotFoundError(name)
@@ -122,15 +122,10 @@ class HeldoutResources(ResourceFixture, unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Conflicting heldout ONNX'):
             self.preflight()
 
-    def test_future_local_ocr_and_gguf_cannot_bypass_unimplemented_consumer(self):
-        for option in ('local_ocr_model', 'gguf_model'):
-            with self.subTest(option=option):
-                self.config['options'][option] = 'synthetic-future-model'
-                try:
-                    with self.assertRaisesRegex(ValueError, 'resource adapter is not implemented'):
-                        self.preflight()
-                finally:
-                    del self.config['options'][option]
+    def test_unrecognized_resource_fields_are_rejected(self):
+        self.config['resources']['unsupported_resource'] = {}
+        with self.assertRaisesRegex(ValueError, 'requires its pinned resource contract'):
+            self.preflight()
 
     def test_static_shape_resources_are_required_before_model_sessions(self):
         self.config['options'].update(static_model=True, fast_width=64, accurate_width=64,

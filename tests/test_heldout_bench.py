@@ -11,7 +11,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from bench import heldout_bench, quality_bundle as bundle
 import test_quality_bundle as tune
@@ -351,6 +351,83 @@ class HeldoutDataset(unittest.TestCase):
         self.assertEqual(len(list((checkout / 'out').glob('*/bundle.json'))), 6)
         for path in (checkout / 'out').glob('*/bundle.json'):
             self.assertEqual(bundle.verify(path.parent)['status'], 'awaiting-judging')
+
+
+class HeldoutV3JudgingReadiness(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        self.policy = {'candidate': 'ppocr-v6-small', 'options': {}}
+        self.manifest = {'dataset_id': 'fresh-heldout-v3'}
+        bundle.write_json(self.directory / 'dataset.json', self.manifest)
+        bundle.write_json(self.directory / 'policy.json', self.policy)
+        self.identity = {'pipeline_sha256': '1' * 64, 'orchestrator_sha256': '2' * 64,
+                         'heldout_orchestrator_sha256': '3' * 64, 'resource_preflight_sha256': '4' * 64}
+        self.state = {**self.identity, 'orchestrator_sha256': '2' * 64,
+            'status': 'awaiting-judging', 'policy_commit': 'a' * 40,
+            'dataset_sha256': bundle.digest(self.directory / 'dataset.json'),
+            'policy_sha256': bundle.digest(self.directory / 'policy.json'),
+            'resource_binding': {'synthetic': True}}
+        self.state['started_receipt_ref'] = ('refs/irl-shield/fresh-heldout-v3/' +
+                                            self.state['dataset_sha256'] + '/started')
+        bundle.write_json(self.directory / 'evaluation.json', self.state)
+        self.before = (self.directory / 'evaluation.json').read_bytes()
+        self.expected = {(clip, variant) for clip in ('a', 'b', 'c') for variant in (False, True)}
+        for clip, variant in sorted(self.expected):
+            path = self.directory / (clip + ('-synthetic' if variant else '-natural'))
+            path.mkdir()
+            bundle.write_json(path / 'bundle.json', {'clip': clip, 'synthetic_variant': variant,
+                **self.policy, 'dataset_identity': {'manifest_sha256': self.state['dataset_sha256']},
+                'pipeline_sha256': self.state['pipeline_sha256'],
+                'orchestrator_sha256': self.state['orchestrator_sha256'],
+                'resource_binding': self.state['resource_binding']})
+        # Source/artifact identity has real-byte and encoded tests elsewhere.
+        # This fixture owns only readiness, marker ordering and owner reuse.
+        for override in (
+                patch.object(heldout_bench, 'source_identity', return_value=self.identity),
+                patch.object(bundle, 'frozen_dataset', return_value=(self.manifest, b'', self.expected)),
+                patch.object(bundle, 'verify', side_effect=lambda path: json.loads((path / 'bundle.json').read_text())),
+                patch.object(bundle, 'clip_lease', side_effect=lambda *a, **kw: nullcontext()),
+                patch.object(bundle, 'aggregate', return_value={'licenses': []})):
+            override.start()
+            self.addCleanup(override.stop)
+
+    def test_unavailable_judges_leave_grading_unspent(self):
+        for fault in ('constructor', 'probe'):
+            with self.subTest(fault=fault):
+                judge = Mock()
+                judge.preflight.side_effect = RuntimeError('synthetic reader unavailable')
+                factory_error = RuntimeError('synthetic reader unavailable') if fault == 'constructor' else None
+                with patch('bench.judges.Judges', return_value=judge, side_effect=factory_error), \
+                        patch.object(bundle, 'grade', return_value={}) as physical:
+                    with self.assertRaisesRegex(RuntimeError, 'synthetic reader unavailable'):
+                        heldout_bench.grade(root=ROOT, directory=self.directory, lock_root=self.directory)
+                    physical.assert_not_called()
+                self.assertFalse((self.directory / 'JUDGING.started.json').exists())
+                self.assertEqual((self.directory / 'evaluation.json').read_bytes(), self.before)
+                self.assertFalse((self.directory / 'scorecard.json').exists())
+                self.assertEqual(judge.close.call_count, 0 if fault == 'constructor' else 1)
+
+    def test_preflight_owner_is_reused_after_marker_for_all_six_grades(self):
+        judge = Mock()
+        def ready():
+            self.assertFalse((self.directory / 'JUDGING.started.json').exists())
+            self.assertEqual((self.directory / 'evaluation.json').read_bytes(), self.before)
+        judge.preflight.side_effect = ready
+        def graded(root, path, **kwargs):
+            self.assertTrue((self.directory / 'JUDGING.started.json').exists())
+            self.assertIs(kwargs['judge'], judge)
+            judge.preflight.assert_called_once()
+            self.assertEqual(judge.close.call_count, 0)
+            return {}
+        with patch('bench.judges.Judges', return_value=judge) as factory, \
+                patch.object(bundle, 'grade', side_effect=graded) as physical:
+            heldout_bench.grade(root=ROOT, directory=self.directory, lock_root=self.directory)
+            self.assertEqual(physical.call_count, 6)
+            factory.assert_called_once()
+        judge.close.assert_called_once()
+        self.assertEqual(json.loads((self.directory / 'evaluation.json').read_text())['status'], 'complete')
 
 
 class HeldoutV2Start(unittest.TestCase):
@@ -821,6 +898,46 @@ class HeldoutV3Start(unittest.TestCase):
         self.assertFalse(self.state.exists())
         self.assertFalse(self.directory.exists())
         self.assertFalse(self.host_marker.exists())
+
+    def test_commit_preconditions_refuse_before_any_reservation(self):
+        hooks = self.base / '.git/no-hooks'
+        hooks.mkdir(exist_ok=True)
+        objects = self.base / '.git/objects'
+        mode = objects.stat().st_mode & 0o777
+        for fault in ('hook', 'signing', 'identity', 'objects', 'index-lock'):
+            hook = hooks / 'pre-commit'
+            try:
+                if fault == 'hook':
+                    hook.write_text('#!/bin/sh\nexit 73\n')
+                    hook.chmod(0o755)
+                elif fault == 'signing':
+                    self.git('config', 'commit.gpgsign', 'true')
+                elif fault == 'identity':
+                    self.git('config', 'user.useConfigOnly', 'true')
+                    self.git('config', '--unset', 'user.email')
+                elif fault == 'objects':
+                    objects.chmod(0o555)
+                else:
+                    (self.base / '.git/index.lock').write_text('synthetic existing lock\n')
+                error = None
+                with patch.object(bundle, 'render') as render:
+                    try:
+                        self.start()
+                    except (ValueError, FileExistsError, subprocess.CalledProcessError) as caught:
+                        error = caught
+                    self.assertIsNotNone(error)
+                    render.assert_not_called()
+                self.assertFalse(self.host_marker.exists(), 'Commit preflight failure spent host marker')
+                self.assert_unspent()
+            finally:
+                if hook.exists():
+                    hook.unlink()
+                lock = self.base / '.git/index.lock'
+                if lock.exists():
+                    lock.unlink()
+                self.git('config', 'commit.gpgsign', 'false')
+                self.git('config', 'user.email', 'test@example.invalid')
+                objects.chmod(mode)
 
     def test_bad_selected_resources_leave_head_index_refs_and_markers_unchanged(self):
         from bench import heldout_resources as resources

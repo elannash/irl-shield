@@ -4,7 +4,7 @@ Render once on Linux, transfer the sealed directory, then judge once on Mac.
 No runtime detector, renderer, scoring algorithm or family override is added.
 """
 import argparse
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -154,6 +154,46 @@ def started_path(identity):
     return V3_STARTED if identity.get('dataset_id') == 'fresh-heldout-v3' else V2_STARTED
 
 
+def receipt_commit_preflight(identity):
+    """Refuse known commit failures before reserving the v3 attempt."""
+    for name in ('GIT_AUTHOR_IDENT', 'GIT_COMMITTER_IDENT'):
+        git('var', name)
+    try:
+        signing = git('config', '--bool', '--get', 'commit.gpgsign').decode().strip()
+    except subprocess.CalledProcessError as error:
+        if error.returncode != 1:
+            raise
+        signing = 'false'
+    if signing != 'false':
+        raise ValueError('Heldout receipt commits require commit.gpgsign=false before reservation')
+    hooks = Path(git('rev-parse', '--git-path', 'hooks').decode().strip())
+    if not hooks.is_absolute():
+        hooks = CODE_ROOT / hooks
+    for name in ('pre-commit', 'prepare-commit-msg', 'commit-msg', 'post-commit', 'reference-transaction'):
+        path = hooks / name
+        if os.access(path, os.X_OK):
+            raise ValueError('Heldout receipt commit has an unqualified executable hook: ' + name)
+    refs = ['index', 'HEAD', 'packed-refs', started_ref(identity)]
+    try:
+        refs.append(git('symbolic-ref', '--quiet', 'HEAD').decode().strip())
+    except subprocess.CalledProcessError as error:
+        if error.returncode != 1:
+            raise
+    for name in refs:
+        path = Path(git('rev-parse', '--git-path', name).decode().strip())
+        if not path.is_absolute():
+            path = CODE_ROOT / path
+        lock = path.with_name(path.name + '.lock')
+        if lock.exists() or lock.is_symlink():
+            raise FileExistsError('Heldout receipt Git lock already exists: ' + name)
+        resources.writable_destination(path, 1)
+    for name in ('objects', 'refs', 'logs'):
+        path = Path(git('rev-parse', '--git-path', name).decode().strip())
+        if not path.is_absolute():
+            path = CODE_ROOT / path
+        resources.writable_destination(path / '.irl-shield-write-probe', 1)
+
+
 def started_ref(identity):
     return 'refs/irl-shield/fresh-heldout-v3/' + identity['dataset_sha256'] + '/started'
 
@@ -197,7 +237,7 @@ def commit_v2_start(identity, directory):
 
 
 def exclusive_json(path, value):
-    """Persist the spent attempt before the first physical render or OCR call."""
+    """Persist the spent attempt before the first heldout render or OCR call."""
     with Path(path).open('x') as stream:
         stream.write(json.dumps(value, indent=2) + '\n')
         stream.flush()
@@ -275,6 +315,7 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
             v2_output_preflight(directory, marker)
             if v3:
                 v3_output_preflight(directory, marker, identity)
+                receipt_commit_preflight(identity)
             reserve_v2_host(identity)
             receipt_commit, receipt = commit_v2_start(identity, directory)
             current = source_identity(root)
@@ -325,6 +366,20 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
         return state
 
 
+@contextmanager
+def grading_resources(manifest, policy, directory, cache):
+    if manifest['dataset_id'] != 'fresh-heldout-v3':
+        yield None
+        return
+    from bench.judges import Judges
+    judge = Judges(policy['candidate'], cache or directory / 'judge-cache')
+    try:
+        judge.preflight()
+        yield judge
+    finally:
+        judge.close()
+
+
 def grade(*, root, directory, lock_root, cache=None):
     directory = Path(directory)
     state = json.loads((directory / 'evaluation.json').read_text())
@@ -351,42 +406,43 @@ def grade(*, root, directory, lock_root, cache=None):
             raise ValueError('Heldout render source differs from the frozen source')
         if manifest['dataset_id'] == 'fresh-heldout-v3' and plan.get('resource_binding') != state.get('resource_binding'):
             raise ValueError('Heldout render resources differ from the frozen start')
-    exclusive_json(directory / 'JUDGING.started.json', state)
-    state.update(status='judging', judged=[])
-    try:
-        for path in paths:
-            with bundle.clip_lease(lock_root, 'mac' if platform.system() == 'Darwin' else 'linux'):
-                bundle.grade(root, path.parent, cache=cache)
-            current = source_identity(root)
-            if current != {key: state[key] for key in current}:
-                raise ValueError('Heldout source changed during judging')
-            if (bundle.digest(directory / 'policy.json') != state['policy_sha256'] or
-                    bundle.digest(directory / 'dataset.json') != state['dataset_sha256']):
-                raise ValueError('Heldout frozen snapshot changed during judging')
-            state['judged'].append(path.parent.name)
+    host = 'mac' if platform.system() == 'Darwin' else 'linux'
+    with bundle.clip_lease(lock_root, host), grading_resources(manifest, policy, directory, cache) as judge:
+        exclusive_json(directory / 'JUDGING.started.json', state)
+        state.update(status='judging', judged=[])
+        try:
+            for path in paths:
+                bundle.grade(root, path.parent, judge=judge, cache=cache)
+                current = source_identity(root)
+                if current != {key: state[key] for key in current}:
+                    raise ValueError('Heldout source changed during judging')
+                if (bundle.digest(directory / 'policy.json') != state['policy_sha256'] or
+                        bundle.digest(directory / 'dataset.json') != state['dataset_sha256']):
+                    raise ValueError('Heldout frozen snapshot changed during judging')
+                state['judged'].append(path.parent.name)
+                bundle.write_json(directory / 'evaluation.json', state)
+            run_id = {'fresh-heldout-v1': 'fresh-heldout-once', 'fresh-heldout-v2': 'fresh-heldout-v2-once',
+                      'fresh-heldout-v3': 'fresh-heldout-v3-once'}[manifest['dataset_id']]
+            card = bundle.aggregate(root, directory, run_id, dataset=directory / 'dataset.json')
+            card['heldout_freeze'] = {k: state[k] for k in ('dataset_sha256', 'policy_sha256', 'policy_commit',
+                                                           'heldout_orchestrator_sha256')}
+            card['licenses'].append({'fresh-heldout-v1': 'fixtures/fresh-heldout/ATTRIBUTION.md',
+                                     'fresh-heldout-v2': 'docs/FRESH-HELDOUT-V2.md',
+                                     'fresh-heldout-v3': 'docs/FRESH-HELDOUT-V3.md'}[manifest['dataset_id']])
+            if 'started_receipt_commit' in state:
+                card['heldout_freeze']['started_receipt_commit'] = state['started_receipt_commit']
+            if manifest['dataset_id'] == 'fresh-heldout-v3':
+                card['heldout_freeze'].update(started_receipt_ref=state['started_receipt_ref'],
+                                              resource_binding=state['resource_binding'],
+                                              resource_preflight_sha256=state['resource_preflight_sha256'])
+            bundle.write_json(directory / 'scorecard.json', card)
+            state['status'] = 'complete'
+            return card
+        except BaseException as error:
+            state.update(status='partial-failed', error=type(error).__name__ + ': ' + str(error))
+            raise
+        finally:
             bundle.write_json(directory / 'evaluation.json', state)
-        run_id = {'fresh-heldout-v1': 'fresh-heldout-once', 'fresh-heldout-v2': 'fresh-heldout-v2-once',
-                  'fresh-heldout-v3': 'fresh-heldout-v3-once'}[manifest['dataset_id']]
-        card = bundle.aggregate(root, directory, run_id, dataset=directory / 'dataset.json')
-        card['heldout_freeze'] = {k: state[k] for k in ('dataset_sha256', 'policy_sha256', 'policy_commit',
-                                                       'heldout_orchestrator_sha256')}
-        card['licenses'].append({'fresh-heldout-v1': 'fixtures/fresh-heldout/ATTRIBUTION.md',
-                                 'fresh-heldout-v2': 'docs/FRESH-HELDOUT-V2.md',
-                                 'fresh-heldout-v3': 'docs/FRESH-HELDOUT-V3.md'}[manifest['dataset_id']])
-        if 'started_receipt_commit' in state:
-            card['heldout_freeze']['started_receipt_commit'] = state['started_receipt_commit']
-        if manifest['dataset_id'] == 'fresh-heldout-v3':
-            card['heldout_freeze'].update(started_receipt_ref=state['started_receipt_ref'],
-                                          resource_binding=state['resource_binding'],
-                                          resource_preflight_sha256=state['resource_preflight_sha256'])
-        bundle.write_json(directory / 'scorecard.json', card)
-        state['status'] = 'complete'
-        return card
-    except BaseException as error:
-        state.update(status='partial-failed', error=type(error).__name__ + ': ' + str(error))
-        raise
-    finally:
-        bundle.write_json(directory / 'evaluation.json', state)
 
 
 def main():

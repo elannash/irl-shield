@@ -1,9 +1,11 @@
 # Fresh heldout v3 harness contract
 
-This document describes source readiness, not an executed evaluation. No v3
-source selection, dataset hashes, media, real start receipt or real reservation
-marker is supplied by this change. V2 remains spent; its receipt, host marker,
-cache and reservation are not a source for v3.
+The metadata-selected sources are sealed in
+[`selection.json`](../fixtures/fresh-heldout-v3/selection.json), with attribution
+and nonreuse evidence beside it. The CPU preparer produces a separate
+frozen-ungraded dataset manifest after verifying the originals and all six
+inputs. A source-selection seal or prepared dataset is not an evaluation.
+V2 remains spent; its receipt, host marker, cache and reservation are not reused.
 
 V3 accepts exactly three distinct source identities and all six natural and
 synthetic pairs. Its dataset ID is `fresh-heldout-v3`, its frozen cache prefix is
@@ -17,7 +19,7 @@ commit remains authoritative after the receipt advances HEAD.
 The conductor seals real source selection and the dataset before any new tuning
 output, provisions the actual execution tree, and commits the final policy after
 the freeze. This source change does not release those fences or authorize any
-physical evaluation. Monday 09:00 PT live activity remains owner-only.
+physical evaluation. Live activity requires separate owner authorization.
 
 ## Before consuming the attempt
 
@@ -43,7 +45,6 @@ The final policy contains a `resources` object with exactly these fields:
 | `distributions` | Exact distribution names and installed versions required by the selected policy |
 | `executables` | Exactly `ffmpeg` and `ffprobe`, each with positive `bytes` and lowercase `sha256` |
 | `derived_models` | Exact selected static ONNX filenames, each with payload pins and `derivation`; empty when static models are unused |
-| `option_files` | Empty in this implementation; reserved contract for future resource consumers |
 | `minimum_free_bytes` | Positive output/state free-space threshold chosen with the final policy |
 
 Model identities come from the committed model manifest, not caller-supplied
@@ -109,34 +110,58 @@ bundle records the actual resource binding; the start receipt, evaluation state,
 six-pair aggregation and grading preflight retain and compare it. Frozen policy
 options and the original `policy_commit` are preserved.
 
-## Forthcoming local OCR and GGUF resources
+## Receipt-commit readiness
 
-The current baseline has no consuming local OCR/GGUF policy adapter. A selected
-`local_ocr_model`, `gguf_model`, or nonempty `resources.option_files` therefore
-refuses before reservation. Accepting arbitrary declarations while the renderer
-ignores them would give a false readiness result.
+Before the v3 host reservation, the harness checks author and committer
+identities, requires commit signing to be disabled, and rejects executable
+commit or reference-transaction hooks. It also checks Git lock files and
+exercises write/fsync in the actual index, HEAD, object, ref and reflog ancestors.
+It does not disable hooks or signing on the operator's behalf. Unsupported
+configuration must be resolved before the final run. The frozen policy commit
+remains the receipt's parent; readiness never substitutes a later HEAD.
 
-A future consuming adapter must bind each selected option to a cache-relative
-filename with SHA-256 and byte pins, include tokenizer/config/projector/dictionary
-or other sidecars actually required by that consumer, derive its dependency set
-from that same selection, and pass verified absolute bindings to the real loader.
-It must reject missing/extra bindings and unsupported selections and extend the
-family/judge registry when a new detector requires it. It must retain this receipt
-ordering. A caller assertion or an optional unchecked file list is insufficient.
-The empty field here reserves no model identity and authorizes no such adapter.
+These checks refuse known environmental failures before spending the attempt.
+A failure or environmental change after reservation still fails closed; no
+render is permitted without the committed, referenced start receipt.
 
-## Unexecuted validation and provisioning
+## Grading readiness
 
-`out/v3-harness-preflight-v1/` contains the source patch, source hashes/modes,
-static hand-back, test plan and ten-call root validation packet. The worker ran
-only source/metadata reads, edits, AST parsing and diff checks. It ran no tests,
-project/SDK imports, media reads/decodes, model execution, native/GPU work, queue
-calls, SSH, devices or Twitch calls.
+V3 holds one host lease across readiness and all six grades. Before creating
+`JUDGING.started.json` or changing evaluation state, it constructs the actual
+three-reader owner and exercises Tesseract, Apple Vision and PP-OCR on synthetic
+pixels without consulting the evidence cache. Missing resources or reader
+failure leave grading unspent; initialized resources are closed on failure.
+The validated owner is reused for all six bundles and closed afterward. The
+three synthetic reader calls are readiness checks, not heldout grades.
 
-The dedicated worker tree has no `.venv` or model cache. The conductor must provide
-its real Python 3.11 environment and exactly the final selected payloads and
-static caches in the actual run tree; pin actual distributions and FFmpeg binaries;
-verify selected native providers, hardware readiness, output space and independent
-Mac judge resources; and run the retained focused proofs plus full gate itself.
-No resource pin or real v3 dataset is fabricated to fill that gap. No bench result,
-privacy score or performance claim exists for this implementation yet.
+On Darwin, `TMPDIR` must be set to the OS-derived `DARWIN_USER_TEMP_DIR` value.
+This assertion prevents the previously diagnosed Tesseract temporary-file
+failure. The harness checks it; it does not change process environment or OS
+settings. Source, frozen input, family, area and six-pair checks still precede
+heldout grading. A failure after actual judging begins retains the one-shot
+marker and partial result.
+
+## Provisioning and validation
+
+Provide Python 3.11 and the exact selected dependencies, detector cache,
+FFmpeg/FFprobe binaries, native providers and encoder described by the policy.
+The offline renderer does not use MediaMTX. A native relay run must verify its
+separate MediaMTX pin. Provision the independent Mac readers in the grading
+checkout before launch; a default cache path is usable only if its actual
+resources initialize and pass readiness.
+
+Reproduce the synthetic harness and preparer regressions with the pinned
+interpreter, serialized under the project's canonical queue lease:
+
+```sh
+PYTHONPATH=.:tests "$SHIELD_PYTHON" -m unittest -v \
+  test_heldout_resources test_heldout_bench test_quality_bundle \
+  test_prepare_heldout_v3 test_judge_cache
+```
+
+Run `scripts/check` for the complete gate. Synthetic tests and preparation
+checks do not establish recall, privacy quality or native runtime performance.
+The final score is the single independently judged evaluation after the
+reservation opens. Future resource-consuming features must add their actual
+loader/dependency bindings before a final policy selects them; an arbitrary file
+list or ignored policy option is not evidence of readiness.

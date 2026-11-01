@@ -154,18 +154,13 @@ def preflight(root, config, dataset, model_cache):
     contract = config.get('resources', {})
     if (type(contract.get('schema_version')) is not int or contract['schema_version'] != 1 or set(contract) != {
             'schema_version', 'model_manifest_sha256', 'distributions', 'executables',
-            'derived_models', 'option_files', 'minimum_free_bytes'}):
+            'derived_models', 'minimum_free_bytes'}):
         raise ValueError('Fresh heldout v3 requires its pinned resource contract')
     manifest_path = Path(root) / 'models/manifest.json'
     if digest(manifest_path) != contract['model_manifest_sha256']:
         raise ValueError('Heldout model manifest differs from frozen resource contract')
     manifest = json.loads(manifest_path.read_text())
     models = selected_models(config, manifest)
-    # Reserved local OCR/GGUF bindings cannot claim availability before their
-    # real consumer exists. A future adapter must derive and consume these exact
-    # option bindings; accepting arbitrary extra files would hide missing ones.
-    if contract['option_files'] or any(key in config['options'] for key in ('local_ocr_model', 'gguf_model')):
-        raise ValueError('Selected local OCR/GGUF resource adapter is not implemented')
     required = required_distributions(config, models)
     if set(contract['distributions']) != required:
         raise ValueError('Heldout dependency pins must match the selected policy exactly')
