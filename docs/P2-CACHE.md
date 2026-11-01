@@ -8,7 +8,7 @@ labels and detector policies are unchanged.
 
 ## Base and reproduced finding
 
-- Worktree: `/home/elan/.t3/worktrees/irl-shield/t3-e0626c2b`.
+- Worktree: `WORKTREE_t3-e0626c2b`.
 - Branch: `elannash/q-p2-cache`, renamed in place from `t3/q-p2-cache`.
 - HEAD/base: `631dc5b9bf7cb90c84f0d4aebf430fdcf24eb89c`, initially clean;
   `git diff 631dc5b 0648e0f64d599b223d101f6643ed7d75a36331e3` was empty.

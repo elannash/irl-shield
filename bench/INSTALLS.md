@@ -77,7 +77,7 @@ The FAST lane installed OnnxTR0.9.0 (Apache-2.0), ORT GPU1.20.2 and its pinned
 Python stack only in its own Linux worktree `.tmp/fast/.venv`. No Mac SDK was
 installed by this lane. Its complete resolved distribution inventory is below;
 licenses and bundled-notice hashes for all49 distributions are retained at
-`/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/.tmp/fast/license-inventory.json`.
+`WORKTREE_t3-1b7da09d/.tmp/fast/license-inventory.json`.
 The FAST34,110,202-byte weight is Apache-2.0 under the pinned model card in that
 lane's manifest; source/weight hashes and runtime qualification are separate
 from unmeasured all-seven privacy. These packages are not part of the root M1

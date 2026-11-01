@@ -6,19 +6,19 @@ Audit cutoff: 2026-10-30 05:59 UTC. The original M2 timebox remains approximatel
 
 ## Worktree and authority
 
-- Collector worktree: `/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b`.
+- Collector worktree: `WORKTREE_t3-4bccf43b`.
 - Branch renamed in place from `t3/4bccf43b` to `elannash/m2-runtime-receipts`; HEAD remains `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. Initial worktree was clean.
 - Only owned writes: this untracked hand-back and ignored `.tmp/m2-runtime-receipts/audit.py` plus `audit.json`. No source changes, tests, media decoding, ML/native/GPU execution, API calls, installs, staging, commits, pushes, PRs, merges, queue changes, or process controls.
-- Parent `/home/elan/.t3/worktrees/irl-shield/t3-ae860af9` was read-only. Skills read: receipt-audit, research; diagnosis source/hypothesis checks were also read before interpreting errors. No children or outbound messages.
+- Parent `WORKTREE_t3-ae860af9` was read-only. Skills read: receipt-audit, research; diagnosis source/hypothesis checks were also read before interpreting errors. No children or outbound messages.
 
 ## Evidence roots
 
 These aliases below identify exact absolute paths, not alternate sources:
 
-- **A** = `/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/gate2-v2/runtime-diagnostic/attempt-2`
-- **J** = `/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2/linux/jobs/964a641f6a044396bca18921c192457a`
-- **M** = `/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2`
-- **C** = `/home/elan/.t3/worktrees/irl-shield/t3-4bccf43b/.tmp/m2-runtime-receipts`
+- **A** = `WORKTREE_t3-ae860af9/.tmp/m2/gate2-v2/runtime-diagnostic/attempt-2`
+- **J** = `REPO_ROOT/.tmp/irl-shield-builder-m2-queue-2/linux/jobs/964a641f6a044396bca18921c192457a`
+- **M** = `WORKTREE_t3-ae860af9/.tmp/m2`
+- **C** = `WORKTREE_t3-4bccf43b/.tmp/m2-runtime-receipts`
 
 Sample frame: only this job's artifacts, its single diagnostic attempt directory, the named driver/marker receipts, and hashes of provenance-listed parent files and the named source artifact. Other queue jobs and earlier native results were excluded. JSONL aggregates include every nonempty line once; no OCR, media interpretation, threshold selection, or resampling was performed. Per-file verification and numerical aggregations are in **C**`/audit.json`; the stdlib collector is **C**`/audit.py`.
 
@@ -132,7 +132,7 @@ Read-only stdlib streaming verification found:
 - Decoded real-video quality, independent A/V sync, RTSP/SRT decoded success, complete reconnect recovery, long-duration queue/resource stability, and originating failure cause remain unverified. There is no green bench/gate claim. The packet's existing 16-test pass was not rerun or independently audited here.
 - No observer was needed: command-exit already existed on initial inspection. No observer PID was created, no long-lived collector process remains, and there is nothing owned to terminate. The short stdlib collector exited. Scratch is retained under **C**, ignored by git.
 - Root runner PID **3442769** was still present when checked and remains root-owned. Nothing was opened, sealed, stopped, requeued, or changed in its queue. Recorded diagnostic ports are TCP 18554, TCP 19550, UDP 19050; the sender/MediaMTX exit receipts say stopped, but no new live-port probe was run.
-- Root-only stop command, retained for parent handoff and **not executed**: `/home/elan/code/irl-shield/scripts/perf-queue --queue-dir /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2 stop linux`.
+- Root-only stop command, retained for parent handoff and **not executed**: `REPO_ROOT/scripts/perf-queue --queue-dir REPO_ROOT/.tmp/irl-shield-builder-m2-queue-2 stop linux`.
 - Collector handling note: an exploratory tool projection inadvertently printed oversized numeric telemetry arrays, and an initial helper path typo emitted a local `FileNotFoundError` traceback. The helper path was corrected; subsequent extraction used bounded projections, and neither output was copied into this hand-back. No runtime raw exception text or secret values were included in this hand-back.
 
 Receipt-only work is complete. Parent should inspect the raw artifacts and decide the cause/fix and any further producer work; this child has no follow-up work.

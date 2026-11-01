@@ -8,7 +8,7 @@ ran exactly **three TLC invocations and no Python/test harness invocation**. Con
 Python replay and the production mutation remain the conductor's final-test work;
 this report does not claim they passed.
 
-Prepared worktree: `/home/elan/.t3/worktrees/irl-shield/t3-8eecd6ca`, branch
+Prepared worktree: `WORKTREE_t3-8eecd6ca`, branch
 `t3/m3-shield-reconciliation-model`, HEAD
 `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. The first tool command checked pwd,
 branch, HEAD, and status, and found a clean checkout at that exact HEAD. All lasting
@@ -29,7 +29,7 @@ The exact same model/config bytes were used for both passing runs. Only
 `ClobberReconcileRelease` changes for the failure; see [mutation.diff](evidence/reconciliation/mutation.diff).
 
 The complete previous child's `docs/model/` was copied from
-`/home/elan/.t3/worktrees/irl-shield/t3-c162e57f/docs/model/` and retained unchanged
+`WORKTREE_t3-c162e57f/docs/model/` and retained unchanged
 under [historical/](historical/README.md), with a new README identifying its scope.
 Its model hash is `4cc9837d4b14f22763659edff396b69eb9560f74896a8ea3e029ba1d446bfc7c`.
 Its report, logs, earlier Python replays, old `ready()` action and connection-held
@@ -98,7 +98,7 @@ rule; it remains latched after that action so later events cannot hide the viola
 
 ## Source mapping and freeze receipt
 
-Read-only source checkout: `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`.
+Read-only source checkout: `WORKTREE_t3-3bb00dac`.
 The parent removed obsolete `ShieldEvents.ready()` while this model was being prepared.
 The checked model contains **no Ready action** and no arbitrary status-free connection
 release. [initial hashes](evidence/reconciliation/source-hashes.initial.txt) preserve
@@ -117,22 +117,22 @@ after that removal. All mapping below refers to those final hashes.
 
 | Model | Concrete public policy / transport mapping |
 | --- | --- |
-| `Init`, `Settle`, `Coverage`, `LocalHold` | Construction asserts `twitch-connection`; any named hold dominates coverage. `Control.set_hold` changes only its named source. [control.py:31](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py:31), [events.py:33](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:33). |
-| `chat`, `shield`, `local`, `connection` | Boolean presence of sources `chat`, `shield_mode`, `local`, `twitch-connection`. The current Shield source spelling is `shield_mode`. [events.py:55](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:55), [events.py:92](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:92), [events.py:165](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:165). |
-| `Welcome` | Valid `welcome(session_id)` updates the session and enters subscribing unless revoked. It does not release a hold. Session-ID values are abstracted. [events.py:58](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:58). |
-| `BeginReconcile(save)` | `begin_reconcile()` asserts connection HOLD, enters reconciling, and returns `(generation, shield_revision)`. `save` is an environment choice to retain that token or an older returned token, not another production flag. [events.py:81](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:81). |
-| `ReconciliationCurrent`, `RejectedCompletion` | Reject absent token, revoked session, phase other than reconciling, or stale generation. An old Shield revision does not reject completion; it blocks the status write to Shield only. [events.py:97](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:97). |
-| `Reconciled(active)` | Valid boolean status applies only when revision matches, then sets ready and clears only connection. Chat/local are untouched; a newer accepted Shield event wins. [events.py:88](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:88). |
-| `Fault(r)` | `fault(..., revoked=r)` increments generation, latches revocation, and asserts connection HOLD. It covers unplanned close, failed/timeout planned handover, refused URLs, invalid welcomes, and invalid authorization. [events.py:101](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:101). |
-| `Reconnect`, `HandedOver` | Approved `reconnect(url)` changes ready to handover without a hold callback; `handed_over(session_id)` changes handover to ready, also without a hold callback. [events.py:66](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:66). |
-| `StatusFailure` | The transport resubscribes then queries Shield status, starting at startup or unplanned recovery. It retries failed HTTP/status parsing after 1,2,4,8,16,30,30,... seconds under HOLD. Only a successful 200 response with one valid boolean reaches `reconciled`. Delays and invalid boolean calls are stuttering in this safety projection. [transport.py:75](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:75), [transport.py:178](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:178), [transport.py:191](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:191). |
-| Planned migration failure | Transport allows 30 seconds for migration, completes `handed_over` only on a new session, otherwise faults and closes for unplanned recovery. [transport.py:85](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py:85). |
-| `Deliver` | `accept()` runs while ready, handover, or reconciling. Purge, validity, deduplication, FIFO eviction, floor, shared-chat origin, actor checks, command timestamp ordering, and Shield revision increments follow source order. [events.py:107](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:107). |
-| `seen`, `floor`, `chatTime`, `shieldTime` | Existing bounded cache and conservative eviction/age floor; strictly newer broadcaster resume; Shield end cannot undo newer/equal begin. These are retained, rather than bypassing admission for Shield events. [events.py:119](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:119), [events.py:147](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py:147). |
+| `Init`, `Settle`, `Coverage`, `LocalHold` | Construction asserts `twitch-connection`; any named hold dominates coverage. `Control.set_hold` changes only its named source. [control.py:31](WORKTREE_t3-3bb00dac/shield/control.py:31), [events.py:33](WORKTREE_t3-3bb00dac/shield/twitch/events.py:33). |
+| `chat`, `shield`, `local`, `connection` | Boolean presence of sources `chat`, `shield_mode`, `local`, `twitch-connection`. The current Shield source spelling is `shield_mode`. [events.py:55](WORKTREE_t3-3bb00dac/shield/twitch/events.py:55), [events.py:92](WORKTREE_t3-3bb00dac/shield/twitch/events.py:92), [events.py:165](WORKTREE_t3-3bb00dac/shield/twitch/events.py:165). |
+| `Welcome` | Valid `welcome(session_id)` updates the session and enters subscribing unless revoked. It does not release a hold. Session-ID values are abstracted. [events.py:58](WORKTREE_t3-3bb00dac/shield/twitch/events.py:58). |
+| `BeginReconcile(save)` | `begin_reconcile()` asserts connection HOLD, enters reconciling, and returns `(generation, shield_revision)`. `save` is an environment choice to retain that token or an older returned token, not another production flag. [events.py:81](WORKTREE_t3-3bb00dac/shield/twitch/events.py:81). |
+| `ReconciliationCurrent`, `RejectedCompletion` | Reject absent token, revoked session, phase other than reconciling, or stale generation. An old Shield revision does not reject completion; it blocks the status write to Shield only. [events.py:97](WORKTREE_t3-3bb00dac/shield/twitch/events.py:97). |
+| `Reconciled(active)` | Valid boolean status applies only when revision matches, then sets ready and clears only connection. Chat/local are untouched; a newer accepted Shield event wins. [events.py:88](WORKTREE_t3-3bb00dac/shield/twitch/events.py:88). |
+| `Fault(r)` | `fault(..., revoked=r)` increments generation, latches revocation, and asserts connection HOLD. It covers unplanned close, failed/timeout planned handover, refused URLs, invalid welcomes, and invalid authorization. [events.py:101](WORKTREE_t3-3bb00dac/shield/twitch/events.py:101). |
+| `Reconnect`, `HandedOver` | Approved `reconnect(url)` changes ready to handover without a hold callback; `handed_over(session_id)` changes handover to ready, also without a hold callback. [events.py:66](WORKTREE_t3-3bb00dac/shield/twitch/events.py:66). |
+| `StatusFailure` | The transport resubscribes then queries Shield status, starting at startup or unplanned recovery. It retries failed HTTP/status parsing after 1,2,4,8,16,30,30,... seconds under HOLD. Only a successful 200 response with one valid boolean reaches `reconciled`. Delays and invalid boolean calls are stuttering in this safety projection. [transport.py:75](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:75), [transport.py:178](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:178), [transport.py:191](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:191). |
+| Planned migration failure | Transport allows 30 seconds for migration, completes `handed_over` only on a new session, otherwise faults and closes for unplanned recovery. [transport.py:85](WORKTREE_t3-3bb00dac/shield/twitch/transport.py:85). |
+| `Deliver` | `accept()` runs while ready, handover, or reconciling. Purge, validity, deduplication, FIFO eviction, floor, shared-chat origin, actor checks, command timestamp ordering, and Shield revision increments follow source order. [events.py:107](WORKTREE_t3-3bb00dac/shield/twitch/events.py:107). |
+| `seen`, `floor`, `chatTime`, `shieldTime` | Existing bounded cache and conservative eviction/age floor; strictly newer broadcaster resume; Shield end cannot undo newer/equal begin. These are retained, rather than bypassing admission for Shield events. [events.py:119](WORKTREE_t3-3bb00dac/shield/twitch/events.py:119), [events.py:147](WORKTREE_t3-3bb00dac/shield/twitch/events.py:147). |
 
 `TwitchHTTP` permits the fixed Shield status GET and refuses redirects/oversized
 responses. This is read as transport context, not model-verified HTTP behavior:
-[http.py:27](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/http.py:27).
+[http.py:27](WORKTREE_t3-3bb00dac/shield/twitch/http.py:27).
 The model checks atomic public policy calls, not socket scheduling or private upstream
 hooks. Live startup's `_connect` fault and a subsequent outage fit the two modeled
 generation increments; it does not prove transport always makes the required calls.
@@ -196,12 +196,12 @@ allowed ordering. This illustrative race path is derived from the action definit
 not a separately requested TLC trace or Python execution.
 
 The parent already owns the public interface regression at
-[test_events.py:35](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py:35).
+[test_events.py:35](WORKTREE_t3-3bb00dac/tests/m3/test_events.py:35).
 Its follow-up local clear and broadcaster resume require Shield to stay held until
 Shield end. Parent localhost transport cases cover preexisting active status and
-failed reconciliation ([test_transport.py:251](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:251)),
-outage with chat/local preservation ([test_transport.py:268](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:268)),
-and planned migration without HOLD ([test_transport.py:92](/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_transport.py:92)).
+failed reconciliation ([test_transport.py:251](WORKTREE_t3-3bb00dac/tests/m3/test_transport.py:251)),
+outage with chat/local preservation ([test_transport.py:268](WORKTREE_t3-3bb00dac/tests/m3/test_transport.py:268)),
+and planned migration without HOLD ([test_transport.py:92](WORKTREE_t3-3bb00dac/tests/m3/test_transport.py:92)).
 Those tests were read, not run by this child; passing logs remain the parent's receipt.
 
 For the test gate: the public seam is ShieldEvents plus Control observations/callbacks;
@@ -276,16 +276,16 @@ cp docs/model/TwitchControl.tla docs/model/TwitchControl.cfg docs/model/view.mjs
 cp docs/model/evidence/reconciliation/release-clobber.cfg "$work/"
 XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
-  env TMPDIR="$work" JAVA=/home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  TLA2TOOLS=/home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
+  env TMPDIR="$work" JAVA=OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
+  TLA2TOOLS=OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
   JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
-  /home/elan/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
+  OWNER_HOME/.agents/skills/statechart/scripts/statechart "$work/TwitchControl.tla" \
   --config "$work/TwitchControl.cfg" --view "$work/view.mjs" --out "$work/pass-new"
 XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
   systemd-run --user --scope --slice=app-t3code-agents.slice -p CPUQuota=200% nice -n 10 \
   env JAVA_TOOL_OPTIONS='-XX:ActiveProcessorCount=2 -Xmx1g -XX:+UseParallelGC' \
-  /home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  -cp /home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
+  OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
+  -cp OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
   tlc2.TLC -workers 1 -fp 0 -lncheck final -metadir "$work/failure-states" \
   -config "$work/release-clobber.cfg" "$work/TwitchControl.tla"
 ```

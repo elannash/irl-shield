@@ -8,7 +8,7 @@ depth43. The actual old/final replay passed; the final combined gate exited0:
 
 Review base/HEAD: `9cb8e812af152833f97adc2ce1cdd4858c5efdf3`.
 Actual/requested branch: `elannash/m3-twitch`. Dedicated worktree remains
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`. All M3 changes are uncommitted
+`WORKTREE_t3-3bb00dac`. All M3 changes are uncommitted
 and unstaged. No branch/worktree/index/history, push, PR or merge mutation was
 issued by M3. The conductor owns commit and the last review round.
 

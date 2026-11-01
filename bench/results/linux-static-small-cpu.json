@@ -1023,8 +1023,8 @@
       "width": 960,
       "onnx_version": "1.23.2",
       "cache_key": "a673a20ac86329c15a1cda6f7f27ccbea1a3928df68b6e8da2d234e11981a7be",
-      "source_path": "/home/elan/code/irl-shield/models/cache/PP-OCRv6_small_det_onnx.onnx",
-      "derived_path": "/home/elan/code/irl-shield/models/cache/det-static-a673a20ac86329c15a1cda6f7f27ccbea1a3928df68b6e8da2d234e11981a7be.onnx",
+      "source_path": "REPO_ROOT/models/cache/PP-OCRv6_small_det_onnx.onnx",
+      "derived_path": "REPO_ROOT/models/cache/det-static-a673a20ac86329c15a1cda6f7f27ccbea1a3928df68b6e8da2d234e11981a7be.onnx",
       "derived_sha256": "a2840b8fb04bba45da2a9196d366d086e9db37aa81c21c58160a3e7467a5b58a",
       "input_name": "x",
       "input_shape": [
@@ -1042,7 +1042,7 @@
       ],
       "validation": "onnx.checker.check_model(full_check=True)"
     },
-    "model_path": "/home/elan/code/irl-shield/models/cache/det-static-a673a20ac86329c15a1cda6f7f27ccbea1a3928df68b6e8da2d234e11981a7be.onnx",
+    "model_path": "REPO_ROOT/models/cache/det-static-a673a20ac86329c15a1cda6f7f27ccbea1a3928df68b6e8da2d234e11981a7be.onnx",
     "sha256": "d73e0058b7a8086bbd57f3d10b8bcd4ff95363f67e06e2762b5e814fe9c9410e",
     "license": "Apache-2.0",
     "license_source": "https://huggingface.co/PaddlePaddle/PP-OCRv6_small_det_onnx/blob/28fe5895c24fd108c19eb3e8479f4ab385fbfc62/README.md",

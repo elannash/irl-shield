@@ -1,4 +1,4 @@
 907a17f84498b08c9c99ba882d85c3f08db8d173517a3a73ba38e16e8c384bdd  /tmp/agents/irl-shield/m3-r1-model/events-fixed.py
-806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/control.py
-2474155edaf8280acb4235554223e613da60e1331382a83db83a9759a1824f89  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/transport.py
-510ac166545f4f9e18ea9ada1609d16fbf0ba8076e44c39c8f80e221558c2dff  /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/tests/m3/test_events.py
+806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d  WORKTREE_t3-3bb00dac/shield/control.py
+2474155edaf8280acb4235554223e613da60e1331382a83db83a9759a1824f89  WORKTREE_t3-3bb00dac/shield/twitch/transport.py
+510ac166545f4f9e18ea9ada1609d16fbf0ba8076e44c39c8f80e221558c2dff  WORKTREE_t3-3bb00dac/tests/m3/test_events.py

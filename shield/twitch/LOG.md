@@ -1,7 +1,7 @@
 # M3 implementation ledger
 
 This lane started 2026-10-29 PT in the assigned dedicated worktree
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`. First command was exactly
+`WORKTREE_t3-3bb00dac`. First command was exactly
 `pwd`, `git branch --show-current`, `git rev-parse HEAD`, `git status --short`.
 It returned isolated path, branch `t3/m3-twitch`, clean status, and HEAD
 `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. Branch renamed in place with

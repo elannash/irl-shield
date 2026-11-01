@@ -4,6 +4,6 @@
 8758889e46357dc41362f8854741464d0600449898b9005b20445f9e2ea1da0e  docs/model/TwitchControl.tla
 a342e4a85b230ff53052298d27812485c912081b83fc8b2fda48cb100d33d5b4  docs/model/TwitchControl.cfg
 f03e7cf51d9517b135701cd1ebc8e5339b569ed0c42b9e0c0daf9806ef967c3e  docs/model/evidence/r3/public_replay.py
-1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25  /home/elan/.local/share/mise/installs/java/temurin-25/bin/java
-936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88  /home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar
+1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25  OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java
+936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88  OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar
 52e0a13e60a981d8c4b6478be2ba5176f69da07948a056bf49cf6f077e30cb41  /usr/bin/python3

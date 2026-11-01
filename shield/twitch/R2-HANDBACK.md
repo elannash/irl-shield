@@ -53,7 +53,7 @@ and explicitly released the final-gate wait. Parent inspected the commit: only
 `tests/test_perf_queue.py`, 11 added/8 removed lines. It replaces fixed sentinel
 lifetimes with controlled blocking and waits for actual producer/stop states.
 Root's supplied injected-delay proof is
-`/home/elan/code/irl-shield/.tmp/q/producer-stop-proof/proof.json`; M3 read it,
+`REPO_ROOT/.tmp/q/producer-stop-proof/proof.json`; M3 read it,
 including both old failures/new passes and the root's 25-test affected pass.
 Those root executions are not claimed as M3-run checks or added to M3's budget.
 The four frozen M3 source/test hashes still verify unchanged after the pick.

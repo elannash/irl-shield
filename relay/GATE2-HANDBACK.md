@@ -5,7 +5,7 @@ no functional/native soak or privacy pass is claimed. Q is not qualified.
 
 ## Isolation and scope
 
-- Actual/requested checkout: `/home/elan/.t3/worktrees/irl-shield/t3-414a256a`.
+- Actual/requested checkout: `WORKTREE_t3-414a256a`.
 - Initial branch: `t3/414a256a`; renamed in place to requested
   `elannash/m2-gate2-harness`.
 - Initial/final HEAD: `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`.
@@ -123,7 +123,7 @@ exercise PyAV, CUDA, MediaMTX, fault timing, or native cleanup. The synthetic
 test data contains no credentials and no private/user media.
 
 Logs live at
-`/home/elan/.t3/worktrees/irl-shield/t3-414a256a/.tmp/gate2/logs/`.
+`WORKTREE_t3-414a256a/.tmp/gate2/logs/`.
 
 1. Expected red: changed capture was wrongly accepted under the unchanged seal.
    One test, one failure (`ValueError not raised`). The shell wrapper returned
@@ -164,7 +164,7 @@ Logs live at
    It imports harness source but does not import/load native engines or media.
 
    ```sh
-   nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python scripts/m2-soak --help > .tmp/gate2/logs/06-help.log 2>&1; result=$?; cat .tmp/gate2/logs/06-help.log; exit "$result"
+   nice -n 10 WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python scripts/m2-soak --help > .tmp/gate2/logs/06-help.log 2>&1; result=$?; cat .tmp/gate2/logs/06-help.log; exit "$result"
    ```
 
 After invocation 6, static review added the script's multiprocessing-safe
@@ -237,7 +237,7 @@ queue runner itself runs in `app-t3code-agents.slice`. Do not wrap the timed
 job in another flock or a launcher that drops the inherited lease descriptor.
 
 ```sh
-PARENT=/home/elan/.t3/worktrees/irl-shield/t3-ae860af9
+PARENT=WORKTREE_t3-ae860af9
 "$PARENT/scripts/perf-queue" --queue-dir "${QUEUE_DIR:?root must supply the new queue}" \
   enqueue linux m2-gate2-native --lane root --cwd "$PARENT" \
   --receipt "$PARENT/.tmp/m2/gate2/attempt-{attempt}/summary.json" \
@@ -250,7 +250,7 @@ PARENT=/home/elan/.t3/worktrees/irl-shield/t3-ae860af9
 A short functional command for the parent's exclusive window is:
 
 ```sh
-PARENT=/home/elan/.t3/worktrees/irl-shield/t3-ae860af9
+PARENT=WORKTREE_t3-ae860af9
 cd "$PARENT"
 systemd-run --user --scope --slice=app-t3code-agents.slice \
   nice -n 10 scripts/host-lock exclusive .tmp/m2/py311/bin/python -m relay.soak \

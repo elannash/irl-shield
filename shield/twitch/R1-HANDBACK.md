@@ -15,7 +15,7 @@ invariants over **399,992 distinct states**. **23/30 invocations used**: parent
 
 Actual/requested branch: `elannash/m3-twitch` / `elannash/m3-twitch`.
 HEAD and review base: `bb6948b9793e1bbb505e84e8042357818ddb9608`.
-Assigned worktree: `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`.
+Assigned worktree: `WORKTREE_t3-3bb00dac`.
 First/resume commands verified path, branch, HEAD and status. Original uncommitted
 work was preserved. No stage, commit, push, PR mutation or merge was performed.
 The conductor owns committing and round 2 of

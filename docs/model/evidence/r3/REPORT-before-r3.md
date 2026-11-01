@@ -31,7 +31,7 @@ key when discharging obligations and therefore missed this defect.
 
 The first command was exactly `pwd; git branch --show-current; git rev-parse
 HEAD; git status --short`. It returned isolated checkout
-`/home/elan/.t3/worktrees/irl-shield/t3-6552b346`, branch `t3/6552b346`,
+`WORKTREE_t3-6552b346`, branch `t3/6552b346`,
 HEAD `ea004ecdad9583996d4907cfb0f35ca130a227af`, empty status. The host later
 renamed the branch `t3/fix-model-release-obligation`; this worker issued no git
 mutation. Writes are confined to `docs/model/` and owned scratch
@@ -48,7 +48,7 @@ mutation. Writes are confined to `docs/model/` and owned scratch
 | [Fixed configuration](TwitchControl.cfg) | `721ceaed5cc2e6445fa95ed098aeb7fe9b28f7cdb952b355c81a476924a69b16` |
 
 The frozen file was copied from
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/shield/twitch/events.py` to
+`WORKTREE_t3-3bb00dac/shield/twitch/events.py` to
 scratch `events-fixed.py`. The replay refuses other hashes. It loads the two
 actual policies and Control by file path, not test helpers. The
 [frozen source diff](evidence/r2/frozen-source.diff) confirms that only the
@@ -250,7 +250,7 @@ No new SDK/model/dataset or asset was introduced. The installed TLC JAR's root
 `META-INF/LICENSE.txt` (EPL 2.0/GPL notices) matches the already preserved
 [dependency notice](historical/evidence/TLC-LICENSE.txt). Temurin 25 is GPL v2
 with Classpath Exception, in the installed
-`/home/elan/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
+`OWNER_HOME/.local/share/mise/installs/java/temurin-25/legal/java.base/LICENSE`.
 System Python carries its PSF license chain in `/usr/share/doc/python3/copyright`.
 Tool binaries were neither modified nor redistributed; hashes identify them.
 

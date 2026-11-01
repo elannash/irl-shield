@@ -13,4 +13,4 @@ case " $* " in
     printf '%s\n' "$*" >> "$budget"
     ;;
 esac
-exec /home/elan/.local/share/mise/installs/java/temurin-25/bin/java "$@"
+exec OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java "$@"

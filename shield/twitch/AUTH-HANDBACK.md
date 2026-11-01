@@ -1,10 +1,10 @@
 # M3 auth implementation hand-back
 
-Prepared child: `/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee`, branch `t3/5c0ce3ee`,
+Prepared child: `WORKTREE_t3-5c0ce3ee`, branch `t3/5c0ce3ee`,
 HEAD `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. Final observed branch is
 `t3/twitch-auth-hardening`; the branch name changed externally during the session, with
 no branch-mutating command from this child. HEAD stayed at the required SHA. Worktree was clean before copying the six
-owned Python files from `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`.
+owned Python files from `WORKTREE_t3-3bb00dac`.
 Evidence gathered 2026-10-29 PT (2026-10-30 UTC). No commits, staging, pushes, PRs,
 worktree creation/removal, subagents, live Twitch/auth calls, personal keyring access, secrets/config
 inspection, Mac/GPU/media jobs, or installs. Parent source files were read and copied only.
@@ -93,7 +93,7 @@ prematurely closed the partial response; final runs have no such error.
 
 ## Exact unittest invocations and logs
 
-Each command ran from `/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee`, with output redirected
+Each command ran from `WORKTREE_t3-5c0ce3ee`, with output redirected
 to the named absolute log. Counts below are unittest **method** counts; a failed method
 can report multiple subtest failures/errors. Commands 01 and 02 were followed by `cat`,
 so their enclosing shell exit status was 0; the recorded unittest verdicts below, not
@@ -102,96 +102,96 @@ that shell status, are the receipts. Commands 03–12 explicitly preserved the P
 01. `Ran 5 tests in 0.052s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/01-baseline.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/01-baseline.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/01-baseline.log 2>&1
 ```
 
 02. `Ran 3 tests in 0.225s`; **FAILED (failures=2)**. [Log](/tmp/agents/irl-shield/m3-auth/02-cancel-red.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/02-cancel-red.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/02-cancel-red.log 2>&1
 ```
 
 03. `Ran 3 tests in 0.026s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/03-cancel-green.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/03-cancel-green.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/03-cancel-green.log 2>&1
 ```
 
 04. `Ran 5 tests in 3.057s`; **FAILED (failures=3, errors=6)**. [Log](/tmp/agents/irl-shield/m3-auth/04-malformed-red.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/04-malformed-red.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_auth.py' -v > /tmp/agents/irl-shield/m3-auth/04-malformed-red.log 2>&1
 ```
 
 05. `Ran 8 tests in 0.186s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/05-malformed-green.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/05-malformed-green.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/05-malformed-green.log 2>&1
 ```
 
 06. `Ran 5 tests in 0.122s`; **FAILED (failures=2)**. [Log](/tmp/agents/irl-shield/m3-auth/06-http-red.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/06-http-red.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/06-http-red.log 2>&1
 ```
 
 07. `Ran 10 tests in 0.414s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/07-http-green.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/07-http-green.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/07-http-green.log 2>&1
 ```
 
 08. `Ran 6 tests in 0.163s`; **FAILED (failures=1)**. [Log](/tmp/agents/irl-shield/m3-auth/08-rotation-red.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/08-rotation-red.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/08-rotation-red.log 2>&1
 ```
 
 09. `Ran 13 tests in 0.267s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/09-rotation-wire-green.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/09-rotation-wire-green.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/09-rotation-wire-green.log 2>&1
 ```
 
 10. `Ran 11 tests in 0.164s`; **FAILED (failures=6, errors=2)**. [Log](/tmp/agents/irl-shield/m3-auth/10-claims-storage-red.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/10-claims-storage-red.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_http.py' -v > /tmp/agents/irl-shield/m3-auth/10-claims-storage-red.log 2>&1
 ```
 
 11. `Ran 16 tests in 0.195s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/11-claims-storage-green.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/11-claims-storage-green.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/11-claims-storage-green.log 2>&1
 ```
 
 12. `Ran 19 tests in 0.346s`; **OK**. [Log](/tmp/agents/irl-shield/m3-auth/12-final.log)
 
 ```bash
-PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python -W error::ResourceWarning -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/12-final.log 2>&1
+PYTHONPATH="$PWD:$PWD/.tmp/m3-auth" nice -n 10 WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python -W error::ResourceWarning -m unittest discover -s tests/m3 -p 'test_*.py' -v > /tmp/agents/irl-shield/m3-auth/12-final.log 2>&1
 ```
 
 ## Final test inventory
 
-- [test_server_interval_and_slow_down_apply_before_every_poll](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:50)
-- [test_expiry_denial_and_cancellation_never_continue_polling](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:63)
-- [test_cancellation_aborts_inflight_device_and_token_requests](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:83)
-- [test_malformed_token_responses_fail_with_safe_local_errors](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:116)
-- [test_malformed_device_responses_never_reach_presenter](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:131)
-- [test_omitted_interval_defaults_to_five_and_slow_down_accumulates](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:146)
-- [test_expiry_during_response_rejects_late_credentials](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py:165)
-- [test_key_stays_redacted_and_wrong_identity_never_requests_key](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:56)
-- [test_refresh_rotation_and_hourly_validation](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:72)
-- [test_keyring_is_explicit_and_mock_only](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:85)
-- [test_streamed_json_waits_for_complete_bounded_response](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:100)
-- [test_fixed_origin_redirect_and_response_guards](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:125)
-- [test_concurrent_access_rotates_refresh_token_once_and_uses_new_token_next](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:149)
-- [test_device_flow_over_localhost_encodes_exact_scopes_and_poll_timing](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:178)
-- [test_cancel_event_aborts_localhost_token_response](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:219)
-- [test_validation_rejects_malformed_claims_before_releasing_a_key](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:249)
-- [test_validation_lifetime_limits_when_refresh_must_happen](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:264)
-- [test_keyring_rejects_malformed_scopes_and_sanitizes_read_failures](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:277)
-- [test_malformed_or_denied_key_response_never_returns_a_key](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py:293)
+- [test_server_interval_and_slow_down_apply_before_every_poll](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:50)
+- [test_expiry_denial_and_cancellation_never_continue_polling](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:63)
+- [test_cancellation_aborts_inflight_device_and_token_requests](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:83)
+- [test_malformed_token_responses_fail_with_safe_local_errors](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:116)
+- [test_malformed_device_responses_never_reach_presenter](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:131)
+- [test_omitted_interval_defaults_to_five_and_slow_down_accumulates](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:146)
+- [test_expiry_during_response_rejects_late_credentials](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py:165)
+- [test_key_stays_redacted_and_wrong_identity_never_requests_key](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:56)
+- [test_refresh_rotation_and_hourly_validation](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:72)
+- [test_keyring_is_explicit_and_mock_only](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:85)
+- [test_streamed_json_waits_for_complete_bounded_response](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:100)
+- [test_fixed_origin_redirect_and_response_guards](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:125)
+- [test_concurrent_access_rotates_refresh_token_once_and_uses_new_token_next](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:149)
+- [test_device_flow_over_localhost_encodes_exact_scopes_and_poll_timing](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:178)
+- [test_cancel_event_aborts_localhost_token_response](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:219)
+- [test_validation_rejects_malformed_claims_before_releasing_a_key](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:249)
+- [test_validation_lifetime_limits_when_refresh_must_happen](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:264)
+- [test_keyring_rejects_malformed_scopes_and_sanitizes_read_failures](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:277)
+- [test_malformed_or_denied_key_response_never_returns_a_key](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py:293)
 
 ## Primary sources
 
@@ -221,29 +221,29 @@ staged. HEAD remains the required SHA. `git diff --check` exits 0 but cannot exa
 untracked files; a separate AST parse and trailing-whitespace check read all six files
 successfully. Reviewed parent-relative diffs are in the scratch directory.
 
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/auth.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/auth.py)
+- [WORKTREE_t3-5c0ce3ee/shield/twitch/auth.py](WORKTREE_t3-5c0ce3ee/shield/twitch/auth.py)
   - SHA-256: `c2486778d8124cfbf42d62a41f9964328a180b828e0dc19c965c6f6fa4efcacf`
   - Parent at hand-back SHA-256: `bf91c41a7bc96bb5e5e05c8097625acc9d32e1e2de440c2d3b3f50cc0d24cc36`
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/http.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/http.py)
+- [WORKTREE_t3-5c0ce3ee/shield/twitch/http.py](WORKTREE_t3-5c0ce3ee/shield/twitch/http.py)
   - SHA-256: `3e327442e1e0477501d807f5815d283f903fb6dd5ca6d2dfb30cafa9040125e7`
   - Parent at hand-back SHA-256: `ce18e82b130aeb11ece6249966955f04688531356f2a4ce8963528731fe3cde0`
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/keys.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/keys.py)
+- [WORKTREE_t3-5c0ce3ee/shield/twitch/keys.py](WORKTREE_t3-5c0ce3ee/shield/twitch/keys.py)
   - SHA-256: `889ac382277054c22030c3b384308fde71cec75385eb0ef6bd8f9a32f15040f1`
   - Parent at hand-back SHA-256: `889ac382277054c22030c3b384308fde71cec75385eb0ef6bd8f9a32f15040f1`
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/storage.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/storage.py)
+- [WORKTREE_t3-5c0ce3ee/shield/twitch/storage.py](WORKTREE_t3-5c0ce3ee/shield/twitch/storage.py)
   - SHA-256: `7a7edcebd9a290c737403fb860bc5427db3584d41418c0282f63f514f0d7bee7`
   - Parent at hand-back SHA-256: `88b1f9b560d05ccc10fa4fecdba37746748aa15c62657cd2e9d7a2a33dfdccee`
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_auth.py)
+- [WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py](WORKTREE_t3-5c0ce3ee/tests/m3/test_auth.py)
   - SHA-256: `32477eaac94fac49007af22b69e706b73096b9571fb44c4dd79fe82c1c93d6c0`
   - Parent at hand-back SHA-256: `736a0afa0d43117597264c78ecd6d25946838453827ee3681a64a8705885ce04`
-- [/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py](/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/tests/m3/test_http.py)
+- [WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py](WORKTREE_t3-5c0ce3ee/tests/m3/test_http.py)
   - SHA-256: `6da83ecddb5b8debb834f84808a97dc34d53c8541ec423de04b53c731e9da5e7`
   - Parent at hand-back SHA-256: `43f1416d7ef6a92bc92a5bc90ab21f106c2a04c5dc2141dc70ac8c6b1f06bcca`
 
-The hand-back itself is `/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/shield/twitch/AUTH-HANDBACK.md`. Its hash, plus hashes of
+The hand-back itself is `WORKTREE_t3-5c0ce3ee/shield/twitch/AUTH-HANDBACK.md`. Its hash, plus hashes of
 all source files and logs, is in [SHA256SUMS](/tmp/agents/irl-shield/m3-auth/SHA256SUMS).
 All logs, parent-relative diffs and [file manifest](/tmp/agents/irl-shield/m3-auth/file-manifest.json) are at
-`/tmp/agents/irl-shield/m3-auth`. Runtime guard only: `/home/elan/.t3/worktrees/irl-shield/t3-5c0ce3ee/.tmp/m3-auth/network.py`.
+`/tmp/agents/irl-shield/m3-auth`. Runtime guard only: `WORKTREE_t3-5c0ce3ee/.tmp/m3-auth/network.py`.
 
 Each owned test process exited; the final Python exit code was 0. aiohttp runners and
 ClientSession objects use async cleanup; task-based fixtures cancel and await their tasks

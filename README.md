@@ -1,5 +1,15 @@
 # IRL Shield
 
+Published historical records use path placeholders: `REPO_ROOT` is the
+repository root, `WORKTREE_t3-<id>` identifies the original isolated checkout,
+and `OWNER_HOME` is the operator's home directory. Those references describe
+historical locations, including private scratch that is not shipped here;
+substitute local paths before using a command. Recorded hashes still identify
+the original artifacts, not these path-sanitized text copies. Immutable v2
+nonreuse evidence retains its sealed bytes under the conductor's pre-public
+exception until the one-shot completes; a later authorized change will record
+the old and new hashes.
+
 IRL Shield is an experimental privacy relay for IRL video. Its masking engine
 looks for readable location clues and covers them before presentation. A delayed
 frame clock gives asynchronous detector lanes time to work; missing coverage

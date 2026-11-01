@@ -49,7 +49,7 @@ Conductor raised ceiling40->52 withouttimeboxreset. Invocations38through43 inclu
 
 Integrated one internalRTSP/TCP camera read; authenticatedloopback18554explicitlistener, RTMP/SRTphonepublishpathsunchanged. Capture nowreadsRTSP/TCP andnativeSRT via existinglibsrt, without crashing directRTMP decoder. Both publishers andcapture useopaque decoder templates forcopy, preservekeyframeflags. Added SRTsender mode. Sender sourceaudio discarded/generatedtoneonly. Noengine/scorer/cache/rootrequirements/rootREADME touched. Sourcefrozen afterqueue submission; docs only maychange.
 
-Freshcentralqueue /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1 submitted3jobsandSEALED:
+Freshcentralqueue REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1 submitted3jobsandSEALED:
 - m2-rtmp-av359c4d901f1a4d35b5152a7132be0a0b:30sec RTMPpublish,RTSP+SRTcapture.
 - m2-srt-av ecab6ba5f532409291ee08a32cbe7a8f:30sec SRTpublish,RTSP+SRTcapture.
 - m2-soak b33563fb522d46bbb49dd4c6d6a302f8:1200sec RTMPpublish,RTSP+SRTcapture,faultinjection.

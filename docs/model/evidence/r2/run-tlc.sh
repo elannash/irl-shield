@@ -15,8 +15,8 @@ XDG_RUNTIME_DIR=/run/user/1000 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000
 systemd-run --user --scope --unit="m3-r2-model-$name" --slice=app-t3code-agents.slice \
   -p MemoryMax=2G -p CPUQuota=200% nice -n 10 \
   env JAVA_TOOL_OPTIONS='-Xmx1g -XX:ActiveProcessorCount=2' \
-  /home/elan/.local/share/mise/installs/java/temurin-25/bin/java \
-  -cp /home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
+  OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java \
+  -cp OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar \
   tlc2.TLC -workers 2 -fp 0 -lncheck final -metadir "$task_root/$name/states" \
   -config "$task_root/$name/model.cfg" "$task_root/$name/$spec.tla" \
   > "$model_root/evidence/r2/$name.tlc.log" 2>&1

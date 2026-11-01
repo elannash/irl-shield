@@ -1633,7 +1633,7 @@
     "python": "3.11.15"
   },
   "rescore_of": "offline-vision-union-a30",
-  "evidence_base": "/home/elan/code/irl-shield/out/offline-vision-union-a30",
+  "evidence_base": "REPO_ROOT/out/offline-vision-union-a30",
   "measurement_code_sha256": "95495fc74886d1e752ff51205196b3d380197156928a0393c0a53ba4a5459092",
   "baseline_reference": {
     "path": "bench/baseline.json",

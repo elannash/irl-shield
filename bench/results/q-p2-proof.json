@@ -56,12 +56,12 @@
       "original": {
         "successful": false,
         "source_sha256": "c0bb927621488bee1aed6a3d95f6789da7c79286a666fe80bc3b46f8f0aee183",
-        "log": "/home/elan/code/irl-shield/.tmp/q/queue-fixture-original.log"
+        "log": "REPO_ROOT/.tmp/q/queue-fixture-original.log"
       },
       "acknowledged": {
         "successful": true,
         "source_sha256": "b71ef5b827a03e93f088c62e71ba596e1f728270854819d14ac62eec13633c37",
-        "log": "/home/elan/code/irl-shield/.tmp/q/queue-fixture-acknowledged.log"
+        "log": "REPO_ROOT/.tmp/q/queue-fixture-acknowledged.log"
       }
     },
     "production_queue_changed": false

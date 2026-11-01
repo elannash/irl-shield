@@ -18,8 +18,12 @@ it to the script root. `--cwd` overrides it explicitly. All argv elements after
 the first literal `--` are passed without shell evaluation. Options may follow
 the job name before that separator.
 
+Set `perf_root` to the absolute central checkout path. The example assumes
+`$HOME/code/irl-shield`; use that shared checkout even when your current
+directory is a lane worktree.
+
 ```bash
-perf_root=/home/elan/code/irl-shield
+perf_root="$HOME/code/irl-shield"
 "$perf_root/scripts/perf-queue" enqueue linux root-cuda-static \
   --lane root --priority 1 --cwd "$perf_root" \
   --receipt '{job_dir}/output-{attempt}.performance.json' -- \

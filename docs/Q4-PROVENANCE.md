@@ -146,7 +146,7 @@ shared fixture and area production files were left unchanged.
 Opus applied only the two test modules and this document to
 `elannash/q-quality`. The 89 ignored proof payloads, including the generic
 `out/handback.json`, were deliberately excluded. Their originals remain at
-`/home/elan/.t3/worktrees/irl-shield/t3-96d4fa2d/out/proof/q4-provenance/`;
+`WORKTREE_t3-96d4fa2d/out/proof/q4-provenance/`;
 that worktree's `out/handback.json` indexes them. No root output was
 overwritten.
 

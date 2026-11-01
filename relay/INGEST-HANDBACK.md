@@ -4,12 +4,12 @@ Verdict: PARTIAL — startup ownership bug fixed with red/green proof; real SRT 
 
 ## Checkout and scope
 
-- Requested and actual cwd: `/home/elan/.t3/worktrees/irl-shield/t3-ea758545`.
+- Requested and actual cwd: `WORKTREE_t3-ea758545`.
 - Initial branch `t3/ea758545`, renamed in place to requested `elannash/m2-ingest-security`.
 - Initial/final HEAD: `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d` (exact requested HEAD).
 - First operation: `pwd; git branch --show-current; git rev-parse HEAD; git status --short`. Output confirmed this isolated prepared worktree and a clean initial status. No shell worktrees created/removed.
 - All seven deliverable paths are untracked/uncommitted relative to that HEAD: `relay/security.py`, `relay/mediamtx.py`, `relay/native_auth.py`, `scripts/m2-tools`, `scripts/m2-native`, `tests/m2/test_security.py`, and this file. `git ls-files --error-unmatch` explicitly failed for the six source/test/script paths, as expected under the no-stage instruction. Parent must add them when authorized.
-- Six initial source/test/script files copied from the authorized parent `/home/elan/.t3/worktrees/irl-shield/t3-ae860af9`; no preexisting parent hand-back existed. Parent tree remained read-only. No edits to `relay/live.py`, `relay/runtime.py`, engine, scorer, cache, requirements, or root README.
+- Six initial source/test/script files copied from the authorized parent `WORKTREE_t3-ae860af9`; no preexisting parent hand-back existed. Parent tree remained read-only. No edits to `relay/live.py`, `relay/runtime.py`, engine, scorer, cache, requirements, or root README.
 - No children spawned. Runtime identifies this lane as GPT-6.1 Sol with Ultra reasoning; the packet authorized that assignment. No additional model execution or detector/model changes.
 
 ## Changes and interface
@@ -29,20 +29,20 @@ Verdict: PARTIAL — startup ownership bug fixed with red/green proof; real SRT 
 
 ## Test receipts — exactly six process invocations
 
-All commands ran from this checkout. Logs, repro scripts, native JSON, parent-relative patches and final source hashes are in ignored scratch `/home/elan/.t3/worktrees/irl-shield/t3-ea758545/.tmp/ingest-security/`.
+All commands ran from this checkout. Logs, repro scripts, native JSON, parent-relative patches and final source hashes are in ignored scratch `WORKTREE_t3-ea758545/.tmp/ingest-security/`.
 
-1. **RED**, exit 1. `PYTHONPATH="$PWD" /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/occupied_port.py > .tmp/ingest-security/01-occupied-red.log 2>&1`
+1. **RED**, exit 1. `PYTHONPATH="$PWD" WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/occupied_port.py > .tmp/ingest-security/01-occupied-red.log 2>&1`
    - Exact symptom: `AssertionError: MediaMTX accepted an incumbent listener as its own readiness`.
    - The repro binds/listens on loopback 19450 and calls the actual MediaMTX context using the verified parent binary, then asserts its own child exited. It does not substitute a fake server.
-2. **GREEN**, exit 0, identical repro after startup fix. `PYTHONPATH="$PWD" /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/occupied_port.py > .tmp/ingest-security/02-occupied-green.log 2>&1`
+2. **GREEN**, exit 0, identical repro after startup fix. `PYTHONPATH="$PWD" WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/occupied_port.py > .tmp/ingest-security/02-occupied-green.log 2>&1`
    - Output: `Occupied RTMP listener rejected; owned child exited`.
-3. **FAILED**, exit 1. `M2_PYTHON=/home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python scripts/m2-native --fixture /home/elan/code/irl-shield/out/offline-vision-union-a30/sf-market-natural-input.mp4 --host 127.0.0.1 --rtmp-port 19450 --srt-port 18950 --tool-directory /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/tools/mediamtx-v1.21.3 --output .tmp/ingest-security/03-native-loopback.json > .tmp/ingest-security/03-native-loopback.log 2>&1`
+3. **FAILED**, exit 1. `M2_PYTHON=WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python scripts/m2-native --fixture REPO_ROOT/out/offline-vision-union-a30/sf-market-natural-input.mp4 --host 127.0.0.1 --rtmp-port 19450 --srt-port 18950 --tool-directory WORKTREE_t3-ae860af9/.tmp/tools/mediamtx-v1.21.3 --output .tmp/ingest-security/03-native-loopback.json > .tmp/ingest-security/03-native-loopback.log 2>&1`
    - Only generic sanitized failure retained; there is no 03 JSON receipt. The particular failure cannot be established from that log.
 4. **FAILED**, exit 1. Same command as 03 with output/log prefix `04-native-loopback`.
    - `04-native-loopback.json`: sanitized OSError frame points at occupied-port bind. The probe's TCP incumbent was then changed to use SO_REUSEADDR so a previous run's TIME_WAIT does not break its setup; UDP incumbent does not enable reuse.
 5. **FAILED**, exit 1. Same command as 03 with output/log prefix `05-native-loopback`.
    - `05-native-loopback.json`: sanitized ConnectionError frame points at the authorized SRT reader connection. Added bounded positive-reader connection retry based on MediaMTX's track-registration ordering. No claim about the RTMP results from 03–05, which were not retained as full matrices.
-6. **RED**, exit 1. `PYTHONPATH="$PWD" OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/final_checks.py > .tmp/ingest-security/06-final-checks.log 2>&1`
+6. **RED**, exit 1. `PYTHONPATH="$PWD" OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 WORKTREE_t3-ae860af9/.tmp/m2/py311/bin/python .tmp/ingest-security/final_checks.py > .tmp/ingest-security/06-final-checks.log 2>&1`
    - One targeted unittest process: the existing two security tests plus one native test with separate loopback and Tailscale subtests. Both native probes are explicitly included in this sixth invocation, not reported as additional invocations. Not the repo gate.
    - `Ran 3 tests in 58.018s`; two security tests pass; two native subtests fail because RTMP positive media reads each returned zero.
    - Full independent host receipts: `06-native-loopback.json`, `06-native-tailscale.json`. Read them, not just the exit code.

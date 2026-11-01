@@ -223,7 +223,7 @@ def prepare(args, av, np):
     directory = scratch(args.fixtures)
     directory.mkdir(parents=True, exist_ok=False)
     from tools.demo_renderer.sender import source_manifest
-    expected = args.root / 'out/w8b/occluded-render-01/source.json'
+    expected = args.w8b_source_dir / 'source.json'
     video, _ = source_manifest(expected)
     sources = {'w8b': video}
     recipes = {}
@@ -590,10 +590,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode', choices=('prepare', 'run', 'publish'))
     parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--w8b-source-dir', type=Path, default=Path('out/w8b/render-01'),
+                        help='W8b render directory containing source.json (relative to --root unless absolute; default: out/w8b/render-01)')
     parser.add_argument('--fixtures', type=Path, required=True)
     parser.add_argument('--results', type=Path)
     args = parser.parse_args()
     args.root = args.root.resolve()
+    args.w8b_source_dir = (args.root / args.w8b_source_dir).resolve()
     av, np, fd = native(args.root)
     if args.mode == 'publish':
         publish_worker(av)
@@ -606,9 +609,9 @@ def main():
     directory.mkdir(parents=True, exist_ok=False)
     fixture = json.loads((scratch(args.fixtures) / 'fixtures.json').read_text())
     from tools.demo_renderer.sender import source_manifest
-    video, _ = source_manifest(args.root / 'out/w8b/occluded-render-01/source.json')
+    video, _ = source_manifest(args.w8b_source_dir / 'source.json')
     require(str(video) == fixture['cases']['w8b']['video'], 'original-w8b-path-rebinding-forbidden')
-    require(sha(args.root / 'out/w8b/occluded-render-01/source.json') == fixture['w8b_manifest_sha256'], 'w8b-manifest-seal-mismatch')
+    require(sha(args.w8b_source_dir / 'source.json') == fixture['w8b_manifest_sha256'], 'w8b-manifest-seal-mismatch')
     outcomes = {}
     for case in CASES:
         try:

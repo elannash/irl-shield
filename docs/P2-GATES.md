@@ -111,7 +111,7 @@ Commands run with native worker limits of two, OpenCV threads set to one,
 `nice -n 10`, `MemoryMax=2G`, `MemorySwapMax=0`, `TasksMax=64`, and
 `app-t3code-agents.slice`. The first four builders used the existing Linux probe
 venv; synchronous coverage and the final suites use the existing complete venv
-at `/home/elan/.t3/worktrees/irl-shield/t3-1b7da09d/.tmp/fast/.venv/bin/python`.
+at `WORKTREE_t3-1b7da09d/.tmp/fast/.venv/bin/python`.
 Bytecode writes are disabled. No dependency or model was installed, no OCR or
 GPU work ran, and no production/non-test records were created. These synthetic
 assets are benchmark-only, have no music, and are not demo assets. No new third

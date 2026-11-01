@@ -12,7 +12,7 @@ unqualified.**
 
 Requested and actual branch: `elannash/m2-relay`. HEAD is unchanged from the
 requested base, `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`. Dedicated worktree:
-`/home/elan/.t3/worktrees/irl-shield/t3-ae860af9`. The first operation verified
+`WORKTREE_t3-ae860af9`. The first operation verified
 pwd, branch, exact HEAD and clean status; the prepared branch was renamed in
 place. Continuation checks preserve all uncommitted work. No staging, commit,
 push, PR, merge or shell worktree creation/removal occurred.
@@ -110,8 +110,8 @@ Recent exact commands:
 
 ```sh
 env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/full-gate-56.py
-/home/elan/code/irl-shield/scripts/host-lock exclusive env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/repro-publisher-gap.py /tmp/agents/irl-shield/m2-relay/54-publisher-gap-red.json
-/home/elan/code/irl-shield/scripts/host-lock exclusive env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/repro-publisher-gap.py /tmp/agents/irl-shield/m2-relay/55-publisher-gap-green.json
+REPO_ROOT/scripts/host-lock exclusive env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/repro-publisher-gap.py /tmp/agents/irl-shield/m2-relay/54-publisher-gap-red.json
+REPO_ROOT/scripts/host-lock exclusive env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/repro-publisher-gap.py /tmp/agents/irl-shield/m2-relay/55-publisher-gap-green.json
 env OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 .tmp/m2/py311/bin/python .tmp/m2/repro-capture-dts.py /tmp/agents/irl-shield/m2-relay/59-capture-dts-repro.json
 ```
 
@@ -208,7 +208,7 @@ and native cadence evidence; raising priority was not tested or performed.
 
 ## Final queued producers and live state
 
-Session2: `/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2`, now
+Session2: `REPO_ROOT/.tmp/irl-shield-builder-m2-queue-2`, now
 **SEALED** after the complete M2 producer set. Root owns runner3442769 and is
 watching the retry limit. New explicitly authorized foreground jobs:
 
@@ -224,7 +224,7 @@ assigned at execution and will be audited from receipts. No stored PID is killed
 without matching identity. Root-only safe stop, **not executed by this lane**:
 
 ```sh
-/home/elan/code/irl-shield/scripts/perf-queue --queue-dir /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2 stop linux
+REPO_ROOT/scripts/perf-queue --queue-dir REPO_ROOT/.tmp/irl-shield-builder-m2-queue-2 stop linux
 ```
 
 Root will close the soak after its second contended physical result before a

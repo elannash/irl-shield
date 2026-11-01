@@ -82,7 +82,7 @@ The original one-shot Vision held-out result remains **47/60 pooled natural (78.
 
 Fresh Linux queue **irl-shield-builder-m2-queue-1**, central `.tmp/irl-shield-builder-m2-queue-1`, detached runner **PID 3141521**, nice 10 in `app-t3code-agents.slice`. M2 has the absolute enqueue/receipt/seal commands. The canonical `/tmp/agents/irl-shield/perf.lock`, readiness and `other_busy-v2` rules are unchanged. It exits empty-and-sealed or Friday 09:00 PT. Safe stop:
 ```sh
-/home/elan/code/irl-shield/scripts/perf-queue --queue-dir /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1 stop linux
+REPO_ROOT/scripts/perf-queue --queue-dir REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1 stop linux
 ```
 
 Opus can commit the corrections and run review round two. Q1–Q3 Ultra worktrees still wait for that fixed head; each uses independent truth, all-judge leaks, and the real-video guard. M2/M3 continue in their original worktrees. Lock security and PerlLease replacement remain deferred until the overnight runners stop. No new GStreamer/OpenVINO work tonight.

@@ -25,7 +25,7 @@ For this shared machine, the already pinned GPU environment can instead be
 reused read-only. Only PyAV is installed in this lane's private environment:
 
 ```bash
-M2_GPU_SITE=/home/elan/code/irl-shield/.tmp/linux-probe/.venv/lib/python3.11/site-packages \
+M2_GPU_SITE="$PWD/.tmp/linux-probe/.venv/lib/python3.11/site-packages" \
   systemd-run --user --scope --slice=app-t3code-agents.slice nice -n 10 scripts/m2-setup-linux
 ```
 
@@ -34,7 +34,7 @@ or pass its already verified model cache. The manual phone-setup command is:
 
 ```bash
 scripts/host-lock exclusive systemd-run --user --scope --slice=app-t3code-agents.slice \
-  scripts/m2-live --model-cache /home/elan/code/irl-shield/models/cache \
+  scripts/m2-live --model-cache models/cache \
   --host 127.0.0.1 --archive .tmp/m2/manual-session --phone-setup
 ```
 
@@ -174,7 +174,7 @@ Primary transport/auth references:
 ## Queued acceptance
 
 The original session-1 results are sealed red and retained. Session 2 is
-`/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-2`; its diagnostic
+`REPO_ROOT/.tmp/irl-shield-builder-m2-queue-2`; its diagnostic
 pilot exposed `network-mux` / `BrokenPipeError` and was contended. A local
 four-second publisher gap reproduced the three-second MediaMTX timeout, then
 passed with the ten-second default. The RTMP and SRT A/V requalification jobs

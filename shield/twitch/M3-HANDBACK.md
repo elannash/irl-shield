@@ -16,7 +16,7 @@ remain unverified and unauthorized tonight.
 
 Actual/requested branch: `elannash/m3-twitch` / `elannash/m3-twitch`.
 HEAD/base remains `ec1d1f96a1c29ab82109c66f27064f3fd6cb326d`.
-Dedicated checkout: `/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac`.
+Dedicated checkout: `WORKTREE_t3-3bb00dac`.
 First operation verified isolated path, exact HEAD and clean status; the prepared
 `t3/m3-twitch` branch was renamed in place. No worktree creation/removal, staging,
 commit, push, PR or merge was performed. Final `git status --short` contains only:

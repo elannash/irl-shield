@@ -77,7 +77,7 @@ first test executed. Fifteen unittest invocations ran, within the 24-run
 budget; the failed scope launch is also retained.
 
 All test commands used the existing `models/.venv311` Python and read-only
-`.tmp/m2/linux-venv` site-packages under `/home/elan/code/irl-shield`, with
+`.tmp/m2/linux-venv` site-packages under `REPO_ROOT`, with
 source imported from this worktree. They ran at nice 10 in
 `app-t3code-agents.slice`, held the canonical shared
 `/tmp/agents/irl-shield/perf.lock`, and used two native threads and one OpenCV
@@ -114,7 +114,7 @@ the integrated Mac/Linux gate, cross-vendor review, commit, and PR lifecycle.
 Opus applied the five source, test and documentation files to
 `elannash/q-quality`; the child's ignored proof files were not copied.
 The retained originals and mutation receipts remain at
-`/home/elan/.t3/worktrees/irl-shield/t3-36250274/out/proof/`, with the
+`WORKTREE_t3-36250274/out/proof/`, with the
 inventory at that worktree's `out/retained-history.json`.
 
 The integrated regraders now call the parent's shared

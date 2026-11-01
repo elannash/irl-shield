@@ -1,7 +1,7 @@
 4ceb8066e37dd3e9bb3162f123d9e3c29bf0d5688e6c5aa23727a330cb5c5c50  docs/model/TwitchControl.tla
 f7a4bd4e10b1cb7bcb9f8b49c94135943e90e9390370b753776be4b3088cf178  docs/model/TwitchControl.cfg
 2023618eacfd45e92b552af4f9d7bb57fcf28873f1d638551e20e89f23a280d7  docs/model/view.mjs
-936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88  /home/elan/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar
-1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25  /home/elan/.local/share/mise/installs/java/temurin-25/bin/java
-aeffb7077850fd4c225e3d18049ca6ed7b988cf48e88cd8463526a7feaa74d13  /home/elan/.agents/skills/statechart/scripts/statechart
-f330e0a3b0a9f8181c2e52252c4a47db3f0a64f79a7cca5490263e33a5f13c72  /home/elan/.agents/skills/statechart/scripts/run.ts
+936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88  OWNER_HOME/.local/share/mise/installs/http-tla2tools/1.7.4/tla2tools.jar
+1bf1aaef01e4f8d7c85d913c60fb2ee4624cbe54d4053254c59657b7ea913b25  OWNER_HOME/.local/share/mise/installs/java/temurin-25/bin/java
+aeffb7077850fd4c225e3d18049ca6ed7b988cf48e88cd8463526a7feaa74d13  OWNER_HOME/.agents/skills/statechart/scripts/statechart
+f330e0a3b0a9f8181c2e52252c4a47db3f0a64f79a7cca5490263e33a5f13c72  OWNER_HOME/.agents/skills/statechart/scripts/run.ts

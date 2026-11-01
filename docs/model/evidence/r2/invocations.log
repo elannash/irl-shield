@@ -1,3 +1,3 @@
-old-clamp direct TLC BeforeR2Control /home/elan/.t3/worktrees/irl-shield/t3-6552b346/docs/model/evidence/r2/old-clamp.cfg
-fixed-pass direct TLC TwitchControl /home/elan/.t3/worktrees/irl-shield/t3-6552b346/docs/model/TwitchControl.cfg
+old-clamp direct TLC BeforeR2Control WORKTREE_t3-6552b346/docs/model/evidence/r2/old-clamp.cfg
+fixed-pass direct TLC TwitchControl WORKTREE_t3-6552b346/docs/model/TwitchControl.cfg
 public-replay Python old/fixed public API

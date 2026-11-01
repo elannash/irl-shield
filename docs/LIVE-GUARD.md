@@ -124,7 +124,7 @@ scripts/host-lock shared env \
   nice -n 10 env PYTHONDONTWRITEBYTECODE=1 \
   OMP_NUM_THREADS=2 OMP_THREAD_LIMIT=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
   NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 OPENCV_FOR_THREADS_NUM=1 \
-  /home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python \
+  WORKTREE_t3-7cba93a7/.tmp/integration/venv/bin/python \
   -W error::ResourceWarning - <<'PY'
 import sys
 import unittest

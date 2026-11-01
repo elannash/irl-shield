@@ -1,4 +1,4 @@
-/home/elan/.t3/worktrees/irl-shield/t3-a33f9dc3
+WORKTREE_t3-a33f9dc3
 t3/verify-control-channel-model
 bb6948b9793e1bbb505e84e8042357818ddb9608
  M docs/model/REPORT.md

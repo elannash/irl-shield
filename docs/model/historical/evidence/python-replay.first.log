@@ -1,5 +1,5 @@
 Running as unit: run-p3081524-i7276082.scope; invocation ID: 214ae53c217a475eb671d85f731b3838
-Imported parent public interfaces: /home/elan/.t3/worktrees/irl-shield/t3-3bb00dac
+Imported parent public interfaces: WORKTREE_t3-3bb00dac
 SHA256 shield/control.py 806c51102caea5ba06985831412c89452fd0a000fd5b0343f1535cc5674b244d
 SHA256 shield/twitch/events.py 12331861c469d9f9e3cb5c8a1acb2cfa2b7a6f7ddfddf302a5e1983f1d696c29
 

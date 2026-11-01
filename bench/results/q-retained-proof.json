@@ -15,7 +15,7 @@
       "case": "fast-lane",
       "file": "bench/clocked_bench.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-m",
         "unittest",
@@ -33,7 +33,7 @@
       "case": "cache-scope",
       "file": "bench/rejudge_retained.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-m",
         "unittest",

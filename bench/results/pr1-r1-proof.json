@@ -84,15 +84,15 @@
     "identity": {
       "pid": 3141521,
       "started": "10617088",
-      "command": "/usr/bin/python3 /home/elan/code/irl-shield/scripts/perf-queue --queue-dir /home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1 run linux"
+      "command": "/usr/bin/python3 REPO_ROOT/scripts/perf-queue --queue-dir REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1 run linux"
     },
     "started_at": 1793334221.987022,
     "state": "waiting-for-quiet",
     "updated_at": 1793335074.4341998,
     "stop_command": [
-      "/home/elan/code/irl-shield/scripts/perf-queue",
+      "REPO_ROOT/scripts/perf-queue",
       "--queue-dir",
-      "/home/elan/code/irl-shield/.tmp/irl-shield-builder-m2-queue-1",
+      "REPO_ROOT/.tmp/irl-shield-builder-m2-queue-1",
       "stop",
       "linux"
     ],

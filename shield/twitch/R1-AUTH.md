@@ -3,7 +3,7 @@
 Implementation child for the auth portion of
 `claude:r1:transient-validation-failure-latches-revoked`.
 Base: `bb6948b9793e1bbb505e84e8042357818ddb9608`.
-Checkout: `/home/elan/.t3/worktrees/irl-shield/t3-6b46f095`.
+Checkout: `WORKTREE_t3-6b46f095`.
 Branch: `t3/fix-twitch-invalid-token-classification`.
 The checkout started clean and remains uncommitted for the parent to audit and copy.
 
@@ -62,7 +62,7 @@ Raw receipts are in `/tmp/agents/irl-shield/m3-r1-CHILD/`:
 - `final.sha256`, `final.diff`, `final.status`: final copy/audit receipts.
 
 Both commands use the parent's read-only Python runtime
-`/home/elan/.t3/worktrees/irl-shield/t3-3bb00dac/.tmp/m3/py311/bin/python`,
+`WORKTREE_t3-3bb00dac/.tmp/m3/py311/bin/python`,
 with this child's checkout as cwd and its root plus `tests/m3` on `PYTHONPATH`.
 Bytecode writes are disabled. The execution prefix is:
 

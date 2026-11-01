@@ -53,7 +53,7 @@ Observed 2026-10-30 on Linux at project base
   connection. It is not a workaround.
 
 Primary web sources above were accessed 2026-10-30. Installed-source root:
-`/home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/lib/python3.11/site-packages/`.
+`WORKTREE_t3-7cba93a7/.tmp/integration/venv/lib/python3.11/site-packages/`.
 SHA-256 receipts:
 
 | File under that root | SHA-256 |
@@ -122,9 +122,9 @@ scripts/host-lock shared env \
   OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
   NUMEXPR_NUM_THREADS=2 VECLIB_MAXIMUM_THREADS=2 OPENCV_FOR_THREADS_NUM=1 \
   timeout --kill-after=5s 30s \
-  /home/elan/.t3/worktrees/irl-shield/t3-7cba93a7/.tmp/integration/venv/bin/python \
+  WORKTREE_t3-7cba93a7/.tmp/integration/venv/bin/python \
   tests/m2/tls_probe.py \
-  --mediamtx /home/elan/.t3/worktrees/irl-shield/t3-ae860af9/.tmp/tools/mediamtx-v1.21.3/mediamtx \
+  --mediamtx WORKTREE_t3-ae860af9/.tmp/tools/mediamtx-v1.21.3/mediamtx \
   --out /tmp/agents/irl-shield/tls-reproduce-red
 ```
 

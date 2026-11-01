@@ -21,7 +21,7 @@
       "case": "mixed-ceilings",
       "file": "bench/quality_bundle.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-c",
         "import cv2,runpy;cv2.setNumThreads(1);runpy.run_module(\"unittest\",run_name=\"__main__\")",
@@ -36,15 +36,15 @@
       "restored_byte_for_byte": true,
       "artifacts": {
         ".diff": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/mixed-ceilings.diff",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/mixed-ceilings.diff",
           "sha256": "8d1b64a55d3975c0757ff715779631ceac099fda32e837a38a56e1be782527e8"
         },
         "-red.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/mixed-ceilings-red.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/mixed-ceilings-red.log",
           "sha256": "ea54ead3aadc43318ed6726c6dfc4d5d740344e7967a2a8796aecafd1acfa7d7"
         },
         "-green.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/mixed-ceilings-green.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/mixed-ceilings-green.log",
           "sha256": "b659ca26ab4b23eece3c8bca37161e493177b3d48e45a89ab8d2a22cc64f48bc"
         }
       }
@@ -53,7 +53,7 @@
       "case": "legacy-area-recheck",
       "file": "bench/regrade.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-c",
         "import cv2,runpy;cv2.setNumThreads(1);runpy.run_module(\"unittest\",run_name=\"__main__\")",
@@ -68,15 +68,15 @@
       "restored_byte_for_byte": true,
       "artifacts": {
         ".diff": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/legacy-area-recheck.diff",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/legacy-area-recheck.diff",
           "sha256": "672d46457182dc668a6d3e78ca3123d1401209934951901744645d29fb876be1"
         },
         "-red.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/legacy-area-recheck-red.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/legacy-area-recheck-red.log",
           "sha256": "82886f041ae9b31b137e3635e7d5212607a39eb6caa3861a5b44304d390e478e"
         },
         "-green.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/legacy-area-recheck-green.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/legacy-area-recheck-green.log",
           "sha256": "796e13e8079bdfe3bdcb107152380f10c02e31a1adc18af37ec4db4e7e452042"
         }
       }
@@ -85,7 +85,7 @@
       "case": "batch-area-recheck",
       "file": "bench/rescore_independent.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-c",
         "import cv2,runpy;cv2.setNumThreads(1);runpy.run_module(\"unittest\",run_name=\"__main__\")",
@@ -100,15 +100,15 @@
       "restored_byte_for_byte": true,
       "artifacts": {
         ".diff": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/batch-area-recheck.diff",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/batch-area-recheck.diff",
           "sha256": "3a1a13e4d5b94cc2c0ca560cd2f8bc2d712d914d2d3fd285ad6f921223f168b7"
         },
         "-red.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/batch-area-recheck-red.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/batch-area-recheck-red.log",
           "sha256": "cec8b0f6e3d8d50f82b0ea4cd307a955a404fe0314022ab586e6561908e5fa16"
         },
         "-green.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/batch-area-recheck-green.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/batch-area-recheck-green.log",
           "sha256": "553ca1bd921f6432b62932bee875d6e3c2c4afb4cc58e0ab7e479a2346bd0bbf"
         }
       }
@@ -117,7 +117,7 @@
       "case": "clocked-basis-diagnostic",
       "file": "bench/clocked_bench.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-c",
         "import cv2,runpy;cv2.setNumThreads(1);runpy.run_module(\"unittest\",run_name=\"__main__\")",
@@ -132,15 +132,15 @@
       "restored_byte_for_byte": true,
       "artifacts": {
         ".diff": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic.diff",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic.diff",
           "sha256": "6bc4c04f7465c141f696a8cfc6fc3e6db9666a831763faccd19909cce8fcc0c8"
         },
         "-red.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic-red.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic-red.log",
           "sha256": "d8a8f3a15948262e71a2cf80fe3ec1dd3fda4a62b1f08c1ec885b9e1d6b5ee15"
         },
         "-green.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic-green.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/clocked-basis-diagnostic-green.log",
           "sha256": "792cf9668de8baa88882ab979e68764dc8023e46d249a0418aef36c88706774e"
         }
       }
@@ -149,7 +149,7 @@
       "case": "offline-basis-diagnostic",
       "file": "bench/offline_quality.py",
       "command": [
-        "/home/elan/code/irl-shield/models/.venv311/bin/python",
+        "REPO_ROOT/models/.venv311/bin/python",
         "-B",
         "-c",
         "import cv2,runpy;cv2.setNumThreads(1);runpy.run_module(\"unittest\",run_name=\"__main__\")",
@@ -164,15 +164,15 @@
       "restored_byte_for_byte": true,
       "artifacts": {
         ".diff": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/offline-basis-diagnostic.diff",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/offline-basis-diagnostic.diff",
           "sha256": "7c2ac64daa5c4d549ea5d6845344ca332a92d48ba6cae1026f886fc5ecb58a57"
         },
         "-red.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/offline-basis-diagnostic-red.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/offline-basis-diagnostic-red.log",
           "sha256": "8b624d40919d1eb899d02409720a3ead85d7029424abe0f065e66e1c6b2047b4"
         },
         "-green.log": {
-          "path": "/home/elan/code/irl-shield/.tmp/q/pr4-r2-proof/offline-basis-diagnostic-green.log",
+          "path": "REPO_ROOT/.tmp/q/pr4-r2-proof/offline-basis-diagnostic-green.log",
           "sha256": "992660e7b4cb492b0390261686139d1664d3cc691983df52d568cdc0cac27fab"
         }
       }
@@ -182,7 +182,7 @@
     "tests": 18,
     "exit": 0,
     "log": {
-      "path": "/home/elan/code/irl-shield/.tmp/q/p2-r2-affected-green.log",
+      "path": "REPO_ROOT/.tmp/q/p2-r2-affected-green.log",
       "sha256": "71a70e13eceda0c6027e587da09d61b88dbe87b29e02d38545007922995c3bfd"
     }
   },
@@ -197,7 +197,7 @@
       "compilation": true,
       "swift": false,
       "log": {
-        "path": "/home/elan/code/irl-shield/.tmp/q/p2-r2-linux-gate.log",
+        "path": "REPO_ROOT/.tmp/q/p2-r2-linux-gate.log",
         "sha256": "f1e02cc8121f4c5c095b1b13759c3470715ccda9af36536c0dfab97b10952da8"
       },
       "scope": "Existing bench/root + relay gate; Twitch suite/unified clean env expansion is separately in flight."
@@ -212,7 +212,7 @@
       "compilation": true,
       "swift": true,
       "log": {
-        "path": "/home/elan/code/irl-shield/.tmp/q/p2-r2-mac-gate.log",
+        "path": "REPO_ROOT/.tmp/q/p2-r2-mac-gate.log",
         "sha256": "b944fa7e6dfbd9ecb8f1a3f4a339140026409f7ef6fc5085f1fc69a2911f0276"
       },
       "scope": "Existing bench/root + relay gate; Twitch suite/unified clean env expansion is separately in flight."
