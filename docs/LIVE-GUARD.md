@@ -23,9 +23,9 @@ with `--mock-origin`, `--local-only`, or `--local-sink`. The synthetic mock
 control route continues to use no Twitch publication flag.
 
 Owner queue decision 50 permits live publication only to the test channel
-`naie`, during Sat/Sun sessions started by the owner. The terminal prompt
-reminds the attendee of that restriction. The weekday is not an automatic
-authorization signal; the owner still starts each permitted session.
+`naie`, during an owner-started, attended session. The terminal prompt
+reminds the attendee of that restriction; the owner starts each permitted
+session and confirms it at the terminal.
 
 ## Authorization interface and source
 

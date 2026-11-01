@@ -19,8 +19,8 @@ from unittest.mock import AsyncMock, Mock, patch
 from lock_isolation import install_lock_guard
 
 ROOT = Path(__file__).resolve().parents[1]
-TAILNET_HOST = '.'.join(map(str, (100, 80, 2, 3)))
-DISCOVERED_TAILNET_HOST = '.'.join(map(str, (100, 80, 4, 5)))
+TAILNET_HOST = '100.80.2.3'
+DISCOVERED_TAILNET_HOST = '100.80.4.5'
 SCRIPT = ROOT / 'scripts/walk-linux'
 loader = importlib.machinery.SourceFileLoader('walk_linux', str(SCRIPT))
 spec = importlib.util.spec_from_loader(loader.name, loader)

@@ -7,7 +7,7 @@ from relay.security import Credentials, RelayAddress, TwitchDestination, mediamt
 
 
 TAILNET = ipaddress.IPv4Network('100.64.0.0/10')
-TAILNET_HOST = '.'.join(map(str, (100, 80, 90, 100)))
+TAILNET_HOST = '100.80.90.100'
 
 
 class Security(unittest.TestCase):

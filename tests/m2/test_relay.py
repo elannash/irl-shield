@@ -189,7 +189,7 @@ class RelayBoundary(unittest.TestCase):
             with self.subTest(url=value), self.assertRaises(ValueError):
                 local_url(value)
         self.assertEqual(local_url("rtmp://127.0.0.1:19460/live/m2"), "rtmp")
-        self.assertEqual(local_url('srt://' + '.'.join(map(str, (100, 80, 90, 100))) + ':19460?mode=listener'), "srt")
+        self.assertEqual(local_url("srt://100.80.90.100:19460?mode=listener"), "srt")
 
 
 if __name__ == "__main__":
