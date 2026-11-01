@@ -1,7 +1,7 @@
 export const title = 'Observed connection loss and delivered protective holds';
 const output = (v) => {
   const p = v.policy;
-  return p.connection || p.guard || p.chat || p.shield || v.local
+  return p.connection || p.guard || p.chat || p.shield || v['local']
     ? 'HOLD' : v.coverage ? 'LIVE' : 'PROTECT';
 };
 export const state = (v) => {

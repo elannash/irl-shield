@@ -165,7 +165,7 @@ class EndpointBoundary(unittest.TestCase):
         phone = Credentials('synthetic-user', 'SYNTHETIC-PASSWORD')
         self.assertEqual(endpoint(RelayAddress('127.0.0.1'), phone, local_only=True),
             'rtmp://127.0.0.1:19350/camera?user=synthetic-user&pass=SYNTHETIC-PASSWORD')
-        for host in ('.'.join(map(str, (100, 100, 100, 100))), '127.0.0.2'):
+        for host in ('100.100.100.100', '127.0.0.2'):
             with self.subTest(host=host), self.assertRaisesRegex(ValueError, 'exact loopback'):
                 endpoint(RelayAddress(host), phone, local_only=True)
 

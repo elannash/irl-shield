@@ -50,8 +50,8 @@ async def authorize_live(session, http):
         with open('/dev/tty', 'r') as response, open('/dev/tty', 'w') as terminal:
             if not response.isatty() or not terminal.isatty():
                 raise LiveModeError()
-            terminal.write('LIVE publication to naie. Only continue during a Sat/Sun session '
-                           'started by the owner. Type LIVE naie and press Enter for this session: ')
+            terminal.write('LIVE publication to naie. Only continue during an owner-started, '
+                           'attended session. Type LIVE naie and press Enter for this session: ')
             terminal.flush()
             if response.readline(64) != 'LIVE naie\n':
                 raise LiveModeError()

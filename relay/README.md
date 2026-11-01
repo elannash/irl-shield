@@ -86,7 +86,7 @@ flow and install it in memory. A configured key alone never forms a Twitch
 destination. Explicit bandwidth-test mode appends `?bandwidthtest=true`;
 `--twitch-live` requires fresh `naie` identity and an attended per-session
 confirmation. The runtime consumes the one-use approval before opening any
-live route. Only owner-started Sat/Sun test-channel live sessions are authorized.
+live route. Test-channel live publication requires an owner-started, attended session.
 Keys never enter argv, logs, archives or the OS keyring.
 
 The sole Twitch route is plain RTMP over `127.0.0.1` to a runtime-owned TLS

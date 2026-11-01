@@ -35,7 +35,7 @@ matching client/broadcaster IDs, approved scopes and unexpired authorization,
 then an exact `LIVE naie` confirmation on `/dev/tty` for that session.
 The runtime consumes the single-use approval before creating any live route.
 Omitting both flags retains authenticated controls without publication.
-Only owner-started Sat/Sun live sessions on the test channel are authorized.
+Live publication to the test channel requires an owner-started, attended session.
 [RUN.md](RUN.md) contains the attended recipes; they are not local test commands.
 
 ## Loopback publication proof

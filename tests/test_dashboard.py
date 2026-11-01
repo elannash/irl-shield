@@ -23,7 +23,7 @@ from shield.render import Renderer
 
 
 TAILNET = ipaddress.IPv4Network('100.64.0.0/10')
-TAILNET_HOST = '.'.join(map(str, (100, 100, 10, 20)))
+TAILNET_HOST = '100.100.10.20'
 
 cv2.setNumThreads(1)
 RTMP = f'rtmp://{TAILNET_HOST}:1935/live/canary-stream?user=canary-user&pass=canary-pass%2Bword'

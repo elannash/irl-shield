@@ -39,7 +39,7 @@ c315764a6e1da99fab5cc53262e5786cfc553abb86ac2b52e7e02f1910db2f53  ./evidence/r2/
 16aab26592e1e6a318cc689ce840d2a48439a264209d9e44fadd7ec52fa90e3f  ./evidence/r2/TwitchControl-before-r2.tla.txt
 f0ccaa8197dcc89c648599cda4625b5bd4ea5f426df42349c7246727e1f46399  ./evidence/r2/commands.sh
 b9fe14041166dbfaf03d740c8d272b76fc21767be1923fb6e68b8d591dd617b0  ./evidence/r2/fixed-pass.tlc.log
-346d0d776edf29d0108623eb3d13559524fc62414c65e0bfaa5c669a7f5a387c  ./evidence/r2/fixed-scope-limits.txt
+33fa457b2206d47e978e97bc806f0381695c53ac5fe534be87c878663cd519c7  ./evidence/r2/fixed-scope-limits.txt
 2940c8e0e05d9601360384b902a9c6fbd6b3b9f8551c160b1e53bfba53a96f9f  ./evidence/r2/frozen-source.diff
 998c7519ea43745d6a0563e249a0704382ba1ce1ec6db051e59156e6b5bf55fb  ./evidence/r2/invocations.log
 1160b0056bc584bc13d7b88dffaf9906632ace0b9cb12e1eadd732e7fe0bd72c  ./evidence/r2/model-and-tool.sha256
@@ -70,7 +70,7 @@ e0e9af848e59d2db961514f94dec567158df171a4fee81e138b4360349bae5ce  ./evidence/r3/
 e0e9af848e59d2db961514f94dec567158df171a4fee81e138b4360349bae5ce  ./evidence/r3/delivery.sha256
 62ac22250eb0bc6afc90e359a6ae9335d2d11a02f15a2e92c09c8b58c3d4b4f3  ./evidence/r3/final-bootstrap-pass.tlc.log
 f0a88678802161a9f8f5b85324fa8ae297d14811d1ea7e8bebb0d1a078caa133  ./evidence/r3/fixed-raw-pass.tlc.log
-1d2c5bf5985cd9c924a33dd1f4d246a780f73e8de31598e1727f95e44c67914c  ./evidence/r3/fixed-scope-limits.txt
+30842c6d403bda431cefce04b2008de9aa37e3c777871d254929f6a8c3facb4e  ./evidence/r3/fixed-scope-limits.txt
 29dfc35183690f0a3177599ff2c5c5beb54fe36d7be67f9c8bc25d7bfcd6ae73  ./evidence/r3/frozen-inputs-after-final.txt
 7bbaf74b2f22be20a13396d8476afce7155733d3469291bfa7aea5dbc1ab0d05  ./evidence/r3/frozen-source-70345615.diff
 12038da0275521cf858ae93c70975a7466c23dfdef8439ceaf0543ad384e2448  ./evidence/r3/frozen-source.diff
@@ -85,7 +85,7 @@ bd1ab1a8fe0df6bf22ac1b3e6bf1ba7d2347d89baf301d2dd68eb86898d09585  ./evidence/r3/
 10dfd736903897cc160f8312985d9cedfdbbf718e0839501000f81e285f045db  ./evidence/r3/old-raw-fail.tlc.log
 228605c0e0a29cd77f78c48a8cc8ef7004ee2f172b503c66686ebd5ba9e882f4  ./evidence/r3/parent-commands.sh
 969edc823fbef613891a4162558d71bf8603048f9fbb90c35b510d469c338ffd  ./evidence/r3/parent-final-inputs.sha256
-6b6616f2729a15b112c8b220bce183cb5063f31238cf01ec8f3a0e91760dec2b  ./evidence/r3/parent-final-scope-limits.txt
+d414695f072f42a44498ec36bebb3ddb403f0a687d7a8f07501d5cd6acef0e67  ./evidence/r3/parent-final-scope-limits.txt
 635a96e34aef70707bfc16221494326c711fddae9125c434e779f32b156158cb  ./evidence/r3/parent-final-verify.py.txt
 c6d38e5e3ad7d79a471910bfd341c988bb88269f2b38e8f9a2fd15fcabee2f6a  ./evidence/r3/parent-process-cleanup.txt
 48729bf8b0ccafc9aff21f0dbde824e6167328479020a95b2cd02a67c0d62de2  ./evidence/r3/parent-replay-and-gate.log
@@ -168,4 +168,4 @@ cc074bf0f1290a861db4e9de2292e770cfe022933572a482c3b40e15425e8308  ./historical/e
 296924841c1c9e38dd74b4907110afd584dcb2dfca583239cc74cfcbe6cd3039  ./historical/evidence/source-hashes.initial.json
 bf8ec7f08d4ad0f4d07f13f5d18e3ef827f514137807323964049b795226bdff  ./historical/replay_counterexamples.py
 ab0e7d2e6efd297b9035254be3af3845c006f131965859097313d690671a1b04  ./historical/view.mjs
-30ac753d2a0de3ef6b664fab7317d0be29e416ccb1309f22155e94479c79ef66  ./view.mjs
+2f05c91799ae5fc6dbcc5cd1806e5589c62f52f41b20706d2058811abd2a7c80  ./view.mjs
