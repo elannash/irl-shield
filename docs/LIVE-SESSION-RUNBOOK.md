@@ -116,13 +116,14 @@ scripts/walk-linux --local-only --host 127.0.0.1 --venv .venv \
   --seconds 330 --archive out/live-session/local-input-run-01/relay
 ```
 
-For a separately attended physical-phone local-only rehearsal, replace the
-quoted host placeholder with this host's own Tailscale IPv4 address. Both
-devices need their existing private connectivity. This performs no Twitch
-login or publication and has not been rehearsed by this documentation work.
+For a separately attended physical-phone local-only rehearsal, leave `--host`
+and `SHIELD_BIND_HOST` unset so the launcher auto-detects its own Tailscale
+IPv4 address. Both devices need their existing private connectivity. This
+performs no Twitch login or publication and has not been rehearsed by this
+documentation work.
 
 ```sh
-scripts/walk-linux --local-only --host '<own-tailscale-ipv4>' --venv .venv \
+scripts/walk-linux --local-only --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
   --seconds 330 --archive out/live-session/phone-local-run-01/relay
 ```
@@ -188,16 +189,17 @@ An abort or forced sender termination fails complete-clip acceptance. Preserve
 the archive and failure; do not reuse its output paths. A relaunch creates a
 gap in publication and fresh credentials, not a continuous stream promise.
 
-Start the phone segment only after that cleanup. Replace the host placeholder
-with the host's own Tailscale IPv4. The launcher enables the existing phone
-setup and dashboard when no demo source is present. Complete the new login
+Start the phone segment only after that cleanup. Leave `--host` and
+`SHIELD_BIND_HOST` unset for automatic Tailscale address detection. The launcher
+enables the existing phone setup and dashboard when no demo source is present.
+Complete the new login
 and fresh `LIVE naie` approval, open the new private invitation, and pair the
 phone's RTMP broadcaster. Connect promptly for roughly five minutes of phone
 input within the 330-second relay window, or stop earlier with Ctrl-C.
 
 ```sh
 infisical run -- scripts/walk-linux --twitch-live \
-  --host '<own-tailscale-ipv4>' --venv .venv \
+  --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
   --seconds 330 --archive out/live-session/phone-live-run-01/relay
 ```
@@ -228,9 +230,12 @@ route. See [LIVE-GUARD.md](LIVE-GUARD.md), [LIVE-EGRESS.md](LIVE-EGRESS.md) and
 
 ## Fresh receipt before accepting a rehearsal
 
-Retain a new receipt per attempt with the exact commit and argv, bound
-manifest identity, selected mode, timestamps, declared observation windows
-and every failure. Redact private terminal/UI contents. Check all of these:
+Retain a new receipt per attempt with the exact commit and a reproducible
+command template, bound manifest identity, selected mode, timestamps, declared
+observation windows and every failure. Use placeholders for private fields.
+Never record or publish tailnet addresses or machine names, including in
+command captures, shell history or receipts. Keep private terminal/UI contents
+out of evidence. Check all of these:
 
 - The sender ends with `complete: true` and 6,300 packets for a prepared clip.
   Retain its JSONL, `runtime.json`, `frames.jsonl`, `mediamtx.json` and every
