@@ -22,10 +22,13 @@ from shield.lanes import DetectorLane
 
 
 def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_box_thresh=None,
-                accurate_rate_hz=4.0):
+                accurate_rate_hz=4.0, delay_seconds=1.0):
     if (isinstance(accurate_rate_hz, bool) or not isinstance(accurate_rate_hz, Real)
             or not 0 < accurate_rate_hz <= 30 or not math.isfinite(accurate_rate_hz)):
         raise ValueError('accurate_rate_hz must be a finite number greater than 0 and at most 30')
+    if (isinstance(delay_seconds, bool) or not isinstance(delay_seconds, Real)
+            or not .5 <= delay_seconds <= 10 or not math.isfinite(delay_seconds)):
+        raise ValueError('delay_seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     from bench.detector_options import lane_detector_options
     lane_options = {lane: lane_detector_options({'accurate_box_thresh': accurate_box_thresh}, lane)
                     for lane in ('fast', 'accurate')}
@@ -38,7 +41,7 @@ def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_
                                               'limit_side_len': width})
             lanes[name] = DetectorLane(name, backend, rate, width=width,
                                        fault_intervals=faults if name == 'accurate' else ())
-        return MaskingEngine(lanes, {'fps': 30, 'delay_seconds': 1., 'before': 6, 'after': 30,
+        return MaskingEngine(lanes, {'fps': 30, 'delay_seconds': delay_seconds, 'before': 6, 'after': 30,
                                     'motion_mode': 'phase', 'motion_width': 320,
                                     'motion_min_response': .05, 'padding': .3},
                              renderer=appearance.renderer(padding=.3) if appearance is not None else None)
@@ -143,11 +146,21 @@ def run(engine, address, phone, internal, directory, stopped, seconds=None,
             except Exception as error:
                 if 'failure' not in summary:
                     record_failure(error)
+        engine_stats = engine.stats
+        summary['configuration'] = {
+            'encoder': encoder, 'delay_seconds': engine.delay,
+            'lanes': {name: {
+                'rate_hz': lane.get('rate_hz'),
+                'execution_provider': lane['backend'].get('execution_provider'),
+                'active_execution_providers': lane['backend'].get('active_execution_providers'),
+                'box_thresh': lane['backend'].get('parameters', {}).get('box_thresh'),
+            } for name, lane in engine_stats.get('lanes', {}).items()},
+        }
         summary.update(seconds=time.monotonic() - started, cleanup_errors=cleanup,
                        session=session.stats if session else None,
                        egress_queue_capacity=1, egress_dropped=writer.dropped if writer else 0,
                        input_queue_capacity=8, input_control_capacity=1, input_queue_high_water=source.high_water if source else None,
-                       engine=engine.stats, output_frames=output.count if output else 0,
+                       engine=engine_stats, output_frames=output.count if output else 0,
                        max_egress_write_seconds=output.max_write_seconds if output else None,
                        egress_recoveries=({'count': output.recovery_count,
                                            'recent_events': list(output.recovery_events),
@@ -174,9 +187,13 @@ def main():
     parser.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'))
     parser.add_argument('--archive', type=Path, help='Opt in to full diagnostic evidence')
     parser.add_argument('--model-cache', type=Path, default=Path('models/cache'))
+    parser.add_argument('--cpu', action='store_true', help='Use ONNX CPU for both lanes and libx264 encoding')
+    parser.add_argument('--delay-seconds', type=float, help='Presentation delay, 0.5..10 seconds inclusive (privacy floor 0.5); default 1, or 2.5 with --cpu')
     parser.add_argument('--phone-setup', action='store_true')
     parser.add_argument('--seconds', type=float)
     args = parser.parse_args()
+    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or not .5 <= args.delay_seconds <= 10):
+        parser.error('Presentation delay must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     if args.seconds is not None and (not math.isfinite(args.seconds) or args.seconds <= 0):
         parser.error('A positive finite run duration is required')
     if args.phone_setup and not (sys.stdin.isatty() and sys.stdout.isatty()):
@@ -187,7 +204,10 @@ def main():
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stopped.set())
     with MediaMTX(address, phone, internal, archive=args.archive):
-        engine = make_engine(args.model_cache)
+        options = {'provider': 'cpu', 'delay_seconds': 2.5} if args.cpu else {}
+        if args.delay_seconds is not None:
+            options['delay_seconds'] = args.delay_seconds
+        engine = make_engine(args.model_cache, **options)
         if args.phone_setup:
             # Exactly once, only by this explicit interactive action. Never put
             # these values in logs, process argv, saved setup or receipts.
@@ -195,7 +215,8 @@ def main():
             print('Moblin SRT URL:', address.srt('publish', 'camera', phone))
             print('OBS RTMP:', address.rtmp('shielded'))
             print('OBS SRT:', address.srt('read', 'shielded'))
-        run(engine, address, phone, internal, args.archive, stopped, args.seconds)
+        run_options = {'encoder': 'libx264'} if args.cpu else {}
+        run(engine, address, phone, internal, args.archive, stopped, args.seconds, **run_options)
 
 
 if __name__ == '__main__':

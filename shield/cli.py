@@ -37,6 +37,8 @@ def parser():
         command.add_argument('--rtsp-port', type=int, default=18554)
         command.add_argument('--srt-port', type=int, default=18890)
         command.add_argument('--model-cache', type=Path, default=Path('models/cache'))
+        command.add_argument('--cpu', action='store_true', help='Use ONNX CPU for both lanes and libx264 encoding')
+        command.add_argument('--delay-seconds', type=float, help='Presentation delay, 0.5..10 seconds inclusive (privacy floor 0.5); default 1, or 2.5 with --cpu')
         command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate detector cadence; default 4 Hz')
         command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only box confidence floor; default 0.5')
         command.add_argument('--archive', type=Path, help='Opt in to full stream and per-frame evidence')
@@ -56,6 +58,10 @@ def parser():
 def validate(args):
     from tools.demo_renderer.options import validate_demo
     validate_demo(args)
+    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or not .5 <= args.delay_seconds <= 10):
+        raise ValueError('delay_seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
+    if args.command == 'login' and not args.run and (args.cpu or args.delay_seconds is not None):
+        raise ValueError('CPU and presentation delay options require run or login --run')
     if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
                                              or not 0 < args.accurate_rate_hz <= 30):
         raise ValueError('accurate_rate_hz must be positive, finite and at most 30')
@@ -203,6 +209,10 @@ async def execute(args):
                     if args.phone_setup:
                         terminal_setup(address, phone)
                     detector_options = {}
+                    if args.cpu:
+                        detector_options.update(provider='cpu', delay_seconds=2.5)
+                    if args.delay_seconds is not None:
+                        detector_options['delay_seconds'] = args.delay_seconds
                     if args.accurate_rate_hz is not None:
                         detector_options['accurate_rate_hz'] = args.accurate_rate_hz
                     if args.accurate_box_thresh is not None:
@@ -236,6 +246,8 @@ async def execute(args):
                                                     address.srt('publish', 'camera', phone)))
                             await dashboard.start()
                         input_options = {'phone_input': phone_input} if phone_input is not None else {}
+                        if args.cpu:
+                            input_options['encoder'] = 'libx264'
                         work = asyncio.create_task(asyncio.to_thread(run, engine, address, phone, internal,
                             args.archive, stopped, args.seconds, control_ready=register,
                             publish_twitch=(args.twitch_bandwidth_test or args.twitch_live),

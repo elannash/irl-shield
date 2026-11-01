@@ -8,8 +8,37 @@ from rapidocr.ch_ppocr_det import TextDetector
 from rapidocr.ch_ppocr_det.utils import DBPostProcess
 
 from bench.detector_options import lane_detector_options
-from bench.onnx_detectors import create_detector
+from bench.onnx_detectors import _session, create_detector
 from bench.pipeline import detector_for
+
+
+class CPUProvider(unittest.TestCase):
+    def test_cpu_session_is_explicit_and_cannot_fall_back_to_cuda(self):
+        artifact = {'sha256': '0' * 64, 'license': 'CC0-1.0', 'license_source': 'synthetic',
+                    'source': 'synthetic', 'url': 'not-downloaded'}
+        for available, active, succeeds in ((['CPUExecutionProvider', 'CUDAExecutionProvider'], ['CPUExecutionProvider'], True),
+                                            (['CUDAExecutionProvider'], [], False),
+                                            (['CPUExecutionProvider'], ['CUDAExecutionProvider'], False)):
+            with self.subTest(available=available, active=active), \
+                    patch('bench.onnx_detectors.verified_path', return_value=('/synthetic/not-read.onnx', artifact)), \
+                    patch('bench.onnx_detectors.ort.get_available_providers', return_value=available), \
+                    patch('bench.onnx_detectors.ort.InferenceSession') as factory:
+                factory.return_value.get_providers.return_value = active
+                if succeeds:
+                    session, metadata, _ = _session('ppocr-v6-tiny', {'provider': 'cpu'})
+                    self.assertIs(session, factory.return_value)
+                    self.assertEqual(metadata['execution_provider'], 'CPUExecutionProvider')
+                    self.assertEqual(metadata['active_execution_providers'], ['CPUExecutionProvider'])
+                    self.assertFalse(metadata['cpu_operator_partition_fallback_allowed'])
+                else:
+                    with self.assertRaisesRegex(RuntimeError, 'CPUExecutionProvider'):
+                        _session('ppocr-v6-tiny', {'provider': 'cpu'})
+                if 'CPUExecutionProvider' in available:
+                    factory.assert_called_once()
+                    self.assertEqual(factory.call_args.kwargs['providers'], ['CPUExecutionProvider'])
+                    factory.return_value.disable_fallback.assert_called()
+                else:
+                    factory.assert_not_called()
 
 
 class BoxConfidence(unittest.TestCase):

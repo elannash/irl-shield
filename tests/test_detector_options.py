@@ -101,24 +101,44 @@ class DetectorOptions(unittest.TestCase):
                 capture.return_value.release.assert_called_once_with()
 
     def test_native_routes_override_without_changing_defaults_or_starting_workers(self):
-        for floor, rate in ((None, None), (.73, 15), (.73, 7.5)):
-            with self.subTest(floor=floor, rate=rate), \
+        for provider, floor, rate, delay in ((None, None, None, None), ('cpu', None, None, 2.5),
+                                            ('cpu', .73, 15, .5), ('cpu', .73, 7.5, 3.25),
+                                            ('cpu', None, None, 10), ('cuda', None, None, .5),
+                                            ('cuda', None, None, 2.5), ('cuda', None, None, 10)):
+            with self.subTest(provider=provider, floor=floor, rate=rate, delay=delay), \
                  patch('bench.onnx_detectors.create_detector', side_effect=lambda *args: EmptyDetector()) as factory, \
                  patch('relay.runtime.DetectorLane') as lane, patch('relay.runtime.MaskingEngine') as engine:
                 options = {'accurate_box_thresh': floor}
                 if rate is not None:
                     options['accurate_rate_hz'] = rate
-                result = make_engine('/synthetic-cache', provider='cpu', **options)
+                if provider is not None:
+                    options['provider'] = provider
+                if delay is not None:
+                    options['delay_seconds'] = delay
+                result = make_engine('/synthetic-cache', **options)
                 self.assertIs(result, engine.return_value)
                 fast, accurate = factory.call_args_list
-                self.assertEqual(fast.args, ('ppocr-v6-tiny', {'provider': 'cpu', 'threads': 2,
+                self.assertEqual(fast.args, ('ppocr-v6-tiny', {'provider': provider or 'cuda', 'threads': 2,
                                                            'cache_dir': '/synthetic-cache', 'limit_side_len': 640}))
-                expected = {'provider': 'cpu', 'threads': 2, 'cache_dir': '/synthetic-cache', 'limit_side_len': 960}
+                expected = {'provider': provider or 'cuda', 'threads': 2, 'cache_dir': '/synthetic-cache', 'limit_side_len': 960}
                 if floor is not None:
                     expected['box_thresh'] = .73
                 self.assertEqual(accurate.args, ('ppocr-v6-small', expected))
                 self.assertEqual([call.args[0] for call in lane.call_args_list], ['fast', 'accurate'])
                 self.assertEqual([call.args[2] for call in lane.call_args_list], [8, 4 if rate is None else rate])
+                self.assertEqual([call.kwargs['width'] for call in lane.call_args_list], [640, 960])
+                self.assertEqual(engine.call_args.args[1]['delay_seconds'], 1 if delay is None else delay)
+                self.assertEqual(engine.call_args.args[1]['fps'], 30)
+
+    def test_native_invalid_delay_stops_before_backend_construction(self):
+        for provider in ('cpu', 'cuda'):
+            for delay in (True, False, '2.5', [], -.1, 0, .25, 10.000001, 10**1000,
+                          float('nan'), float('inf'), float('-inf')):
+                with self.subTest(provider=provider, delay=delay), patch('bench.onnx_detectors.create_detector') as factory, \
+                        patch('relay.runtime.DetectorLane'), patch('relay.runtime.MaskingEngine'):
+                    with self.assertRaisesRegex(ValueError, 'delay_seconds'):
+                        make_engine('/unused', provider=provider, delay_seconds=delay)
+                    factory.assert_not_called()
 
     def test_native_invalid_rate_stops_before_backend_construction(self):
         for rate in (True, False, '15', [], 0, -.1, 30.1, 10**1000, float('nan'), float('inf')):

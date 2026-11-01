@@ -1,7 +1,10 @@
 # Run IRL Shield on Linux
 
 This is an experimental RTMP relay. The command layer connects the existing
-MediaMTX ingest, CUDA detector lanes, one masking engine and one NVENC encoder.
+MediaMTX ingest, two detector lanes, one masking engine and one video encoder.
+The live application supports Linux only; Windows is unsupported. NVIDIA is
+recommended for the default CUDA/NVENC path. `--cpu` selects CPU detection and
+libx264 encoding. Mac OCR grading tools do not provide live application support.
 OBS can pull the local shielded RTMP stream. Optional Twitch egress uses the
 same encoded packets through a verified TLS forwarder. Bandwidth-test mode
 appends `?bandwidthtest=true`; attended live mode is restricted to `naie`.
@@ -14,8 +17,9 @@ receipts are under `out/integration/`; missing receipts mean unverified behavior
 
 ## Requirements and installation
 
-Use Linux x86-64, Python 3.11, an NVIDIA GPU supported by CUDA 12.4/cuDNN 9.3,
-and an NVENC-capable driver. The CUDA runtime is pinned to ONNX Runtime GPU
+Use Linux x86-64 and Python 3.11. The default GPU mode needs an NVIDIA GPU
+supported by CUDA 12.4/cuDNN 9.3 and an NVENC-capable driver. CPU mode uses the
+same pinned environment without requiring a GPU. The runtime is ONNX Runtime GPU
 1.20.2; do not replace it with CUDA 13 on Pascal. GPU model memory and actual
 30fps cadence must be verified on the target machine.
 
@@ -45,8 +49,9 @@ inventory covers their transitive licenses. The integration adds no library beyo
 `shield/app/requirements.txt` pins the Python 3.11 overlay, with exact metadata
 and source/license links in `shield/app/DEPENDENCIES.json`.
 
-If using pip-installed NVIDIA libraries, expose their private library paths
-before starting Python:
+For the default CUDA path with pip-installed NVIDIA libraries, expose their
+private library paths before starting Python. CPU mode can use the launcher
+below without this NVIDIA library-path setup:
 
 ```sh
 export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
@@ -56,6 +61,145 @@ export CUDA_CACHE_PATH="$PWD/.tmp/cuda-cache"
 mkdir -p "$CUDA_CACHE_PATH"
 .venv/bin/python -m shield.cli doctor
 ```
+
+## CPU mode
+
+`--cpu` explicitly selects ONNX CPUExecutionProvider for both the fast and
+accurate lanes and libx264 encoding with the existing ultrafast/zerolatency
+settings. It uses the CPU provider in the pinned onnxruntime-gpu distribution;
+do not install a second onnxruntime package into that environment. The launcher
+skips the NVIDIA library-directory requirement, hides CUDA devices and retains
+its existing environment isolation and exclusive lease.
+
+CPU mode defaults to a 2.5-second engine presentation delay.
+`--delay-seconds N` overrides the delay in either mode and accepts only finite
+values from 0.5 through 10 seconds inclusive, without clamping. The 0.5-second
+lower bound is a privacy floor that gives asynchronous detections time to
+arrive; it does not guarantee privacy across all scenes and processing latencies.
+The 10-second upper bound limits delay-related frame and audio buffer growth.
+This delay is only one component of end-to-end latency. Without CPU or delay
+flags, the existing CUDA/NVENC path and 1-second engine delay remain unchanged.
+Both modes retain fast 8 Hz, accurate 4 Hz, widths 640/960, an accurate box confidence floor of
+0.5, and 1280 by 720 output at 30 fps. Configured cadence is not measured output.
+Patch appearance, chat PatchBar, authentication, publication approval and HOLD
+behavior are unchanged. The direct CLI accepts these options on `run` or
+`login --run`.
+
+From the repository root after installation, start an attended local run:
+
+```sh
+scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
+```
+
+For a phone connection, use the machine's own Tailscale IPv4 address with
+`--host` as described below. To change the engine delay, append, for example,
+`--delay-seconds 3`. This local mode performs no Twitch login or publication.
+Existing authorization and terminal confirmation still apply when selecting a
+Twitch publication mode.
+
+The attended command above runs CPU mode without NVENC, generated plates or a
+W8b clip. For a bounded CPU reproduction, append `--seconds 230` and send input
+from an attended phone over Tailscale, or from a local RTMP broadcaster UI with
+`--local-only --host 127.0.0.1`. Enter the runtime camera URL only in the private
+broadcaster UI, using the existing private dashboard or `/dev/tty` phone setup.
+Keep credentials out of command arguments, logs, receipts and fixtures. Read the
+shielded output in OBS as described below; no Twitch credentials or publication
+are needed for this local reproduction.
+
+Replaying the measured W8b source is optional. Its clip build needs NVENC and
+cached generated plates, as described in
+[DEMO-RENDERER.md](DEMO-RENDERER.md#w8b-opt-in-richer-source); that build and clip
+are not required to run CPU mode. With that source already prepared, use fresh
+output paths:
+
+```sh
+scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
+  --seconds 230 --demo-source out/w8b/render-01/source.json \
+  --demo-receipt out/cpu-collection/sender.jsonl --archive out/cpu-collection/relay
+```
+
+This uses the production local sender and its prepared 30 fps, 210-second
+source. It adds no detector cadence override. An archive records effective lane
+rates, confidence floors and providers under `runtime.json.configuration.lanes`,
+plus `configuration.encoder` and `configuration.delay_seconds`. Those fields
+describe the effective configuration, not a privacy score or achieved throughput.
+
+### Observed CPU collection and limits
+
+**CPU privacy is NOT independently graded.** Root builder inspection of saved
+CPU native unit 2 output found the engraved **NERALIN LANE** plaque readable
+and unmasked at source frame 2700. GPU native unit 26 output also intermittently
+missed this plaque; these observations do not establish a provider regression.
+This is an observed detection miss, with no detector tuning in this change.
+
+A separate frozen offline provider check used the same source weights and graphs,
+changing only CPUExecutionProvider versus CUDAExecutionProvider. Across seven
+natural clips with 150 frames each (1,050 frames total), CPU and CUDA masks were
+pixel-identical. Every clip had mask IoU p50/minimum 1.000, zero unmatched
+provider detections, and CPU-minus-CUDA mask-area p50/p95 deltas of 0 percentage
+points. The CUDA replay matched the previously graded baseline125 path exactly,
+including all 71 empty, 43 full and 936 nontrivial mask frames.
+
+On the 7 natural tune clips (1,050 frames, offline configuration with the
+accurate lane at width 1280), CPU and CUDA produced pixel-identical masks. CPU
+mode therefore inherits the GPU path's graded results for that configuration.
+The native CPU run used width 960 at a 2.5 s delay and is not separately graded.
+The offline comparison used a 1-second delay; it does not qualify native privacy,
+W5, performance or walking use.
+
+Across six saved inputs from the NERALIN LANE plaque interval, the fast lane
+proposed the plaque in 0/6 samples and the accurate lane in 1/6 samples on each
+provider. The engraved-plaque miss is a detector limit, not a CPU-specific one.
+No detector tuning is included in this change. The root-inspected provider-parity
+receipt is identified by SHA-256
+`af536e062e88ef22157d2504154097032d313eb91e9428ab012d7a0664a754e6`.
+
+The root-inspected local collection on November 1, 2026 UTC used an Intel i7-7700K
+at 4.20 GHz with 8 logical CPUs, the GPU hidden, native threads set to 2 and
+OpenCV threads set to 1. Both lanes reported CPUExecutionProvider, encoding was
+libx264 and the engine delay was 2.5 seconds. The source base was `8f12891` with
+the CPU patch; documentation on a newer base does not imply another native run.
+These observations are specific to that machine and source, not universal
+minimum hardware requirements.
+
+The complete 120-second steady window contained 3,598 independently decoded
+LIVE arrivals, 29.9833 fps, with zero PROTECT, HOLD or slate frames and no
+unidentified source/output rows in that decoder window. Latency from local
+sender mux start to independent decoder arrival was:
+
+| Statistic | Seconds |
+| --- | --- |
+| p50 | 2.674 |
+| p95 | 2.685 |
+| p99 | 2.692 |
+| Maximum | 2.771 |
+
+All 3,598 of 3,598 decoder arrivals were identified for these quantiles. The
+separate encoder-handoff latency series identified 3,537 of 3,598 rows and left
+61 unknown; it is not the independent-decoder series. The prior clock guard
+remains FAILED at 2.067 ms against its 1.5 ms limit. These latency observations
+are descriptive, not a W5 pass, a phone measurement or a guaranteed latency.
+
+Observed CPU usage was 378.426%, with one core equal to 100%. Accounting was
+partial, using adjacent common-member process deltas and including measurement
+instrumentation. It is not a total-host CPU measurement or complete application
+process accounting.
+
+The whole archive was not slate-free. Its 6,817 handoff rows contain 6,130 LIVE,
+72 PROTECT and 615 HOLD frames, including 687 slates. Full-archive output/source
+identity unknown counts are 667/775. The independent full decoder has 6,757
+arrivals, with 6,130 LIVE, 19 PROTECT, 72 HOLD and 536 unknown states; 91 are known
+slates and 536 have unknown slate status. Its output/source identity unknown
+counts are 536/603. These full-run denominators and unknowns remain in the
+receipt; the steady window does not replace them.
+
+There were zero retained warnings and 76 diagnostic drops. That does not prove
+warning absence. The collection did not rerun CPU privacy/tune grading or change
+the frozen default detector policy, and it does not qualify walking use. The
+root-inspected acceptance receipt is identified by SHA-256
+`7472eacfe52f08bc64a049b2611caebc257abf1fd84b6ddfb931ba33dfe91a20`.
 
 ## Local phone to OBS
 
@@ -192,7 +336,6 @@ This attended observation establishes that Twitch accepted the loopback
 in memory. It is not an automated test or a qualification of live-video FPS,
 privacy effectiveness, phone latency, audio or SRT. Future live publication still
 requires the separate attended authorization described above.
-macOS and Windows execution of this route remain untested.
 
 ## Local integration verification
 

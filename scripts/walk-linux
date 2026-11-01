@@ -40,6 +40,8 @@ def parser():
     command.add_argument('--venv', type=Path, default=Path(os.environ.get('SHIELD_WALK_VENV', ROOT / '.venv')))
     command.add_argument('--host', default=os.environ.get('SHIELD_BIND_HOST'), help='Own Tailscale IPv4; explicit 127.0.0.1 for local verification')
     command.add_argument('--model-cache', type=Path, default=ROOT / 'models/cache')
+    command.add_argument('--cpu', action='store_true', help='Use ONNX CPU for both lanes and libx264 encoding')
+    command.add_argument('--delay-seconds', type=float, help='Presentation delay, 0.5..10 seconds inclusive (privacy floor 0.5); default 1, or 2.5 with --cpu')
     command.add_argument('--accurate-rate-hz', type=float, help='Experimental accurate cadence; default 4 Hz')
     command.add_argument('--accurate-box-thresh', type=float, help='Experimental accurate-only confidence floor; default 0.5')
     command.add_argument('--mediamtx-dir', type=Path, default=ROOT / '.tmp/tools/mediamtx-v1.21.3')
@@ -84,6 +86,8 @@ def cli_arguments(args, host):
             demo_options['fresh'](args.archive)
     except ValueError as error:
         raise WalkError(str(error)) from None
+    if args.delay_seconds is not None and (not math.isfinite(args.delay_seconds) or not .5 <= args.delay_seconds <= 10):
+        raise WalkError('--delay-seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     if args.accurate_rate_hz is not None and (not math.isfinite(args.accurate_rate_hz)
                                              or not 0 < args.accurate_rate_hz <= 30):
         raise WalkError('--accurate-rate-hz must be positive, finite and at most 30')
@@ -114,6 +118,10 @@ def cli_arguments(args, host):
         argv += ['--accurate-rate-hz', str(args.accurate_rate_hz)]
     if args.accurate_box_thresh is not None:
         argv += ['--accurate-box-thresh', str(args.accurate_box_thresh)]
+    if args.cpu:
+        argv.append('--cpu')
+    if args.delay_seconds is not None:
+        argv += ['--delay-seconds', str(args.delay_seconds)]
     return argv
 
 
@@ -209,7 +217,7 @@ def declared_pins(path, seen=None):
     return pins
 
 
-def venv_paths(venv):
+def venv_paths(venv, *, cpu=False):
     venv = venv.expanduser().resolve()
     cfg = dict(line.lower().split('=', 1) for line in (venv / 'pyvenv.cfg').read_text().splitlines() if '=' in line)
     cfg = {key.strip(): value.strip() for key, value in cfg.items()}
@@ -219,19 +227,23 @@ def venv_paths(venv):
     packages = venv / 'lib/python3.11/site-packages'
     if not python.is_file() or not os.access(python, os.X_OK) or not packages.is_dir():
         raise WalkError('Selected venv needs Python 3.11; provision requirements-check-linux.txt first')
-    libraries = sorted((packages / 'nvidia').glob('*/lib'))
-    if not libraries or any(not item.resolve().is_relative_to(venv) for item in libraries):
+    libraries = [] if cpu else sorted((packages / 'nvidia').glob('*/lib'))
+    if not cpu and (not libraries or any(not item.resolve().is_relative_to(venv) for item in libraries)):
         raise WalkError('Selected venv lacks private NVIDIA CUDA libraries')
     return venv, python, packages.resolve(), libraries
 
 
-def isolated_environment(libraries):
+def isolated_environment(libraries, *, cpu=False):
     env = {key: value for key, value in os.environ.items() if not key.startswith('PYTHON')
            and key not in ('LD_PRELOAD', 'LD_LIBRARY_PATH')}
     env.update({name: '2' for name in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS',
                                     'VECLIB_MAXIMUM_THREADS', 'NUMEXPR_NUM_THREADS')})
-    env.update(OPENCV_FOR_THREADS_NUM='1', LD_LIBRARY_PATH=':'.join(str(item) for item in libraries),
-               CUDA_CACHE_PATH=str(ROOT / '.tmp/walk/cuda-cache'))
+    env.update(OPENCV_FOR_THREADS_NUM='1', LD_LIBRARY_PATH=':'.join(str(item) for item in libraries))
+    if cpu:
+        env['CUDA_VISIBLE_DEVICES'] = '-1'
+        env.pop('CUDA_CACHE_PATH', None)
+    else:
+        env['CUDA_CACHE_PATH'] = str(ROOT / '.tmp/walk/cuda-cache')
     return env
 
 
@@ -272,9 +284,8 @@ def main(argv=None, *, lock_root=LOCK_ROOT):
     try:
         if sys.platform != 'linux':
             raise WalkError('walk-linux requires Linux')
-        # Check demo mode before credentials, discovery, lease or SDK setup.
-        if args.demo_source is not None or args.demo_receipt is not None:
-            cli_arguments(args, args.host)
+        # Validate options before credentials, discovery, lease or SDK setup.
+        cli_arguments(args, args.host)
         if args.twitch_live or args.twitch_bandwidth_test:
             missing = [name for name in ('TWITCH_CLIENT_ID', 'TWITCH_BROADCASTER_ID') if not os.environ.get(name)]
             if missing:
@@ -283,8 +294,8 @@ def main(argv=None, *, lock_root=LOCK_ROOT):
         command = cli_arguments(args, host)
         with exclusive_lease(lock_root):
             resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-            venv, python, packages, libraries = venv_paths(args.venv)
-            environment = isolated_environment(libraries)
+            venv, python, packages, libraries = venv_paths(args.venv, cpu=args.cpu)
+            environment = isolated_environment(libraries, cpu=args.cpu)
             if Path(sys.prefix).resolve() != venv or not sys.flags.isolated or sys.flags.no_site:
                 os.execve(str(python), [str(python), '-I', '-B', '-u', str(Path(__file__).resolve()),
                                       *(sys.argv[1:] if argv is None else argv)], environment)
@@ -293,8 +304,9 @@ def main(argv=None, *, lock_root=LOCK_ROOT):
             verify_environment(venv, packages)
             if not args.model_cache.expanduser().is_dir() or not args.mediamtx_dir.expanduser().is_dir():
                 raise WalkError('Existing model cache and pinned MediaMTX directory required; launcher never downloads')
-            cache = Path(environment['CUDA_CACHE_PATH'])
-            cache.mkdir(parents=True, exist_ok=True)
+            if not args.cpu:
+                cache = Path(environment['CUDA_CACHE_PATH'])
+                cache.mkdir(parents=True, exist_ok=True)
             if args.local_only and args.seconds is not None:
                 os.nice(max(0, 10 - os.getpriority(os.PRIO_PROCESS, 0)))
             launch_cli(command)
