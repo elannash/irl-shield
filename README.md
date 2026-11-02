@@ -1,5 +1,114 @@
 # IRL Shield
 
+A privacy relay that covers readable text on street signs, storefronts, house numbers and plates in an IRL stream before the video reaches Twitch.
+
+![Generated storefront scene, before on the left and shielded with Patch on the right](docs/images/generated-before-after.png)
+
+Generated scene with fictional names. Before (left) and shielded with Patch (right), from the W8b demo.
+
+## How it works
+
+- Moblin on the phone sends RTMP over Tailscale to the Linux relay.
+- The relay uses a 1-second processing buffer by default on GPU. Total delay to viewers has not been measured.
+- PP-OCRv5-mobile detectors detect text for masking; some text is missed.
+- Masks cover the detected text. Patch is the default; chat can vote for Bar or Patch.
+- Frames that have not been checked go out protected. NVENC encodes the video on GPU (libx264 with `--cpu`), and a TLS forwarder sends it to Twitch with certificate verification.
+
+### Why not a stream delay or an OBS blur?
+
+A delay only buys time; someone still has to spot the sign. A fixed OBS blur covers a screen position. IRL Shield finds moving text inside the processing buffer and lets moderators interrupt output.
+
+## Chat and mod controls
+
+- `!shield hold`: moderators and the broadcaster can hold the stream on a privacy slate.
+- `!shield resume`: only the broadcaster can release the chat hold.
+- `!skin bar` or `!skin patch`: viewers vote for the mask appearance.
+- `!skin lock bar` or `!skin lock patch`: moderators and the broadcaster can lock the appearance. `!skin unlock` releases it.
+
+Hold stops further exposure; it cannot take back frames already sent. Use Hold before a known location clue enters the frame.
+
+The private phone dashboard shows relay status and local Hold / Resume controls. Pairing with Moblin uses a QR code once the relay is installed. Keep its pairing credentials private. See [dashboard details](docs/DASHBOARD.md) and [skin controls](docs/SKINS.md#chat-voting).
+
+## Judge quick start
+
+### Try it locally (no Twitch)
+
+Requires Linux x86-64, Python 3.11 and `uv` on PATH. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` uses CPU detection and libx264 encoding with a 2.5-second default processing buffer. See [RUN.md](docs/RUN.md) for dependencies and full instructions.
+
+From the repository root, install the pinned environment, transport and models:
+
+```sh
+scripts/setup-check
+scripts/m2-tools
+.venv/bin/python -m models.prepare
+```
+
+Start the local relay from an attended terminal. This recipe uses CPU mode; omit `--cpu` for a supported NVIDIA GPU:
+
+```sh
+scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
+```
+
+No Twitch credentials, login or publication are needed. Send video from a local RTMP source to the private camera URL shown in the terminal. In OBS, pull `rtmp://127.0.0.1:19350/shielded`. Keep that terminal off the stream.
+
+For a phone source, configure Tailscale on the phone and relay, replace `127.0.0.1` in `--host` with the relay's Tailscale IPv4 address, and pair Moblin through the private dashboard. In OBS, pull `rtmp://<your-tailscale-ip>:19350/shielded`.
+
+<!-- demo-source release asset link added Monday -->
+
+### Bandwidth-test with your own Twitch app
+
+Register your own Twitch app as a public client for device-code login. The relay reads `TWITCH_CLIENT_ID` for that app's client ID and `TWITCH_BROADCASTER_ID` for your broadcaster account's numeric user ID from the process environment. Supply your own values, then run:
+
+```sh
+export TWITCH_CLIENT_ID="<your-public-client-id>"
+export TWITCH_BROADCASTER_ID="<your-numeric-broadcaster-id>"
+scripts/walk-linux --twitch-bandwidth-test --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
+```
+
+Omit `--cpu` for GPU mode. `infisical run --` is an optional prefix if you store these variables in Infisical; it is not required by the code. No client secret is required.
+
+Open the activation URL shown privately in the attended terminal and authorize as the broadcaster whose numeric ID you supplied. The requested scopes are `user:read:chat`, `moderator:read:shield_mode` and `channel:read:stream_key`. The relay validates the app and broadcaster IDs and fetches the stream key into memory. Bandwidth-test has no `naie` login restriction.
+
+Use the same private input and OBS steps as the local run. This mode sends to Twitch ingest with `?bandwidthtest=true`; it does not create a public broadcast. See [Twitch authorization and controls](docs/RUN.md#twitch-authorization-and-controls).
+
+## Results
+
+The shipped **PP-OCRv5-mobile default** hid **127/146 natural intervals** and **49/54 synthetic intervals** on the **2-judge Linux tune screen**. This tune screen is not a held-out result, realtime qualification, or a privacy pass. See the [current policy and tune-screen limits](docs/RUN.md#requirements-and-installation).
+
+The earlier **PP-OCRv6-small / PP-OCRv6-tiny policy** was evaluated on a held-out set. In that offline evaluation of six 5-second variants from three fresh licensed sources, **106/126 OCR-observed natural text intervals in Latin script stayed hidden (84%)**. Natural counts include text in both natural and synthetic variants. The synthetic control earned **14/22** hidden intervals because the Zurich variants failed the real-video check.
+
+The median masked area was **13.6%**, with **p95 50.4%**. Tesseract and Apple Vision define natural-text truth; synthetic truth consists of all annotated visible labels, with judges checking their readability in the input. Every credible output judge counts a leak, including PP-OCR.
+
+For that earlier V6 held-out policy, **Gate 1 failed four criteria:** natural text hidden was 84.1%, below 90%; synthetic text credited hidden was 63.6%, below 100%; both Zurich variants failed the real-video guard; and Chicago natural had exactly 2% protected frames, failing the strictly-under-2% per-clip limit.
+
+See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This earlier V6 offline result does not grade the V5-mobile default or establish live-stream privacy or latency.
+
+<!-- v3 result added Monday -->
+
+## Limitations
+
+- Small or distant text is the main miss.
+- Text only: landmarks and other visual location clues remain visible.
+- Linux only, with NVIDIA recommended for the default GPU path.
+- Live Twitch mode is currently restricted to `naie`. It requires fresh authorization and an attended `LIVE naie` terminal confirmation for each owner-authorized session.
+- Experimental, not a production relay.
+
+## Built with Codex
+
+One Codex builder thread and its Codex children wrote the code; Claude Opus conducted and reviewed the work.
+
+At `origin/main` commit `6e5f0ee`: **113 reachable commits, including 26 PR merge commits**. Counting all lines, including blanks and comments, in tracked `.py` files outside `docs/` gives **19,809 source lines** outside `tests/` and **17,667 test lines** under `tests/`.
+
+## License and attribution
+
+See [fixture licenses and attribution](fixtures/ATTRIBUTION.md) and the [model sources, hashes and licenses](models/manifest.json).
+
+## Technical notes and provenance
+
+### Provenance notes
+
 Published historical records use path placeholders: `REPO_ROOT` is the
 repository root, `WORKTREE_<id>` identifies the original isolated checkout,
 and `OWNER_HOME` is the operator's home directory. `OWNER_TMP` identifies the
