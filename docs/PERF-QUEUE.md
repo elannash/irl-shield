@@ -167,10 +167,12 @@ endpoints. An unrelated process or reparented orphan whose chain does not reach
 the watchdog receives no credit. Summed own+waited CPU over the live tree at both
 endpoints transfers a departed child's previously counted CPU into its parent's waited
 counters without counting it twice. Parent links and PID/starttime identities
-bind ownership; sibling processes are never credited. Reuse, missing ancestry,
-or a reaping/identity transition detected inside the non-atomic `/proc` scan
-invalidates accounting instead of guessing. Scan durations and per-process
-endpoint counters remain in provenance.
+bind ownership; sibling processes are never credited. A broken parent chain
+cannot establish membership, so that process receives no credit. Under-counting
+job CPU raises apparent external load and is conservative. Reuse or a
+reaping/identity transition detected inside the non-atomic `/proc` scan
+invalidates accounting. Scan durations and per-process endpoint counters remain
+in provenance.
 
 Mac uses read-only `ps -A -o pid=,ppid=,pgid=,time=,lstart=` endpoint snapshots.
 Only descendants with stable identities and parent chains at both endpoints

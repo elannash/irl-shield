@@ -153,6 +153,58 @@ class OtherBusyPolicy(unittest.TestCase):
                     self.assertFalse(snapshot['valid'], snapshot)
                     self.assertIn(reason, snapshot['errors'])
 
+    def test_missing_ancestry_excludes_cpu_and_increases_apparent_external_load(self):
+        init = self.process(1, 0, 0., pgid=1)
+        first = self.snapshot(0., init, self.process(10, 1, 1.), self.process(12, 11, 5., pgid=12))
+        last = self.snapshot(10., init, self.process(10, 1, 2.), self.process(12, 11, 25., pgid=12))
+        sampler = perf_queue.JobCPUSampler(10, host='linux', cpu_count=8)
+        missing = sampler.account(first, last)
+        self.assertTrue(missing['valid'], missing)
+        self.assertEqual(missing['attributed_pids'], [10])
+        self.assertEqual(missing['job_cpu_seconds'], 1.)
+        unassigned = perf_queue.attach_cpu_accounting(
+            {'idle_percent': 70., 'memory_ok': True}, sampler, first, last)
+        # A separate counterfactual with the actual parent present can credit
+        # this CPU; a group/session match alone cannot supply the missing link.
+        complete_first = self.snapshot(0., init, self.process(10, 1, 1.),
+            self.process(11, 10, 0.), self.process(12, 11, 5., pgid=12))
+        complete_last = self.snapshot(10., init, self.process(10, 1, 2.),
+            self.process(11, 10, 0.), self.process(12, 11, 25., pgid=12))
+        assigned = perf_queue.attach_cpu_accounting({'idle_percent': 70., 'memory_ok': True},
+            perf_queue.JobCPUSampler(10, host='linux', cpu_count=8), complete_first, complete_last)
+        self.assertLess(unassigned['job_tree_busy_percent'], assigned['job_tree_busy_percent'])
+        self.assertGreater(unassigned['other_busy_percent'], assigned['other_busy_percent'])
+        self.assertTrue(perf_queue.contamination_summary([unassigned])['contended'])
+        self.assertFalse(perf_queue.contamination_summary([assigned])['contended'])
+
+    def test_account_after_proc_clock_failure_returns_invalid_without_boot_ticks(self):
+        with tempfile.TemporaryDirectory() as folder:
+            sampler = perf_queue.JobCPUSampler(10, host='linux', cpu_count=8, proc_root=Path(folder))
+            failed = sampler.snapshot()
+        self.assertFalse(failed['valid'])
+        self.assertNotIn('boot_ticks', failed)
+        after = self.snapshot(10., self.process(10, 1, 2.), self.process(11, 10, 3., start=200))
+        try:
+            result = sampler.account(failed, after)
+        except KeyError as error:
+            self.fail('Clock-read failure must return invalid accounting, not raise ' + repr(error))
+        self.assertFalse(result['valid'], result)
+        self.assertIsNone(result['job_cpu_seconds'])
+        self.assertEqual(result['attributed_pids'], [])
+        self.assertIn('process_snapshot_unavailable', result['reasons'])
+        self.assertIn('unproven_process_birth', result['reasons'])
+
+    def test_mac_parent_move_excludes_the_process_and_its_descendant_chain(self):
+        init = self.process(1, 0, 0., pgid=1)
+        first = self.snapshot(0., init, self.process(10, 1, 1.), self.process(11, 10, 2.),
+            self.process(12, 11, 3.), self.process(13, 10, 4.), host='mac')
+        last = self.snapshot(10., init, self.process(10, 1, 2.), self.process(11, 13, 5.),
+            self.process(12, 11, 7.), self.process(13, 10, 6.), host='mac')
+        result = perf_queue.JobCPUSampler(10, host='mac', cpu_count=8).account(first, last)
+        self.assertTrue(result['valid'], result)
+        self.assertEqual(result['attributed_pids'], [10, 13])
+        self.assertEqual(result['job_cpu_seconds'], 3.)
+
     def test_linux_tree_ancestry_reaped_transfers_and_reuse_are_conservative(self):
         init = self.process(1, 0, 0., pgid=1)
         before = self.snapshot(0., init, self.process(10, 1, 1.), self.process(11, 10, 4.),
@@ -175,7 +227,7 @@ class OtherBusyPolicy(unittest.TestCase):
                                self.process(12, 11, 3.))
         nested_reaped = self.snapshot(10., init, self.process(10, 1, 2., reaped=13.))
         self.assertEqual(perf_queue.JobCPUSampler(10, host='linux', cpu_count=8).account(nested, nested_reaped)['job_cpu_seconds'], 5.)
-        reused = self.snapshot(10., init, self.process(10, 1, 2.), self.process(11, 10, 500., start='reused'))
+        reused = self.snapshot(10., init, self.process(10, 1, 2.), self.process(11, 10, 500., start=1100))
         self.assertFalse(perf_queue.JobCPUSampler(10, host='linux', cpu_count=8).account(before, reused)['valid'])
         missing = self.snapshot(10., init, self.process(10, 1, 2.), self.process(11, 777, 6.))
         self.assertFalse(perf_queue.JobCPUSampler(10, host='linux', cpu_count=8).account(before, missing)['valid'])

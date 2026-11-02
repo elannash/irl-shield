@@ -183,8 +183,6 @@ class JobCPUSampler:
         try:
             ticks = os.sysconf('SC_CLK_TCK')
             boot_ticks = int(float((self.proc_root / 'uptime').read_text().split()[0]) * ticks)
-            if ticks <= 0 or boot_ticks < 0:
-                raise ValueError('Invalid procfs clock capacity')
         except (OSError, ValueError, IndexError, OverflowError) as error:
             return {'at': time.monotonic(), 'scan_started': began, 'host': self.host,
                     'records': records, 'valid': False, 'errors': [str(error)]}
@@ -237,13 +235,9 @@ class JobCPUSampler:
                 # parent chain proves ancestry; group/session membership cannot.
                 chain.append(root)
                 if self.host == 'linux':
-                    try:
-                        if any(int(parent['start']) > int(child['start'])
-                               for child, parent in zip(chain, chain[1:])):
-                            errors.append('ancestor_started_after_child')
-                            continue
-                    except (KeyError, ValueError, TypeError):
-                        errors.append('process_start_unavailable')
+                    if any(int(parent['start']) > int(child['start'])
+                           for child, parent in zip(chain, chain[1:])):
+                        errors.append('ancestor_started_after_child')
                         continue
                 members[pid] = row
         return members, errors
