@@ -70,7 +70,7 @@ def download(name, cache_dir):
 def main():
     artifacts = load_manifest()["artifacts"]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("names", nargs="*", help="Artifact IDs; default: all manifest artifacts")
+    parser.add_argument("names", nargs="*", help="Artifact IDs; default: all manifest artifacts plus live static graphs")
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE)
     parser.add_argument("--verify-only", action="store_true", help="Check local files without network")
     args = parser.parse_args()
@@ -85,6 +85,17 @@ def main():
             path = download(name, args.cache_dir)
             artifact = artifacts[name]
         print(json.dumps({"name": name, "path": str(path), "sha256": artifact["sha256"], "bytes": path.stat().st_size}))
+
+    if not args.names and not args.verify_only:
+        # Keep the existing `python models/prepare.py` entry point working.
+        if __package__ in (None, ''):
+            import sys
+            sys.path.insert(0, str(ROOT.parent))
+        from bench.static_model import prepare_static
+        source, artifact = verified_path('ppocr-v5-mobile', args.cache_dir)
+        for height, width in ((352, 640), (544, 960)):
+            path, record = prepare_static(source, artifact['sha256'], height, width, args.cache_dir)
+            print(json.dumps({'name': 'ppocr-v5-mobile-static', 'path': str(path), **record}))
 
 
 if __name__ == "__main__":

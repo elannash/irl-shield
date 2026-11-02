@@ -32,11 +32,32 @@ scripts/setup-check
 # Or: python3.11 -m venv .venv
 #     .venv/bin/python -m pip install -r requirements-check-linux.txt
 scripts/m2-tools
-.venv/bin/python -m models.prepare ppocr-v6-tiny ppocr-v6-small
+.venv/bin/python -m models.prepare
 ```
 
 See `python -m models.prepare --help` for the model provisioning interface.
 Model source, revision, SHA-256 and licenses are in `models/manifest.json`.
+The default preparation downloads all pinned artifacts, including the Apache-2.0
+PP-OCRv5-mobile detector, and derives its two live static graphs with the pinned
+`onnx` dependency. Explicit artifact selections still fetch only those artifacts;
+`--verify-only` checks original weights without downloads or graph derivation.
+The V5-mobile weight SHA-256 is
+`4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae`.
+
+The live CLI and `scripts/walk-linux` use **PP-OCRv5-mobile in both lanes**.
+For 1280×720 video, fast/accurate input widths are 640/1280, independently capped
+at 640/960 inside the detector, with static tensors 352×640 / 544×960.
+The frozen defaults are fast 8 Hz, accurate 4 Hz, padding 0.3, before/after 6/30
+frames, lane maximum ages 6/12, threshold 0.3, box threshold 0.5, and unclip 1.6.
+Demo input keeps these frozen detector defaults and rejects cadence/confidence
+overrides. Explicit ordinary-run cadence/confidence and CPU/delay options remain.
+
+The V5-mobile **2-judge Linux tune screen** hid **127/146 natural intervals** and
+**49/54 synthetic intervals**. This is tune evidence, not a held-out evaluation
+or realtime/privacy qualification. The earlier **106/126 natural**
+[held-out result](Q-FRESH-HELDOUT-RESULT.md) belongs to the
+**PP-OCRv6-small / PP-OCRv6-tiny policy** and does not grade V5-mobile.
+
 MediaMTX v1.21.3 is MIT and hash checked by `relay/mediamtx.py`; `scripts/m2-tools`
 fetches only that release into this checkout's `.tmp/tools/`. PyAV 16.0.1 is
 BSD-3-Clause; its Linux wheel's bundled FFmpeg includes GPL components. CUDA,
@@ -79,7 +100,8 @@ arrive; it does not guarantee privacy across all scenes and processing latencies
 The 10-second upper bound limits delay-related frame and audio buffer growth.
 This delay is only one component of end-to-end latency. Without CPU or delay
 flags, the existing CUDA/NVENC path and 1-second engine delay remain unchanged.
-Both modes retain fast 8 Hz, accurate 4 Hz, widths 640/960, an accurate box confidence floor of
+Both modes use V5-mobile, fast 8 Hz, accurate 4 Hz, lane widths 640/1280
+and detector caps 640/960, an accurate box confidence floor of
 0.5, and 1280 by 720 output at 30 fps. Configured cadence is not measured output.
 Patch appearance, chat PatchBar, authentication, publication approval and HOLD
 behavior are unchanged. The direct CLI accepts these options on `run` or
@@ -126,7 +148,7 @@ rates, confidence floors and providers under `runtime.json.configuration.lanes`,
 plus `configuration.encoder` and `configuration.delay_seconds`. Those fields
 describe the effective configuration, not a privacy score or achieved throughput.
 
-### Observed CPU collection and limits
+### Earlier PP-OCRv6 CPU collection and limits
 
 **CPU privacy is NOT independently graded.** Root builder inspection of saved
 CPU native unit 2 output found the engraved **NERALIN LANE** plaque readable
@@ -141,9 +163,9 @@ provider detections, and CPU-minus-CUDA mask-area p50/p95 deltas of 0 percentage
 points. The CUDA replay matched the previously graded baseline125 path exactly,
 including all 71 empty, 43 full and 936 nontrivial mask frames.
 
-On the 7 natural tune clips (1,050 frames, offline configuration with the
-accurate lane at width 1280), CPU and CUDA produced pixel-identical masks. CPU
-mode therefore inherits the GPU path's graded results for that configuration.
+The earlier PP-OCRv6 provider comparison used 7 natural tune clips (1,050
+frames, offline configuration with the accurate lane at width 1280); CPU and CUDA produced pixel-identical masks.
+That comparison does not grade the current V5-mobile CPU defaults.
 The native CPU run used width 960 at a 2.5 s delay and is not separately graded.
 The offline comparison used a 1-second delay; it does not qualify native privacy,
 W5, performance or walking use.

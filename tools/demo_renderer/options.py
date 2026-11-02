@@ -41,7 +41,7 @@ def validate_demo(args):
     if args.demo_source is None or args.demo_receipt is None or args.archive is None or args.seconds is None:
         raise ValueError('Demo source requires source, receipt, fresh archive and bounded duration')
     if args.accurate_rate_hz is not None or args.accurate_box_thresh is not None:
-        raise ValueError('Demo source uses the frozen detector defaults')
+        raise ValueError('Demo source uses the frozen PP-OCRv5-mobile 8/4 Hz detector defaults')
     if not args.demo_source.expanduser().is_file():
         raise ValueError('Demo source manifest must already exist')
     manifest = json.loads(args.demo_source.expanduser().read_text())

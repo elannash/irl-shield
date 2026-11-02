@@ -30,18 +30,21 @@ def make_engine(cache, provider='cuda', faults=(), appearance=None, *, accurate_
             or not .5 <= delay_seconds <= 10 or not math.isfinite(delay_seconds)):
         raise ValueError('delay_seconds must be finite and between 0.5 (privacy floor) and 10 seconds inclusive')
     from bench.detector_options import lane_detector_options
-    lane_options = {lane: lane_detector_options({'accurate_box_thresh': accurate_box_thresh}, lane)
+    lane_options = {lane: lane_detector_options({'accurate_box_thresh': accurate_box_thresh,
+                                               'thresh': .3, 'box_thresh': .5, 'unclip_ratio': 1.6}, lane)
                     for lane in ('fast', 'accurate')}
     from bench.onnx_detectors import create_detector
     lanes = {}
     try:
-        for name, model, rate, width in (('fast', 'ppocr-v6-tiny', 8, 640),
-                                        ('accurate', 'ppocr-v6-small', accurate_rate_hz, 960)):
-            backend = create_detector(model, {**lane_options[name], 'provider': provider, 'threads': 2, 'cache_dir': cache,
-                                              'limit_side_len': width})
+        # Frozen 1280x720 policy; shapes are the capped, stride-32 OCR tensors.
+        for name, rate, width, cap, shape in (('fast', 8, 640, 640, [352, 640]),
+                                             ('accurate', accurate_rate_hz, 1280, 960, [544, 960])):
+            backend = create_detector('ppocr-v5-mobile', {**lane_options[name], 'provider': provider, 'threads': 2, 'cache_dir': cache,
+                                                       'limit_side_len': cap, 'static_shape': shape})
             lanes[name] = DetectorLane(name, backend, rate, width=width,
                                        fault_intervals=faults if name == 'accurate' else ())
         return MaskingEngine(lanes, {'fps': 30, 'delay_seconds': delay_seconds, 'before': 6, 'after': 30,
+                                    'fast_max_age': 6, 'accurate_max_age': 12,
                                     'motion_mode': 'phase', 'motion_width': 320,
                                     'motion_min_response': .05, 'padding': .3},
                              renderer=appearance.renderer(padding=.3) if appearance is not None else None)
