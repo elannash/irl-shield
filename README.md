@@ -10,7 +10,7 @@ Generated scene with fictional names. Before (left) and shielded with Patch (rig
 
 - Moblin on the phone sends RTMP over Tailscale to the Linux relay.
 - The relay uses a 1-second processing buffer by default on GPU. Total delay to viewers has not been measured.
-- PP-OCRv6 detectors detect text for masking; some text is missed.
+- PP-OCRv5-mobile detectors detect text for masking; some text is missed.
 - Masks cover the detected text. Patch is the default; chat can vote for Bar or Patch.
 - Frames that have not been checked go out protected. NVENC encodes the video, and a TLS forwarder sends it to Twitch with certificate verification.
 
@@ -40,7 +40,7 @@ From the repository root, install the pinned environment, transport and models:
 ```sh
 scripts/setup-check
 scripts/m2-tools
-.venv/bin/python -m models.prepare ppocr-v6-tiny ppocr-v6-small
+.venv/bin/python -m models.prepare
 ```
 
 Start the local relay from an attended terminal. This recipe uses CPU mode; omit `--cpu` for a supported NVIDIA GPU:
@@ -75,13 +75,15 @@ Use the same private input and OBS steps as the local run. This mode sends to Tw
 
 ## Results
 
-In an offline evaluation of six 5-second variants from three fresh licensed sources, **106/126 OCR-observed natural text intervals in Latin script stayed hidden (84%)**. Natural counts include text in both natural and synthetic variants. The synthetic control earned **14/22** hidden intervals because the Zurich variants failed the real-video check.
+The shipped **PP-OCRv5-mobile default** hid **127/146 natural intervals** and **49/54 synthetic intervals** on the **2-judge Linux tune screen**. This tune screen is not a held-out result, realtime qualification, or a privacy pass. See the [current policy and tune-screen limits](docs/RUN.md#requirements-and-installation).
+
+The earlier **PP-OCRv6-small / PP-OCRv6-tiny policy** was evaluated on a held-out set. In that offline evaluation of six 5-second variants from three fresh licensed sources, **106/126 OCR-observed natural text intervals in Latin script stayed hidden (84%)**. Natural counts include text in both natural and synthetic variants. The synthetic control earned **14/22** hidden intervals because the Zurich variants failed the real-video check.
 
 The median masked area was **13.6%**, with **p95 50.4%**. Tesseract and Apple Vision define natural-text truth; synthetic truth consists of all annotated visible labels, with judges checking their readability in the input. Every credible output judge counts a leak, including PP-OCR.
 
-**Gate 1 failed four criteria:** natural text hidden was 84.1%, below 90%; synthetic text credited hidden was 63.6%, below 100%; both Zurich variants failed the real-video guard; and Chicago natural had exactly 2% protected frames, failing the strictly-under-2% per-clip limit.
+For that earlier V6 held-out policy, **Gate 1 failed four criteria:** natural text hidden was 84.1%, below 90%; synthetic text credited hidden was 63.6%, below 100%; both Zurich variants failed the real-video guard; and Chicago natural had exactly 2% protected frames, failing the strictly-under-2% per-clip limit.
 
-See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This offline result does not establish live-stream privacy or latency.
+See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This earlier V6 offline result does not grade the V5-mobile default or establish live-stream privacy or latency.
 
 <!-- v3 result added Monday -->
 
@@ -97,7 +99,7 @@ See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESUL
 
 One Codex builder thread and its Codex children wrote the code; Claude Opus conducted and reviewed the work.
 
-At `origin/main` commit `e1aaf4f`: **106 reachable commits, including 24 PR merge commits**. Counting all lines, including blanks and comments, in tracked `.py` files outside `docs/` gives **19,770 source lines** outside `tests/` and **17,367 test lines** under `tests/`.
+At `origin/main` commit `6e5f0ee`: **113 reachable commits, including 26 PR merge commits**. Counting all lines, including blanks and comments, in tracked `.py` files outside `docs/` gives **19,809 source lines** outside `tests/` and **17,667 test lines** under `tests/`.
 
 ## License and attribution
 
