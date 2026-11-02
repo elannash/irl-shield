@@ -29,11 +29,14 @@ def check_archive(directory, sender_receipt):
     frames = [json.loads(line) for line in frames_path.read_text().splitlines()]
     sender = [json.loads(line) for line in sender_receipt.read_text().splitlines()]
     terminal = sender[-1]
+    # Historical W8b receipts predate expected_frames and represent 210 seconds.
+    expected = terminal.get('expected_frames', FPS * SECONDS)
     if (runtime['status'] != 'stopped' or runtime['cleanup_errors']
             or runtime.get('failure') or runtime['verified_tls'] is not None
             or runtime['output_frames'] != len(frames) or not frames
             or terminal.get('kind') != 'sender-end' or terminal.get('complete') is not True
-            or terminal['packets'] != FPS * SECONDS):
+            or type(expected) is not int or not 300 <= expected <= 18000
+            or terminal['packets'] != expected):
         raise RuntimeError('W8 rehearsal output or single-pass publication incomplete')
     encoded = {}
     for generation in {row['egress_generation'] for row in frames}:

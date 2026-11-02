@@ -11,7 +11,8 @@ import resource
 import time
 
 from .lease import LEASE_ENV, inherited_exclusive
-from .source import FPS, SECONDS, sha256
+from .options import source_frame_count
+from .source import FPS, sha256
 
 
 def endpoint(address, phone, *, local_only):
@@ -26,10 +27,10 @@ def endpoint(address, phone, *, local_only):
 def source_manifest(path):
     path = Path(path).resolve()
     manifest = json.loads(path.read_text())
+    source_frame_count(manifest)
     video = path.parent / 'source.mp4'
     if (manifest['schema'] != 'irl-shield-w8-source-v1' or manifest['video'] != video.name
-            or manifest['fps'] != FPS or manifest['seconds'] != SECONDS
-            or len(manifest['frames']) != FPS * SECONDS or sha256(video) != manifest['video_sha256']):
+            or sha256(video) != manifest['video_sha256']):
         raise ValueError('W8 sender source seal mismatch')
     for index, frame in enumerate(manifest['frames']):
         if type(frame['source_index']) is not int or frame['source_index'] != index or Fraction(frame['pts']) != Fraction(index, FPS):
@@ -71,7 +72,8 @@ def _send(manifest_path, url, stopped, receipt):
                     'mux_finished_at_monotonic': time.monotonic()}) + '\n')
                 count += 1
             log.write(json.dumps({'kind': 'sender-end', 'packets': count,
-                'complete': count == FPS * SECONDS, 'stopped': stopped.is_set(),
+                'expected_frames': len(manifest['frames']),
+                'complete': count == len(manifest['frames']), 'stopped': stopped.is_set(),
                 'finished_at_monotonic': time.monotonic(),
                 'evidence_scope': 'publisher only; not decoder arrival or native proof'}) + '\n')
 
