@@ -104,11 +104,34 @@ shielded output. The sender's normal EOF ends publication once; it does not
 switch inputs or stop the runtime immediately. Post-source protection belongs
 in the whole-run census.
 
-Mock chat controls can be rehearsed through `python -m shield.cli run` with
-an existing synthetic `--mock-origin` server and exact loopback bind,
-without `--local-only`, a local sink or either Twitch publication flag.
-This exercises synthetic controls and retains the local archive/dashboard
-behavior; it is not proof of real Twitch login, chat or delivery.
+The provisioned Monday operator packet supplies the wrapper used for the
+recorded mock-chat rehearsal. From any checkout of that provisioned workspace,
+run it with a fresh attempt name:
+
+```sh
+workspace=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+bash "$workspace/.tmp/expansion-20261101/monday-session-20261102/rehearse.sh" \
+  --attempt clip-rehearsal-02
+```
+
+The packet must already be provisioned on this host. Its `rehearse.sh`
+selects the pinned Python/CUDA environment; `rehearse.py` starts the tracked
+`tests/integration/mock_twitch.py` server, acquires `bench.perf_queue.PerlLease`,
+and exports its canonical EX descriptor as `IRL_SHIELD_PERF_QUEUE_LEASE_FD`
+before invoking `shield.cli.execute`. It uses `--mock-origin` with exact
+`127.0.0.1` binding and no Twitch publication flags. `walk-linux` does not
+accept `--mock-origin`; calling `shield.cli` alone does not supply this lease
+or mock server. The host-bound wrappers remain in the private operator packet
+alongside its resource pins and synthetic fixture credentials.
+
+The wrapper exercises chat `!skin bar`, `!skin patch`, `!skin lock patch`,
+the 55-second `!shield hold`, and `!shield resume` after 140 seconds, measured
+from the sender's first source packet. This proves synthetic control routing;
+real Twitch login, chat and delivery require the attended live takes.
+
+The local demo's quiet dashboard hides its private invitation. Practise
+operator dashboard HOLD and Resume during the attended live takes using
+their fresh invitation; this mock command provides no attended invitation.
 
 ## Separate local phone and dashboard rehearsal
 
