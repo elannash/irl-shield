@@ -14,10 +14,13 @@ def validate_demo(args):
         return
     local = args.local_only and not args.twitch_live and args.host == '127.0.0.1'
     attended = args.twitch_live and not args.local_only
-    if (not (local or attended) or args.twitch_bandwidth_test
+    mocked = (bool(getattr(args, 'mock_origin', None)) and not args.local_only
+              and not args.twitch_live and getattr(args, 'local_sink', None) is None
+              and args.host == '127.0.0.1')
+    if (not (local or attended or mocked) or args.twitch_bandwidth_test
             or getattr(args, 'command', 'run') != 'run'
             or getattr(args, 'phone_setup', False)):
-        raise ValueError('Demo source requires local-only loopback or attended live mode without phone setup')
+        raise ValueError('Demo source requires local-only or mock-controlled loopback, or attended live mode without phone setup')
     if args.demo_source is None or args.demo_receipt is None or args.archive is None or args.seconds is None:
         raise ValueError('Demo source requires source, receipt, fresh archive and bounded duration')
     if args.accurate_rate_hz is not None or args.accurate_box_thresh is not None:

@@ -147,6 +147,7 @@ async def execute(args):
     from shield.twitch.http import TwitchHTTP
     validate(args)
     phone_input = None
+    local_demo = args.demo_source is not None and not args.twitch_live
     if args.demo_source is not None:
         from tools.demo_renderer.sender import Sender, source_manifest
         source_manifest(args.demo_source)
@@ -154,7 +155,7 @@ async def execute(args):
         args.archive = args.archive.expanduser().resolve()
         args.archive.mkdir(parents=True, exist_ok=False)
         def phone_input(address, phone):
-            return Sender(args.demo_source, address, phone, args.demo_receipt, local_only=args.local_only)
+            return Sender(args.demo_source, address, phone, args.demo_receipt, local_only=local_demo)
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     cancel, stopped = asyncio.Event(), threading.Event()
     loop = asyncio.get_running_loop()
@@ -237,7 +238,7 @@ async def execute(args):
                         if args.dashboard or args.phone_setup:
                             from shield.dashboard import DashboardServer, PairingData
                             dashboard_factory = DashboardServer
-                            if args.demo_source is not None and args.local_only:
+                            if local_demo:
                                 from tools.demo_renderer.rehearsal import local_dashboard
                                 dashboard_factory = local_dashboard
                             dashboard = dashboard_factory(host=args.host, port=args.dashboard_port,
@@ -254,7 +255,7 @@ async def execute(args):
                             twitch_live=args.twitch_live, live_approval=approval,
                             local_sink=args.local_sink, appearance=appearance, **input_options))
                         await asyncio.shield(work)
-                        if args.demo_source is not None and args.local_only:
+                        if local_demo:
                             from tools.demo_renderer.rehearsal import check_archive
                             check_archive(args.archive, args.demo_receipt)
                     finally:
