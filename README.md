@@ -9,10 +9,14 @@ Generated scene with fictional names. Before (left) and shielded with Patch (rig
 ## How it works
 
 - Moblin on the phone sends RTMP over Tailscale to the Linux relay.
-- The relay delays video by about 1 second to give detectors time to work.
-- PP-OCRv6 detectors on CUDA find readable text.
+- The relay uses a 1-second processing buffer by default on GPU. Total delay to viewers has not been measured.
+- PP-OCRv6 detectors detect text for masking; some text is missed.
 - Masks cover the detected text. Patch is the default; chat can vote for Bar or Patch.
 - Frames that have not been checked go out protected. NVENC encodes the video, and a TLS forwarder sends it to Twitch with certificate verification.
+
+### Why not a stream delay or an OBS blur?
+
+A delay only buys time; someone still has to spot the sign. A fixed OBS blur covers a screen position. IRL Shield finds moving text inside the processing buffer and lets moderators interrupt output.
 
 ## Chat and mod controls
 
@@ -21,11 +25,15 @@ Generated scene with fictional names. Before (left) and shielded with Patch (rig
 - `!skin bar` or `!skin patch`: viewers vote for the mask appearance.
 - `!skin lock bar` or `!skin lock patch`: moderators and the broadcaster can lock the appearance. `!skin unlock` releases it.
 
-The private phone dashboard shows relay status, local Hold / Resume controls and QR pairing for Moblin. Keep its pairing credentials private. See [dashboard details](docs/DASHBOARD.md) and [skin controls](docs/SKINS.md#chat-voting).
+Hold stops further exposure; it cannot take back frames already sent. Use Hold before a known location clue enters the frame.
 
-## Quick start
+The private phone dashboard shows relay status and local Hold / Resume controls. Pairing with Moblin uses a QR code once the relay is installed. Keep its pairing credentials private. See [dashboard details](docs/DASHBOARD.md) and [skin controls](docs/SKINS.md#chat-voting).
 
-Requires Linux x86-64 and Python 3.11. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` is available with a 2.5-second default delay. See [RUN.md](docs/RUN.md) for dependencies, CPU setup and full instructions.
+## Judge quick start
+
+### Try it locally (no Twitch)
+
+Requires Linux x86-64 and Python 3.11. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` uses CPU detection and libx264 encoding with a 2.5-second default processing buffer. See [RUN.md](docs/RUN.md) for dependencies and full instructions.
 
 From the repository root, install the pinned environment, transport and models:
 
@@ -35,42 +43,41 @@ scripts/m2-tools
 .venv/bin/python -m models.prepare ppocr-v6-tiny ppocr-v6-small
 ```
 
-For CUDA with pip-installed NVIDIA libraries:
+Start the local relay from an attended terminal. This recipe uses CPU mode; omit `--cpu` for a supported NVIDIA GPU:
 
 ```sh
-export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
-export OPENCV_FOR_THREADS_NUM=1
-export LD_LIBRARY_PATH="$(find "$PWD/.venv/lib/python3.11/site-packages/nvidia" -mindepth 2 -maxdepth 2 -type d -name lib -print | paste -sd :)${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-export CUDA_CACHE_PATH="$PWD/.tmp/cuda-cache"
-mkdir -p "$CUDA_CACHE_PATH"
-.venv/bin/python -m shield.cli doctor
+scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
 ```
 
-Start a local phone-to-OBS run from an attended terminal with Tailscale configured:
+No Twitch credentials, login or publication are needed. Send video from a local RTMP source to the private camera URL shown in the terminal. In OBS, pull `rtmp://127.0.0.1:19350/shielded`. Keep that terminal off the stream.
+
+For a phone source, configure Tailscale on the phone and relay, replace `127.0.0.1` in `--host` with the relay's Tailscale IPv4 address, and pair Moblin through the private dashboard. In OBS, pull `rtmp://<your-tailscale-ip>:19350/shielded`.
+
+<!-- demo-source release asset link added Monday -->
+
+### Bandwidth-test with your own Twitch app
+
+Register your own Twitch app as a public client for device-code login. The relay reads `TWITCH_CLIENT_ID` for that app's client ID and `TWITCH_BROADCASTER_ID` for your broadcaster account's numeric user ID from the process environment. Supply your own values, then run:
 
 ```sh
-export SHIELD_BIND_HOST="$(tailscale ip -4)"
-.venv/bin/python -m shield.cli doctor
-.venv/bin/python -m shield.cli run --local-only --phone-setup
+export TWITCH_CLIENT_ID="<your-public-client-id>"
+export TWITCH_BROADCASTER_ID="<your-numeric-broadcaster-id>"
+scripts/walk-linux --twitch-bandwidth-test --cpu --host 127.0.0.1 --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
 ```
 
-Pair Moblin using the private dashboard or enter the RTMP URL shown in the private terminal. In OBS, pull `rtmp://<your-tailscale-ip>:19350/shielded`. Keep that terminal off the stream.
+Omit `--cpu` for GPU mode. `infisical run --` is an optional prefix if you store these variables in Infisical; it is not required by the code. No client secret is required.
 
-For Twitch, bandwidth-test is the default testing mode. Output stays local until you select a publication flag. These attended commands need Infisical credentials and Twitch authorization as described in [RUN.md](docs/RUN.md#twitch-authorization-and-controls):
+Open the activation URL shown privately in the attended terminal and authorize as the broadcaster whose numeric ID you supplied. The requested scopes are `user:read:chat`, `moderator:read:shield_mode` and `channel:read:stream_key`. The relay validates the app and broadcaster IDs and fetches the stream key into memory. Bandwidth-test has no `naie` login restriction.
 
-```sh
-infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-bandwidth-test
-```
-
-Live mode is restricted to the configured broadcaster `naie` and requires an owner-authorized, attended session with a fresh `LIVE naie` terminal confirmation:
-
-```sh
-infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-live
-```
+Use the same private input and OBS steps as the local run. This mode sends to Twitch ingest with `?bandwidthtest=true`; it does not create a public broadcast. See [Twitch authorization and controls](docs/RUN.md#twitch-authorization-and-controls).
 
 ## Results
 
-On held-out, never-seen footage, **106 of 126 OCR-observed Latin-script text intervals stayed hidden (84%)** in an offline evaluation. Independent OCR engines (Tesseract, Apple Vision and PP-OCR) judged the output. Our 90% target (gate 1) was not met. The median masked area was **13.6%**.
+In an offline evaluation of six 5-second variants from three fresh licensed sources, **106/126 OCR-observed natural text intervals in Latin script stayed hidden (84%)**. Natural counts include text in both natural and synthetic variants. The synthetic control earned **14/22** hidden intervals because the Zurich variants failed the real-video check.
+
+The median masked area was **13.6%**, with **p95 50.4%**. Tesseract and Apple Vision supplied the truth labels; output leaks flagged by PP-OCR also counted. Our 90% natural-text target (gate 1) was not met.
 
 See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This offline result does not establish live-stream privacy or latency.
 
@@ -81,13 +88,14 @@ See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESUL
 - Small or distant text is the main miss.
 - Text only: landmarks and other visual location clues remain visible.
 - Linux only, with NVIDIA recommended for the default GPU path.
+- Live Twitch mode is currently restricted to `naie`. It requires fresh authorization and an attended `LIVE naie` terminal confirmation for each owner-authorized session.
 - Experimental, not a production relay.
 
 ## Built with Codex
 
-One Codex thread (GPT-6.1 Sol) and its Codex children wrote the code. Claude Opus conducted and reviewed each PR.
+One Codex builder thread and its Codex children wrote the code; Claude Opus reviewed each PR.
 
-At base `e1aaf4f`: **106 commits on main, 24 merged PRs**, about **18,800 lines of Python source** and **17,400 lines of Python tests**. Line counts include blanks and comments in tracked Python files, excluding vendored licenses and historical code copies under `docs/`.
+At `origin/main` commit `e1aaf4f`: **106 reachable commits, including 24 PR merge commits**. Counting all lines, including blanks and comments, in tracked `.py` files outside `docs/` gives **19,770 source lines** outside `tests/` and **17,367 test lines** under `tests/`.
 
 ## License and attribution
 
@@ -95,7 +103,7 @@ See [fixture licenses and attribution](fixtures/ATTRIBUTION.md) and the [model s
 
 ## Technical notes and provenance
 
-# IRL Shield
+### Provenance notes
 
 Published historical records use path placeholders: `REPO_ROOT` is the
 repository root, `WORKTREE_<id>` identifies the original isolated checkout,
