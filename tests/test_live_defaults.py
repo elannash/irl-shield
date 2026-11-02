@@ -129,9 +129,10 @@ class ModelPreparationDefaults(unittest.TestCase):
             artifact = prepare.load_manifest()['artifacts']['ppocr-v5-mobile']
             with patch.object(sys, 'argv', ['models.prepare', '--cache-dir', name]), \
                     patch.object(prepare, 'download', return_value=weight) as download, \
-                    patch.object(prepare, 'verified_path', return_value=(weight, artifact)), \
+                    patch.object(prepare, 'verified_path', return_value=(weight, artifact)) as verified, \
                     patch.dict(sys.modules, {'bench.static_model': static}), redirect_stdout(StringIO()):
                 prepare.main()
+            verified.assert_called_once_with('ppocr-v5-mobile', Path(name))
             self.assertEqual([c.args[0] for c in download.call_args_list], list(prepare.load_manifest()['artifacts']))
             self.assertEqual([(c.args[2], c.args[3]) for c in static.prepare_static.call_args_list],
                              [(352, 640), (544, 960)])
