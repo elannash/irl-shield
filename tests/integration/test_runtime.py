@@ -355,7 +355,8 @@ async def approved_live():
     from test_live_mode import LiveTwitch, Terminal, user_session
     async with LiveTwitch() as mock, ClientSession() as network:
         http = TwitchHTTP(network, mock_origin=mock.origin)
-        with patch('builtins.open', return_value=Terminal('LIVE naie\n')):
+        with patch.dict('os.environ', {'TWITCH_BROADCASTER_LOGIN': 'naie'}), \
+                patch('builtins.open', return_value=Terminal('LIVE naie\n')):
             return await authorize_live(user_session(http), http)
 
 

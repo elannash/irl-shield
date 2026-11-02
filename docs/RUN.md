@@ -7,7 +7,8 @@ recommended for the default CUDA/NVENC path. `--cpu` selects CPU detection and
 libx264 encoding. Mac OCR grading tools do not provide live application support.
 OBS can pull the local shielded RTMP stream. Optional Twitch egress uses the
 same encoded packets through a verified TLS forwarder. Bandwidth-test mode
-appends `?bandwidthtest=true`; attended live mode is restricted to `naie`.
+appends `?bandwidthtest=true`; attended live mode requires the configured
+broadcaster's fresh authorization and exact terminal confirmation.
 
 **Privacy and walking use are unqualified.** SRT is not qualified. The existing
 M2 transport starts a private SRT listener, but these instructions expose only
@@ -257,6 +258,10 @@ Twitch client and broadcaster IDs are read by name from Infisical-injected
 `TWITCH_CLIENT_ID` and `TWITCH_BROADCASTER_ID`. A public-client device login uses
 the existing approved scopes; stream keys are fetched from Helix in memory.
 Do not supply tokens, refresh tokens or stream keys in command arguments.
+Live publication additionally requires `TWITCH_BROADCASTER_LOGIN`, the exact
+lowercase login belonging to that broadcaster ID. Configure all three names
+through the same Infisical environment; a missing login refuses live mode before
+any media or stream-key request. Non-live modes do not require this login.
 
 The following is an **attended, separately authorized recipe**. It was not run
 against Twitch during integration testing:
@@ -283,9 +288,12 @@ Twitch publication requires one explicit, mutually exclusive mode:
 
 - `--twitch-bandwidth-test` sends to test ingest with `?bandwidthtest=true`.
 - `--twitch-live` sends live only after fresh token validation identifies the
-  exact broadcaster login `naie`, then the owner confirms `LIVE naie` on an
-  attended `/dev/tty`. `nale` and every other login are refused. This approval
-  lasts for one runtime session and cannot be saved or reused.
+  configured broadcaster ID and `TWITCH_BROADCASTER_LOGIN`, then the attendee
+  types exactly `LIVE <login>` followed by Enter on `/dev/tty`. A mismatched
+  login or confirmation is refused. This approval lasts for one runtime session
+  and cannot be saved or reused. With `naie` configured, the prompt remains
+  exactly `LIVE naie`; owner decision 50's naie-only restriction still governs
+  the owner's own live sessions.
 
 Start live publication only in an owner-authorized, attended session.
 A stored login or key never turns publication on.

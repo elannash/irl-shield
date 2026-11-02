@@ -1,14 +1,23 @@
-"""Session-local approval for the owner's attended naie live sessions."""
+"""Session-local approval for an attended, configured broadcaster."""
+import os
+import re
 import threading
 
 from shield.twitch.auth import approved_scopes, positive
 
 
+def _configured_login():
+    login = os.environ.get('TWITCH_BROADCASTER_LOGIN', '')
+    # The full confirmation, including its newline, must fit readline(64).
+    return login if re.fullmatch(r'[a-z0-9_]{1,58}', login) else None
+
+
 class LiveModeError(Exception):
-    """Fixed local failure text; never includes upstream responses or credentials."""
+    """Local failure text; never includes upstream responses or credentials."""
 
     def __init__(self):
-        super().__init__('Live mode requires fresh naie authorization and an attended '
+        login = _configured_login() or 'broadcaster'
+        super().__init__(f'Live mode requires fresh {login} authorization and an attended '
                          'terminal confirmation for this session.')
 
 
@@ -33,6 +42,9 @@ class LiveApproval:
 async def authorize_live(session, http):
     """Bypass cached validation, then ask on /dev/tty for this session only."""
     try:
+        login = _configured_login()
+        if login is None:
+            raise LiveModeError()
         token = await session.access_token()
         began = session.auth.clock()
         status, body = await http.request('GET', '/oauth2/validate', headers={
@@ -42,7 +54,7 @@ async def authorize_live(session, http):
                 or body.get('client_id') != session.auth.client_id
                 or not isinstance(session.broadcaster_id, str) or not session.broadcaster_id.isdecimal()
                 or body.get('user_id') != session.broadcaster_id
-                or body.get('login') != 'naie'
+                or body.get('login') != login
                 or not approved_scopes(body.get('scopes'))):
             raise LiveModeError()
         expires_at = min(session.tokens.expires_at, began + positive(body.get('expires_in')))
@@ -50,10 +62,10 @@ async def authorize_live(session, http):
         with open('/dev/tty', 'r') as response, open('/dev/tty', 'w') as terminal:
             if not response.isatty() or not terminal.isatty():
                 raise LiveModeError()
-            terminal.write('LIVE publication to naie. Only continue during an owner-started, '
-                           'attended session. Type LIVE naie and press Enter for this session: ')
+            terminal.write(f'LIVE publication to {login}. Only continue during an owner-started, '
+                           f'attended session. Type LIVE {login} and press Enter for this session: ')
             terminal.flush()
-            if response.readline(64) != 'LIVE naie\n':
+            if response.readline(64) != f'LIVE {login}\n':
                 raise LiveModeError()
         if session.auth.clock() >= expires_at:
             raise LiveModeError()

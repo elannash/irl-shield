@@ -14,7 +14,7 @@ For `run` and `login --run`:
 | --- | --- |
 | Neither publication flag | Local protected output plus authenticated controls; a stored credential or stream key never enables publication automatically |
 | `--twitch-bandwidth-test` | Explicit Twitch bandwidth-test publication; remains the default Twitch publication mode |
-| `--twitch-live` | Live publication requires fresh `naie` identity validation and an attended terminal confirmation |
+| `--twitch-live` | Live publication requires fresh configured broadcaster identity validation and an attended terminal confirmation |
 | Both publication flags | Parser error before authentication |
 
 Both flags are available on `login`; without `--run`, login ends without
@@ -22,30 +22,39 @@ starting media or acquiring a stream key. `--twitch-live` cannot be combined
 with `--mock-origin`, `--local-only`, or `--local-sink`. The synthetic mock
 control route continues to use no Twitch publication flag.
 
-Owner queue decision 50 permits live publication only to the test channel
-`naie`, during an owner-started, attended session. The terminal prompt
-reminds the attendee of that restriction; the owner starts each permitted
-session and confirms it at the terminal.
+Configure `TWITCH_BROADCASTER_LOGIN` alongside `TWITCH_BROADCASTER_ID` and
+`TWITCH_CLIENT_ID` through Infisical. Live mode requires a nonempty lowercase
+login consisting of ASCII letters, digits or underscores; its exact
+confirmation must fit the unchanged 64-byte readline. There is no default login.
+Non-live modes do not require this variable.
+
+Owner queue decision 50 still permits the owner's own live sessions only on
+the test channel `naie`, during an owner-started, attended session. The owner
+keeps `naie` configured and types the unchanged `LIVE naie` confirmation. Other
+installers configure their own broadcaster login and matching ID; this does not
+authorize an agent to publish or relax attended approval.
 
 ## Authorization interface and source
 
 `shield.app.live.authorize_live(session, http)` uses the existing
-`UserSession.access_token()` interface, then always makes its own fresh
-`GET /oauth2/validate` request with the access token. It does not trust the
+`UserSession.access_token()` interface after checking login configuration, then
+always makes its own fresh `GET /oauth2/validate` request with the access token.
+It does not trust the
 session's hourly validation cache. The response must have:
 
 - HTTP status 200 and a JSON object;
 - a nonempty matching client ID and matching numeric broadcaster ID;
 - exactly the existing approved scopes;
 - positive finite token lifetime;
-- the exact login `naie` (`nale`, case variants, missing login and every
-  other login fail).
+- the exact configured `TWITCH_BROADCASTER_LOGIN` (mismatches, case variants
+  and a missing response login fail).
 
 After validation, separate read and write handles open `/dev/tty` and both
 must report an attended terminal. Separate handles support nonseekable
 terminals; buffered `r+` mode does not. The attendee must enter exactly
-`LIVE naie` followed by Enter. EOF, incomplete input, whitespace or case
-differences, missing terminal and terminal I/O errors all deny approval.
+`LIVE <login>` followed by Enter, using the validated configured login.
+For the owner's setup this remains exactly `LIVE naie`. EOF, incomplete input,
+whitespace or case differences, missing terminal and terminal I/O errors all deny approval.
 Validation must still be unexpired when confirmation finishes. Device-code polling has completed, and EventSub, media and their watchdogs
 have not started when the prompt blocks the startup event loop. The prompt
 reads synchronously before media startup, with no stdin/environment/file
@@ -54,8 +63,10 @@ fallback or persistent confirmation.
 Successful authorization returns a RAM-only `LiveApproval`. Its public
 constructor refuses issuance, copying/serialization are refused, and
 `consume()` succeeds exactly once, including across concurrent consumers.
-Reuse throws the same fixed local `LiveModeError` as all other live guard
-failures. Remote bodies, exception messages and credentials cannot enter
+Reuse throws the same local `LiveModeError` as all other live guard failures.
+It names only a syntactically valid configured login, or "broadcaster" when
+configuration is absent or invalid; the `naie` setup retains its exact prior
+error text. Remote bodies, exception messages and credentials cannot enter
 that error. The CLI presents this local reason and retains its existing
 generic redaction for unrelated upstream failures.
 

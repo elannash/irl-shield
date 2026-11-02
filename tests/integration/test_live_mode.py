@@ -53,6 +53,41 @@ def user_session(http):
 
 
 class LiveAuthorization(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        environment = patch.dict(os.environ, {'TWITCH_BROADCASTER_LOGIN': 'naie'})
+        environment.start()
+        self.addCleanup(environment.stop)
+
+    async def test_configured_login_controls_the_exact_attended_prompt_and_confirmation(self):
+        cases = [
+            ('naie', 'LIVE naie\n', True,
+             'LIVE publication to naie. Only continue during an owner-started, '
+             'attended session. Type LIVE naie and press Enter for this session: '),
+            ('fixture_streamer', 'LIVE fixture_streamer\n', True,
+             'LIVE publication to fixture_streamer. Only continue during an owner-started, '
+             'attended session. Type LIVE fixture_streamer and press Enter for this session: '),
+            ('fixture_streamer', 'LIVE naie\n', False,
+             'LIVE publication to fixture_streamer. Only continue during an owner-started, '
+             'attended session. Type LIVE fixture_streamer and press Enter for this session: '),
+        ]
+        for login, response, allowed, prompt in cases:
+            with self.subTest(login=login, response=response), local_network(), \
+                    patch.dict(os.environ, {'TWITCH_BROADCASTER_LOGIN': login}):
+                async with LiveTwitch() as mock, ClientSession() as network:
+                    mock.validation['login'] = login
+                    terminal = Terminal(response)
+                    with patch('builtins.open', return_value=terminal), \
+                            patch.object(terminal, 'readline', wraps=terminal.readline) as read:
+                        http = TwitchHTTP(network, mock_origin=mock.origin)
+                        if allowed:
+                            approval = await authorize_live(user_session(http), http)
+                            approval.consume()
+                        else:
+                            with self.assertRaises(LiveModeError):
+                                await authorize_live(user_session(http), http)
+                    self.assertEqual(terminal.output.getvalue(), prompt)
+                    read.assert_called_once_with(64)
+
     async def test_attended_confirmation_works_with_a_nonseekable_os_terminal(self):
         with local_network():
             async with LiveTwitch() as mock, ClientSession() as network:
@@ -74,6 +109,9 @@ class LiveAuthorization(unittest.IsolatedAsyncioTestCase):
                     os.close(slave)
 
     async def test_fresh_naie_validation_and_attended_confirmation_issue_one_use_approval(self):
+        self.assertEqual(str(LiveModeError()),
+            'Live mode requires fresh naie authorization and an attended '
+            'terminal confirmation for this session.')
         with local_network():
             async with LiveTwitch() as mock, ClientSession() as network:
                 http = TwitchHTTP(network, mock_origin=mock.origin)
@@ -222,7 +260,9 @@ class LiveCommandLine(unittest.TestCase):
                 validate(parser().parse_args(['run', '--host', '127.0.0.1', '--twitch-live', *extra]))
 
     def test_live_failures_are_actionable_and_other_upstream_failures_stay_redacted(self):
-        for error in (LiveModeError(), TwitchError('synthetic-remote-secret')):
+        with patch.dict(os.environ, {'TWITCH_BROADCASTER_LOGIN': 'naie'}):
+            live_error = LiveModeError()
+        for error in (live_error, TwitchError('synthetic-remote-secret')):
             output, diagnostic = StringIO(), StringIO()
             with self.subTest(error=type(error).__name__), \
                     patch('shield.cli.execute', side_effect=error), \
@@ -270,7 +310,7 @@ class LiveWiring(unittest.IsolatedAsyncioTestCase):
                     arguments = ['run', '--host', '127.0.0.1']
                     arguments += ['--mock-origin', mock.origin] if flags == ('mock',) else list(flags)
                     with patch.dict('os.environ', {'TWITCH_CLIENT_ID': 'synthetic-client',
-                            'TWITCH_BROADCASTER_ID': '1'}, clear=True), \
+                            'TWITCH_BROADCASTER_ID': '1', 'TWITCH_BROADCASTER_LOGIN': 'naie'}, clear=True), \
                             patch('shield.twitch.http.TwitchHTTP', RoutedHTTP), \
                             patch('relay.mediamtx.MediaMTX') as media, \
                             patch('relay.mediamtx.verified_binary'), \
@@ -292,7 +332,7 @@ class LiveWiring(unittest.IsolatedAsyncioTestCase):
                     def __init__(self, session, **kwargs):
                         super().__init__(session, mock_origin=mock.origin)
                 with patch.dict('os.environ', {'TWITCH_CLIENT_ID': 'synthetic-client',
-                        'TWITCH_BROADCASTER_ID': '1'}, clear=True), \
+                        'TWITCH_BROADCASTER_ID': '1', 'TWITCH_BROADCASTER_LOGIN': 'naie'}, clear=True), \
                         patch('shield.twitch.http.TwitchHTTP', RoutedHTTP), \
                         patch('relay.mediamtx.MediaMTX') as media, \
                         patch('relay.mediamtx.verified_binary', side_effect=AssertionError('media before approval')), \
@@ -306,6 +346,34 @@ class LiveWiring(unittest.IsolatedAsyncioTestCase):
                 media.assert_not_called()
                 engine.assert_not_called()
                 run.assert_not_called()
+
+    async def test_missing_or_invalid_configured_login_stops_before_terminal_key_or_media(self):
+        for login in (None, '', ' ', 'fixture\nstreamer', 'FIXTURE', 'x' * 59):
+            with self.subTest(login=login), local_network():
+                async with LiveTwitch() as mock:
+                    class RoutedHTTP(TwitchHTTP):
+                        def __init__(self, session, **kwargs):
+                            super().__init__(session, mock_origin=mock.origin)
+
+                    environment = {'TWITCH_CLIENT_ID': 'synthetic-client', 'TWITCH_BROADCASTER_ID': '1'}
+                    if login is not None:
+                        environment['TWITCH_BROADCASTER_LOGIN'] = login
+                    with patch.dict(os.environ, environment, clear=True), \
+                            patch('shield.twitch.http.TwitchHTTP', RoutedHTTP), \
+                            patch('relay.mediamtx.MediaMTX') as media, \
+                            patch('relay.mediamtx.verified_binary') as binary, \
+                            patch('relay.runtime.make_engine') as engine, \
+                            patch('relay.runtime.run') as run, \
+                            patch('builtins.open', side_effect=lambda path, mode:
+                                  Terminal('LIVE naie\n' if mode == 'r' else '')) as terminal:
+                        with self.assertRaises(LiveModeError):
+                            await execute(parser().parse_args(['run', '--host', '127.0.0.1', '--twitch-live']))
+                    self.assertNotIn(('GET', '/helix/streams/key'), mock.calls)
+                    terminal.assert_called_once_with('/dev/tty', 'w')
+                    binary.assert_not_called()
+                    media.assert_not_called()
+                    engine.assert_not_called()
+                    run.assert_not_called()
 
 
 if __name__ == '__main__':
