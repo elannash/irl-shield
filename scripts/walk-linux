@@ -32,7 +32,7 @@ class WalkParser(argparse.ArgumentParser):
 
 
 def parser():
-    command = WalkParser(description=__doc__, allow_abbrev=False)
+    command = WalkParser(description=__doc__ + ' Default detectors: PP-OCRv5-mobile in both lanes.', allow_abbrev=False)
     mode = command.add_mutually_exclusive_group(required=True)
     mode.add_argument('--twitch-live', action='store_true', help='Attended naie LIVE authorization in the existing CLI')
     mode.add_argument('--twitch-bandwidth-test', action='store_true', help='Publish to the existing Twitch test ingest')

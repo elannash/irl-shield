@@ -17,7 +17,7 @@ from shield.app.live import LiveModeError
 
 
 def parser():
-    root = argparse.ArgumentParser(description=__doc__)
+    root = argparse.ArgumentParser(description=__doc__ + ' Default detectors: PP-OCRv5-mobile in both lanes.')
     commands = root.add_subparsers(dest='command', required=True)
     commands.add_parser('doctor', help='Inspect requirements; never qualifies privacy or walking')
     for name in ('login', 'run'):

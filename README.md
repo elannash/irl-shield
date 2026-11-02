@@ -43,6 +43,19 @@ cap bounds delay-related frame and audio buffering; invalid values are refused.
 Without these flags, the existing CUDA/NVENC and 1-second delay defaults remain.
 Mac OCR grading tools are development tools, not live application support.
 
+The live and CLI defaults use **PP-OCRv5-mobile in both lanes**, fast 8 Hz and
+accurate 4 Hz. At 1280×720 input, lane widths are 640/1280 with separate detector
+side caps 640/960 and static OCR tensors 352×640 / 544×960. Padding is 0.3,
+before/after windows are 6/30 frames, and maximum lane ages are 6/12 frames.
+Detection thresholds are 0.3 / 0.5 with unclip ratio 1.6. CPU mode keeps this
+policy while selecting CPU execution, libx264, and its 2.5-second delay.
+
+The selected V5-mobile policy's **2-judge Linux tune screen** hid **127/146
+natural intervals** and **49/54 synthetic intervals**. This tune screen is not
+a held-out result, realtime qualification, or a privacy pass. The earlier
+[held-out result](docs/Q-FRESH-HELDOUT-RESULT.md), **106/126 natural intervals**,
+used the **PP-OCRv6-small / PP-OCRv6-tiny policy**, not these V5-mobile defaults.
+
 **Twitch egress verifies its TLS peer.** PyAV sends RTMP only to a runtime-owned
 `127.0.0.1` listener. A standard-library TLS forwarder connects to Twitch on
 port 443 with system CAs, certificate verification and hostname checking.
@@ -72,7 +85,7 @@ scripts/walk-linux --local-only --cpu --host 127.0.0.1 --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3
 ```
 
-The root-inspected local CPU collection on an i7-7700K with 8 logical CPUs
+The earlier PP-OCRv6 local CPU collection on an i7-7700K with 8 logical CPUs
 observed 3,598 LIVE frames in a complete 120-second steady window, 29.9833 fps,
 at a 2.5-second engine delay and 378.426% observed CPU usage (one core = 100%;
 partial process accounting including instrumentation). **CPU privacy is NOT
@@ -83,9 +96,9 @@ observations do not establish a privacy pass or walking qualification.
 include decoder latency, partial CPU accounting, unknowns and the failed clock
 guard.
 
-On the 7 natural tune clips (1,050 frames, offline configuration with the
-accurate lane at width 1280), CPU and CUDA produced pixel-identical masks. CPU
-mode therefore inherits the GPU path's graded results for that configuration.
+The earlier PP-OCRv6 provider comparison used 7 natural tune clips (1,050
+frames, offline configuration with the accurate lane at width 1280); CPU and CUDA produced pixel-identical masks.
+That comparison does not grade the current V5-mobile CPU defaults.
 The native CPU run used width 960 at a 2.5 s delay and is not separately graded.
 The known native plaque miss and the comparison's scope are documented in the
 CPU run instructions.
@@ -99,8 +112,8 @@ evidence is needed; a low-disk guard stops evidence without stopping the relay.
 
 Gate 1 has not passed. Historical timing results cover the M1 Pro and Linux,
 including Linux CPU detection with libx264, but no tune policy meets all privacy
-and real-video guards. The frozen held-out evaluation is queued separately;
-[the hand-back](docs/M1-HANDBACK.md) distinguishes finished and pending evidence.
+and real-video guards. The earlier V6 held-out evaluation also failed;
+[its result](docs/Q-FRESH-HELDOUT-RESULT.md) is separate from the V5-mobile tune screen.
 
 The engine accepts timestamped in-memory BGR frames independently of transport.
 Apple Vision is available for macOS grading; PP-OCR models use ONNX Runtime on
@@ -133,8 +146,8 @@ scripts/mac --seconds 14400 scripts/host-lock exclusive scripts/bench \
 area ceiling and30-second sustained workload. Use a fresh run ID to repeat it.
 It reproduces measurement and judging, not a passing policy: no tune candidate
 passes all guards. Endpoint-only raw cards cannot claim gate1 until a closed
-queue contamination receipt is joined. The one-shot held-out evaluation is
-queued separately and remains reserved for the final milestone result.
+queue contamination receipt is joined. The earlier V6 held-out result is linked
+above; this command does not establish V5-mobile held-out quality.
 
 Current counts, accepted/rejected timing receipts and limits are in
 [docs/M1-HANDBACK.md](docs/M1-HANDBACK.md). The per-host overnight scheduler and

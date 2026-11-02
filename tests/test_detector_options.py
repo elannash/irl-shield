@@ -118,15 +118,17 @@ class DetectorOptions(unittest.TestCase):
                 result = make_engine('/synthetic-cache', **options)
                 self.assertIs(result, engine.return_value)
                 fast, accurate = factory.call_args_list
-                self.assertEqual(fast.args, ('ppocr-v6-tiny', {'provider': provider or 'cuda', 'threads': 2,
-                                                           'cache_dir': '/synthetic-cache', 'limit_side_len': 640}))
-                expected = {'provider': provider or 'cuda', 'threads': 2, 'cache_dir': '/synthetic-cache', 'limit_side_len': 960}
+                self.assertEqual(fast.args, ('ppocr-v5-mobile', {'provider': provider or 'cuda', 'threads': 2,
+                                                           'cache_dir': '/synthetic-cache', 'limit_side_len': 640, 'static_shape': [352, 640],
+                                                           'thresh': .3, 'box_thresh': .5, 'unclip_ratio': 1.6}))
+                expected = {'provider': provider or 'cuda', 'threads': 2, 'cache_dir': '/synthetic-cache', 'limit_side_len': 960,
+                            'static_shape': [544, 960], 'thresh': .3, 'box_thresh': .5, 'unclip_ratio': 1.6}
                 if floor is not None:
                     expected['box_thresh'] = .73
-                self.assertEqual(accurate.args, ('ppocr-v6-small', expected))
+                self.assertEqual(accurate.args, ('ppocr-v5-mobile', expected))
                 self.assertEqual([call.args[0] for call in lane.call_args_list], ['fast', 'accurate'])
                 self.assertEqual([call.args[2] for call in lane.call_args_list], [8, 4 if rate is None else rate])
-                self.assertEqual([call.kwargs['width'] for call in lane.call_args_list], [640, 960])
+                self.assertEqual([call.kwargs['width'] for call in lane.call_args_list], [640, 1280])
                 self.assertEqual(engine.call_args.args[1]['delay_seconds'], 1 if delay is None else delay)
                 self.assertEqual(engine.call_args.args[1]['fps'], 30)
 
