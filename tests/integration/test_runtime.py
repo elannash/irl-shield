@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import threading
 import unittest
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from relay.runtime import make_engine, run
 from relay.security import Credentials, RelayAddress
@@ -15,8 +15,13 @@ from relay.security import Credentials, RelayAddress
 class RuntimeDestination(unittest.TestCase):
     def test_runtime_receipt_uses_effective_lane_settings_and_actual_encoder_and_delay(self):
         artifact = {'sha256': '0' * 64, 'license': 'CC0-1.0', 'license_source': 'synthetic',
-                    'source': 'synthetic', 'url': 'not-downloaded',
+                    'source': 'synthetic', 'url': 'not-downloaded', 'task': 'det',
                     'preprocess': {'mean': [0., 0., 0.], 'std': [1., 1., 1.]}}
+        def static_graph(source, source_hash, height, width, cache):
+            return Path(f'/synthetic/static-{height}-{width}.onnx'), {
+                'input_shape': [1, 3, height, width],
+                'output_shape': [1, 1, height, width],
+            }
         class Output:
             error_code = error_details = None
             count = max_write_seconds = recovery_count = 0
@@ -36,6 +41,7 @@ class RuntimeDestination(unittest.TestCase):
             active = ['CPUExecutionProvider'] if provider == 'cpu' else ['CUDAExecutionProvider', 'CPUExecutionProvider']
             with self.subTest(provider=provider, options=options), tempfile.TemporaryDirectory() as directory, \
                     patch('bench.onnx_detectors.verified_path', return_value=('/synthetic/not-read.onnx', artifact)), \
+                    patch('bench.static_model.prepare_static', side_effect=static_graph) as prepare_static, \
                     patch('bench.onnx_detectors.ort.get_available_providers', return_value=['CPUExecutionProvider', 'CUDAExecutionProvider']), \
                     patch('bench.onnx_detectors.ort.InferenceSession') as session, \
                     patch('bench.onnx_detectors.TextDetector'), \
@@ -43,6 +49,10 @@ class RuntimeDestination(unittest.TestCase):
                     patch('relay.runtime.NetworkInput', return_value=Source()):
                 session.return_value.get_providers.return_value = active
                 engine = make_engine('/synthetic-cache', provider=provider, delay_seconds=delay, **options)
+                self.assertEqual(prepare_static.call_args_list, [
+                    call('/synthetic/not-read.onnx', '0' * 64, 352, 640, '/synthetic-cache'),
+                    call('/synthetic/not-read.onnx', '0' * 64, 544, 960, '/synthetic-cache'),
+                ])
                 stopped = threading.Event()
                 stopped.set()
                 summary = run(engine, RelayAddress('127.0.0.1'), Credentials.generate(), Credentials.generate(),
@@ -59,6 +69,10 @@ class RuntimeDestination(unittest.TestCase):
                         'rate_hz': expected_rate, 'box_thresh': expected_floor,
                         'execution_provider': active[0], 'active_execution_providers': active})
                     self.assertEqual(saved['engine']['lanes'][name]['rate_hz'], expected_rate)
+                    expected_shape = [352, 640] if name == 'fast' else [544, 960]
+                    static = saved['engine']['lanes'][name]['backend']['static_artifact']
+                    self.assertEqual(static['input_shape'], [1, 3, *expected_shape])
+                    self.assertEqual(static['output_shape'], [1, 1, *expected_shape])
 
     def test_legacy_runtime_cli_propagates_cpu_delay_and_preserves_defaults(self):
         from relay.runtime import main
