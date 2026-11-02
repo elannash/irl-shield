@@ -1,5 +1,102 @@
 # IRL Shield
 
+A privacy relay that covers readable text on street signs, storefronts, house numbers and plates in an IRL stream before the video reaches Twitch.
+
+![Generated storefront scene, before on the left and shielded with Patch on the right](docs/images/generated-before-after.png)
+
+Generated scene with fictional names. Before (left) and shielded with Patch (right), from the W8b demo.
+
+## How it works
+
+- Moblin on the phone sends RTMP over Tailscale to the Linux relay.
+- The relay delays video by about 1 second to give detectors time to work.
+- PP-OCRv6 detectors on CUDA find readable text.
+- Masks cover the detected text. Patch is the default; chat can vote for Bar or Patch.
+- Frames that have not been checked go out protected. NVENC encodes the video, and a TLS forwarder sends it to Twitch with certificate verification.
+
+## Chat and mod controls
+
+- `!shield hold`: moderators and the broadcaster can hold the stream on a privacy slate.
+- `!shield resume`: only the broadcaster can release the chat hold.
+- `!skin bar` or `!skin patch`: viewers vote for the mask appearance.
+- `!skin lock bar` or `!skin lock patch`: moderators and the broadcaster can lock the appearance. `!skin unlock` releases it.
+
+The private phone dashboard shows relay status, local Hold / Resume controls and QR pairing for Moblin. Keep its pairing credentials private. See [dashboard details](docs/DASHBOARD.md) and [skin controls](docs/SKINS.md#chat-voting).
+
+## Quick start
+
+Requires Linux x86-64 and Python 3.11. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` is available with a 2.5-second default delay. See [RUN.md](docs/RUN.md) for dependencies, CPU setup and full instructions.
+
+From the repository root, install the pinned environment, transport and models:
+
+```sh
+scripts/setup-check
+scripts/m2-tools
+.venv/bin/python -m models.prepare ppocr-v6-tiny ppocr-v6-small
+```
+
+For CUDA with pip-installed NVIDIA libraries:
+
+```sh
+export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2
+export OPENCV_FOR_THREADS_NUM=1
+export LD_LIBRARY_PATH="$(find "$PWD/.venv/lib/python3.11/site-packages/nvidia" -mindepth 2 -maxdepth 2 -type d -name lib -print | paste -sd :)${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export CUDA_CACHE_PATH="$PWD/.tmp/cuda-cache"
+mkdir -p "$CUDA_CACHE_PATH"
+.venv/bin/python -m shield.cli doctor
+```
+
+Start a local phone-to-OBS run from an attended terminal with Tailscale configured:
+
+```sh
+export SHIELD_BIND_HOST="$(tailscale ip -4)"
+.venv/bin/python -m shield.cli doctor
+.venv/bin/python -m shield.cli run --local-only --phone-setup
+```
+
+Pair Moblin using the private dashboard or enter the RTMP URL shown in the private terminal. In OBS, pull `rtmp://<your-tailscale-ip>:19350/shielded`. Keep that terminal off the stream.
+
+For Twitch, bandwidth-test is the default testing mode. Output stays local until you select a publication flag. These attended commands need Infisical credentials and Twitch authorization as described in [RUN.md](docs/RUN.md#twitch-authorization-and-controls):
+
+```sh
+infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-bandwidth-test
+```
+
+Live mode is restricted to the configured broadcaster `naie` and requires an owner-authorized, attended session with a fresh `LIVE naie` terminal confirmation:
+
+```sh
+infisical run -- .venv/bin/python -m shield.cli login --run --host 127.0.0.1 --twitch-live
+```
+
+## Results
+
+On held-out, never-seen footage, **106 of 126 OCR-observed Latin-script text intervals stayed hidden (84%)** in an offline evaluation. Independent OCR engines (Tesseract, Apple Vision and PP-OCR) judged the output. Our 90% target (gate 1) was not met. The median masked area was **13.6%**.
+
+See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This offline result does not establish live-stream privacy or latency.
+
+<!-- v3 result added Monday -->
+
+## Limitations
+
+- Small or distant text is the main miss.
+- Text only: landmarks and other visual location clues remain visible.
+- Linux only, with NVIDIA recommended for the default GPU path.
+- Experimental, not a production relay.
+
+## Built with Codex
+
+One Codex thread (GPT-6.1 Sol) and its Codex children wrote the code. Claude Opus conducted and reviewed each PR.
+
+At base `e1aaf4f`: **106 commits on main, 24 merged PRs**, about **18,800 lines of Python source** and **17,400 lines of Python tests**. Line counts include blanks and comments in tracked Python files, excluding vendored licenses and historical code copies under `docs/`.
+
+## License and attribution
+
+See [fixture licenses and attribution](fixtures/ATTRIBUTION.md) and the [model sources, hashes and licenses](models/manifest.json).
+
+## Technical notes and provenance
+
+# IRL Shield
+
 Published historical records use path placeholders: `REPO_ROOT` is the
 repository root, `WORKTREE_<id>` identifies the original isolated checkout,
 and `OWNER_HOME` is the operator's home directory. `OWNER_TMP` identifies the
