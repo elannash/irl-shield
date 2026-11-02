@@ -2,6 +2,7 @@
 from contextlib import ExitStack
 import hashlib
 import json
+import os
 import platform
 import re
 import subprocess
@@ -81,6 +82,21 @@ class Judges:
             self.names = ['tesseract-5-psm11', 'vision-accurate'] + (['ppocr-independent'] if self.paddle else [])
             resources.pop_all()
 
+    def preflight(self):
+        """Exercise every reader on synthetic pixels without consulting the cache."""
+        if set(self.names) != {'tesseract-5-psm11', 'vision-accurate', 'ppocr-independent'}:
+            raise RuntimeError('Heldout grading requires all three independent readers')
+        if platform.system() == 'Darwin':
+            expected = subprocess.check_output(['getconf', 'DARWIN_USER_TEMP_DIR'], text=True, timeout=5).strip()
+            if not expected or os.environ.get('TMPDIR') != expected:
+                raise RuntimeError('Darwin grading TMPDIR must equal DARWIN_USER_TEMP_DIR')
+        import numpy as np
+        probe = np.full((96, 384, 3), 255, dtype=np.uint8)
+        cv2.putText(probe, 'SHIELD READY 123', (8, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        pytesseract.image_to_data(probe, lang='eng', config='--psm 11', output_type=Output.DICT, timeout=30)
+        self.vision.read(probe)
+        self.paddle.read(probe)
+
     def read(self, frame):
         digest = hashlib.sha256(frame.tobytes()+str((frame.shape,str(frame.dtype))).encode()+'|'.join(self.names).encode()+self.signature).hexdigest()
         path = self.cache / f'{digest}.json'
@@ -104,6 +120,8 @@ class Judges:
         return result
 
     def close(self):
-        self.vision.close()
-        if self.paddle:
-            self.paddle.close()
+        try:
+            self.vision.close()
+        finally:
+            if self.paddle:
+                self.paddle.close()

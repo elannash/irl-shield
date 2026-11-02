@@ -1,0 +1,1428 @@
+{
+  "schema_version": 1,
+  "baseline": "a5a31eba8846e9c1514d385d0c09ca4fed1f2587",
+  "status": "metadata-comparisons-complete-not-payload-or-perceptual-verification",
+  "sample_frame": {
+    "source_rows": 16,
+    "datasets": [
+      "fixtures/manifest.json (7 tune and 3 original heldout sources)",
+      "fixtures/fresh-heldout/manifest.json (3 v1 sources)",
+      "fixtures/fresh-heldout-v2/selection.json (3 v2 sources)"
+    ],
+    "extra_metadata": "10 fixture evidence JSON files plus the 3 selection-referenced v2 Commons snapshots, solely to resolve origin and licensing identity. V1 evidence is embedded in its manifest.",
+    "excluded_reads": [
+      "all media/cache payloads",
+      "v2 attempt markers and preparation/evaluation receipts",
+      "all model outputs",
+      "other worktrees including the locked original tree"
+    ],
+    "baseline_file_receipts": "baseline-metadata.json#/files",
+    "baseline_metadata_sha256": "08b29c84e2e8e27d0d58858cd7cdf006e2c4cc77534c23a9c998c75fde4e269b",
+    "earlier_corpus_receipt": "prior v2 nonreuse lists 528 historical metadata files; this packet does not reread that corpus or claim its full-content coverage"
+  },
+  "normalization": {
+    "titles": "UTF-8 NFC, HTML unescape, URL percent-decode, underscores to spaces, casefold",
+    "urls": "drop query/fragment, casefold host, NFC/percent-decode/underscore normalization of path",
+    "sha1": "hex lowercase as provided; left-pad to 40 characters to account for omitted leading zero in historical metadata",
+    "origin_ids": "YouTube and Vimeo numeric/string work IDs extracted from provenance, case preserved, plus Commons own-work page ID where source declares own work",
+    "licensing_identity": "underlying work ID + attributed author identity URL/name + license URL; a shared standard license URL alone is not source reuse. For these three, author names and URLs are also all disjoint from prior sources."
+  },
+  "excluded_sources": [
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "sf-market",
+      "pageid": 24404256,
+      "title": "File:Street traffic.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Street_traffic.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/7/70/Street_traffic.webm",
+      "source_sha1": "7f916030f14d84a65aa92077339f472897915fef",
+      "source_sha1_hex40": "7f916030f14d84a65aa92077339f472897915fef",
+      "source_sha256": "e5facb24baf755f0c1193999d823e99f6032661ad2bdef5cc28cc1cbbfde03e2",
+      "origin_video_ids": {
+        "youtube": [
+          "_7sCYyxw4Ic"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:_7sCYyxw4Ic"
+      ],
+      "author": "https://www.youtube.com/user/Editor",
+      "author_identity_urls": [
+        "https://www.youtube.com/user/Editor"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/0"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "ljubljana-walk",
+      "pageid": 81894660,
+      "title": "File:Walking down the Trubarjeva street.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_down_the_Trubarjeva_street.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Walking_down_the_Trubarjeva_street.webm",
+      "source_sha1": "8672dd92cea7e4b702eade3a0caca3bbbaffa0bb",
+      "source_sha1_hex40": "8672dd92cea7e4b702eade3a0caca3bbbaffa0bb",
+      "source_sha256": "73b413e6b2d20d1e8748c1dc8cbd89864bec2b2a01407178a0c747e8570b3a6d",
+      "origin_video_ids": {
+        "youtube": [
+          "XrtRowutnCs"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:XrtRowutnCs"
+      ],
+      "author": "Sounds of Changes",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UCjB-IQrc61I77sMDL_5g4Xw"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/1"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "ljubljana-traffic",
+      "pageid": 81895119,
+      "title": "File:Road traffic on Stritarjeva street.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Road_traffic_on_Stritarjeva_street.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Road_traffic_on_Stritarjeva_street.webm",
+      "source_sha1": "ab2454025725bc59364b19398d25dd7ff16fd54e",
+      "source_sha1_hex40": "ab2454025725bc59364b19398d25dd7ff16fd54e",
+      "source_sha256": "7a581ffbf16980df79bc6a264a2356fe82eda08ced531f1da5c90aaa0a4cb25a",
+      "origin_video_ids": {
+        "youtube": [
+          "X3Kyb292Vj4"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:X3Kyb292Vj4"
+      ],
+      "author": "Sounds of Changes",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UCjB-IQrc61I77sMDL_5g4Xw"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/2"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "london-croydon",
+      "pageid": 57010654,
+      "title": "File:Arriva London LJ08CXR in Addiscombe Road, Croydon (February 2016).webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Arriva_London_LJ08CXR_in_Addiscombe_Road,_Croydon_(February_2016).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Arriva_London_LJ08CXR_in_Addiscombe_Road%2C_Croydon_%28February_2016%29.webm",
+      "source_sha1": "d5d3365894f51ee2d79251784bc4ba025c7f6e28",
+      "source_sha1_hex40": "d5d3365894f51ee2d79251784bc4ba025c7f6e28",
+      "source_sha256": "c9bd095772e1578275cc2023536f6307600a21f06ff8d6e8d68ad55101591cee",
+      "origin_video_ids": {
+        "youtube": [
+          "t9cB_h5Aq5o"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:t9cB_h5Aq5o"
+      ],
+      "author": "Jontsa73",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UCtD5g4PorrltoQ-4bRmwacA"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/3"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "london-bus-pov",
+      "pageid": 185817907,
+      "title": "File:Time Lapse - London Bus View.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Time_Lapse_-_London_Bus_View.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Time_Lapse_-_London_Bus_View.webm",
+      "source_sha1": "f1b92ed5a9143a8dcf0b41f7a47dfa8f28ae25ce",
+      "source_sha1_hex40": "f1b92ed5a9143a8dcf0b41f7a47dfa8f28ae25ce",
+      "source_sha256": "67ed7b7e06e3e5a8ac1ed5c4781f3a5eef7a646e36e4b88c83f1b7ac202b3b41",
+      "origin_video_ids": {
+        "youtube": [
+          "_Vnr8FvH6MQ"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:_Vnr8FvH6MQ"
+      ],
+      "author": "Alessandro Massi",
+      "author_identity_urls": [
+        "https://www.youtube.com/@alessandromassi121"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/4"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "illinois-night",
+      "pageid": 194494717,
+      "title": "File:Night Views of Caton Farm Road in Crest Hill, Illinois 01.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Night_Views_of_Caton_Farm_Road_in_Crest_Hill,_Illinois_01.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Night_Views_of_Caton_Farm_Road_in_Crest_Hill%2C_Illinois_01.webm",
+      "source_sha1": "1ac1694e3ada88f68d3da1b1cacf5f05d41de2d1",
+      "source_sha1_hex40": "1ac1694e3ada88f68d3da1b1cacf5f05d41de2d1",
+      "source_sha256": "8f45c5f929bc336a7a0026ad1b536bcdccbad203bcfd8ccb9d6a0e5c944cff6d",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:194494717"
+      ],
+      "author": "Illinois_Roadbuff (Rogue Jr)",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:Illinois-Roadbuff"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/4.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/5"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "mazatlan-aquiles",
+      "pageid": 117693646,
+      "title": "File:Video de la Calle Aquiles Serdán, Mazatlán, 27 de febrero de 2019.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Video_de_la_Calle_Aquiles_Serd%C3%A1n,_Mazatl%C3%A1n,_27_de_febrero_de_2019.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/Video_de_la_Calle_Aquiles_Serd%C3%A1n%2C_Mazatl%C3%A1n%2C_27_de_febrero_de_2019.webm",
+      "source_sha1": "2f69eca83602e1bee2d76dcc2b6eee78abb9834c",
+      "source_sha1_hex40": "2f69eca83602e1bee2d76dcc2b6eee78abb9834c",
+      "source_sha256": "064bc225b8820a7e6bd64a9b713f91de1ad49d3bd3161b65ff598bac6a951af7",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:117693646"
+      ],
+      "author": "DogeGamer2015MZT2",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:DogeGamer2015MZT2"
+      ],
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/6"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "sf-lombard",
+      "pageid": 24404148,
+      "title": "File:Lombard street (the crookedest street).webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Lombard_street_(the_crookedest_street).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Lombard_street_%28the_crookedest_street%29.webm",
+      "source_sha1": "6ce589b726952ac58c700a9268d4dd2c5257bfa5",
+      "source_sha1_hex40": "6ce589b726952ac58c700a9268d4dd2c5257bfa5",
+      "source_sha256": "91afb6123e21c3c8ea3a2c62806453914f840c524b57ac1d9c5d725c1db8d3fc",
+      "origin_video_ids": {
+        "youtube": [
+          "G5bdnYcSdRA"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:G5bdnYcSdRA"
+      ],
+      "author": "https://www.youtube.com/user/Editor",
+      "author_identity_urls": [
+        "https://www.youtube.com/user/Editor"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/7"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "london-night",
+      "pageid": 28292156,
+      "title": "File:London Bus at night 2013-09-14 720p.ogv",
+      "source_url": "https://commons.wikimedia.org/wiki/File:London_Bus_at_night_2013-09-14_720p.ogv",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/London_Bus_at_night_2013-09-14_720p.ogv",
+      "source_sha1": "a3725a39b0991aa8cc2f464cc4808164a9dd4a46",
+      "source_sha1_hex40": "a3725a39b0991aa8cc2f464cc4808164a9dd4a46",
+      "source_sha256": "059840c9add478d3949b445ff23205cea31eca2417d6e4c81d4aa682dfd0a00d",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:28292156"
+      ],
+      "author": "Brian McNeil",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:Brian_McNeil"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/8"
+    },
+    {
+      "dataset": "fixtures/manifest.json",
+      "id": "illinois-snow",
+      "pageid": 182395281,
+      "title": "File:Snowy views of Caton Farm Rd in Crest Hill, Illinois 7.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Snowy_views_of_Caton_Farm_Rd_in_Crest_Hill,_Illinois_7.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/8/82/Snowy_views_of_Caton_Farm_Rd_in_Crest_Hill%2C_Illinois_7.webm",
+      "source_sha1": "008b76014331c8adc6d621d0dbb73d3b0b80f064",
+      "source_sha1_hex40": "008b76014331c8adc6d621d0dbb73d3b0b80f064",
+      "source_sha256": "5fabe1b2bbd19503684b08dc8fa30d1fa28fb0b5eb5e2bc3980e006f188813a0",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:182395281"
+      ],
+      "author": "Illinois_Roadbuff (Rogue Jr)",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:Illinois-Roadbuff"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/4.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/9"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout/manifest.json",
+      "id": "zurich-spiegelgasse",
+      "pageid": 41105192,
+      "title": "File:Spiegelgasse.ogv",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Spiegelgasse.ogv",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Spiegelgasse.ogv",
+      "source_sha1": "b2336d66df6947e452a5289dfa0d36d6937b5e7c",
+      "source_sha1_hex40": "b2336d66df6947e452a5289dfa0d36d6937b5e7c",
+      "source_sha256": "db2d5ac45b7ecadb99dd3e84366817dca7c56ee30968b31aece7d8c3740d04d0",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "commons-own:pageid:41105192"
+      ],
+      "author": "Albinfo",
+      "author_identity_urls": [
+        "https://commons.wikimedia.org/wiki/User:Albinfo"
+      ],
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/10"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout/manifest.json",
+      "id": "chicago-wells",
+      "pageid": 79076443,
+      "title": "File:New Wells Street bridge.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:New_Wells_Street_bridge.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/New_Wells_Street_bridge.webm",
+      "source_sha1": "f0391066bec82f53e7ceedba757563b93aa6966c",
+      "source_sha1_hex40": "f0391066bec82f53e7ceedba757563b93aa6966c",
+      "source_sha256": "088364651dd0ecf84a0e9ea71b8575e5c2aace256cbbe5094ea1e30eb194501c",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": [
+          "80050981"
+        ]
+      },
+      "origin_work_identities": [
+        "vimeo:80050981"
+      ],
+      "author": "Steven Vance",
+      "author_identity_urls": [
+        "https://vimeo.com/stevevance"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/11"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout/manifest.json",
+      "id": "manchester-portland",
+      "pageid": 63411445,
+      "title": "File:Portland Street, Manchester, May 2017.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Portland_Street,_Manchester,_May_2017.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Portland_Street%2C_Manchester%2C_May_2017.webm",
+      "source_sha1": "d5c4042f900a765ec87d4c66a14747a9d36faaaf",
+      "source_sha1_hex40": "d5c4042f900a765ec87d4c66a14747a9d36faaaf",
+      "source_sha256": "987f3bff9e3b1f4b605083a099281065682dc5e6bd1d602df8ca4b3c62308ab7",
+      "origin_video_ids": {
+        "youtube": [],
+        "vimeo": [
+          "216535229"
+        ]
+      },
+      "origin_work_identities": [
+        "vimeo:216535229"
+      ],
+      "author": "Anders Hansson",
+      "author_identity_urls": [
+        "https://vimeo.com/nders"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/12"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "id": "london-westminster",
+      "pageid": 105547564,
+      "title": "File:Walking in LONDON - England (UK) - Westminster to Piccadilly Circus (2019) - 4K 60fps (UHD).webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_in_LONDON_-_England_(UK)_-_Westminster_to_Piccadilly_Circus_(2019)_-_4K_60fps_(UHD).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Walking_in_LONDON_-_England_%28UK%29_-_Westminster_to_Piccadilly_Circus_%282019%29_-_4K_60fps_%28UHD%29.webm",
+      "source_sha1": "e1d64199f8cdfb11bdd5a188cecf0493c546746a",
+      "source_sha1_hex40": "e1d64199f8cdfb11bdd5a188cecf0493c546746a",
+      "source_sha256": null,
+      "origin_video_ids": {
+        "youtube": [
+          "BgMKsDwIDgQ"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:BgMKsDwIDgQ"
+      ],
+      "author": "POPtravel",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/13"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "id": "paris-walk",
+      "pageid": 82789239,
+      "title": "File:Paris , France - A Walking Travel Tour - YouTube.webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Paris_,_France_-_A_Walking_Travel_Tour_-_YouTube.webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Paris_%2C_France_-_A_Walking_Travel_Tour_-_YouTube.webm",
+      "source_sha1": "25e02b5819662d7b50e12399905c48bc417a74bb",
+      "source_sha1_hex40": "25e02b5819662d7b50e12399905c48bc417a74bb",
+      "source_sha256": null,
+      "origin_video_ids": {
+        "youtube": [
+          "O4W4X_UBRkg"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:O4W4X_UBRkg"
+      ],
+      "author": "Le Monde en Vidéo",
+      "author_identity_urls": [
+        "https://www.youtube.com/user/allairej1957"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/14"
+    },
+    {
+      "dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "id": "liverpool-walk",
+      "pageid": 102651633,
+      "title": "File:Walking in LIVERPOOL - UK - 4K 60fps (UHD).webm",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Walking_in_LIVERPOOL_-_UK_-_4K_60fps_(UHD).webm",
+      "download_url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Walking_in_LIVERPOOL_-_UK_-_4K_60fps_%28UHD%29.webm",
+      "source_sha1": "b90ffd27a58949207cfaff3bbddbbfd44577853c",
+      "source_sha1_hex40": "b90ffd27a58949207cfaff3bbddbbfd44577853c",
+      "source_sha256": null,
+      "origin_video_ids": {
+        "youtube": [
+          "jKJ2zDSYns8"
+        ],
+        "vimeo": []
+      },
+      "origin_work_identities": [
+        "youtube:jKJ2zDSYns8"
+      ],
+      "author": "POPtravel",
+      "author_identity_urls": [
+        "https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA"
+      ],
+      "license_url": "https://creativecommons.org/licenses/by/3.0",
+      "evidence_pointer": "baseline-metadata.json#/exclusions/15"
+    }
+  ],
+  "candidate_to_prior_comparisons": [
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "sf-market",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "ljubljana-walk",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "ljubljana-traffic",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "london-croydon",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "london-bus-pov",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "illinois-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "mazatlan-aquiles",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "sf-lombard",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "london-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "illinois-snow",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "zurich-spiegelgasse",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "chicago-wells",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "manchester-portland",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "london-westminster",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "paris-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_source": "liverpool-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "sf-market",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "ljubljana-walk",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "ljubljana-traffic",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "london-croydon",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "london-bus-pov",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "illinois-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "mazatlan-aquiles",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "sf-lombard",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "london-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "illinois-snow",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "zurich-spiegelgasse",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "chicago-wells",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "manchester-portland",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "london-westminster",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "paris-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_source": "liverpool-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "sf-market",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "ljubljana-walk",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "ljubljana-traffic",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "london-croydon",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "london-bus-pov",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "illinois-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "mazatlan-aquiles",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "sf-lombard",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "london-night",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "illinois-snow",
+      "excluded_dataset": "fixtures/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "zurich-spiegelgasse",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "chicago-wells",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "manchester-portland",
+      "excluded_dataset": "fixtures/fresh-heldout/manifest.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "london-westminster",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "paris-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_source": "liverpool-walk",
+      "excluded_dataset": "fixtures/fresh-heldout-v2/selection.json",
+      "checks": {
+        "commons_pageid_distinct": true,
+        "normalized_title_distinct": true,
+        "canonical_file_page_url_distinct": true,
+        "original_file_url_distinct": true,
+        "advertised_source_sha1_distinct": true,
+        "origin_work_identity_disjoint": true,
+        "youtube_origin_ids_disjoint": true,
+        "vimeo_origin_ids_disjoint": true,
+        "author_identity_urls_disjoint": true,
+        "author_name_distinct": true
+      },
+      "collisions": [],
+      "candidate_payload_sha256_comparison": "not available: no payload reads or downloads authorized; SHA1 is advertised metadata and compared for every source"
+    }
+  ],
+  "candidate_pairwise_comparisons": [
+    {
+      "left": "ryde-somerset-walk",
+      "right": "madison-state-street-walk",
+      "checks": {
+        "pageid_distinct": true,
+        "title_distinct": true,
+        "canonical_url_distinct": true,
+        "original_url_distinct": true,
+        "sha1_distinct": true,
+        "origin_work_disjoint": true,
+        "author_urls_disjoint": true,
+        "author_names_distinct": true
+      }
+    },
+    {
+      "left": "ryde-somerset-walk",
+      "right": "katowice-footbridge-walk",
+      "checks": {
+        "pageid_distinct": true,
+        "title_distinct": true,
+        "canonical_url_distinct": true,
+        "original_url_distinct": true,
+        "sha1_distinct": true,
+        "origin_work_disjoint": true,
+        "author_urls_disjoint": true,
+        "author_names_distinct": true
+      }
+    },
+    {
+      "left": "madison-state-street-walk",
+      "right": "katowice-footbridge-walk",
+      "checks": {
+        "pageid_distinct": true,
+        "title_distinct": true,
+        "canonical_url_distinct": true,
+        "original_url_distinct": true,
+        "sha1_distinct": true,
+        "origin_work_disjoint": true,
+        "author_urls_disjoint": true,
+        "author_names_distinct": true
+      }
+    }
+  ],
+  "prior_unused_backup_identity_checks": [
+    {
+      "candidate": "ryde-somerset-walk",
+      "excluded_backup": "File:Alaskan Way Viaduct timelapse.webm",
+      "source_sha1_distinct": true,
+      "normalized_title_distinct": true,
+      "canonical_url_distinct": true,
+      "download_url_distinct": true
+    },
+    {
+      "candidate": "madison-state-street-walk",
+      "excluded_backup": "File:Alaskan Way Viaduct timelapse.webm",
+      "source_sha1_distinct": true,
+      "normalized_title_distinct": true,
+      "canonical_url_distinct": true,
+      "download_url_distinct": true
+    },
+    {
+      "candidate": "katowice-footbridge-walk",
+      "excluded_backup": "File:Alaskan Way Viaduct timelapse.webm",
+      "source_sha1_distinct": true,
+      "normalized_title_distinct": true,
+      "canonical_url_distinct": true,
+      "download_url_distinct": true
+    }
+  ],
+  "collision_count": 0,
+  "limits": [
+    "No new original SHA256 exists because no payload was fetched; advertised SHA1 is compared against all 16 prior source SHA1 values.",
+    "Own-work claims and external-work identity come from Commons source metadata; undocumentable plagiarism or undisclosed derivative relationships cannot be ruled out without content inspection or further provenance.",
+    "Distinct IDs rule out the documented same YouTube/Vimeo work under a renamed or differently encoded Commons upload; metadata cannot prove perceptual independence."
+  ]
+}

@@ -62,6 +62,23 @@ snapshots and recipes are in [v2 preparation](../docs/FRESH-HELDOUT-V2.md) and
 | `paris-walk` / fresh v2 heldout | [Paris walking travel tour](https://commons.wikimedia.org/w/index.php?oldid=1031020312), [Le Monde en Vidéo](https://www.youtube.com/user/allairej1957), [YouTube O4W4X_UBRkg](https://www.youtube.com/watch?v=O4W4X_UBRkg) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 | `liverpool-walk` / fresh v2 heldout | [Walking in Liverpool](https://commons.wikimedia.org/w/index.php?oldid=1053656681), [POPtravel](https://www.youtube.com/channel/UClODDXeUIz1-FaKyN8dsNrA), [YouTube jKJ2zDSYns8](https://www.youtube.com/watch?v=jKJ2zDSYns8) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
 
+## Fresh heldout v3 sources
+
+These three metadata-selected Commons walks are benchmark-only, not demo assets.
+The original source-selection snapshots are preserved in
+[v3 attribution](fresh-heldout-v3/ATTRIBUTION.md) and the
+[sealed selection](fresh-heldout-v3/selection.json). Prepared input hashes are
+recorded by the separate frozen-ungraded manifest. Modifications: file-relative
+2–7s excerpt, 1280×720 crop/scale, zero-origin CFR30, exactly 150 frames,
+CPU libx264 medium 10M yuv420p, removal of all audio/subtitles/data/source metadata,
+and deterministic synthetic sign overlays. No music is retained.
+
+| ID / split | Original and author | License |
+| --- | --- | --- |
+| `ryde-somerset-walk` / fresh v3 heldout | [Ryde Somerset Road](https://commons.wikimedia.org/w/index.php?oldid=1189685130), Жизнь на юге Англии | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `madison-state-street-walk` / fresh v3 heldout | [Recall Election Day — Madison, WI](https://commons.wikimedia.org/w/index.php?oldid=1031922187), teaching kristin | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) |
+| `katowice-footbridge-walk` / fresh v3 heldout | [Walking across the footbridge in Katowice, 20240808](https://commons.wikimedia.org/w/index.php?oldid=1261664289), User:Abzeronow | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+
 ## W8 fictional demo source (NOT CLEARED)
 
 The unchanged generated plate in `demo-renderer/fictional-street.png` is a

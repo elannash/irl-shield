@@ -55,6 +55,8 @@ class JudgeCache(unittest.TestCase):
         return self.versions[name]
 
     def command_output(self, command, **kwargs):
+        if command == ['getconf', 'DARWIN_USER_TEMP_DIR']:
+            return '/synthetic/os-temp/\n'
         if command == ['/configured/bin/tesseract', '--list-langs']:
             if self.language_listing is not None:
                 return self.language_listing
@@ -77,6 +79,46 @@ class JudgeCache(unittest.TestCase):
         self.binary.return_value = '5.5.5'
         self.read_once()
         self.assertEqual(self.ocr.call_count, 2)
+
+    def test_readiness_bypasses_cache_and_exercises_every_reader(self):
+        reader = Judges('ppocr-v6-small', self.cache)
+        try:
+            reader.read(self.pixels)
+            before = set(self.cache.iterdir())
+            self.ocr.reset_mock()
+            with patch.object(reader.vision, 'read', wraps=reader.vision.read) as vision, \
+                    patch.object(reader.paddle, 'read', wraps=reader.paddle.read) as paddle:
+                reader.preflight()
+                reader.preflight()
+                self.assertEqual(self.ocr.call_count, 2)
+                self.assertEqual(vision.call_count, 2)
+                self.assertEqual(paddle.call_count, 2)
+                self.assertEqual(set(self.cache.iterdir()), before)
+                paddle.side_effect = RuntimeError('synthetic recognizer unavailable')
+                with self.assertRaisesRegex(RuntimeError, 'recognizer unavailable'):
+                    reader.preflight()
+        finally:
+            reader.close()
+
+    def test_darwin_readiness_requires_the_os_temp_directory(self):
+        reader = Judges('ppocr-v6-small', self.cache)
+        try:
+            with patch('bench.judges.platform.system', return_value='Darwin'):
+                for value in (None, '/synthetic/wrong-temp/'):
+                    with self.subTest(value=value), patch.dict(os.environ):
+                        if value is None:
+                            os.environ.pop('TMPDIR', None)
+                        else:
+                            os.environ['TMPDIR'] = value
+                        with self.assertRaisesRegex(RuntimeError, 'TMPDIR must equal'):
+                            reader.preflight()
+                        self.ocr.assert_not_called()
+                with patch.dict(os.environ, {'TMPDIR': '/synthetic/os-temp/'}):
+                    self.ocr.reset_mock()
+                    reader.preflight()
+                    self.assertEqual(self.ocr.call_count, 1)
+        finally:
+            reader.close()
 
     def test_each_runtime_version_and_macos_product_change_misses_cache(self):
         with patch('bench.judges.platform.system', return_value='Darwin'):
@@ -162,6 +204,15 @@ class JudgeCache(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 Judges('ppocr-v6-small', self.cache)
         self.assertTrue(vision.closed)
+        self.assertTrue(paddle.closed)
+
+        vision, paddle = Reader(), Reader()
+        with patch('bench.judges.Vision', return_value=vision), \
+                patch('bench.onnx_detectors.create_recognizer', return_value=paddle):
+            reader = Judges('ppocr-v6-small', self.root / 'close-cache')
+        with patch.object(vision, 'close', side_effect=RuntimeError('synthetic Vision close failure')):
+            with self.assertRaisesRegex(RuntimeError, 'Vision close failure'):
+                reader.close()
         self.assertTrue(paddle.closed)
 
     def test_configured_cli_inherits_prefix_and_reports_canonical_data_path(self):

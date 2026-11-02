@@ -1,0 +1,397 @@
+{
+  "kind": "lossless-page-object-extract-from-raw-api-json",
+  "raw_response": "raw/selected-three-verification.json",
+  "raw_response_sha256": "20949ed16fbb2c86e23af0f475e1557a7758336369150231f8547b4ec36caecf",
+  "request_url": "https://commons.wikimedia.org/w/api.php?format=json&formatversion=2&action=query&titles=File%3A%D0%90%D0%BD%D0%B3%D0%BB%D0%B8%D1%8F+-+%D0%BF%D0%BE%D1%87%D1%82%D0%BE%D0%B2%D0%BE%D0%B5+%D0%BE%D1%82%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.ogv%7CFile%3ARecall+Election+Day+-+Madison%2C+WI.webm%7CFile%3AWalking+across+the+footbridge+in+Katowice%2C+20240808.webm&redirects=1&prop=imageinfo%7Crevisions%7Cinfo&iiprop=url%7Csize%7Csha1%7Cextmetadata%7Cmetadata%7Cmime%7Ctimestamp%7Cuser&iilimit=50&rvprop=ids%7Ctimestamp%7Ccontent&rvslots=main&inprop=url",
+  "retrieved_at_utc": "2026-11-01T21:10:49.853919+00:00",
+  "page": {
+    "pageid": 73732818,
+    "ns": 6,
+    "title": "File:Recall Election Day - Madison, WI.webm",
+    "imagerepository": "local",
+    "imageinfo": [
+      {
+        "timestamp": "2018-10-19T23:32:54Z",
+        "user": "SecretName101",
+        "size": 3999208,
+        "width": 1280,
+        "height": 720,
+        "duration": 7.712,
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Recall_Election_Day_-_Madison%2C_WI.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "descriptionurl": "https://commons.wikimedia.org/wiki/File:Recall_Election_Day_-_Madison,_WI.webm",
+        "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=73732818",
+        "sha1": "88cfcf878b6416ce13e6ecf1e29b85e72aff0f44",
+        "metadata": [
+          {
+            "name": "GETID3_VERSION",
+            "value": "1.9.15-201709291043"
+          },
+          {
+            "name": "filesize",
+            "value": 3999208
+          },
+          {
+            "name": "avdataoffset",
+            "value": 0
+          },
+          {
+            "name": "avdataend",
+            "value": 3999208
+          },
+          {
+            "name": "fileformat",
+            "value": "webm"
+          },
+          {
+            "name": "audio",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "vorbis"
+              },
+              {
+                "name": "sample_rate",
+                "value": 44100
+              },
+              {
+                "name": "channels",
+                "value": 2
+              },
+              {
+                "name": "language",
+                "value": "und"
+              },
+              {
+                "name": "bits_per_sample",
+                "value": 32
+              },
+              {
+                "name": "lossless",
+                "value": false
+              },
+              {
+                "name": "bitrate_mode",
+                "value": "vbr"
+              },
+              {
+                "name": "bitrate",
+                "value": 192000
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "vorbis"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "sample_rate",
+                        "value": 44100
+                      },
+                      {
+                        "name": "channels",
+                        "value": 2
+                      },
+                      {
+                        "name": "language",
+                        "value": "und"
+                      },
+                      {
+                        "name": "bits_per_sample",
+                        "value": 32
+                      },
+                      {
+                        "name": "lossless",
+                        "value": false
+                      },
+                      {
+                        "name": "bitrate_mode",
+                        "value": "vbr"
+                      },
+                      {
+                        "name": "bitrate",
+                        "value": 192000
+                      },
+                      {
+                        "name": "compression_ratio",
+                        "value": 0.06802721088435375
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "channelmode",
+                "value": "stereo"
+              },
+              {
+                "name": "compression_ratio",
+                "value": 0.06802721088435375
+              }
+            ]
+          },
+          {
+            "name": "video",
+            "value": [
+              {
+                "name": "dataformat",
+                "value": "vp8"
+              },
+              {
+                "name": "resolution_x",
+                "value": 1280
+              },
+              {
+                "name": "resolution_y",
+                "value": 720
+              },
+              {
+                "name": "display_unit",
+                "value": "pixels"
+              },
+              {
+                "name": "display_x",
+                "value": 1280
+              },
+              {
+                "name": "display_y",
+                "value": 720
+              },
+              {
+                "name": "frame_rate",
+                "value": 30
+              },
+              {
+                "name": "streams",
+                "value": [
+                  {
+                    "name": 0,
+                    "value": [
+                      {
+                        "name": "dataformat",
+                        "value": "vp8"
+                      },
+                      {
+                        "name": "default",
+                        "value": true
+                      },
+                      {
+                        "name": "resolution_x",
+                        "value": 1280
+                      },
+                      {
+                        "name": "resolution_y",
+                        "value": 720
+                      },
+                      {
+                        "name": "display_unit",
+                        "value": "pixels"
+                      },
+                      {
+                        "name": "display_x",
+                        "value": 1280
+                      },
+                      {
+                        "name": "display_y",
+                        "value": 720
+                      },
+                      {
+                        "name": "frame_rate",
+                        "value": 30
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "bitrate",
+                "value": 3956556
+              }
+            ]
+          },
+          {
+            "name": "warning",
+            "value": [
+              {
+                "name": 0,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [1 bytes]) at 71"
+              },
+              {
+                "name": 1,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [2 bytes]) at 85"
+              },
+              {
+                "name": 2,
+                "value": "Unhandled seekhead element [module.audio-video.matroska.php:581] (5036::SeekPosition [3 bytes]) at 100"
+              }
+            ]
+          },
+          {
+            "name": "encoding",
+            "value": "UTF-8"
+          },
+          {
+            "name": "mime_type",
+            "value": "video/webm"
+          },
+          {
+            "name": "matroska",
+            "value": [
+              {
+                "name": "comments",
+                "value": [
+                  {
+                    "name": "muxingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf57.25.100"
+                      }
+                    ]
+                  },
+                  {
+                    "name": "writingapp",
+                    "value": [
+                      {
+                        "name": 0,
+                        "value": "Lavf57.25.100"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "playtime_seconds",
+            "value": 7.712
+          },
+          {
+            "name": "bitrate",
+            "value": 4148556
+          },
+          {
+            "name": "playtime_string",
+            "value": "0:08"
+          },
+          {
+            "name": "version",
+            "value": 2
+          }
+        ],
+        "extmetadata": {
+          "DateTime": {
+            "value": "2018-10-19 23:32:54",
+            "source": "mediawiki-metadata",
+            "hidden": ""
+          },
+          "ObjectName": {
+            "value": "Recall Election Day - Madison, WI",
+            "source": "mediawiki-metadata"
+          },
+          "CommonsMetadataExtension": {
+            "value": 1.2,
+            "source": "extension",
+            "hidden": ""
+          },
+          "Categories": {
+            "value": "Media from YouTube|Videos of 2012|Uploaded with video2commons|License reviewed by YouTubeReviewBot|Tom Barrett gubernatorial campaign, 2012",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "Assessments": {
+            "value": "",
+            "source": "commons-categories",
+            "hidden": ""
+          },
+          "ImageDescription": {
+            "value": "Recall Election Day in Madison, WI. Nothing super exciting in this video. Just a few seconds of video while walking to the State Street Stairs at Capitol Square.\nYou can see the Solidarity Sing-Along on the Capitol side of the street.",
+            "source": "commons-desc-page"
+          },
+          "DateTimeOriginal": {
+            "value": "2012-06-05",
+            "source": "commons-desc-page"
+          },
+          "Credit": {
+            "value": "<bdi lang=\"en\" dir=\"ltr\"><a href=\"//commons.wikimedia.org/wiki/Commons:YouTube_files\" title=\"Commons:YouTube files\">YouTube</a>: <a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/watch?v=qrBEe6JOzMY\"><bdi lang=\"\">Recall Election Day - Madison, WI</bdi></a> – View/save archived versions on <a rel=\"nofollow\" class=\"external text\" href=\"https://web.archive.org/web/*/https://www.youtube.com/watch?v=qrBEe6JOzMY\">archive.org</a></bdi>",
+            "source": "commons-desc-page"
+          },
+          "Artist": {
+            "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.youtube.com/user/teachingkristin\">teaching kristin</a>",
+            "source": "commons-desc-page"
+          },
+          "LicenseShortName": {
+            "value": "CC BY 3.0",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "UsageTerms": {
+            "value": "Creative Commons Attribution 3.0",
+            "source": "commons-desc-page"
+          },
+          "AttributionRequired": {
+            "value": "true",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Attribution": {
+            "value": "teaching kristin",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "LicenseUrl": {
+            "value": "https://creativecommons.org/licenses/by/3.0",
+            "source": "commons-desc-page"
+          },
+          "Copyrighted": {
+            "value": "True",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "Restrictions": {
+            "value": "",
+            "source": "commons-desc-page",
+            "hidden": ""
+          },
+          "License": {
+            "value": "cc-by-3.0",
+            "source": "commons-templates",
+            "hidden": ""
+          }
+        },
+        "mime": "video/webm"
+      }
+    ],
+    "revisions": [
+      {
+        "revid": 1031922187,
+        "parentid": 1024186460,
+        "timestamp": "2025-05-15T11:49:50Z",
+        "slots": {
+          "main": {
+            "contentmodel": "wikitext",
+            "contentformat": "text/x-wiki",
+            "content": "=={{int:filedesc}}==\n{{Information\n|description={{en|1=Recall Election Day in Madison, WI. Nothing super exciting in this video. Just a few seconds of video while walking to the State Street Stairs at Capitol Square.\n\nYou can see the Solidarity Sing-Along on the Capitol side of the street.}}\n|date=2012-06-05\n|source={{From YouTube|1=qrBEe6JOzMY|2=Recall Election Day - Madison, WI}}\n|author=[https://www.youtube.com/user/teachingkristin teaching kristin]\n|permission=\n|other_versions=\n|other_fields=\n}}\n\n=={{int:license-header}}==\n{{YouTube CC-BY|teaching kristin}}\n{{YouTubeReview|id=qrBEe6JOzMY|ChannelName=teaching kristin|ChannelID=UCYRMx3QGg36ZLHy0xRO074g|title=Recall Election Day - Madison, WI |archive=https://web.archive.org/web/20200212234217/https://www.youtube.com/watch?v=qrBEe6JOzMY|date=2020-02-12}}\n\n[[Category:Uploaded with video2commons]]\n[[Category:Tom Barrett gubernatorial campaign, 2012]]\n[[Category:Videos of 2012|0605]]"
+          }
+        }
+      }
+    ],
+    "contentmodel": "wikitext",
+    "pagelanguage": "en",
+    "pagelanguagehtmlcode": "en",
+    "pagelanguagedir": "ltr",
+    "touched": "2026-10-03T17:46:21Z",
+    "lastrevid": 1031922187,
+    "length": 945,
+    "fullurl": "https://commons.wikimedia.org/wiki/File:Recall_Election_Day_-_Madison,_WI.webm",
+    "editurl": "https://commons.wikimedia.org/w/index.php?title=File:Recall_Election_Day_-_Madison,_WI.webm&action=edit",
+    "canonicalurl": "https://commons.wikimedia.org/wiki/File:Recall_Election_Day_-_Madison,_WI.webm"
+  }
+}

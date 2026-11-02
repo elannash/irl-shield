@@ -1,6 +1,6 @@
 """Fresh heldout contracts, with generated pixels and fake detector/judge boundaries."""
 from datetime import datetime, timezone
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from functools import partial
 import json
 import os
@@ -11,7 +11,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from bench import heldout_bench, quality_bundle as bundle
 import test_quality_bundle as tune
@@ -351,6 +351,83 @@ class HeldoutDataset(unittest.TestCase):
         self.assertEqual(len(list((checkout / 'out').glob('*/bundle.json'))), 6)
         for path in (checkout / 'out').glob('*/bundle.json'):
             self.assertEqual(bundle.verify(path.parent)['status'], 'awaiting-judging')
+
+
+class HeldoutV3JudgingReadiness(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        self.policy = {'candidate': 'ppocr-v6-small', 'options': {}}
+        self.manifest = {'dataset_id': 'fresh-heldout-v3'}
+        bundle.write_json(self.directory / 'dataset.json', self.manifest)
+        bundle.write_json(self.directory / 'policy.json', self.policy)
+        self.identity = {'pipeline_sha256': '1' * 64, 'orchestrator_sha256': '2' * 64,
+                         'heldout_orchestrator_sha256': '3' * 64, 'resource_preflight_sha256': '4' * 64}
+        self.state = {**self.identity, 'orchestrator_sha256': '2' * 64,
+            'status': 'awaiting-judging', 'policy_commit': 'a' * 40,
+            'dataset_sha256': bundle.digest(self.directory / 'dataset.json'),
+            'policy_sha256': bundle.digest(self.directory / 'policy.json'),
+            'resource_binding': {'synthetic': True}}
+        self.state['started_receipt_ref'] = ('refs/irl-shield/fresh-heldout-v3/' +
+                                            self.state['dataset_sha256'] + '/started')
+        bundle.write_json(self.directory / 'evaluation.json', self.state)
+        self.before = (self.directory / 'evaluation.json').read_bytes()
+        self.expected = {(clip, variant) for clip in ('a', 'b', 'c') for variant in (False, True)}
+        for clip, variant in sorted(self.expected):
+            path = self.directory / (clip + ('-synthetic' if variant else '-natural'))
+            path.mkdir()
+            bundle.write_json(path / 'bundle.json', {'clip': clip, 'synthetic_variant': variant,
+                **self.policy, 'dataset_identity': {'manifest_sha256': self.state['dataset_sha256']},
+                'pipeline_sha256': self.state['pipeline_sha256'],
+                'orchestrator_sha256': self.state['orchestrator_sha256'],
+                'resource_binding': self.state['resource_binding']})
+        # Source/artifact identity has real-byte and encoded tests elsewhere.
+        # This fixture owns only readiness, marker ordering and owner reuse.
+        for override in (
+                patch.object(heldout_bench, 'source_identity', return_value=self.identity),
+                patch.object(bundle, 'frozen_dataset', return_value=(self.manifest, b'', self.expected)),
+                patch.object(bundle, 'verify', side_effect=lambda path: json.loads((path / 'bundle.json').read_text())),
+                patch.object(bundle, 'clip_lease', side_effect=lambda *a, **kw: nullcontext()),
+                patch.object(bundle, 'aggregate', return_value={'licenses': []})):
+            override.start()
+            self.addCleanup(override.stop)
+
+    def test_unavailable_judges_leave_grading_unspent(self):
+        for fault in ('constructor', 'probe'):
+            with self.subTest(fault=fault):
+                judge = Mock()
+                judge.preflight.side_effect = RuntimeError('synthetic reader unavailable')
+                factory_error = RuntimeError('synthetic reader unavailable') if fault == 'constructor' else None
+                with patch('bench.judges.Judges', return_value=judge, side_effect=factory_error), \
+                        patch.object(bundle, 'grade', return_value={}) as physical:
+                    with self.assertRaisesRegex(RuntimeError, 'synthetic reader unavailable'):
+                        heldout_bench.grade(root=ROOT, directory=self.directory, lock_root=self.directory)
+                    physical.assert_not_called()
+                self.assertFalse((self.directory / 'JUDGING.started.json').exists())
+                self.assertEqual((self.directory / 'evaluation.json').read_bytes(), self.before)
+                self.assertFalse((self.directory / 'scorecard.json').exists())
+                self.assertEqual(judge.close.call_count, 0 if fault == 'constructor' else 1)
+
+    def test_preflight_owner_is_reused_after_marker_for_all_six_grades(self):
+        judge = Mock()
+        def ready():
+            self.assertFalse((self.directory / 'JUDGING.started.json').exists())
+            self.assertEqual((self.directory / 'evaluation.json').read_bytes(), self.before)
+        judge.preflight.side_effect = ready
+        def graded(root, path, **kwargs):
+            self.assertTrue((self.directory / 'JUDGING.started.json').exists())
+            self.assertIs(kwargs['judge'], judge)
+            judge.preflight.assert_called_once()
+            self.assertEqual(judge.close.call_count, 0)
+            return {}
+        with patch('bench.judges.Judges', return_value=judge) as factory, \
+                patch.object(bundle, 'grade', side_effect=graded) as physical:
+            heldout_bench.grade(root=ROOT, directory=self.directory, lock_root=self.directory)
+            self.assertEqual(physical.call_count, 6)
+            factory.assert_called_once()
+        judge.close.assert_called_once()
+        self.assertEqual(json.loads((self.directory / 'evaluation.json').read_text())['status'], 'complete')
 
 
 class HeldoutV2Start(unittest.TestCase):
@@ -767,3 +844,690 @@ class HeldoutV2Start(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'already spent by tracked result'):
                 self.start()
             physical.assert_not_called()
+
+
+class HeldoutV3Start(unittest.TestCase):
+    # Reuse setup, not the v2 test collection. V2 assertions remain intact.
+    git = HeldoutV2Start.git
+    commit_at = HeldoutV2Start.commit_at
+
+    def setUp(self):
+        from bench import heldout_resources
+        from test_heldout_resources import ResourceFixture
+        HeldoutV2Start.setUp(self)
+        override = patch.object(heldout_resources, '__file__', str(self.base / 'bench/heldout_resources.py'))
+        override.start()
+        self.addCleanup(override.stop)
+        self.cache = self.cache.rename(self.cache.with_name('fresh-heldout-v3'))
+        manifest = json.loads(self.dataset.read_text())
+        manifest.update(dataset_id='fresh-heldout-v3',
+            evaluation_marker='fixtures/cache/fresh-heldout-v3/EVALUATION.started.json',
+            evaluation_reservation={'maximum_evaluations': 1, 'evaluation_started': False,
+                                    'not_before_utc': '2026-11-02T12:00:00Z'})
+        for clip in manifest['clips']:
+            clip.update(height=64, width=64)
+        for row in manifest['inputs']:
+            for key in ('source', 'truth'):
+                row[key] = row[key].replace('fresh-heldout-v2/', 'fresh-heldout-v3/')
+        bundle.write_json(self.dataset, manifest)
+        (self.base / '.gitignore').write_text('out/\n.tmp/\nfixtures/cache/\nmodels/cache/\n__pycache__/\n')
+        receipts = self.base / 'bench/results'
+        receipts.mkdir()
+        (receipts / '.gitkeep').write_text('Synthetic tracked receipt destination.\n')
+        contract = ResourceFixture.provision_resources(self, self.base)
+        config = json.loads(self.policy.read_text())
+        config['options']['encoder'] = 'libx264'
+        config['resources'] = contract
+        bundle.write_json(self.policy, config)
+        self.git('add', '.')
+        self.commit = self.commit_at('2026-11-02T12:00:00+00:00')
+        self.clock.now.return_value = datetime(2026, 11, 2, 12, 0, tzinfo=timezone.utc)
+        self.host_marker = self.home / '.local/state/irl-shield' / (
+            'fresh-heldout-v3-' + bundle.digest(self.dataset) + '.started')
+        self.before = self.git_state()
+
+    def start(self, **changes):
+        return HeldoutV2Start.start(self, **{'model_cache': self.model_cache, **changes})
+
+    def git_state(self):
+        return {'head': self.git('rev-parse', 'HEAD'),
+                'index': self._git_operation_path('index').read_bytes(),
+                'staged': self.git('ls-files', '--stage'),
+                'refs': self.git('for-each-ref', '--format=%(refname) %(objectname)')}
+
+    def assert_git_unchanged(self, *, staged_content=False):
+        actual, expected = self.git_state(), dict(self.before)
+        if staged_content:
+            # Git reset may refresh stat data while restoring the same entries.
+            actual.pop('index')
+            expected.pop('index')
+        self.assertEqual(actual, expected)
+
+    def assert_unspent(self, *, staged_content=False):
+        self.assert_git_unchanged(staged_content=staged_content)
+        self.assertFalse((self.base / heldout_bench.V3_STARTED).exists())
+        self.assertFalse((self.base / heldout_bench.V2_STARTED).exists())
+        self.assertFalse(self.state.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.host_marker.exists())
+
+    def test_commit_preconditions_refuse_before_any_reservation(self):
+        hooks = self.base / '.git/no-hooks'
+        hooks.mkdir(exist_ok=True)
+        objects = self.base / '.git/objects'
+        mode = objects.stat().st_mode & 0o777
+        for fault in ('hook', 'signing', 'identity', 'objects', 'index-lock'):
+            hook = hooks / 'pre-commit'
+            try:
+                if fault == 'hook':
+                    hook.write_text('#!/bin/sh\nexit 73\n')
+                    hook.chmod(0o755)
+                elif fault == 'signing':
+                    self.git('config', 'commit.gpgsign', 'true')
+                elif fault == 'identity':
+                    self.git('config', 'user.useConfigOnly', 'true')
+                    self.git('config', '--unset', 'user.email')
+                elif fault == 'objects':
+                    objects.chmod(0o555)
+                else:
+                    (self.base / '.git/index.lock').write_text('synthetic existing lock\n')
+                error = None
+                with patch.object(bundle, 'render') as render:
+                    try:
+                        self.start()
+                    except (ValueError, FileExistsError, subprocess.CalledProcessError) as caught:
+                        error = caught
+                    self.assertIsNotNone(error)
+                    render.assert_not_called()
+                self.assertFalse(self.host_marker.exists(), 'Commit preflight failure spent host marker')
+                self.assert_unspent()
+            finally:
+                if hook.exists():
+                    hook.unlink()
+                lock = self.base / '.git/index.lock'
+                if lock.exists():
+                    lock.unlink()
+                self.git('config', 'commit.gpgsign', 'false')
+                self.git('config', 'user.email', 'test@example.invalid')
+                objects.chmod(mode)
+
+    def _git_operation_path(self, name):
+        path = Path(self.git('rev-parse', '--git-path', name))
+        return path if path.is_absolute() else self.base / path
+
+    def _assert_git_operation_refused(self, name, *, readonly=False):
+        path = self._git_operation_path(name)
+        if readonly:
+            mode = path.stat().st_mode & 0o777
+            path.chmod(0o444)
+            self.addCleanup(path.chmod, mode)
+        elif name.startswith('rebase-'):
+            path.mkdir()
+            for entry, value in (('head-name', self.git('symbolic-ref', 'HEAD')),
+                                 ('orig-head', self.commit), ('onto', self.commit)):
+                (path / entry).write_text(value + '\n')
+        else:
+            path.write_text(self.commit + '\n')
+        git_dir = self._git_operation_path('HEAD').parent
+        def snapshot():
+            return {p.relative_to(git_dir).as_posix(): (p.read_bytes(), p.stat().st_mode & 0o777)
+                    for p in git_dir.rglob('*') if p.is_file()}
+        before = snapshot()
+        error = None
+        with patch.object(bundle, 'render') as render:
+            try:
+                self.start()
+            except Exception as caught:
+                error = caught
+            self.assertIsInstance(error, ValueError, 'Missing pre-reservation refusal: ' + name)
+            expected = ('Git reflog is not writable: ' if readonly else 'Git operation in progress: ') + name
+            self.assertIn(expected, str(error))
+            render.assert_not_called()
+        self.assert_unspent()
+        self.assertEqual(snapshot(), before, 'Git state changed while refusing ' + name)
+
+    def test_cherry_pick_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('CHERRY_PICK_HEAD')
+
+    def test_merge_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('MERGE_HEAD')
+
+    def test_revert_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('REVERT_HEAD')
+
+    def test_rebase_merge_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('rebase-merge')
+
+    def test_rebase_apply_in_progress_refuses_before_reservation(self):
+        self._assert_git_operation_refused('rebase-apply')
+
+    def test_readonly_head_reflog_refuses_before_reservation(self):
+        self._assert_git_operation_refused('logs/HEAD', readonly=True)
+
+    def test_readonly_branch_reflog_refuses_before_reservation(self):
+        self._assert_git_operation_refused('logs/' + self.git('symbolic-ref', 'HEAD'), readonly=True)
+
+    def _assert_commit_failure_is_retryable(self, fault):
+        receipt = self.base / heldout_bench.V3_STARTED
+        branch = self.git('symbolic-ref', 'HEAD')
+        branch_before = self.git('rev-parse', branch)
+        def tree():
+            names = self.git('--no-optional-locks', 'ls-files', '-z', '--cached', '--others',
+                             '--exclude-standard').split('\0')
+            return {name: ((self.base / name).read_bytes(), (self.base / name).stat().st_mode & 0o777)
+                    for name in names if name}
+        original_tree = tree()
+        override = nullcontext()
+        injected = (BlockingIOError(11, 'Synthetic commit process launch failure') if fault == 'launch'
+                    else subprocess.CalledProcessError(73, ['git', 'synthetic-commit-failure']))
+        if fault == 'editmsg':
+            path = self._git_operation_path('COMMIT_EDITMSG')
+            mode = path.stat().st_mode & 0o777
+            path.chmod(0o444)
+        elif fault == 'excluded':
+            path = self._git_operation_path('info/exclude')
+            original = path.read_bytes()
+            path.write_bytes(original + ('\n' + heldout_bench.V3_STARTED + '\n').encode())
+        else:
+            real_git = heldout_bench.git
+            def fail_commit(*args):
+                if 'commit' in args:
+                    raise injected
+                return real_git(*args)
+            override = patch.object(heldout_bench, 'git', side_effect=fail_commit)
+        try:
+            error = None
+            with override, patch.object(bundle, 'render') as render:
+                try:
+                    self.start()
+                except Exception as caught:
+                    error = caught
+                self.assertIsInstance(error, OSError if fault == 'launch' else subprocess.CalledProcessError)
+                if fault in ('injected', 'launch'):
+                    self.assertIs(error, injected, 'Rollback replaced the original Git error')
+                render.assert_not_called()
+            self.assertFalse(self.host_marker.exists(), 'Failed commit spent the host marker')
+            self.assertFalse(receipt.exists(), 'Failed commit left its receipt in the tree')
+            self.assert_unspent(staged_content=True)
+            self.assertEqual(self.git('rev-parse', branch), branch_before)
+            self.assertEqual(tree(), original_tree)
+            self.assertEqual(self.git('status', '--porcelain'), '')
+            self.assertEqual(self.git('for-each-ref', '--format=%(objectname)',
+                                     heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+        finally:
+            if fault == 'editmsg':
+                path.chmod(mode)
+            elif fault == 'excluded':
+                path.write_bytes(original)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def _assert_receipt_write_failure_is_retryable(self, fault):
+        receipt = self.base / heldout_bench.V3_STARTED
+        injected = OSError(5, 'Synthetic receipt ' + fault + ' failure')
+        real_open, real_fsync = Path.open, os.fsync
+        @contextmanager
+        def partial_writer(path, *args, **kwargs):
+            with real_open(path, *args, **kwargs) as stream:
+                def write(value):
+                    stream.write(value[:8])
+                    stream.flush()
+                    raise injected
+                yield SimpleNamespace(write=write, flush=stream.flush, fileno=stream.fileno)
+        def open_file(path, *args, **kwargs):
+            if Path(path) == receipt and args == ('x',):
+                return partial_writer(path, *args, **kwargs)
+            return real_open(path, *args, **kwargs)
+        def fsync(fd):
+            if receipt.exists():
+                opened, current = os.fstat(fd), receipt.stat()
+                if (opened.st_dev, opened.st_ino) == (current.st_dev, current.st_ino):
+                    raise injected
+            return real_fsync(fd)
+        override = (patch.object(Path, 'open', open_file) if fault == 'write'
+                    else patch.object(os, 'fsync', side_effect=fsync))
+        with override, patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertFalse(receipt.exists(), 'Failed write orphaned its unspent receipt')
+        self.assert_unspent()
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_receipt_write_failure_removes_own_inode_and_can_retry(self):
+        self._assert_receipt_write_failure_is_retryable('write')
+
+    def test_receipt_fsync_failure_removes_own_inode_and_can_retry(self):
+        self._assert_receipt_write_failure_is_retryable('fsync')
+
+    def test_failed_receipt_write_preserves_replacement_inode(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        replacement = b'Synthetic replacement belongs to another caller.\n'
+        injected = OSError(5, 'Synthetic fsync failure after receipt replacement')
+        real_fsync = os.fsync
+        def fsync(fd):
+            if receipt.exists():
+                opened, current = os.fstat(fd), receipt.stat()
+                if (opened.st_dev, opened.st_ino) == (current.st_dev, current.st_ino):
+                    receipt.rename(receipt.with_suffix('.other-caller-saved'))
+                    receipt.write_bytes(replacement)
+                    raise injected
+            return real_fsync(fd)
+        with patch.object(os, 'fsync', side_effect=fsync), patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertTrue(receipt.exists(), 'Write cleanup deleted another caller replacement')
+        self.assertEqual(receipt.read_bytes(), replacement)
+        self.assertTrue(any('replaced' in note for note in caught.exception.__notes__))
+        self.assert_git_unchanged()
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+
+    def test_reset_failure_unlinks_receipt_and_refuses_dirty_not_spent(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        real_git = heldout_bench.git
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-commit-failure'])
+        def fail_commit_and_reset(*args):
+            if 'commit' in args:
+                raise injected
+            if 'reset' in args:
+                raise subprocess.CalledProcessError(128, ['git', 'synthetic-reset-failure'])
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=fail_commit_and_reset), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            self.assertTrue(any('reset' in note for note in caught.exception.__notes__))
+            render.assert_not_called()
+        self.assertFalse(receipt.exists(), 'Reset failure skipped inode-checked unlink')
+        self.assertEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertEqual(self.git('diff', '--cached', '--name-only'), heldout_bench.V3_STARTED)
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        self.assertEqual(self.git('for-each-ref', '--format=%(refname)',
+                                 heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
+        heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+        with patch.object(bundle, 'render') as render:
+            with self.assertRaisesRegex(ValueError, 'requires a clean committed source and policy checkout'):
+                self.start()
+            render.assert_not_called()
+        self.git('reset', '-q', '--', heldout_bench.V3_STARTED)
+        self.assert_unspent(staged_content=True)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_staged_receipt_is_dirty_checkout_not_committed_spend(self):
+        receipt = self.base / heldout_bench.V3_STARTED
+        receipt.write_text(json.dumps({'heldout_freeze': {'dataset_sha256': bundle.digest(self.dataset)}}))
+        self.git('add', '--', heldout_bench.V3_STARTED)
+        staged = self.git_state()
+        with patch.object(bundle, 'render') as render:
+            with self.assertRaisesRegex(ValueError, 'requires a clean committed source and policy checkout'):
+                self.start()
+            render.assert_not_called()
+        self.assertEqual(self.git_state(), staged, 'Refusal changed the existing staged receipt')
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        self.git('reset', '-q', '--', heldout_bench.V3_STARTED)
+        receipt.unlink()
+        self.assert_unspent(staged_content=True)
+        with patch.object(bundle, 'render') as render:
+            state = self.start()
+        self.assertEqual(render.call_count, 6)
+        self.assertEqual(state['status'], 'awaiting-judging')
+
+    def test_readonly_commit_editmsg_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('editmsg')
+
+    def test_ignored_receipt_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('excluded')
+
+    def test_arbitrary_commit_failure_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('injected')
+
+    def test_commit_launch_error_rolls_back_and_can_retry(self):
+        self._assert_commit_failure_is_retryable('launch')
+
+    def test_git_error_after_commit_keeps_spent_history(self):
+        real_git = heldout_bench.git
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-post-commit-failure'])
+        def fail_after_commit(*args):
+            result = real_git(*args)
+            if 'commit' in args:
+                raise injected
+            return result
+        with patch.object(heldout_bench, 'git', side_effect=fail_after_commit), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertNotEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertTrue((self.base / heldout_bench.V3_STARTED).is_file())
+        self.assertFalse(self.host_marker.exists())
+        with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+
+    def test_commit_failure_does_not_unlink_a_replaced_receipt(self):
+        real_git = heldout_bench.git
+        receipt = self.base / heldout_bench.V3_STARTED
+        replacement = b'Synthetic other caller owns this replacement.\n'
+        injected = subprocess.CalledProcessError(73, ['git', 'synthetic-replacement-race'])
+        def replace_then_fail(*args):
+            if 'commit' in args:
+                receipt.rename(receipt.with_suffix('.saved-by-other-caller'))
+                receipt.write_bytes(replacement)
+                raise injected
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=replace_then_fail), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(subprocess.CalledProcessError) as caught:
+                self.start()
+            self.assertIs(caught.exception, injected)
+            render.assert_not_called()
+        self.assertTrue(receipt.is_file(), 'Rollback deleted another caller replacement')
+        self.assertEqual(receipt.read_bytes(), replacement)
+        self.assert_git_unchanged(staged_content=True)
+        self.assertFalse(self.host_marker.exists())
+
+    def test_bad_selected_resources_leave_head_index_refs_and_markers_unchanged(self):
+        from bench import heldout_resources as resources
+        tiny = self.model_cache / 'ppocr-v6-tiny.onnx'
+        original = tiny.read_bytes()
+        for fault, message in (('missing', 'Missing heldout resource'),
+                               ('wrong-cache', 'Missing heldout resource'), ('missing-cache', 'models'),
+                               ('unbound', 'explicit --model-cache'), ('dependency', 'synthetic dependency missing'),
+                               ('native-dependency', 'synthetic native import missing'),
+                               ('executable', 'resource payload differs'), ('provider', 'synthetic provider unavailable')):
+            with self.subTest(fault=fault):
+                changes = {}
+                override = nullcontext()
+                if fault == 'missing':
+                    tiny.unlink()
+                elif fault == 'wrong-cache':
+                    wrong = self.base / 'out/wrong-cache'
+                    wrong.mkdir(parents=True)
+                    changes['model_cache'] = wrong
+                elif fault == 'missing-cache':
+                    changes['model_cache'] = self.base / 'models/missing'
+                elif fault == 'unbound':
+                    changes['model_cache'] = None
+                elif fault == 'dependency':
+                    override = patch.object(resources.metadata, 'version', side_effect=RuntimeError('synthetic dependency missing'))
+                elif fault == 'native-dependency':
+                    override = patch.object(resources, 'import_module', side_effect=ImportError('synthetic native import missing'))
+                elif fault == 'executable':
+                    executable = Path(self.executables['ffmpeg'])
+                    saved_executable = executable.read_bytes()
+                    executable.write_bytes(b'x' * len(saved_executable))
+                    # Simulate a changed runtime binary outside source control.
+                    self.git('update-index', '--assume-unchanged', '--', 'tools/ffmpeg')
+                    self.before = self.git_state()
+                else:
+                    override = patch.object(resources, 'provider_check', side_effect=RuntimeError('synthetic provider unavailable'))
+                try:
+                    with override, patch.object(bundle, 'render') as physical:
+                        with self.assertRaisesRegex((ValueError, FileNotFoundError, RuntimeError, ImportError), message):
+                            self.start(**changes)
+                        physical.assert_not_called()
+                    self.assert_unspent()
+                finally:
+                    tiny.write_bytes(original)
+                    if fault == 'wrong-cache':
+                        shutil.rmtree(self.base / 'out')
+                    if fault == 'executable':
+                        executable.write_bytes(saved_executable)
+                        self.git('update-index', '--no-assume-unchanged', '--', 'tools/ffmpeg')
+                        self.before = self.git_state()
+
+    def test_same_size_corrupt_model_does_not_spend_attempt(self):
+        tiny = self.model_cache / 'ppocr-v6-tiny.onnx'
+        original = tiny.read_bytes()
+        tiny.write_bytes(b'x' * len(original))
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'Heldout resource payload differs'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+
+    def test_preflight_status_cannot_refresh_index_before_resource_refusal(self):
+        source = self.base / 'bench/heldout_resources.py'
+        info = source.stat()
+        os.utime(source, ns=(info.st_atime_ns, info.st_mtime_ns + 2_000_000_000))
+        (self.model_cache / 'ppocr-v6-tiny.onnx').unlink()
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(FileNotFoundError, 'Missing heldout resource'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+
+    def test_missing_required_static_artifacts_do_not_spend_attempt(self):
+        config = json.loads(self.policy.read_text())
+        config['options'].update(static_model=True, fast_width=64, accurate_width=64,
+                                 fast_limit_side_len=64, limit_side_len=64)
+        self.versions['onnx'] = 'synthetic-onnx'
+        config['resources']['distributions'] = dict(self.versions)
+        bundle.write_json(self.policy, config)
+        self.git('add', 'policy.json')
+        self.commit = self.commit_at('2026-11-02T12:00:00+00:00')
+        self.before = self.git_state()
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'derived model pins must match selected shapes exactly'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+
+    def test_bad_output_placement_is_checked_before_reservation(self):
+        blocked = self.temporary / 'read-only'
+        blocked.mkdir()
+        blocked.chmod(0o555)
+        try:
+            with patch.object(bundle, 'render') as physical:
+                with self.assertRaisesRegex(ValueError, 'ancestor is not writable'):
+                    self.start(directory=blocked / 'evaluation')
+                physical.assert_not_called()
+            self.assert_unspent()
+        finally:
+            blocked.chmod(0o755)
+
+    def test_v3_reservation_and_prefix_cannot_rebind_v2(self):
+        original = self.dataset.read_bytes()
+        for fault, message in (('reservation', 'immutable one-shot reservation'),
+                               ('prefix', 'frozen cache prefix'), ('source', 'three distinct source identities')):
+            manifest = json.loads(original)
+            if fault == 'reservation':
+                manifest['evaluation_reservation']['not_before_utc'] = '2026-11-01T14:00:00Z'
+            elif fault == 'prefix':
+                manifest['inputs'][0]['source'] = 'fixtures/cache/fresh-heldout-v2/unselected.mp4'
+            else:
+                manifest['clips'][1]['source_sha256'] = manifest['clips'][0]['source_sha256']
+            try:
+                bundle.write_json(self.dataset, manifest)
+                with self.assertRaisesRegex(ValueError, message):
+                    bundle.frozen_dataset(self.dataset)
+            finally:
+                self.dataset.write_bytes(original)
+        self.assert_unspent()
+
+    def test_v3_wall_clock_and_policy_commit_must_both_reach_freeze(self):
+        self.clock.now.return_value = datetime(2026, 11, 2, 11, 59, 59, tzinfo=timezone.utc)
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'v3 cannot start before 2026-11-02T12:00:00Z'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+        self.clock.now.return_value = datetime(2026, 11, 2, 12, 0, tzinfo=timezone.utc)
+        self.commit = self.commit_at('2026-11-02T11:59:59+00:00')
+        self.before = self.git_state()
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'final policy commit after the reservation freeze'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+
+    def test_detached_receipt_is_pinned_at_first_render_and_visible_from_another_worktree(self):
+        self.git('checkout', '-q', '--detach', self.commit)
+        calls = []
+        def physical(*args, **kwargs):
+            head = self.git('rev-parse', 'HEAD')
+            receipt = json.loads(self.git('show', head + ':' + heldout_bench.V3_STARTED))
+            identity = receipt['heldout_freeze']
+            ref = heldout_bench.started_ref(identity)
+            self.assertEqual(self.git('rev-parse', ref), head)
+            self.assertEqual(self.git('rev-parse', 'HEAD^'), self.commit)
+            self.assertEqual(identity['policy_commit'], self.commit)
+            with self.assertRaisesRegex(ValueError, 'sole committed change after the frozen policy'):
+                heldout_bench.verify_started_commit({**identity, 'policy_sha256': '0' * 64}, head, receipt)
+            self.assertEqual(self.git('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD'), heldout_bench.V3_STARTED)
+            self.assertEqual(self.git('status', '--porcelain'), '')
+            self.assertEqual(kwargs['model_cache'], str(self.model_cache.resolve()))
+            self.assertEqual(kwargs['resource_binding'], identity['resource_binding'])
+            self.assertEqual(json.loads(self.host_marker.read_text())['heldout_freeze'], identity)
+            self.assertTrue((self.state / (bundle.digest(self.dataset) + '.started.json')).is_file())
+            calls.append((args[4], args[5]))
+            raise RuntimeError('synthetic first render stop')
+        with patch.object(bundle, 'render', side_effect=physical):
+            with self.assertRaisesRegex(RuntimeError, '^synthetic first render stop$'):
+                self.start()
+        self.assertEqual(calls, [('v2-a', False)])
+        receipt_commit = self.git('rev-parse', 'HEAD')
+        state = json.loads((self.directory / 'evaluation.json').read_text())
+        self.assertEqual(state['status'], 'partial-failed')
+        self.assertEqual(state['policy_commit'], self.commit)
+        self.assertEqual(state['started_receipt_commit'], receipt_commit)
+        # Move detached HEAD away and lose only synthetic local/host state.
+        self.git('reset', '--hard', self.commit)
+        self.git('checkout', '-q', '--detach', self.commit)
+        self.host_marker.unlink()
+        shutil.rmtree(self.base / 'out')
+        linked = self.temporary / 'second-v3-checkout'
+        self.git('worktree', 'add', '-q', '--detach', str(linked), self.commit)
+        self.assertEqual(self.git('rev-parse', state['started_receipt_ref']), receipt_commit)
+        with patch.object(heldout_bench, 'CODE_ROOT', linked), patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+                self.start(root=linked, dataset=linked / 'dataset.json', policy=linked / 'policy.json',
+                           directory=linked / 'out/retry', state_directory=linked / 'out/state')
+            physical.assert_not_called()
+        self.assertFalse((linked / 'out').exists())
+        self.assertFalse(self.host_marker.exists())
+
+    def test_ref_failure_retains_committed_spent_state_and_never_renders(self):
+        real_git = heldout_bench.git
+        def fail_ref(*args):
+            if 'update-ref' in args:
+                raise subprocess.CalledProcessError(73, ['git', *args])
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=fail_ref), patch.object(bundle, 'render') as physical:
+            with self.assertRaises(subprocess.CalledProcessError) as failure:
+                self.start()
+            self.assertEqual(failure.exception.returncode, 73)
+            physical.assert_not_called()
+        self.assertFalse(self.host_marker.exists())
+        self.assertTrue((self.base / heldout_bench.V3_STARTED).is_file())
+        self.assertNotEqual(self.git('rev-parse', 'HEAD'), self.commit)
+        self.assertEqual(self.git('for-each-ref', '--format=%(refname)',
+                                 heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})), '')
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+                self.start()
+            physical.assert_not_called()
+
+    def test_existing_ref_is_never_overwritten_or_spent(self):
+        identity = {'dataset_sha256': bundle.digest(self.dataset)}
+        ref = heldout_bench.started_ref(identity)
+        self.git('update-ref', ref, self.commit)
+        self.before = self.git_state()
+        with patch.object(bundle, 'render') as physical:
+            with self.assertRaisesRegex(ValueError, 'started ref already exists'):
+                self.start()
+            physical.assert_not_called()
+        self.assert_unspent()
+        self.assertEqual(self.git('rev-parse', ref), self.commit)
+
+    def test_lost_ref_between_receipt_and_render_refuses_all_render_calls(self):
+        real_write = bundle.write_json
+        def remove_ref_before_render(path, value):
+            real_write(path, value)
+            if Path(path) == self.directory / 'evaluation.json' and value['status'] == 'rendering':
+                self.git('update-ref', '-d', value['started_receipt_ref'])
+        with patch.object(bundle, 'write_json', side_effect=remove_ref_before_render), patch.object(bundle, 'render') as physical:
+            with self.assertRaises(subprocess.CalledProcessError):
+                self.start()
+            physical.assert_not_called()
+        self.assertTrue(self.host_marker.is_file())
+        self.assertEqual(json.loads((self.directory / 'evaluation.json').read_text())['status'], 'partial-failed')
+
+    def test_ref_creation_race_cannot_overwrite_the_other_reservation(self):
+        real_git = heldout_bench.git
+        ref = heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})
+        raced = []
+        def competing_ref(*args):
+            if 'update-ref' in args:
+                real_git('update-ref', ref, self.commit)
+                raced.append(ref)
+            return real_git(*args)
+        with patch.object(heldout_bench, 'git', side_effect=competing_ref), patch.object(bundle, 'render') as physical:
+            with self.assertRaises(subprocess.CalledProcessError):
+                self.start()
+            physical.assert_not_called()
+        self.assertEqual(raced, [ref])
+        self.assertEqual(self.git('rev-parse', ref), self.commit)
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+
+    def test_host_marker_failure_after_ref_keeps_spent_state_without_render(self):
+        failure = OSError('Synthetic host marker failure after ref')
+        with patch.object(heldout_bench, 'reserve_v2_host', side_effect=failure), \
+                patch.object(bundle, 'render') as render:
+            with self.assertRaises(OSError) as caught:
+                self.start()
+            self.assertIs(caught.exception, failure)
+            render.assert_not_called()
+        head = self.git('rev-parse', 'HEAD')
+        self.assertNotEqual(head, self.commit)
+        ref = heldout_bench.started_ref({'dataset_sha256': bundle.digest(self.dataset)})
+        self.assertEqual(self.git('rev-parse', ref), head)
+        self.assertFalse(self.host_marker.exists())
+        self.assertFalse(self.directory.exists())
+        self.assertFalse(self.state.exists())
+        with self.assertRaisesRegex(ValueError, 'already spent by committed receipt/result'):
+            heldout_bench.committed_v2_spent(bundle.digest(self.dataset))
+
+    def test_valid_resources_render_six_pairs_with_one_committed_referenced_start(self):
+        seen = []
+        def physical(*args, **kwargs):
+            started = kwargs['started_receipt']
+            identity = started['identity']
+            heldout_bench.verify_started_commit(identity, started['commit'], started['receipt'])
+            self.assertEqual(identity['policy_commit'], self.commit)
+            self.assertEqual(self.git('rev-parse', heldout_bench.started_ref(identity)), started['commit'])
+            self.assertEqual(kwargs['resource_binding'], identity['resource_binding'])
+            self.assertEqual(kwargs['model_cache'], str(self.model_cache.resolve()))
+            seen.append((args[4], args[5], started['commit']))
+        with patch.object(bundle, 'render', side_effect=physical):
+            result = self.start()
+        self.assertEqual([(clip, variant) for clip, variant, _ in seen],
+                         [(row['clip'], row['synthetic_variant']) for row in self.rows])
+        self.assertEqual(len(seen), 6)
+        self.assertEqual({commit for _, _, commit in seen}, {result['started_receipt_commit']})
+        self.assertEqual(result['policy_commit'], self.commit)
+        self.assertEqual(result['status'], 'awaiting-judging')
+        self.assertEqual(self.git('rev-parse', result['started_receipt_ref']), result['started_receipt_commit'])
