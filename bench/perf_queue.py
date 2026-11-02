@@ -180,8 +180,12 @@ class JobCPUSampler:
                     'records': records, 'valid': not errors, 'errors': errors, 'raw': result}
         if self.host != 'linux':
             raise ValueError('Unsupported process CPU host')
-        ticks = os.sysconf('SC_CLK_TCK')
-        boot_ticks = int(float((self.proc_root / 'uptime').read_text().split()[0]) * ticks)
+        try:
+            ticks = os.sysconf('SC_CLK_TCK')
+            boot_ticks = int(float((self.proc_root / 'uptime').read_text().split()[0]) * ticks)
+        except (OSError, ValueError, IndexError, OverflowError) as error:
+            return {'at': time.monotonic(), 'scan_started': began, 'host': self.host,
+                    'records': records, 'valid': False, 'errors': [str(error)]}
         for path in self.proc_root.glob('[0-9]*/stat'):
             try:
                 row = linux_process_stat(path.read_text(), ticks)
@@ -214,26 +218,28 @@ class JobCPUSampler:
             return {}, ['root_missing']
         members, errors = {}, []
         for pid, row in records.items():
-            current, visited = pid, set()
+            current, visited, chain = pid, set(), []
             while current != self.root_pid:
                 if current in visited:
-                    if row['pgid'] == root['pgid']:
-                        errors.append('ancestry_cycle')
                     break
                 visited.add(current)
-                parent = records.get(current)
-                if parent is None:
-                    if row['pgid'] == root['pgid']:
-                        errors.append('ancestry_unavailable')
+                child = records.get(current)
+                if child is None:
                     break
-                current = parent['ppid']
+                chain.append(child)
+                current = child['ppid']
                 if current <= 0:
                     break
             if current == self.root_pid:
-                if row['pgid'] != root['pgid'] or row['session'] != root['session']:
-                    errors.append('foreground_group_changed')
-                else:
-                    members[pid] = row
+                # OwnedTree deliberately uses separate child sessions. Only the
+                # parent chain proves ancestry; group/session membership cannot.
+                chain.append(root)
+                if self.host == 'linux':
+                    if any(int(parent['start']) > int(child['start'])
+                           for child, parent in zip(chain, chain[1:])):
+                        errors.append('ancestor_started_after_child')
+                        continue
+                members[pid] = row
         return members, errors
 
     def account(self, before, after):
@@ -257,11 +263,17 @@ class JobCPUSampler:
         before_records = {int(pid): row for pid, row in before['records'].items()}
         after_records = {int(pid): row for pid, row in after['records'].items()}
         if self.host == 'linux':
+            for pid in first.keys() & last.keys():
+                if pid != self.root_pid and first[pid]['ppid'] != last[pid]['ppid']:
+                    errors.append('ancestry_or_identity_changed')
+                if first[pid]['start'] == last[pid]['start'] and any(
+                        last[pid][key] < first[pid][key] for key in ('cpu_seconds', 'reaped_cpu_seconds')):
+                    errors.append('nonmonotonic_process_cpu')
             for pid in first.keys() - last.keys():
                 if pid in after_records:
                     errors.append('ancestry_or_identity_changed')
             for pid in last.keys() - first.keys():
-                if pid in before_records or int(last[pid]['start']) < before['boot_ticks']:
+                if pid in before_records or int(last[pid]['start']) < before.get('boot_ticks', math.inf):
                     errors.append('unproven_process_birth')
         # Summing own+waited CPU across the LIVE tree replaces vanished child CPU
         # with its parent's cutime/cstime. Subtracting both endpoint totals avoids
@@ -271,7 +283,16 @@ class JobCPUSampler:
         attributed = set(first) | set(last)
         cpu = total_after - total_before
         if self.host == 'mac':
-            attributed = first.keys() & last.keys() - set(reused)
+            stable = {pid for pid in first.keys() & last.keys() - set(reused)
+                      if pid == self.root_pid or first[pid]['ppid'] == last[pid]['ppid']}
+            attributed = set()
+            for pid in stable:
+                current, visited = pid, set()
+                while current in stable and current != self.root_pid and current not in visited:
+                    visited.add(current)
+                    current = first[current]['ppid']
+                if current == self.root_pid:
+                    attributed.add(pid)
             cpu = sum(last[pid]['cpu_seconds'] - first[pid]['cpu_seconds'] for pid in attributed)
         if cpu < -1e-9:
             errors.append('nonmonotonic_tree_cpu')
