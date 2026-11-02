@@ -64,6 +64,95 @@ class OtherBusyPolicy(unittest.TestCase):
         return {'at': at, 'boot_ticks': 100 + int(at * 100), 'host': host, 'valid': True,
                 'records': {process['pid']: process for process in processes}, 'errors': []}
 
+    def test_separate_sessions_require_identity_bound_ancestry(self):
+        init = self.process(1, 0, 0., pgid=1)
+        before = self.snapshot(0., init, self.process(10, 1, 1.),
+                               self.process(11, 10, 2., pgid=11), self.process(12, 11, 3., pgid=12),
+                               self.process(90, 1, 50., pgid=10))
+        after = self.snapshot(10., init, self.process(10, 1, 2.),
+                              self.process(11, 10, 4., pgid=11), self.process(12, 11, 6., pgid=12),
+                              self.process(90, 1, 80., pgid=10),
+                              self.process(91, 1, 60., start=101, pgid=91),
+                              self.process(92, 1, 70., start=102, pgid=10))
+        for host in ('linux', 'mac'):
+            with self.subTest(host=host):
+                result = perf_queue.JobCPUSampler(10, host=host, cpu_count=8).account(before, after)
+                self.assertTrue(result['valid'], result)
+                self.assertEqual(result['job_cpu_seconds'], 6.)
+                self.assertEqual(result['attributed_pids'], [10, 11, 12])
+                self.assertEqual(result['attributed_identities'],
+                                 [{'pid': 10, 'start': '10'}, {'pid': 11, 'start': '11'},
+                                  {'pid': 12, 'start': '12'}])
+
+    def test_linux_ancestry_birth_order_and_endpoint_changes_fail_closed(self):
+        init = self.process(1, 0, 0., pgid=1)
+        before = self.snapshot(0., init, self.process(10, 1, 1.),
+                               self.process(11, 10, 2., pgid=11), self.process(12, 11, 3., pgid=12))
+        cases = {
+            'recycled ancestor in both scans': (
+                self.snapshot(0., init, self.process(10, 1, 1.),
+                              self.process(11, 10, 2., start=50, pgid=11),
+                              self.process(12, 11, 3., start=12, pgid=12)),
+                self.snapshot(10., init, self.process(10, 1, 2.),
+                              self.process(11, 10, 4., start=50, pgid=11),
+                              self.process(12, 11, 6., start=12, pgid=12)), 'ancestor_started_after_child'),
+            'ancestor identity changed': (before, self.snapshot(10., init, self.process(10, 1, 2.),
+                self.process(11, 10, 4., start=12, pgid=11), self.process(12, 11, 6., pgid=12)), 'pid_reused'),
+            'parent link changed inside tree': (before, self.snapshot(10., init, self.process(10, 1, 2.),
+                self.process(11, 10, 4., pgid=11), self.process(12, 10, 6., pgid=12)), 'ancestry_or_identity_changed'),
+            'orphan reparented outside tree': (before, self.snapshot(10., init, self.process(10, 1, 2.),
+                self.process(11, 10, 4., pgid=11), self.process(12, 1, 6., pgid=12)), 'ancestry_or_identity_changed'),
+            'lost parent chain': (before, self.snapshot(10., init, self.process(10, 1, 2.),
+                self.process(12, 777, 6., pgid=12)), 'ancestry_or_identity_changed'),
+            'own counter fell despite increasing total': (before, self.snapshot(10., init,
+                self.process(10, 1, 5.), self.process(11, 10, 1., pgid=11),
+                self.process(12, 11, 6., pgid=12)), 'nonmonotonic_process_cpu'),
+            'waited counter fell despite increasing total': (
+                self.snapshot(0., init, self.process(10, 1, 1., reaped=2.)),
+                self.snapshot(10., init, self.process(10, 1, 5., reaped=1.)), 'nonmonotonic_process_cpu'),
+        }
+        unavailable = self.snapshot(10., init, self.process(10, 1, 2.))
+        unavailable['valid'] = False
+        cases['snapshot unavailable'] = (before, unavailable, 'process_snapshot_unavailable')
+        for name, (first, last, reason) in cases.items():
+            with self.subTest(case=name):
+                result = perf_queue.JobCPUSampler(10, host='linux', cpu_count=8).account(first, last)
+                self.assertFalse(result['valid'], result)
+                self.assertIsNone(result['job_cpu_seconds'])
+                self.assertEqual(result['attributed_pids'], [])
+                self.assertIn(reason, result['reasons'])
+
+    def test_linux_proc_snapshot_failure_is_invalid(self):
+        with tempfile.TemporaryDirectory() as folder:
+            proc = Path(folder)
+            sampler = perf_queue.JobCPUSampler(10, host='linux', proc_root=proc)
+            for uptime in (None, 'not uptime', 'inf'):
+                with self.subTest(uptime=uptime):
+                    if uptime is not None:
+                        (proc / 'uptime').write_text(uptime)
+                    snapshot = sampler.snapshot()
+                    self.assertFalse(snapshot['valid'], snapshot)
+                    self.assertTrue(snapshot['errors'])
+            (proc / 'uptime').write_text('100.0 0.0\n')
+            (proc / '10').mkdir()
+            fields = ['0'] * 22
+            fields[0:4] = ['S', '1', '10', '10']
+            fields[19] = '10'
+            row = '10 (job) ' + ' '.join(fields)
+            (proc / '10/stat').write_text(row)
+            changed_fields = fields.copy()
+            changed_fields[19] = '20'
+            changed_identity = '10 (job) ' + ' '.join(changed_fields)
+            # A known member must remain readable and identity-bound through
+            # endpoint revalidation, even if the first scan looked consistent.
+            for reread, reason in ((PermissionError('denied'), 'tree_member_disappeared_during_scan'),
+                                   (changed_identity, 'tree_identity_or_reaping_changed_during_scan')):
+                with self.subTest(reread=reread):
+                    with patch.object(Path, 'read_text', side_effect=['100.0 0.0\n', row, reread]):
+                        snapshot = sampler.snapshot()
+                    self.assertFalse(snapshot['valid'], snapshot)
+                    self.assertIn(reason, snapshot['errors'])
+
     def test_linux_tree_ancestry_reaped_transfers_and_reuse_are_conservative(self):
         init = self.process(1, 0, 0., pgid=1)
         before = self.snapshot(0., init, self.process(10, 1, 1.), self.process(11, 10, 4.),
@@ -115,6 +204,12 @@ class OtherBusyPolicy(unittest.TestCase):
         reused = perf_queue.JobCPUSampler(10, host='mac', cpu_count=8).account(before, after)
         self.assertEqual(reused['job_cpu_seconds'], 1.)
         self.assertEqual(reused['attributed_pids'], [10])
+        before['records'][12] = self.process(12, 11, 3.)
+        after['records'][12] = self.process(12, 11, 8.)
+        through_reused_parent = perf_queue.JobCPUSampler(10, host='mac', cpu_count=8).account(before, after)
+        self.assertTrue(through_reused_parent['valid'], through_reused_parent)
+        self.assertEqual(through_reused_parent['job_cpu_seconds'], 1.)
+        self.assertEqual(through_reused_parent['attributed_pids'], [10])
 
     @unittest.skipUnless(sys.platform == 'linux', 'Real procfs integration is Linux-only; Mac uses its native proof')
     def test_real_short_tree_partial_window_attributes_only_its_descendants(self):

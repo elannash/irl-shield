@@ -158,9 +158,14 @@ Zero job CPU at total 25% also fails the mean rule: it is not equivalent to the
 legacy single-window idle <60% rule.
 
 Linux samples `/proc/<pid>/stat` own utime/stime and waited cutime/cstime for
-the active watchdog and all proven descendants in its foreground process
-group/session. Summed own+waited CPU over the live tree at both endpoints
-transfers a departed child's previously counted CPU into its parent's waited
+the active watchdog and all proven descendants, including children that use
+separate sessions. Membership requires a complete PPID chain to the watchdog;
+process groups, sessions and birth within the sampling window never establish
+ownership. Each Linux parent must have started no later than its child, and
+ancestor PID/start identities and parent links are cross-checked at the
+endpoints. An unrelated process or reparented orphan whose chain does not reach
+the watchdog receives no credit. Summed own+waited CPU over the live tree at both
+endpoints transfers a departed child's previously counted CPU into its parent's waited
 counters without counting it twice. Parent links and PID/starttime identities
 bind ownership; sibling processes are never credited. Reuse, missing ancestry,
 or a reaping/identity transition detected inside the non-atomic `/proc` scan
@@ -168,7 +173,8 @@ invalidates accounting instead of guessing. Scan durations and per-process
 endpoint counters remain in provenance.
 
 Mac uses read-only `ps -A -o pid=,ppid=,pgid=,time=,lstart=` endpoint snapshots.
-Only stable-identity descendants present at both endpoints receive CPU credit.
+Only descendants with stable identities and parent chains at both endpoints
+receive CPU credit, including separate-session children.
 New, departed, reaped or reused children are conservatively unassigned, so their
 CPU remains other load. This is a lower bound, including `ps` start-time and
 CPU-time precision limits. OS daemon work outside the foreground ancestry is
