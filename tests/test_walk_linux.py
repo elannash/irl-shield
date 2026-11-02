@@ -52,7 +52,7 @@ class WalkSelection(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             manifest = root / 'source.json'
-            manifest.write_text('{}')
+            manifest.write_text(json.dumps({'fps': 30, 'seconds': 210, 'frames': [{}] * 6300}))
             options = ['--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                        '--archive', str(root / 'archive'), '--seconds', '230']
             for extra in (['--twitch-live', '--accurate-rate-hz', '15'], ['--twitch-bandwidth-test'], ['--local-only', '--host', TAILNET_HOST]):
@@ -86,7 +86,7 @@ class WalkSelection(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             manifest = root / 'source.json'
-            manifest.write_text('{}')
+            manifest.write_text(json.dumps({'fps': 30, 'seconds': 210, 'frames': [{}] * 6300}))
             argv = ['--twitch-live', '--host', TAILNET_HOST, '--seconds', '600',
                     '--demo-source', str(manifest), '--demo-receipt', str(root / 'sender.jsonl'),
                     '--archive', str(root / 'archive')]

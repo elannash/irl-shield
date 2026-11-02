@@ -1,5 +1,20 @@
 """Stdlib-only demo checks shared by the isolated bootstrap and CLI."""
+import json
+import math
 from pathlib import Path
+
+
+def source_frame_count(manifest):
+    seconds, frames = manifest.get('seconds'), manifest.get('frames')
+    if (type(seconds) not in (int, float) or not 10 <= seconds <= 600
+            or not math.isfinite(seconds) or manifest.get('fps') != 30
+            or not isinstance(frames, list)):
+        raise ValueError('Demo source requires 10–600 seconds at 30 fps')
+    count = round(seconds * 30)
+    # JSON floats can approximate a whole-frame duration such as 1801 / 30.
+    if not math.isclose(seconds * 30, count, rel_tol=0, abs_tol=1e-7) or len(frames) != count:
+        raise ValueError('Demo source frame count differs from its duration')
+    return count
 
 
 def fresh(path):
@@ -27,6 +42,9 @@ def validate_demo(args):
         raise ValueError('Demo source uses the frozen detector defaults')
     if not args.demo_source.expanduser().is_file():
         raise ValueError('Demo source manifest must already exist')
+    manifest = json.loads(args.demo_source.expanduser().read_text())
+    if source_frame_count(manifest) / 30 > args.seconds:
+        raise ValueError('Demo source exceeds runtime --seconds bound')
     receipt, archive = fresh(args.demo_receipt), fresh(args.archive)
     if receipt == archive or archive in receipt.parents:
         raise ValueError('Demo sender receipt must be outside its relay archive')

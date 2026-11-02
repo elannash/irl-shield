@@ -34,7 +34,7 @@ class CommandLine(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / 'source.json'
-            source.write_text('{}')
+            source.write_text(json.dumps({'fps': 30, 'seconds': 210, 'frames': [{}] * 6300}))
             arguments = ['run', '--host', '127.0.0.1', '--mock-origin', 'http://127.0.0.1:18080',
                          '--demo-source', str(source), '--demo-receipt', str(root / 'sender.jsonl'),
                          '--archive', str(root / 'relay'), '--seconds', '230', '--dashboard']
