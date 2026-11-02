@@ -3,6 +3,8 @@ import asyncio
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 import json
+from pathlib import Path
+import tempfile
 import threading
 import unittest
 from unittest.mock import AsyncMock, patch
@@ -28,6 +30,24 @@ class EngineControl:
 
 
 class CommandLine(unittest.TestCase):
+    def test_mock_demo_accepts_only_loopback_without_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source.json'
+            source.write_text('{}')
+            arguments = ['run', '--host', '127.0.0.1', '--mock-origin', 'http://127.0.0.1:18080',
+                         '--demo-source', str(source), '--demo-receipt', str(root / 'sender.jsonl'),
+                         '--archive', str(root / 'relay'), '--seconds', '230', '--dashboard']
+            args = parser().parse_args(arguments)
+            validate(args)
+            self.assertFalse(args.local_only or args.twitch_live or args.twitch_bandwidth_test)
+            self.assertIsNone(args.local_sink)
+            for extra in (['--host', '127.0.0.2'], ['--twitch-live'], ['--twitch-bandwidth-test'],
+                          ['--local-only'], ['--phone-setup'],
+                          ['--local-sink', 'rtmp://127.0.0.1:19351/shielded']):
+                with self.subTest(extra=extra), self.assertRaises(ValueError):
+                    validate(parser().parse_args([*arguments, *extra]))
+
     def test_invalid_delay_and_login_only_cpu_options_fail_before_authentication(self):
         modes = (['run', '--local-only'], ['run'], ['run', '--twitch-live'],
                  ['run', '--twitch-bandwidth-test'], ['login', '--run'])
