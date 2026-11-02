@@ -12,7 +12,7 @@ Generated scene with fictional names. Before (left) and shielded with Patch (rig
 - The relay uses a 1-second processing buffer by default on GPU. Total delay to viewers has not been measured.
 - PP-OCRv5-mobile detectors detect text for masking; some text is missed.
 - Masks cover the detected text. Patch is the default; chat can vote for Bar or Patch.
-- Frames that have not been checked go out protected. NVENC encodes the video, and a TLS forwarder sends it to Twitch with certificate verification.
+- Frames that have not been checked go out protected. NVENC encodes the video on GPU (libx264 with `--cpu`), and a TLS forwarder sends it to Twitch with certificate verification.
 
 ### Why not a stream delay or an OBS blur?
 
