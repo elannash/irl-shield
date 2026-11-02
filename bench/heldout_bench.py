@@ -333,17 +333,14 @@ def start(*, root, dataset, dataset_sha256, policy, policy_sha256, policy_commit
         if reserved:
             # Another checkout may have started while this lease waited.
             committed_v2_spent(dataset_sha256)
-        # V3 spend evidence is committed content, never an uncommitted index entry.
-        # Earlier corpus versions retain their existing tracked-result behavior.
-        tracked = (git('ls-tree', '-r', '--name-only', '-z', 'HEAD', '--', 'bench/results').decode()
-                   if v3 else subprocess.check_output(
-                       ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True))
-        for name in filter(None, tracked.split('\0')):
-            if v3 and not name.endswith('.json'):
-                continue
-            result = json.loads(git('show', 'HEAD:' + name) if v3 else (CODE_ROOT / name).read_text())
-            if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
-                raise ValueError('Heldout dataset already spent by tracked result: ' + name)
+        # V3 spend evidence is covered by committed_v2_spent's history scan.
+        if not v3:
+            tracked = subprocess.check_output(
+                ['git', '-C', str(CODE_ROOT), 'ls-files', '-z', '--', 'bench/results/*.json'], text=True)
+            for name in filter(None, tracked.split('\0')):
+                result = json.loads((CODE_ROOT / name).read_text())
+                if result.get('heldout_freeze', {}).get('dataset_sha256') == dataset_sha256:
+                    raise ValueError('Heldout dataset already spent by tracked result: ' + name)
         commit = subprocess.check_output(['git', '-C', str(CODE_ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         if policy_commit != commit:
             raise ValueError('Final policy commit must equal the executing source checkout HEAD')
