@@ -33,7 +33,7 @@ The private phone dashboard shows relay status and local Hold / Resume controls.
 
 ### Try it locally (no Twitch)
 
-Requires Linux x86-64 and Python 3.11. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` uses CPU detection and libx264 encoding with a 2.5-second default processing buffer. See [RUN.md](docs/RUN.md) for dependencies and full instructions.
+Requires Linux x86-64, Python 3.11 and `uv` on PATH. An NVIDIA GPU is recommended for CUDA detection and NVENC encoding; `--cpu` uses CPU detection and libx264 encoding with a 2.5-second default processing buffer. See [RUN.md](docs/RUN.md) for dependencies and full instructions.
 
 From the repository root, install the pinned environment, transport and models:
 
@@ -77,7 +77,9 @@ Use the same private input and OBS steps as the local run. This mode sends to Tw
 
 In an offline evaluation of six 5-second variants from three fresh licensed sources, **106/126 OCR-observed natural text intervals in Latin script stayed hidden (84%)**. Natural counts include text in both natural and synthetic variants. The synthetic control earned **14/22** hidden intervals because the Zurich variants failed the real-video check.
 
-The median masked area was **13.6%**, with **p95 50.4%**. Tesseract and Apple Vision supplied the truth labels; output leaks flagged by PP-OCR also counted. Our 90% natural-text target (gate 1) was not met.
+The median masked area was **13.6%**, with **p95 50.4%**. Tesseract and Apple Vision define natural-text truth; synthetic truth consists of all annotated visible labels, with judges checking their readability in the input. Every credible output judge counts a leak, including PP-OCR.
+
+**Gate 1 failed four criteria:** natural text hidden was 84.1%, below 90%; synthetic text credited hidden was 63.6%, below 100%; both Zurich variants failed the real-video guard; and Chicago natural had exactly 2% protected frames, failing the strictly-under-2% per-clip limit.
 
 See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESULT.md). This offline result does not establish live-stream privacy or latency.
 
@@ -93,7 +95,7 @@ See the [full held-out result and measurement limits](docs/Q-FRESH-HELDOUT-RESUL
 
 ## Built with Codex
 
-One Codex builder thread and its Codex children wrote the code; Claude Opus reviewed each PR.
+One Codex builder thread and its Codex children wrote the code; Claude Opus conducted and reviewed the work.
 
 At `origin/main` commit `e1aaf4f`: **106 reachable commits, including 24 PR merge commits**. Counting all lines, including blanks and comments, in tracked `.py` files outside `docs/` gives **19,770 source lines** outside `tests/` and **17,367 test lines** under `tests/`.
 
