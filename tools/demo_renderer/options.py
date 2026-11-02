@@ -14,7 +14,7 @@ def validate_demo(args):
         return
     local = args.local_only and not args.twitch_live and args.host == '127.0.0.1'
     attended = args.twitch_live and not args.local_only
-    mocked = (getattr(args, 'mock_origin', None) is not None and not args.local_only
+    mocked = (bool(getattr(args, 'mock_origin', None)) and not args.local_only
               and not args.twitch_live and getattr(args, 'local_sink', None) is None
               and args.host == '127.0.0.1')
     if (not (local or attended or mocked) or args.twitch_bandwidth_test

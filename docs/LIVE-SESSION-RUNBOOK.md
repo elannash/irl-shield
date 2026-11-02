@@ -1,18 +1,25 @@
 # Owner-attended live session
 
-This is a source-checked plan against `fb40e40`, not a runtime pass. The new
-recipes below are **UNEXECUTED**. The conductor owns resource binding and any
-future single native execution under the canonical exclusive lease. This
-document allocates no execution budget and authorizes no publication.
+The owner chose W8b. The conductor binds the approved main and actual
+resources before each segment. Live commands below are **staged operator
+instructions**, not permission to publish or a claim of Twitch delivery.
 
-The intended sequence is one complete 210-second prepared clip, then about
-five minutes from the phone. The owner chooses W8b or the W8 fallback after
-reviewing the pictures and privacy limits. The clip decision is pending.
-These recipes stop and relaunch between segments, with fresh login, private
-pairing and LIVE approval. Seamless clip-to-phone handoff has not been
-qualified.
+Monday's sequence is:
 
-## Before choosing the clip
+1. **07:30 PT:** a full W8b clip live segment, recorded from the public player
+   plus chat, as the fallback capture.
+2. **09:00 PT:** a fresh W8b live segment for the main take.
+3. **Phone at the owner's desk**, pointed at printed fictional signs.
+4. An optional second desk-phone take.
+
+Budget four separate startups, logins, private pairing contexts and fresh
+output directories. Stop and relaunch between every segment. Each needs its
+own owner-typed `LIVE naie`. Clip senders pair internally with fresh camera
+credentials; each phone take needs a new Moblin import. Seamless handoff has
+not been qualified. A bandwidth test supplies no public-player proof and
+cannot replace the 07:30 live fallback.
+
+## Before the selected clip
 
 Keep Patch, accurate 4 Hz, accurate box floor 0.5 and fast 8 Hz. These recipes
 use the existing Python 3.11 NVIDIA CUDA/NVENC path with its default 1-second
@@ -30,9 +37,12 @@ do not rebuild, re-encode or regenerate either clip.
 The engraved NERALIN LANE plaque was observed readable and unmasked at source
 frames 2088, 2400, 2700 and 3767 in saved output inspections. This is a known
 frozen-detector limit affecting both providers, not a CPU-specific regression.
-The owner may choose the fallback or use manual HOLD to cover uncertain
-content, but HOLD is an operator action, not a detector fix. Neither option
-earns a full privacy claim without review.
+The planned mitigation is moderator `!shield hold` at source playback
+55 seconds, before the plaque enters, then broadcaster `!shield resume` at
+or after 140 seconds, after it leaves. Confirm the slate by 60 seconds;
+if chat has not taken effect, use dashboard HOLD or stop the relay. Use the
+private local monitor for the cue, not the delayed public player. HOLD is an
+operator action, not a detector fix or a full privacy claim.
 
 Earlier recordings, including fallback native25, had corruption and partial
 source/output joins before the queue repair. They must not be shown as clean
@@ -58,12 +68,11 @@ chooses a free port. Use RTMP for this session.
 The launcher acquires the canonical EX lease or reuses its verified inherited
 descriptor. A busy-host refusal is a stop, not a reason to bypass the lease,
 kill another process or start a second publisher. The conductor supplies any
-queue/resource wrapper. The two clip recipes are alternatives until the
-conductor binds a run; never run them concurrently.
+queue/resource wrapper. Never run two segments concurrently.
 
-`out/prepared-w8b/source.json` and `out/prepared-fallback/source.json` below
-stand for existing valid `irl-shield-w8-source-v1` JSON manifests beside their
-sealed `source.mp4` files. A video filename is not a manifest. Each manifest
+`out/prepared-w8b/source.json` below stands for an existing valid
+`irl-shield-w8-source-v1` JSON manifest beside its sealed `source.mp4` file.
+A video filename is not a manifest. The manifest
 must describe all 6,300 ordered frames at 30 fps over 210 seconds and match
 its video hash. Bind the actual prepared directories before execution.
 
@@ -75,7 +84,7 @@ acceptance. Never shorten or hard-loop the clip to fill a window.
 
 ## Local clip dry runs, no Twitch
 
-Both commands are staged instructions only. `--local-only --host 127.0.0.1`
+This command is a staged instruction. `--local-only --host 127.0.0.1`
 disables Twitch login, controls and publication. The real sender receives
 runtime camera credentials in RAM and publishes once. It does not receive an
 endpoint through argv. The demo path omits phone setup; its local dashboard
@@ -90,18 +99,16 @@ scripts/walk-linux --local-only --host 127.0.0.1 --venv .venv \
   --archive out/live-session/w8b-run-01/relay
 ```
 
-```sh
-scripts/walk-linux --local-only --host 127.0.0.1 --venv .venv \
-  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
-  --seconds 230 --demo-source out/prepared-fallback/source.json \
-  --demo-receipt out/live-session/fallback-run-01/sender.jsonl \
-  --archive out/live-session/fallback-run-01/relay
-```
-
 OBS on this host can read `rtmp://127.0.0.1:19350/shielded`. Show only the
 shielded output. The sender's normal EOF ends publication once; it does not
 switch inputs or stop the runtime immediately. Post-source protection belongs
 in the whole-run census.
+
+Mock chat controls can be rehearsed through `python -m shield.cli run` with
+an existing synthetic `--mock-origin` server and exact loopback bind,
+without `--local-only`, a local sink or either Twitch publication flag.
+This exercises synthetic controls and retains the local archive/dashboard
+behavior; it is not proof of real Twitch login, chat or delivery.
 
 ## Separate local phone and dashboard rehearsal
 
@@ -122,8 +129,16 @@ IPv4 address. Both devices need their existing private connectivity. This
 performs no Twitch login or publication and has not been rehearsed by this
 documentation work.
 
+The phone stays at the owner's desk. Point it only at printed fictional
+street names and numbers, keeping the room, real addresses, notifications,
+private setup screens and music outside the capture. There is no outdoor
+walk in this session plan. Move the paper and phone to check that masks
+follow the text, then exercise dashboard HOLD and resume. Check microphone
+audio separately: the prepared W8b clip is video-only, and video HOLD does
+not currently mute phone audio.
+
 ```sh
-scripts/walk-linux --local-only --venv .venv \
+env -u SHIELD_BIND_HOST scripts/walk-linux --local-only --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
   --seconds 330 --archive out/live-session/phone-local-run-01/relay
 ```
@@ -162,25 +177,45 @@ is not live. The demo-source path rejects bandwidth-test mode. The earlier
 attended bandwidth observation in [RUN.md](RUN.md) is not live-video or
 phone qualification.
 
-Bind `out/owner-chosen-source/source.json` to the owner's selected sealed W8b
-or fallback manifest before using this recipe. Loopback suffices for this
-prepared clip; it does not provide remote phone pairing.
+Bind `out/prepared-w8b/source.json` to the selected sealed W8b manifest.
+The **07:30 fallback is a real, full clip live segment**, recorded from the
+public Twitch player and chat. Set up that recording before the owner
+confirms LIVE; keep the terminal and private dashboard outside its crop.
 
 ```sh
-infisical run -- scripts/walk-linux --twitch-live --host 127.0.0.1 --venv .venv \
+mkdir -p out/live-session
+mkdir out/live-session/w8b-fallback-live-run-01
+infisical run -- env SHIELD_BIND_HOST=127.0.0.1 scripts/walk-linux --twitch-live --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
-  --seconds 230 --demo-source out/owner-chosen-source/source.json \
-  --demo-receipt out/live-session/clip-live-run-01/sender.jsonl \
-  --archive out/live-session/clip-live-run-01/relay
+  --seconds 230 --demo-source out/prepared-w8b/source.json \
+  --demo-receipt out/live-session/w8b-fallback-live-run-01/sender.jsonl \
+  --archive out/live-session/w8b-fallback-live-run-01/relay
 ```
 
+After a clean stop, repeat the full startup and fresh owner approval at
+**09:00 for the main take**, using its distinct output directory:
+
+```sh
+mkdir out/live-session/w8b-main-live-run-01
+infisical run -- env SHIELD_BIND_HOST=127.0.0.1 scripts/walk-linux --twitch-live --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
+  --seconds 230 --demo-source out/prepared-w8b/source.json \
+  --demo-receipt out/live-session/w8b-main-live-run-01/sender.jsonl \
+  --archive out/live-session/w8b-main-live-run-01/relay
+```
+
+The clip commands deliberately set loopback inside Infisical's child
+environment and omit `--host`. Loopback is for this prepared sender and does
+not pair a remote phone. Both takes use the 55-second HOLD/140-second resume
+cue and the same sealed clip, with fresh sender and relay receipts.
+
 The live demo path retains the private dashboard announcement. Keep it off
-stream and use manual HOLD if the owner elects to cover uncertain footage.
+stream and follow the planned manual HOLD cue for the known plaque miss.
 Do not start a phone publisher while the prepared sender owns `/camera`.
 The relay rejects a second publisher; source EOF is not a supported hot-swap
 API. There is no command here for replacing that input in place.
 
-## Stop, relaunch, then about five minutes from the phone
+## Stop, relaunch, then phone at the desk
 
 Let the clip's bounded run finish, or use Ctrl-C for an operator abort. Wait
 for the process and all its owned sender, engine, encoder, forwarder,
@@ -194,14 +229,28 @@ Start the phone segment only after that cleanup. Leave `--host` and
 enables the existing phone setup and dashboard when no demo source is present.
 Complete the new login
 and fresh `LIVE naie` approval, open the new private invitation, and pair the
-phone's RTMP broadcaster. Connect promptly for roughly five minutes of phone
-input within the 330-second relay window, or stop earlier with Ctrl-C.
+phone's RTMP broadcaster. Keep the phone at the desk, pointed at printed
+fictional signs. Connect promptly for roughly five minutes within the
+330-second relay window, or stop earlier with Ctrl-C.
 
 ```sh
-infisical run -- scripts/walk-linux --twitch-live \
+mkdir out/live-session/phone-desk-live-run-01
+infisical run -- env -u SHIELD_BIND_HOST scripts/walk-linux --twitch-live \
   --venv .venv \
   --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
-  --seconds 330 --archive out/live-session/phone-live-run-01/relay
+  --seconds 330 --archive out/live-session/phone-desk-live-run-01/relay
+```
+
+For the optional second phone take, stop the phone broadcaster and relay
+cleanly first. Repeat login, owner approval and Moblin pairing from scratch;
+the first take's camera URL and dashboard invitation are not reusable.
+
+```sh
+mkdir out/live-session/phone-desk-live-run-02
+infisical run -- env -u SHIELD_BIND_HOST scripts/walk-linux --twitch-live \
+  --venv .venv \
+  --model-cache models/cache --mediamtx-dir .tmp/tools/mediamtx-v1.21.3 \
+  --seconds 330 --archive out/live-session/phone-desk-live-run-02/relay
 ```
 
 Only the authenticated broadcaster or moderators may send `!shield hold`;

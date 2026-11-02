@@ -43,7 +43,7 @@ class CommandLine(unittest.TestCase):
             self.assertFalse(args.local_only or args.twitch_live or args.twitch_bandwidth_test)
             self.assertIsNone(args.local_sink)
             for extra in (['--host', '127.0.0.2'], ['--twitch-live'], ['--twitch-bandwidth-test'],
-                          ['--local-only'], ['--phone-setup'],
+                          ['--local-only'], ['--phone-setup'], ['--mock-origin', ''],
                           ['--local-sink', 'rtmp://127.0.0.1:19351/shielded']):
                 with self.subTest(extra=extra), self.assertRaises(ValueError):
                     validate(parser().parse_args([*arguments, *extra]))
