@@ -118,12 +118,30 @@ class EndpointBoundary(unittest.TestCase):
             path.write_text(json.dumps(manifest))
             self.assertEqual(len(source_manifest(path)[1]['frames']), 1800)
             for seconds, fps, count in ((60, 30, 1799), (60.01, 30, 1800), (60, 29, 1800),
-                                        (float('nan'), 30, 1800), (True, 30, 1800)):
+                                        (float('nan'), 30, 1800), (float('inf'), 30, 1800),
+                                        (float('-inf'), 30, 1800), (True, 30, 1800)):
                 with self.subTest(seconds=seconds, fps=fps, count=count):
                     broken = dict(manifest, seconds=seconds, fps=fps, frames=manifest['frames'][:count])
                     path.write_text(json.dumps(broken))
                     with self.assertRaises(ValueError):
                         source_manifest(path)
+            for missing in ('seconds', 'frames'):
+                broken = dict(manifest)
+                del broken[missing]
+                path.write_text(json.dumps(broken))
+                with self.subTest(missing=missing), self.assertRaises(ValueError):
+                    source_manifest(path)
+            path.write_text(json.dumps(dict(manifest, seconds='60')))
+            with self.subTest(seconds='string'), self.assertRaises(ValueError):
+                source_manifest(path)
+
+    def test_non_object_source_manifests_are_cleanly_refused(self):
+        with tempfile.TemporaryDirectory() as name:
+            path = Path(name) / 'source.json'
+            for value in ([], None, 'source', 5):
+                path.write_text(json.dumps(value))
+                with self.subTest(value=value), self.assertRaises(ValueError):
+                    source_manifest(path)
 
     def test_demo_source_cannot_outlast_launcher_runtime_bound(self):
         from shield.cli import parser, validate
@@ -133,9 +151,10 @@ class EndpointBoundary(unittest.TestCase):
             path.write_text(json.dumps({'fps': 30, 'seconds': 60, 'frames': [{}] * 1800}))
             argv = ['run', '--local-only', '--host', '127.0.0.1', '--demo-source', str(path),
                     '--demo-receipt', str(root / 'sender.jsonl'), '--archive', str(root / 'archive')]
-            validate(parser().parse_args([*argv, '--seconds', '60']))
-            with self.assertRaisesRegex(ValueError, 'exceeds.*--seconds'):
-                validate(parser().parse_args([*argv, '--seconds', '59']))
+            validate(parser().parse_args([*argv, '--seconds', '65']))
+            for seconds in ('59', '60', '64.999'):
+                with self.subTest(runtime_seconds=seconds), self.assertRaisesRegex(ValueError, 'headroom.*--seconds'):
+                    validate(parser().parse_args([*argv, '--seconds', seconds]))
 
     def test_real_sender_hands_off_lease_and_reaps_cooperative_or_stubborn_worker(self):
         context = multiprocessing.get_context('spawn')
@@ -258,9 +277,10 @@ class EndpointBoundary(unittest.TestCase):
                         'expected_frames': 1800, 'finished_at_monotonic': 10}
             sender.write_text(json.dumps(terminal))
             self.assertEqual(check_archive(root, sender)['archived_outputs'], 3)
-            for expected in (1799, True, 299, 18001):
-                sender.write_text(json.dumps(dict(terminal, expected_frames=expected)))
-                with self.subTest(expected_frames=expected), self.assertRaisesRegex(RuntimeError, 'incomplete'):
+            for rule, packets, expected in (('count-mismatch', 1800, 1799), ('non-integer', 1800, 1800.0),
+                                            ('too-short', 299, 299), ('too-long', 18001, 18001)):
+                sender.write_text(json.dumps(dict(terminal, packets=packets, expected_frames=expected)))
+                with self.subTest(rule=rule), self.assertRaisesRegex(RuntimeError, 'incomplete'):
                     check_archive(root, sender)
 
     def test_exact_loopback_camera_endpoint_uses_runtime_phone_credentials(self):

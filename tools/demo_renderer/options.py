@@ -5,9 +5,11 @@ from pathlib import Path
 
 
 def source_frame_count(manifest):
+    if not isinstance(manifest, dict):
+        raise ValueError('Demo source manifest must be a JSON object')
     seconds, frames = manifest.get('seconds'), manifest.get('frames')
     if (type(seconds) not in (int, float) or not 10 <= seconds <= 600
-            or not math.isfinite(seconds) or manifest.get('fps') != 30
+            or manifest.get('fps') != 30
             or not isinstance(frames, list)):
         raise ValueError('Demo source requires 10–600 seconds at 30 fps')
     count = round(seconds * 30)
@@ -43,8 +45,8 @@ def validate_demo(args):
     if not args.demo_source.expanduser().is_file():
         raise ValueError('Demo source manifest must already exist')
     manifest = json.loads(args.demo_source.expanduser().read_text())
-    if source_frame_count(manifest) / 30 > args.seconds:
-        raise ValueError('Demo source exceeds runtime --seconds bound')
+    if source_frame_count(manifest) / 30 + 5 > args.seconds:
+        raise ValueError('Demo source requires at least 5 seconds of headroom under --seconds')
     receipt, archive = fresh(args.demo_receipt), fresh(args.archive)
     if receipt == archive or archive in receipt.parents:
         raise ValueError('Demo sender receipt must be outside its relay archive')
