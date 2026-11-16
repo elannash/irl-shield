@@ -124,6 +124,21 @@ evidence and must not be presented as clean video. Existing fallback media and s
 receipts remain unchanged; its public attribution omits machine-local
 paths while retaining original hashes, exact prompt, model note and license.
 
+## README image
+
+[`docs/images/generated-before-after.png`](../docs/images/generated-before-after.png)
+(SHA-256 `6e53e3712c555466c41b9a7e5a63f2ee4c7456b60164d814aecbe08e39bc7d9a`)
+was added in commit `80cea35`. It shows a frame of the W8b demo scene twice:
+before masking on the left, and after IRL Shield's Patch masking on the right.
+The scene comes from the generated "shops" plate recorded in
+[`demo-renderer/w8b/ATTRIBUTION.json`](demo-renderer/w8b/ATTRIBUTION.json),
+made with OpenAI's built-in image generation from the prompts in
+[`demo-renderer/w8b/prompts.json`](demo-renderer/w8b/prompts.json). Its visible
+labels ("TAVREN BINDERY", "MORROWFEN REPAIRS" and "38") are invented names from
+those prompts. Like the W8b plates, it is a project-owned generated asset
+dedicated under CC0-1.0, subject to the applicable OpenAI terms. The W8b record's
+clearance fields still apply: no three-judge or human logo review was recorded.
+
 ## Fonts
 
 The bundled, unmodified DejaVu Sans Bold, DejaVu Sans Mono Bold and DejaVu Serif
