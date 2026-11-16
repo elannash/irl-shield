@@ -1,6 +1,6 @@
 # IRL Shield
 
-IRL Shield covers readable text on street signs, storefronts, house numbers and plates before an IRL stream reaches Twitch. It runs as a relay between the streamer's phone and Twitch. Chat and moderators can vote on how masks look and can hold the stream on a privacy slate.
+IRL Shield covers readable text on street signs, storefronts, house numbers and plates before an IRL stream reaches Twitch. It runs as a relay between the streamer's phone and Twitch. Viewers can vote in chat on how masks look, and moderators can hold the stream on a privacy slate.
 
 Demo video: https://youtu.be/DIRiN-hniaI
 
